@@ -1,0 +1,3 @@
+# Chef.Common
+
+This is a common area...
