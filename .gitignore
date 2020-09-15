@@ -112,3 +112,5 @@ Chef.HRMS.Types/obj/Chef.HRMS.Types.csproj.nuget.g.props
 Chef.HRMS.Types/obj/Debug/netcoreapp3.1/Chef.HRMS.Types.assets.cache
 Chef.HRMS.Types/obj/Debug/netcoreapp3.1/Chef.HRMS.Types.csprojAssemblyReference.cache
 Chef.HRMS.Types/obj/project.assets.json
+Chef.Common.Core/obj/Debug/netcoreapp3.1/Chef.Common.Core.csprojAssemblyReference.cache
+Chef.Common.Models/obj/Debug/netcoreapp3.1/Chef.Common.Models.csprojAssemblyReference.cache
