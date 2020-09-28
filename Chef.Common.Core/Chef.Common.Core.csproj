@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Net.Compilers" Version="3.7.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Npgsql" Version="4.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
+    <PackageReference Include="refit" Version="5.1.67" />
+    <PackageReference Include="SqlKata" Version="2.2.0" />
+    <PackageReference Include="MailKit" Version="2.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.4" />
+    <PackageReference Include="MimeKit" Version="2.9.1" />
+    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Repositories\TableTypeAttribute.cs" />
+    <Compile Remove="Repositories\UnitOfWorkRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Repositories\UnitOfWork\oxyq0xtf.24a~" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
+  </ItemGroup>
+</Project>
