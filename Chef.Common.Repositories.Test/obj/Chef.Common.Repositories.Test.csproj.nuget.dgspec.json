@@ -1,0 +1,648 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Repositories.Test\\Chef.Common.Repositories.Test.csproj": {}
+  },
+  "projects": {
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj",
+        "projectName": "Chef.Common.Core",
+        "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj",
+        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\Chef.Common.Types.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\Chef.Common.Types.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.0.35, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[2.8.0, )"
+            },
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
+            "Microsoft.AspNetCore.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Core": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.Extensions.Configuration.Binder": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Microsoft.Net.Compilers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.7.0, )"
+            },
+            "MimeKit": {
+              "target": "Package",
+              "version": "[2.9.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[4.1.4, )"
+            },
+            "SqlKata": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "System.Collections.Concurrent": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "refit": {
+              "target": "Package",
+              "version": "[5.1.67, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Models\\Chef.Common.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Models\\Chef.Common.Models.csproj",
+        "projectName": "Chef.Common.Models",
+        "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Models\\Chef.Common.Models.csproj",
+        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj"
+              },
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\Chef.Common.Types.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\Chef.Common.Types.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "MailKit": {
+              "target": "Package",
+              "version": "[2.8.0, )"
+            },
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Core": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "Microsoft.Net.Compilers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.7.0, )"
+            },
+            "System.Text.Encoding.CodePages": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Repositories.Test\\Chef.Common.Repositories.Test.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Repositories.Test\\Chef.Common.Repositories.Test.csproj",
+        "projectName": "Chef.Common.Repositories.Test",
+        "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Repositories.Test\\Chef.Common.Repositories.Test.csproj",
+        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Repositories.Test\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj"
+              },
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Test\\Chef.Common.Test.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Test\\Chef.Common.Test.csproj"
+              },
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Models\\Chef.Trading.Models.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Models\\Chef.Trading.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Autofac": {
+              "target": "Package",
+              "version": "[5.2.0, )"
+            },
+            "Autofac.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[3.1.7, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[16.7.1, )"
+            },
+            "Microsoft.Net.Compilers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.7.0, )"
+            },
+            "Refit.HttpClientFactory": {
+              "target": "Package",
+              "version": "[5.1.67, )"
+            },
+            "Scrutor": {
+              "target": "Package",
+              "version": "[3.2.2, )"
+            },
+            "Xunit.DependencyInjection": {
+              "target": "Package",
+              "version": "[7.0.2, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.core": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Test\\Chef.Common.Test.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Test\\Chef.Common.Test.csproj",
+        "projectName": "Chef.Common.Test",
+        "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Test\\Chef.Common.Test.csproj",
+        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Test\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[3.1.7, )"
+            },
+            "Microsoft.Net.Compilers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.7.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.core": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\Chef.Common.Types.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\Chef.Common.Types.csproj",
+        "projectName": "Chef.Common.Types",
+        "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\Chef.Common.Types.csproj",
+        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Types\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "MailKit": {
+              "target": "Package",
+              "version": "[2.8.0, )"
+            },
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Core": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "Microsoft.Net.Compilers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.7.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Models\\Chef.Trading.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Models\\Chef.Trading.Models.csproj",
+        "projectName": "Chef.Trading.Models",
+        "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Models\\Chef.Trading.Models.csproj",
+        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Core\\Chef.Common.Core.csproj"
+              },
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Models\\Chef.Common.Models.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Common\\Chef.Common.Models\\Chef.Common.Models.csproj"
+              },
+              "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Types\\Chef.Trading.Types.csproj": {
+                "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Types\\Chef.Trading.Types.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.Net.Compilers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.7.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Types\\Chef.Trading.Types.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Types\\Chef.Trading.Types.csproj",
+        "projectName": "Chef.Trading.Types",
+        "projectPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Types\\Chef.Trading.Types.csproj",
+        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\TIC\\Repos\\code.tic\\Chef.Trading\\Chef.Trading.Types\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.Net.Compilers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.7.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

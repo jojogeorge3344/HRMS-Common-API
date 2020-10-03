@@ -6,7 +6,7 @@ namespace Chef.Common.Models
 {
     public class ItemFamily : Model
     {
-        [ForeignKey("ItemSegment")]
+        [ForeignKeyId(typeof(ItemSegment))]
         [Required]
         public int ItemSegmentId { get; set; }
         [Required(AllowEmptyStrings = true)]

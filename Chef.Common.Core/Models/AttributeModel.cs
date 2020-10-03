@@ -6,7 +6,9 @@ namespace Chef.Common.Core
     {
         [Required]
         [Unique(true), Composite(Index =1)]
+        [Field(Order = 2)]
         public string AttributeName { set; get; }
+        [Field(Order = 3)]
         public string AttributeValue { set; get; }
     }
 }

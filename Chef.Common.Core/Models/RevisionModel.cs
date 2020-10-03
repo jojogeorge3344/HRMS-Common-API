@@ -6,8 +6,10 @@ namespace Chef.Common.Core
     {
         [Required]
         [Unique(true), Composite(Index = 1)]
+        [Field(Order = 2)]
         public string Revision { get; set; }
         [Required]
+        [Field(Order = 3)]
         public bool IsCurrentRevision { get; set; }
     }
 }

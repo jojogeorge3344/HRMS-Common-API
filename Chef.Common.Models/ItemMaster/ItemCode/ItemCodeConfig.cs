@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
 {
-    public class ItemCodeFormat : Model
+    public class ItemCodeConfig : Model
     {
         [Required]
         public ItemCodeType ItemCodeType { get; set; }

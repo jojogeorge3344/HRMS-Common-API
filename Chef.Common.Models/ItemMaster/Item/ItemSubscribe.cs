@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Chef.Common.Core;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chef.Common.Models
@@ -6,7 +7,7 @@ namespace Chef.Common.Models
     public class ItemSubscribe : SubscribeModel
     {
 
-        [ForeignKey("Item")]
+        [ForeignKeyId(typeof(Item))]
         [Required]
         public int ItemId { get; set; }
     }
