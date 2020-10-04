@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Volumes/code/chef/chef.common/Chef.Bff.ApiGateway/Chef.Bff.ApiGateway.csproj": {}
+    "/Volumes/code/chef/chef.common/Chef.Common.Identity/Chef.Common.Identity.csproj": {}
   },
   "projects": {
-    "/Volumes/code/chef/chef.common/Chef.Bff.ApiGateway/Chef.Bff.ApiGateway.csproj": {
+    "/Volumes/code/chef/chef.common/Chef.Common.Identity/Chef.Common.Identity.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Volumes/code/chef/chef.common/Chef.Bff.ApiGateway/Chef.Bff.ApiGateway.csproj",
-        "projectName": "Chef.Bff.ApiGateway",
-        "projectPath": "/Volumes/code/chef/chef.common/Chef.Bff.ApiGateway/Chef.Bff.ApiGateway.csproj",
+        "projectUniqueName": "/Volumes/code/chef/chef.common/Chef.Common.Identity/Chef.Common.Identity.csproj",
+        "projectName": "Chef.Common.Identity",
+        "projectPath": "/Volumes/code/chef/chef.common/Chef.Common.Identity/Chef.Common.Identity.csproj",
         "packagesPath": "/Users/karthick/.nuget/packages/",
-        "outputPath": "/Volumes/code/chef/chef.common/Chef.Bff.ApiGateway/obj/",
+        "outputPath": "/Volumes/code/chef/chef.common/Chef.Common.Identity/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/karthick/.config/NuGet/NuGet.Config"
@@ -36,9 +36,9 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
-            "Ocelot": {
+            "IdentityServer4": {
               "target": "Package",
-              "version": "[16.0.1, )"
+              "version": "[4.1.0, )"
             }
           },
           "imports": [

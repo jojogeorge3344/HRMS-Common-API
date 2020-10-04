@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Chef.Bff.ApiGateway
+namespace Chef.Common.ApiGateway
 {
     public class Program
     {
@@ -21,15 +21,6 @@ namespace Chef.Bff.ApiGateway
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config
-                            .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
-                            .AddJsonFile("hrms.json", optional: false, reloadOnChange: true)
-                            .AddJsonFile("finance.json", optional: false, reloadOnChange: true)
-                            .AddJsonFile("trading.ocelot.json", optional: false, reloadOnChange: true)
-                            .AddJsonFile("manufacturing.json", optional: false, reloadOnChange: true);
                 });
     }
 }
