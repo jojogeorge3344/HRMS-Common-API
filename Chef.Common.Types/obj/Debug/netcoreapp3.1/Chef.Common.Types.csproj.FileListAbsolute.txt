@@ -1,8 +1,0 @@
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\bin\Debug\netcoreapp3.1\Chef.Common.Types.deps.json
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\bin\Debug\netcoreapp3.1\Chef.Common.Types.dll
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\bin\Debug\netcoreapp3.1\Chef.Common.Types.pdb
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\obj\Debug\netcoreapp3.1\Chef.Common.Types.AssemblyInfoInputs.cache
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\obj\Debug\netcoreapp3.1\Chef.Common.Types.AssemblyInfo.cs
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\obj\Debug\netcoreapp3.1\Chef.Common.Types.csproj.CoreCompileInputs.cache
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\obj\Debug\netcoreapp3.1\Chef.Common.Types.dll
-C:\Work\TIC\Repos\code.tic\Chef.Common\Chef.Common.Types\obj\Debug\netcoreapp3.1\Chef.Common.Types.pdb
