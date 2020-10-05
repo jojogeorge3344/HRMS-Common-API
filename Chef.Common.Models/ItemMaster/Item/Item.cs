@@ -15,7 +15,7 @@ namespace Chef.Common.Models
         [Required]
         public string ItemDescription { get; set; }
 
-        [ForeignKey("ItemCommodity")]
+        [ForeignKeyId(typeof(ItemCommodity))]
         [Required]
         public int ItemCommodityId { get; set; }
     }

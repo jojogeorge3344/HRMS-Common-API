@@ -1,6 +1,8 @@
 using Chef.Common.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +21,6 @@ namespace Chef.Common.Repositories
             this.databaseSession = databaseSession;
             this.queryBuilder = queryBuilder;
             this.sqlQueryBuilder = sqlQueryBuilder;
-            this.queryBuilder = queryBuilder;
         }
 
         public async Task<int> DeleteAsync(int id)
@@ -27,23 +28,24 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().Where("id", id).AsDelete();
             return await databaseSession.ExecuteAsync(query);
         }
-        public async Task<int> DeleteAsync(object constraints)
+        public async Task<int> DeleteAsync(object deleteCondition)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(constraints).AsDelete();
+            var query = sqlQueryBuilder.Query<TModel>().Where(deleteCondition).AsDelete();
             return await databaseSession.ExecuteAsync(query);
-        }
-
+        } 
 
         public async Task<int> InsertAsync(TModel obj)
         {
             InsertModelProperties(ref obj);
-            return await databaseSession.ExecuteScalarAsync<int>(sql: queryBuilder.GenerateInsertQuery(), param: obj);
+            var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(obj, returnId: true);
+            return await databaseSession.ExecuteScalarAsync<int>(query);
         }
 
         public async Task<int> UpdateAsync(TModel obj)
         {
             UpdateModelProperties(ref obj);
-            return await databaseSession.ExecuteAsync(sql: queryBuilder.GenerateUpdateQuery(), param: obj);
+            var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(obj).Where(new { id= obj.Id});
+            return await databaseSession.ExecuteAsync(query);
         }
 
         public async Task<IEnumerable<TModel>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -60,9 +62,9 @@ namespace Chef.Common.Repositories
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken); 
         }
 
-        public async Task<IEnumerable<TModel>> GetRecordsAsync(object constraints, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TModel>> GetRecordsAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(constraints);
+            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
@@ -71,9 +73,9 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().Where(new { id });
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
-        public async Task<TModel> GetAsync(object constraints, CancellationToken cancellationToken = default)
+        public async Task<TModel> GetAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(constraints);
+            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
         //public async Task<int> DeleteAsync(int id)
@@ -115,7 +117,36 @@ namespace Chef.Common.Repositories
         void UpdateModelProperties(ref TModel obj)
         {
             obj.ModifiedBy = "system";
-            obj.CreatedDate = obj.ModifiedDate = DateTime.UtcNow;
+            obj.ModifiedDate = DateTime.UtcNow;
+        }
+
+        public async Task<int> InsertAsync(object insertObject)
+        {
+            //Created Date/By handled in extension
+            //Modified Date/By handled in extension
+            var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(insertObject, returnId: true);
+            return await databaseSession.ExecuteScalarAsync<int>(query);
+        }
+
+        public async Task<int> UpdateAsync(object updateObject, object updateConditionObject)
+        {
+            //Modified Date/By handled in extension
+            var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(updateObject).Where(updateConditionObject);
+            return await databaseSession.ExecuteAsync(query);
+        }
+
+        public async Task<int> BulkInsertAsync(IEnumerable<object> bulkInsertObjects)
+        {
+            //Created Date/By handled in extension
+            //Modified Date/By handled in extension
+            var query = sqlQueryBuilder.Query<TModel>().AsBulkInsertExt(bulkInsertObjects);
+            return await databaseSession.ExecuteAsync(query);
+        }
+
+        public async Task<int> DeleteAsync(SqlKata.Query sqlKataQuery)
+        {
+            var query = sqlKataQuery.AsDelete();
+            return await databaseSession.ExecuteAsync(query);
         }
     }
 }

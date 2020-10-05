@@ -3,6 +3,7 @@
     public struct Column
     {
         public string ForeignKey;
+        public string ForeignKeyReference;
         public bool IsKey;
         public bool IsRequired;
         public bool IsWrite;

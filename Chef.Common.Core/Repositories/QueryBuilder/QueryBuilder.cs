@@ -1,4 +1,6 @@
 ﻿using Chef.Common.Core;
+using MimeKit.Encodings;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -42,22 +44,36 @@ namespace Chef.Common.Repositories
                 .Select(x => x.Property)
                 .ToList();
 
-        private IEnumerable<string> UniqueCompositeFieldNames => typeof(T)
+        //private Dictionary<string, IEnumerable<CompositeAttribute>> UniqueCompositeFieldNames => typeof(T)
+        //        .GetProperties()
+        //        .Select(x => new
+        //        {
+        //            Property = x,
+        //            CompositeAttributes = (IEnumerable<CompositeAttribute>)Attribute.GetCustomAttributes(x, typeof(CompositeAttribute), true),
+        //            UniqueAttributes = (IEnumerable<UniqueAttribute>)Attribute.GetCustomAttributes(x, typeof(UniqueAttribute), true)
+        //        })
+        //        .Where(x => x.UniqueAttributes != null && x.CompositeAttributes != null && x.CompositeAttributes.Count() > 0)
+        //    .Select(x => new { name = x.Property.Name.ToLower(), attributes = x.CompositeAttributes }).ToDictionary(t => t.name, t => t.attributes);
+
+        private Dictionary<int, IEnumerable<string>> UniqueCompositeFieldNames => typeof(T)
                 .GetProperties()
                 .Select(x => new
                 {
                     Property = x,
-                    CompositeAttribute = (CompositeAttribute)Attribute.GetCustomAttribute(x, typeof(CompositeAttribute), true),
-                    UniqueAttribute = (UniqueAttribute)Attribute.GetCustomAttribute(x, typeof(UniqueAttribute), true)
+                    CompositeAttributes = (IEnumerable<CompositeAttribute>)Attribute.GetCustomAttributes(x, typeof(CompositeAttribute), true),
+                    UniqueAttributes = (IEnumerable<UniqueAttribute>)Attribute.GetCustomAttributes(x, typeof(UniqueAttribute), true)
                 })
-                .Where(x => x.UniqueAttribute != null && x.CompositeAttribute != null)
-                .OrderBy(x => x.CompositeAttribute != null ? x.CompositeAttribute.Index : Int32.MaxValue)
-                .Select(x => x.Property.Name.ToLower())
-                .ToList();
+                .Where(x => x.UniqueAttributes != null && x.CompositeAttributes != null && x.CompositeAttributes.Count() > 0)
+            .SelectMany(x => x.CompositeAttributes.Select(y=> new { y.Index, y.GroupNumber, Name = x.Property.Name.ToLower()  }))
+      .GroupBy(y => y.GroupNumber)
+            .Select(group => new { group.Key, Enumerable = group.Select(x => x.Name) })
+            .Where(x=>x.Enumerable.Count() > 1)
+            .ToDictionary(t => t.Key, t => t.Enumerable);
 
         public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
-
         public string TableName => SchemaName + "." + typeof(T).Name.ToLower();
+        string GetTableName(Type type) 
+            => type.Namespace.Split('.')[1].ToLower() + "." + type.Name.ToLower();
         public string TableNameWOSchema => typeof(T).Name.ToLower();
 
         public string PrimaryKey
@@ -88,15 +104,28 @@ namespace Chef.Common.Repositories
                     Type = GetPropertyType(prop),
                     IsKey = prop.GetCustomAttributes(typeof(KeyAttribute)).Count() > 0,
                     IsRequired = prop.GetCustomAttributes(typeof(RequiredAttribute)).Count() > 0,
-                    IsUnique = prop.GetCustomAttributes(typeof(UniqueAttribute)).Count() > 0 && prop.GetCustomAttributes(typeof(CompositeAttribute)).Count() == 0
+                    IsUnique = prop.GetCustomAttributes(typeof(UniqueAttribute)).Count() > 0 && prop.GetCustomAttributes(typeof(CompositeAttribute)).Count() != prop.GetCustomAttributes(typeof(UniqueAttribute)).Count()
                 };
 
                 if (prop.GetCustomAttribute(typeof(ForeignKeyAttribute)) is ForeignKeyAttribute foreignkeyAttribute)
                 {
                     var schema = prop.DeclaringType.FullName.Split('.')[1].ToLower();
                     column.ForeignKey = string.Format("{0}.{1}", schema, foreignkeyAttribute.Name.ToLower());
+                    column.ForeignKeyReference = $" REFERENCES {column.ForeignKey}(id)";
                 }
-
+                else if(prop.GetCustomAttribute(typeof(ForeignKeyIdAttribute)) is ForeignKeyIdAttribute idForeignKeyAttribute)
+                { 
+                    column.ForeignKey = GetTableName(idForeignKeyAttribute.ModelType);
+                    column.ForeignKeyReference = $" REFERENCES {column.ForeignKey}(id)";
+                }
+                else if (prop.GetCustomAttribute(typeof(ForeignKeyCodeAttribute)) is ForeignKeyCodeAttribute codeForeignKeyAttribute)
+                {
+                    column.ForeignKey = GetTableName(codeForeignKeyAttribute.ModelType);
+                    //var codePropertyName = codeForeignKeyAttribute.ModelType.GetProperties().Where(x => x.GetCustomAttribute(typeof(CodeAttribute)) != null).Select(x => x.Name.ToLower()).FirstOrDefault();
+                    //if (string.IsNullOrEmpty(codePropertyName))
+                    //    throw new Exception("Foreignkey code reference not found. Add Code attribute to the corresponding primary table");
+                    column.ForeignKeyReference = $" REFERENCES {column.ForeignKey}({codeForeignKeyAttribute.KeyField})";
+                }
                 table.Add(column);
             }
 
@@ -130,7 +159,8 @@ namespace Chef.Common.Repositories
         public string GenerateCreateTableQuery()
         {
             const string tab = "\t\t";
-
+            var indexQuery = new StringBuilder();
+            int indexCounter = 0;
             var createTableQuery = new StringBuilder($"CREATE TABLE IF NOT EXISTS {TableName} (");
             //var columns = GenerateColumnsForTable(GetProperties);
             var columns = GenerateColumnsForTable(SortedProperties);
@@ -149,14 +179,16 @@ namespace Chef.Common.Repositories
                         createTableQuery.Append(" NOT NULL");
                     }
 
-                    if (column.ForeignKey != null)
+                    if (column.ForeignKeyReference != null)
                     {
-                        createTableQuery.Append($" REFERENCES {column.ForeignKey}(id)");
+                        createTableQuery.Append(column.ForeignKeyReference);
+                        indexQuery.AppendLine($"CREATE INDEX idx_{TableNameWOSchema}_{++indexCounter}  ON {TableName}({column.Name});");
                     }
 
                     if (column.IsUnique)
                     {
                         createTableQuery.Append($" UNIQUE");
+                        indexQuery.AppendLine($"CREATE INDEX idx_{TableNameWOSchema}_{++indexCounter}  ON {TableName}({column.Name});");
                     }
 
                     if (IsJunctionTable)
@@ -188,14 +220,23 @@ namespace Chef.Common.Repositories
             else
             {
                 if (UniqueCompositeFieldNames.Count() > 0)
-                    createTableQuery.Append(string.Format("unique({0})", string.Join(",", UniqueCompositeFieldNames)));
-                else
-                    createTableQuery.Remove(createTableQuery.Length - 1, 1); //remove last comma
+                { 
+                    foreach (var record in UniqueCompositeFieldNames)
+                    {
+                        indexQuery.AppendLine($"CREATE INDEX idx_{TableNameWOSchema}_{++indexCounter} ON {TableName}({string.Join(",", record.Value)});");
+                        createTableQuery.Append(Environment.NewLine + tab + string.Format("constraint composite_{0}_{1} unique({2})", TableNameWOSchema,record.Key, string.Join(",", record.Value)));
+                        createTableQuery.Append(",");
+                    }
+                }
+                createTableQuery.Remove(createTableQuery.Length - 1, 1); //remove last comma
             }
 
             createTableQuery.Append(Environment.NewLine);
             createTableQuery.Append(");");
             createTableQuery.Append(Environment.NewLine + $" ALTER TABLE {TableName} OWNER to postgres; ");
+            createTableQuery.Append(Environment.NewLine);
+            createTableQuery.Append(Environment.NewLine); 
+            createTableQuery.Append(indexQuery.ToString());
             createTableQuery.Append(Environment.NewLine);
             createTableQuery.Append(Environment.NewLine);
 

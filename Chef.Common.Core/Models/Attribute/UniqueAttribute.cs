@@ -2,6 +2,7 @@
 
 namespace Chef.Common.Core
 {
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class UniqueAttribute : Attribute
     {
         public bool IsUnique { get; set; }
@@ -10,5 +11,6 @@ namespace Chef.Common.Core
         {
             this.IsUnique = isUnique;
         }
+        public override object TypeId { get { return this; } }
     }
 }

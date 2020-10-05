@@ -21,3 +21,7 @@ Chef.Common.Test/obj/project.assets.json
 Chef.Common.Types/obj/Chef.Common.Types.csproj.nuget.dgspec.json
 Chef.Common.Types/obj/Debug/netcoreapp3.1/Chef.Common.Types.AssemblyInfo.cs
 Chef.Common.Types/obj/project.assets.json
+.DS_Store
+Chef.Common.Bff/.vs/Chef.Common.Bff/xs/UserPrefs.xml
+Chef.Common.ApiGateway/obj/Chef.Common.ApiGateway.csproj.nuget.dgspec.json
+Chef.Common.ApiGateway/obj/project.assets.json

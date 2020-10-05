@@ -9,9 +9,9 @@ namespace Chef.Common.Models
     {
         [Required(AllowEmptyStrings = true)]
         [Unique(true)]
-        public string TaxJurisdictionCode { get; set; } = string.Empty;
+        public string TaxCode { get; set; } = string.Empty;
         [Required]
         [Unique(true)]
-        public string TaxJurisdictionName { get; set; }
+        public string TaxName { get; set; }
     }
 }
