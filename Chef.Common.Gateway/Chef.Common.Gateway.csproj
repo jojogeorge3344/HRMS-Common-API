@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>b6faf924-7f12-4f1d-8224-aebd6c2e5840</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ocelot" Version="16.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="ocelot - Copy.Development.json">
+      <DependentUpon>ocelot.Development.json</DependentUpon>
+    </Content>
+  </ItemGroup>
+
+</Project>
