@@ -12,33 +12,37 @@ namespace Chef.Common.Models
         [Required]
         [StringLength(8)]
         public string Code { get; set; }
-        
+
         [StringLength(256)]
         public string AddressLine1 { get; set; }
 
         [StringLength(256)]
         public string AddressLine2 { get; set; }
+
         [Required]
         public int CityId { get; set; }
+
         [Required]
         [StringLength(126)]
         public string CityName { get; set; }
+
         [Required]
         public int StateId { get; set; }
 
         [Required]
         [StringLength(126)]
         public string StateName { get; set; }
+
         [Required]
         public int CountryId { get; set; }
 
         [StringLength(126)]
-          [Required]
+        [Required]
         public string CountryName { get; set; }
         [Required]
         [StringLength(8)]
         public string ZipCode { get; set; }
-[Required]
+        [Required]
         public int CurrencyId { get; set; }
 
         [StringLength(3)]
@@ -58,7 +62,9 @@ namespace Chef.Common.Models
 
         [StringLength(62)]
         public string WebSite { get; set; }
-         
+
+        public string TradeLicense { get; set; }
+
         public int BaseCompanyId { get; set; }
 
         [StringLength(8)]
