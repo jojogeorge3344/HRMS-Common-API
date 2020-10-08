@@ -9,10 +9,4 @@
     <PackageReference Include="Ocelot" Version="16.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="ocelot - Copy.Development.json">
-      <DependentUpon>ocelot.Development.json</DependentUpon>
-    </Content>
-  </ItemGroup>
-
 </Project>
