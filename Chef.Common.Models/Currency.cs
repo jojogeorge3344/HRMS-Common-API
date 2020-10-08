@@ -31,6 +31,8 @@ namespace Chef.Common.Models
 
         public int ExchangeVariationDown { get; set; }
 
-        public int CurrencyDenomination { get; set; }        
+        public int CurrencyDenomination { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

@@ -71,5 +71,8 @@ namespace Chef.Common.Models
 
         [StringLength(64)]
         public string Website { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string IBAN { get; set; }
     }
 }
