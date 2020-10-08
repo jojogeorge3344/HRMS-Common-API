@@ -303,60 +303,11 @@ namespace Chef.Common.Repositories
         }
 
 
-        //string GetFilterQuery(string[] andFilterColumnNames = null)
-        //{
-        //    if (andFilterColumnNames != null && andFilterColumnNames.Count() > 0)
-        //    {
-        //        StringBuilder sb = new StringBuilder(" WHERE 1=1");
-        //        for (int i = 0; i < andFilterColumnNames.Count(); i++)
-        //        {
-        //            sb.Append($" AND {andFilterColumnNames[i]} = @{andFilterColumnNames[i]}");
-        //        }
-        //        return sb.ToString();
-        //    }
-        //    return string.Empty;
-        //}
+        public string GenerateDropTableQuery(bool cascade = false)
+        {
+            var keyword = cascade ? " CASCADE" : "";
+            return $"DROP TABLE IF EXISTS {TableName}{keyword};";
+        }
 
-        //public  string GenerateSelectiveColumnsQuery(string[] selectColumnNames, string[] andFilterColumnNames = null)
-        //{
-        //    var baseQuery = $"SELECT {{0}} FROM {TableName}";
-        //    if (selectColumnNames == null || selectColumnNames.Count() == 0)
-        //        baseQuery = string.Format(baseQuery, "*");
-        //    if (selectColumnNames.Count() > 0)
-        //        baseQuery = string.Format(baseQuery, String.Join(", ", selectColumnNames)); 
-        //    return baseQuery + GetFilterQuery(andFilterColumnNames);
-        //}
-
-        //string GetColumnNamesAsCSV()
-        //{
-        //    var columns = GenerateColumnsForTable(GetProperties);
-        //    return string.Join(",", columns.Select(x => x.Name));
-        //}
-        //public string GenerateSelectQuery(bool includeColumnNames = false)
-        //{
-        //    return string.Format($"SELECT {{0}} FROM {TableName}", (includeColumnNames ? GetColumnNamesAsCSV() : "*"));
-        //}
-
-        //public string GenerateSelectAllQuery(params string[] andFilterColumnNames)
-        //{
-        //    var baseQuery = $"SELECT * FROM {TableName}";
-        //    if (andFilterColumnNames.Count() == 0)
-        //        return baseQuery;
-        //    else
-        //        return baseQuery + GetFilterQuery(andFilterColumnNames);
-        //}
-        //public string GenerateSelectAllQuery(int limitNoOfRecords)
-        //{
-        //    return $"SELECT * FROM {TableName}  ORDER BY Id desc LIMIT {limitNoOfRecords}";
-        //}
-
-        //public string GenerateDeleteQuery()
-        //    => $"DELETE FROM {TableName} WHERE id=@id";
-
-
-        //string[] GetTableOrderedByReferences()
-        //{ 
-
-        //}
     }
 }
