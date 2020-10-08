@@ -4,11 +4,8 @@ namespace Chef.Common.Types
 {
     public enum BusinessPartnerGroupType
     {
-        [Description("External")]
-        EBP = 1,
-
-        [Description("Internal")]
-        IBP,
+        [Description("Trade")]
+        EBP = 1,      
 
         [Description("Affiliate")]
         ABP,
