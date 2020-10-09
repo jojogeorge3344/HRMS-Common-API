@@ -11,8 +11,10 @@ namespace Chef.Common.Models
         [ForeignKey("Common.Currency")]
         public int CurrencyId { get; set; }
 
+        [Required]
         public int Value { get; set; }
 
+        [Required]
         public DenominationType Type { get; set; }
     }
 }
