@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Chef.Common.Core;
+using System.Collections.Generic;
 
 namespace Chef.Common.Models
 {
@@ -25,5 +26,10 @@ namespace Chef.Common.Models
 
         //TO DO require clarification
         public string PeriodFormat { get; set; }
+        [Write(false)]
+        [Skip(true)]
+        public List<FinancialYearPeriod> FinancialYearPeriod{ get; set; }
+
+
     }
 }
