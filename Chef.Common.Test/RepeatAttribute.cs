@@ -8,21 +8,26 @@ namespace Chef.Common.Test
 {
     public class RepeatAttribute : DataAttribute
     {
-        private readonly int _count;
+        private readonly int count;
 
         public RepeatAttribute(int count)
         {
             if (count < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(count),
-                      "Repeat count must be greater than 0.");
+                throw new System.ArgumentOutOfRangeException(
+                    paramName: nameof(count),
+                    message: "Repeat count must be greater than 0."
+                    );
             }
-            _count = count;
+            this.count = count;
         }
 
-        public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+        public override System.Collections.Generic.IEnumerable<object[]> GetData(System.Reflection.MethodInfo testMethod)
         {
-            return Enumerable.Repeat(new object[0], _count);
+            foreach (var iterationNumber in Enumerable.Range(start: 1, count: this.count))
+            {
+                yield return new object[] { iterationNumber };
+            }
         }
     }
 }

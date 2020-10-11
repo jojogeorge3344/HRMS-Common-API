@@ -11,5 +11,6 @@
         public bool IsUnique;
         public string Name;
         public string Type;
+        public bool IsFromBase;
     }
 }

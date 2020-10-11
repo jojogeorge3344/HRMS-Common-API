@@ -182,7 +182,7 @@ namespace Chef.Common.Repositories
                     if (column.ForeignKeyReference != null)
                     {
                         createTableQuery.Append(column.ForeignKeyReference);
-                        indexQuery.AppendLine($"CREATE INDEX idx_{TableNameWOSchema}_{++indexCounter}  ON {TableName}({column.Name});");
+                        //indexQuery.AppendLine($"CREATE INDEX idx_{TableNameWOSchema}_{++indexCounter}  ON {TableName}({column.Name});");
                     }
 
                     if (column.IsUnique)

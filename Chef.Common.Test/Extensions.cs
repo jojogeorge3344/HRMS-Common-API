@@ -8,7 +8,9 @@ namespace Chef.Common.Test
     {
         public static T GetRandom<T>(this IEnumerable<T> iEnumerable)
         {
-            return iEnumerable.ElementAt(new Random().Next(0, iEnumerable.Count()));
+            if(iEnumerable.Count() >0 )
+                return iEnumerable.ElementAt(new Random().Next(0, iEnumerable.Count()));
+            return default;
         }
 
         public static string InsertNTrimEnd(this string input, int insertPosition, string insertText, int noOfCharactersToTrim)

@@ -22,6 +22,8 @@ namespace Chef.Common.Repositories
         Task<int> UpdateAsync(T obj);
         Task<int> DeleteAsync(int id); 
         Task<IEnumerable<T>> GetRecordsAsync(int noOfRecords, CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetRecordsAsync(int noOfRecords, object whereConditionObject, CancellationToken cancellationToken = default);
+
         Task<IEnumerable<T>> GetRecordsAsync(object whereConditionObject, CancellationToken cancellationToken = default);
         Task<int> InsertAsync(object insertObject);
         Task<int> BulkInsertAsync(IEnumerable<object> bulkInsertObjects);
