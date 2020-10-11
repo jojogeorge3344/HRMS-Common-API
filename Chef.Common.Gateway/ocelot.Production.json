@@ -22,7 +22,19 @@
         }
       ],
       "UpstreamPathTemplate": "/api/finance/{everything}",
-      "UpstreamHttpMethod": [ ]
+      "UpstreamHttpMethod": []
+    },
+    {
+      "DownstreamPathTemplate": "/api/manufacturing/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "man.dev.com",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/manufacturing/{everything}",
+      "UpstreamHttpMethod": []
     }
   ],
   "GlobalConfiguration": {

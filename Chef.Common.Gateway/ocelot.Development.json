@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/console/{everything}",
-      "UpstreamHttpMethod": [ ]
+      "UpstreamHttpMethod": []
     },
     {
       "DownstreamPathTemplate": "/api/finance/{everything}",
@@ -22,7 +22,19 @@
         }
       ],
       "UpstreamPathTemplate": "/api/finance/{everything}",
-      "UpstreamHttpMethod": [ ]
+      "UpstreamHttpMethod": []
+    },
+    {
+      "DownstreamPathTemplate": "/api/manufacturing/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6003
+        }
+      ],
+      "UpstreamPathTemplate": "/api/manufacturing/{everything}",
+      "UpstreamHttpMethod": []
     }
   ],
   "GlobalConfiguration": {

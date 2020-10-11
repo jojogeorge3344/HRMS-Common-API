@@ -5,24 +5,36 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "console.dev.com",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/console/{everything}",
-      "UpstreamHttpMethod": [ ]
+      "UpstreamHttpMethod": []
     },
     {
       "DownstreamPathTemplate": "/api/finance/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "finance.dev.com",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/finance/{everything}",
-      "UpstreamHttpMethod": [ ]
+      "UpstreamHttpMethod": []
+    },
+    {
+      "DownstreamPathTemplate": "/api/manufacturing/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "man.dev.com",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/manufacturing/{everything}",
+      "UpstreamHttpMethod": []
     }
   ],
   "GlobalConfiguration": {
