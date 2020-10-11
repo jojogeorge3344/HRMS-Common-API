@@ -108,6 +108,11 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("id").Limit(noOfRecords);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
+        public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, object whereConditionObject, CancellationToken cancellationToken = default)
+        {
+            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject).OrderByDesc("id").Limit(noOfRecords);
+            return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
+        }
         void InsertModelProperties(ref TModel obj)
         {
             obj.CreatedBy = obj.ModifiedBy = "system";

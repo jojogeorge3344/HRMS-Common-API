@@ -4,8 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chef.Common.Models
 {
-    public class Item : Common.Core.RevisionModel
+    public class Item : Model, IRevisionModel
     {
+        [Required]
+        [Unique(true), Composite(Index = 1)]
+        [Field(Order = 2)]
+        public string Revision { get; set; }
+        [Required]
+        [Field(Order = 3)]
+        public bool IsCurrentRevision { get; set; }
         [Required(AllowEmptyStrings = true)]
         [Unique(true)]
         public string ItemCode { get; set; } = string.Empty;

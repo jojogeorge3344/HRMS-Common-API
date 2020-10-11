@@ -6,23 +6,53 @@ using SqlKata.Compilers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace Chef.Common.Repositories
 {
     public static class SqlKataExtension
     {
-        static IDictionary<string, object> GetDictionary(object obj)
+        public static IDictionary<string, object> ToDictionary(this object values)
         {
-            var type = obj.GetType();
-            var props = type.GetProperties();
-            return props.ToDictionary(x => x.Name.ToLower(), x => x.GetValue(obj, null));
+            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase); 
+            if (values != null)
+            {
+                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
+                {
+                    object obj = propertyDescriptor.GetValue(values);
+                    dictionary.Add(propertyDescriptor.Name.ToLower(), obj);
+                }
+            }
+
+            return dictionary;
         }
-        static string[] GetColumns(object obj)
-        {
-            IDictionary<string, object> expando = GetDictionary(obj);
-            return expando.Select(x => x.Key).ToArray();
+
+        //public static IDictionary<string, object> ToDictionary(this object data)
+        //{
+        //    BindingFlags publicAttributes = BindingFlags.Public | BindingFlags.Instance;
+        //    Dictionary<string, object> dictionary = new Dictionary<string, object>();
+
+        //    foreach (PropertyInfo property in data.GetType().GetProperties(publicAttributes))
+        //    {
+        //        if (property.CanRead)
+        //            dictionary.Add(property.Name, property.GetValue(data, null));
+        //    }
+
+        //    return dictionary;
+        //}
+
+        //static IDictionary<string, object> GetDictionary(object obj)
+        //{
+        //    var type = obj.GetType();
+        //    var props = type.GetProperties();
+        //    return props.ToDictionary(x => x.Name.ToLower(), x => x.GetValue(obj, null));
+        //}
+        static string[] GetColumns(IDictionary<string, object> obj)
+        { 
+            return obj.Select(x => x.Key).ToArray();
         }
 
         static void UpdateDefaultProperties(ref IDictionary<string, object> expando)
@@ -69,34 +99,35 @@ namespace Chef.Common.Repositories
 
         static Query AddSearchCondition(this Query query, SqlSearchConditon condition)
         {
+            var fieldName = condition.Field.ToLower().Trim();
             switch (condition.Operator)
             {
                 case SqlSearchOperator.Contains:
-                    query.WhereContains(condition.Field, condition.Value);
+                    query.WhereContains(fieldName, condition.Value);
                     break;
                 case SqlSearchOperator.In:
                     if (condition.Value is IEnumerable<string> enumerableString)
-                        query.WhereIn(condition.Field, enumerableString);
+                        query.WhereIn(fieldName, enumerableString);
                     else if (condition.Value is IEnumerable<int> enumerableInt)
-                        query.WhereIn(condition.Field, enumerableInt);
+                        query.WhereIn(fieldName, enumerableInt);
                     else
-                        query.Where(condition.Field, SqlSearchOperator.Equal.ToSqlString(), condition.Value);
+                        query.Where(fieldName, SqlSearchOperator.Equal.ToSqlString(), condition.Value);
                     break;
                 case SqlSearchOperator.StartsWith:
-                    query.WhereStarts(condition.Field, condition.Value);
+                    query.WhereStarts(fieldName, condition.Value);
                     break;
                 case SqlSearchOperator.EndsWith:
-                    query.WhereEnds(condition.Field, condition.Value);
+                    query.WhereEnds(fieldName, condition.Value);
                     break;
                 case SqlSearchOperator.Equal:
                 case SqlSearchOperator.GreaterThan:
                 case SqlSearchOperator.LessThan:
                 case SqlSearchOperator.GreaterThanEqual:
                 case SqlSearchOperator.LessThanEqual:
-                    query.Where(condition.Field, condition.Operator.ToSqlString(), condition.Value);
+                    query.Where(fieldName, condition.Operator.ToSqlString(), condition.Value);
                     break;
                 case SqlSearchOperator.NotEqual:
-                    query.WhereNot(condition.Field, condition.Operator.ToSqlString(), condition.Value);
+                    query.WhereNot(fieldName, condition.Operator.ToSqlString(), condition.Value);
                     break;
             }
             return query;
@@ -250,7 +281,7 @@ namespace Chef.Common.Repositories
         /// <returns></returns>
         public static Query AsUpdateExt(this Query query, object obj)
         {
-            IDictionary<string, object> expando = GetDictionary(obj);
+            IDictionary<string, object> expando = obj.ToDictionary();
             UpdateDefaultProperties(ref expando);
             return query.AsUpdate(new ReadOnlyDictionary<string, object>(expando));
         }
@@ -263,7 +294,7 @@ namespace Chef.Common.Repositories
         /// <returns></returns>
         public static Query AsInsertExt(this Query query, object obj, bool returnId = false)
         {
-            IDictionary<string, object> expando = GetDictionary(obj);
+            IDictionary<string, object> expando = obj.ToDictionary();
             InsertDefaultProperties(ref expando);
             return query.AsInsert(new ReadOnlyDictionary<string, object>(expando), returnId: returnId);
         }
@@ -275,10 +306,12 @@ namespace Chef.Common.Repositories
         /// <returns></returns>
         public static Query AsBulkInsertExt(this Query query, IEnumerable<object> objects)
         {
+            if (objects.Count() == 0)
+                throw new Exception("input objects is empty");
             List<IDictionary<string, object>> list = new List<IDictionary<string, object>>();
             foreach (object record in objects)
             {
-                IDictionary<string, object> expando = GetDictionary(record);
+                IDictionary<string, object> expando = record.ToDictionary();
                 InsertDefaultProperties(ref expando);
                 list.Add(expando);
             }
@@ -288,40 +321,40 @@ namespace Chef.Common.Repositories
             return query.AsInsert(columns: columns, data);
         }
 
-        //TODO: Match it with postgres datetime setting
+        //TODO: Match it with postgres datetime setting 
         const string DATE_FORMAT = "MM/dd/yyyy";
         public static Query WhereDateGreaterThanOrEqual(this Query query, string column, DateTime value) =>
-            query.WhereDate(column, ">=", value.ToString(DATE_FORMAT));
+            query.WhereRaw($"{column} >= ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
         public static Query WhereDateGreaterThan(this Query query, string column, DateTime value) =>
-            query.WhereDate(column, ">", value.ToString(DATE_FORMAT));
+            query.WhereRaw($"{column} > ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
         public static Query WhereDateLessThanOrEqual(this Query query, string column, DateTime value) =>
-            query.WhereDate(column, "<=", value.ToString(DATE_FORMAT));
+            query.WhereRaw($"{column} <= ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
         public static Query WhereDateLessThan(this Query query, string column, DateTime value) =>
-            query.WhereDate(column, "<", value.ToString(DATE_FORMAT));
+            query.WhereRaw($"{column} < ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
         public static Query WhereDateEqual(this Query query, string column, DateTime value) =>
-            query.WhereDate(column, "=", value.ToString(DATE_FORMAT));
+            query.WhereRaw($"{column} = ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
         public static Query WhereDateNotEqual(this Query query, string column, DateTime value) =>
-            query.WhereDate(column, "!=", value.ToString(DATE_FORMAT));
+            query.WhereRaw($"{column} != ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
         public static Query WhereDateBetween(this Query query, string column, DateTime startDate, DateTime endDate) =>
-            query.WhereDate(column, ">=", startDate.ToString(DATE_FORMAT)).WhereDate(column, "<=", endDate.ToString(DATE_FORMAT));
+             query.Where($"{column} >= ?::timestamp", new[] { startDate.ToString(DATE_FORMAT) }).Where($"{column} <= ?::timestamp", new[] { endDate.ToString(DATE_FORMAT) });
 
 
         //TODO: Match it with postgres datetime setting
         const string DATETIME_FORMAT = "MM/dd/yyyy hh:mm:ss.fff tt";
         public static Query WhereDatetimeGreaterThanOrEqual(this Query query, string column, DateTime value) =>
-            query.Where(column, ">=", value.ToString(DATETIME_FORMAT));
+            query.WhereRaw($"{column} >= ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
         public static Query WhereDatetimeGreaterThan(this Query query, string column, DateTime value) =>
-            query.Where(column, ">", value.ToString(DATETIME_FORMAT));
+            query.WhereRaw($"{column} > ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
         public static Query WhereDatetimeLessThanOrEqual(this Query query, string column, DateTime value) =>
-            query.Where(column, "<=", value.ToString(DATETIME_FORMAT));
+            query.WhereRaw($"{column} <= ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
         public static Query WhereDatetimeLessThan(this Query query, string column, DateTime value) =>
-            query.Where(column, "<", value.ToString(DATETIME_FORMAT));
+            query.WhereRaw($"{column} < ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
         public static Query WhereDatetimeEqual(this Query query, string column, DateTime value) =>
-            query.Where(column, "=", value.ToString(DATETIME_FORMAT));
+            query.WhereRaw($"{column} = ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
         public static Query WhereDatetimeNotEqual(this Query query, string column, DateTime value) =>
-            query.Where(column, "!=", value.ToString(DATETIME_FORMAT));
+            query.WhereRaw($"{column} != ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
         public static Query WhereDatetimeBetween(this Query query, string column, DateTime startDate, DateTime endDate) =>
-           query.Where(column, ">=", startDate.ToString(DATETIME_FORMAT)).Where(column, "<=", endDate.ToString(DATETIME_FORMAT));
+           query.Where($"{column} >= ?::timestamp", new[] { startDate.ToString(DATETIME_FORMAT) }).Where($"{column} <= ?::timestamp", new[] { endDate.ToString(DATETIME_FORMAT) });
 
         //public static Query AsInsertExt(this Query query, object data, bool returnId = false)
         //{
