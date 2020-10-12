@@ -7,6 +7,7 @@ namespace Chef.Common.Models
     public class ItemCodeConfig : Model
     {
         [Required]
+        [Unique(true)]
         public ItemCodeType ItemCodeType { get; set; }
 
         [Required]

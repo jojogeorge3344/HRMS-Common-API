@@ -11,6 +11,7 @@ namespace Chef.Common.Models
 
         [Required]
         [StringLength(8)]
+        [Code]
         public string Code { get; set; }
 
         [StringLength(256)]
