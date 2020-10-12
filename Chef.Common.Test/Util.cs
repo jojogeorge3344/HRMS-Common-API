@@ -26,5 +26,22 @@ namespace Chef.Common.Test
             var maxNumber = Convert.ToInt32("999999999".Substring(0, noOfDigits));
             return string.Format($"{{0:D{noOfDigits}}}", new Random().Next(1, maxNumber));
         }
+
+        public static string GenerateValidPhoneNumber()
+        {
+            return "111-111-1111";
+        }
+        public static string GenerateValidZipCode()
+        {
+            return "0000001";
+        }
+        public static string GenerateValidEmail()
+        {
+            return "test@test.com";
+        }
+        public static string GetRandomName()
+        {
+            return "John";
+        }
     }
 }
