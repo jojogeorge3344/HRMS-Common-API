@@ -26,7 +26,7 @@ namespace Chef.Common.Models
 
         public string DisplayFormat { get; set; }
 
-        public string WordFormat { get; set; }
+        public NumeralFormat NumeralFormat { get; set; }
 
         public int ExchangeVariationUp { get; set; }
 
