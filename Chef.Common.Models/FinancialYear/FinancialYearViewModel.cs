@@ -17,6 +17,7 @@ namespace Chef.Common.Models
 
         //TO DO require clarification
         public string Frequency { get; set; }
+        public string PeriodFormat { get; set; }
         public int FinancialYearId { get; set; }
         public string Period { get; set; }
         
