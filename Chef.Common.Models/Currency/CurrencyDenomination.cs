@@ -8,7 +8,7 @@ namespace Chef.Common.Models
     public class CurrencyDenomination : Model
     {
         [Required]
-        [ForeignKey("Common.Currency")]
+        [ForeignKey("Currency")]
         public int CurrencyId { get; set; }
 
         [Required]

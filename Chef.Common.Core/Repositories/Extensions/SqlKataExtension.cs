@@ -17,7 +17,7 @@ namespace Chef.Common.Repositories
     {
         public static IDictionary<string, object> ToDictionary(this object values)
         {
-            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase); 
+            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             if (values != null)
             {
                 foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
@@ -51,7 +51,7 @@ namespace Chef.Common.Repositories
         //    return props.ToDictionary(x => x.Name.ToLower(), x => x.GetValue(obj, null));
         //}
         static string[] GetColumns(IDictionary<string, object> obj)
-        { 
+        {
             return obj.Select(x => x.Key).ToArray();
         }
 
@@ -66,16 +66,11 @@ namespace Chef.Common.Repositories
         {
             if (expando.ContainsKey("id"))
                 expando.Remove("id");
-            if (!expando.ContainsKey("createdby"))
-                expando.Add("createdby", "system");
-            if (!expando.ContainsKey("modifiedby"))
-                expando.Add("modifiedby", "system");
-            if (!expando.ContainsKey("createddate"))
-                expando.Add("createddate", DateTime.UtcNow);
-            if (!expando.ContainsKey("modifieddate"))
-                expando.Add("modifieddate", DateTime.UtcNow);
-            if (!expando.ContainsKey("isarchived"))
-                expando.Add("isarchived", false);
+            expando["createdby"] = "system";
+            expando["modifiedby"] = "system";
+            expando["createddate"] = DateTime.UtcNow;
+            expando["modifieddate"] = DateTime.UtcNow;
+            expando["isarchived"] = false;
         }
 
         //public static string LowerCaseSql(this SqlResult query)

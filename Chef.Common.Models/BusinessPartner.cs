@@ -72,8 +72,7 @@ namespace Chef.Common.Models
         [StringLength(62)]
         public string WebSite { get; set; }
         public int SerialNumber { get; set; }
-        [Required]
-        [StringLength(16)]
-        public string  Status { get; set; }
+
+        public bool  IsActive { get; set; }
     }
 }

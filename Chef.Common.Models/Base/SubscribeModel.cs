@@ -6,8 +6,11 @@ namespace Chef.Common.Models
 {
     public abstract class SubscribeModel : Model
     {
-        [ForeignKey("Company")]
+        [ForeignKeyId(typeof(Company))]
         [Required]
         public int CompanyId { get; set; }
+        [ForeignKeyCode(typeof(Company))]
+        [Required]
+        public string CompanyCode { get; set; }
     }
 }

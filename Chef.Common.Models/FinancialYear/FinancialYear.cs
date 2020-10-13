@@ -26,10 +26,9 @@ namespace Chef.Common.Models
 
         //TO DO require clarification
         public string PeriodFormat { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public List<FinancialYearPeriod> FinancialYearPeriod{ get; set; }
-
-
     }
 }
