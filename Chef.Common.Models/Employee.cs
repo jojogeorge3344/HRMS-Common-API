@@ -24,5 +24,7 @@ namespace Chef.Common.Models
         public string Phone { get; set; }
 
         public int CompanyId { get; set; }
+
+        public string CompanyName { get; set; }
     }
 }
