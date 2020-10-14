@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Chef.Common.Core;
 using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Types;
 
 namespace Chef.Common.Models
 {
@@ -16,6 +17,6 @@ namespace Chef.Common.Models
 
         [Required]
         public DateTime ToDate { get; set; }
-        public string Status { get; set; }
+        public FinancialYearStatusType Status { get; set; }
     }
 }
