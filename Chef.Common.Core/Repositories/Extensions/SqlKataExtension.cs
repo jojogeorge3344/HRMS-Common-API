@@ -61,6 +61,8 @@ namespace Chef.Common.Repositories
                 expando.Remove("createdby");
             if (expando.ContainsKey("createddate"))
                 expando.Remove("createddate");
+            expando["modifiedby"] = "system"; 
+            expando["modifieddate"] = DateTime.UtcNow;
         }
         static void InsertDefaultProperties(ref IDictionary<string, object> expando)
         {
