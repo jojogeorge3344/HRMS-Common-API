@@ -39,6 +39,7 @@ namespace Chef.Common.Gateway
                 });
             });
 
+            app.UseMiddleware<RequestResponseLoggingMiddleware>();
             app.UseOcelot().Wait();
         }
     }
