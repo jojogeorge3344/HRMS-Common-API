@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 
@@ -6,14 +6,14 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-fetch-data',
   templateUrl: './fetch-data.component.html'
 })
-export class FetchDataComponent {
+export class FetchDataComponent implements OnInit {
   public forecasts: WeatherForecast[];
 
   constructor(private http: HttpClient, private authService: AuthService, @Inject('BASE_URL') private baseUrl: string) {
   }
 
   ngOnInit() {
-    let headers = new HttpHeaders({ 'Authorization': this.authService.getAuthorizationHeaderValue() });
+    const headers = new HttpHeaders({ 'Authorization': this.authService.getAuthorizationHeaderValue() });
 
     this.http.get<WeatherForecast[]>(this.baseUrl + 'weatherforecast', { headers: headers }).subscribe(result => {
       this.forecasts = result;
