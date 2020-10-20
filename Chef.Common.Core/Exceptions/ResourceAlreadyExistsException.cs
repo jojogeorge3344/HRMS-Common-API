@@ -5,8 +5,7 @@ using System.Runtime.Serialization;
 namespace Chef.Common.Exceptions
 {
     [Serializable]
-    public class ResourceAlreadyExistsException<T> : Exception
-        where T : Model
+    public class ResourceAlreadyExistsException : Exception 
     {
         public ResourceAlreadyExistsException()
         {
