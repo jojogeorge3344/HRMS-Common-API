@@ -28,7 +28,7 @@ namespace Chef.Common.Repositories
 
         public string TableName => SchemaName + "." + typeof(T).Name;
 
-        public async Task<int> DeleteAsync(int id)
+        public async virtual Task<int> DeleteAsync(int id)
         {
             using (Connection)
             {
@@ -37,7 +37,7 @@ namespace Chef.Common.Repositories
             }
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async virtual Task<IEnumerable<T>> GetAllAsync()
         {
             using (Connection)
             {
@@ -46,7 +46,7 @@ namespace Chef.Common.Repositories
             }
         }
 
-        public async Task<T> GetAsync(int id)
+        public async virtual Task<T> GetAsync(int id)
         {
             using (Connection)
             {
@@ -55,7 +55,7 @@ namespace Chef.Common.Repositories
             }
         }
 
-        public async Task<T> InsertAsync(T obj)
+        public async virtual Task<T> InsertAsync(T obj)
         {
             InsertModelProperties(ref obj);
 
@@ -90,7 +90,7 @@ namespace Chef.Common.Repositories
             obj.CreatedBy = "system";
         }
 
-        public async Task<int> UpdateAsync(T obj)
+        public async virtual Task<int> UpdateAsync(T obj)
         {
             UpdateModelProperties(ref obj);
 
