@@ -31,7 +31,7 @@ namespace Chef.Common.Exceptions
                 await next(context);
             }
             catch (Exception ex)
-            {
+                {
                 await HandleExceptionAsync(context, ex, env);
             }
         }
