@@ -1,5 +1,6 @@
 ﻿using Chef.Common.Exceptions;
 using Chef.Common.Exceptions.Helper;
+using Chef.Common.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
@@ -86,6 +87,22 @@ namespace Chef.Common.Exceptions
                 var contextMessage = context.GetExceptionMessage(exceptionCode);
                 message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : ApiClientExceptionHelper.ErrorMessage(apiException);
                 detailMessage = ApiClientExceptionHelper.DetailMessage(apiException);
+            }
+            else if (exceptions.Any(x => x is ResourceAlreadyExistsException))
+            {
+                var ex = (ResourceAlreadyExistsException)exceptions.FirstOrDefault(x => x is ResourceAlreadyExistsException); 
+                status = HttpStatusCode.Conflict;
+                data = ex.Data;
+                code = ServiceExceptionCode.DbUniqueKeyViolation.ToString(); 
+                message = ex.Message;
+            }
+            else if (exceptions.Any(x => x is ResourceHasDependentException))
+            {
+                var ex = (ResourceHasDependentException)exceptions.FirstOrDefault(x => x is ResourceHasDependentException);
+                status = HttpStatusCode.InternalServerError;
+                data = ex.Data;
+                code = ServiceExceptionCode.DbForeignKeyViolation.ToString();
+                message = ex.Message;
             }
             else
             {

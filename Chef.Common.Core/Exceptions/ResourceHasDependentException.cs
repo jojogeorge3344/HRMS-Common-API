@@ -5,8 +5,7 @@ using System.Runtime.Serialization;
 namespace Chef.Common.Exceptions
 {
     [Serializable]
-    public class ResourceHasDependentException<T> : Exception
-        where T : Model
+    public class ResourceHasDependentException : Exception 
     {
         public ResourceHasDependentException()
         {
