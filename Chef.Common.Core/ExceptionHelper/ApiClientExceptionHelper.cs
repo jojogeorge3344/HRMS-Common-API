@@ -23,7 +23,7 @@ namespace Chef.Common.Exceptions.Helper
                 _ => ServiceExceptionCode.ApiClientInternalServerError
 
             };
-        }
+        } 
         public static string ErrorMessage(Refit.ApiException ae)
         {
             return ae.StatusCode switch
