@@ -3,6 +3,7 @@ using MimeKit.Encodings;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -97,16 +98,21 @@ namespace Chef.Common.Repositories
                 {
                     continue;
                 }
-
                 var column = new Column
                 {
                     Name = prop.Name.ToLower(),
                     Type = GetPropertyType(prop),
                     IsKey = prop.GetCustomAttributes(typeof(KeyAttribute)).Count() > 0,
+                    HasDefaultValue = prop.GetCustomAttributes(typeof(DefaultValueAttribute)).Count() > 0, 
                     IsRequired = prop.GetCustomAttributes(typeof(RequiredAttribute)).Count() > 0,
                     IsUnique = prop.GetCustomAttributes(typeof(UniqueAttribute)).Count() > 0 && prop.GetCustomAttributes(typeof(CompositeAttribute)).Count() != prop.GetCustomAttributes(typeof(UniqueAttribute)).Count()
                 };
 
+                if (column.HasDefaultValue)
+                {
+                    DefaultValueAttribute attr = (DefaultValueAttribute) prop.GetCustomAttribute(typeof(DefaultValueAttribute));
+                    column.DefaultValue = prop.PropertyType == typeof(string)? "'" + attr.Value + "'": attr.Value;
+                }
                 if (prop.GetCustomAttribute(typeof(ForeignKeyAttribute)) is ForeignKeyAttribute foreignkeyAttribute)
                 {
                     var schema = prop.DeclaringType.FullName.Split('.')[1].ToLower();
@@ -178,7 +184,10 @@ namespace Chef.Common.Repositories
                     {
                         createTableQuery.Append(" NOT NULL");
                     }
-
+                    if (column.HasDefaultValue)
+                    {
+                        createTableQuery.Append(" DEFAULT " + column.DefaultValue);
+                    }
                     if (column.ForeignKeyReference != null)
                     {
                         createTableQuery.Append(column.ForeignKeyReference);
@@ -307,7 +316,6 @@ namespace Chef.Common.Repositories
         {
             var keyword = cascade ? " CASCADE" : "";
             return $"DROP TABLE IF EXISTS {TableName}{keyword};";
-        }
-
+        } 
     }
 }
