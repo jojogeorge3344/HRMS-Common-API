@@ -110,8 +110,9 @@ namespace Chef.Common.Repositories
 
                 if (column.HasDefaultValue)
                 {
-                    DefaultValueAttribute attr = (DefaultValueAttribute) prop.GetCustomAttribute(typeof(DefaultValueAttribute));
-                    column.DefaultValue = prop.PropertyType == typeof(string)? "'" + attr.Value + "'": attr.Value;
+                    DefaultValueAttribute attr = (DefaultValueAttribute) prop.GetCustomAttribute(typeof(DefaultValueAttribute)); 
+                    object value = prop.PropertyType.IsEnum ? Convert.ChangeType(attr.Value, Enum.GetUnderlyingType(attr.Value.GetType())) : attr.Value;
+                    column.DefaultValue = prop.PropertyType == typeof(string)? "'" + value + "'": value;
                 }
                 if (prop.GetCustomAttribute(typeof(ForeignKeyAttribute)) is ForeignKeyAttribute foreignkeyAttribute)
                 {
