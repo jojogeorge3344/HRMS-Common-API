@@ -12,14 +12,16 @@ namespace Chef.Common.Models
         public string TaxCode { get; set; }
         public string TaxDescription { get; set; }
         public int TaxJurisdictionId { get; set; }
-        public int ItemSegmentId { get; set; }
-        public int ItemClassId { get; set; }
+        public int itemsegmentid { get; set; }
+        public int itemclassid { get; set; }
         public int MainTax { get; set; }
         public int TaxPercentage { get; set; }
 
-       
-        
-        
-       
+        //public string TaxJurisdiction { get; set; }
+        //public string ItemSegmentName { get; set; }
+        //public string itemclassname { get; set; }
+
+
+
     }
 }
