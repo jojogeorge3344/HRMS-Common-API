@@ -15,6 +15,7 @@ namespace Chef.Common.IdentityServer
                    {
                         new IdentityResources.OpenId(),
                         new IdentityResources.Profile(),
+                        new IdentityResource("role", new List<string>(){"roles"})
                    };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -23,7 +24,35 @@ namespace Chef.Common.IdentityServer
                 new ApiScope("scope1"),
                 new ApiScope("scope2"),
                 new ApiScope("webApi"),
+                new ApiScope("AdminUIClient"),
             };
+
+        public static IEnumerable<ApiResource> ApiResources =>
+        new ApiResource[]
+        {
+            new ApiResource
+            {
+                Name = "jp_api",
+                DisplayName = "JP API",
+                Description = "OAuth2 Server Management Api",
+                ApiSecrets = { new Secret(":}sFUz}Pjc]K4yiW>vDjM,+:tq=U989dxw=Vy*ViKrP+bjNbWC3B3&kE23Z=%#Jr".Sha256()) },
+
+             UserClaims =
+            {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email,
+                "is4-rights",
+                "username",
+                "roles"
+            },
+
+             Scopes =
+            {
+            "jp_api.is4",
+            }
+        }
+        };
 
         public static IEnumerable<Client> Clients =>
             new Client[]
@@ -101,7 +130,7 @@ namespace Chef.Common.IdentityServer
                     }
                 },
 
-                // Angular Client
+               // Angular Client
                 new Client
                 {
                     ClientId = "AngularClient",
@@ -120,7 +149,37 @@ namespace Chef.Common.IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         "webApi"
                     },
-                }
+                },
+
+               //Admin Client
+               new Client
+               {
+
+                    ClientId = "IS4-Admin",
+                    ClientName = "IS4-Admin",
+                    ClientUri = "http://localhost:4200",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowAccessTokensViaBrowser = true,
+                    RequireConsent = true,
+                    RequirePkce = true,
+                    AllowPlainTextPkce = false,
+                    RequireClientSecret = false,
+                    RedirectUris = new[] {
+                        "http://localhost:4200/login-callback",
+                        "http://localhost:4200/silent-refresh.html"
+                    },
+                    AllowedCorsOrigins = { "http://localhost:4200" },
+                    PostLogoutRedirectUris = {"http://localhost:4200",},
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "AdminUIClient",
+                        "role"
+                    }
+               },
+
             };
     }
 }
