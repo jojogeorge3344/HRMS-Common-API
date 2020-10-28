@@ -15,6 +15,7 @@ namespace Chef.Common.IdentityServer
                    {
                         new IdentityResources.OpenId(),
                         new IdentityResources.Profile(),
+                        new IdentityResource("role", new List<string>(){"roles"}),
                    };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -24,6 +25,34 @@ namespace Chef.Common.IdentityServer
                 new ApiScope("scope2"),
                 new ApiScope("webApi"),
             };
+
+        public static IEnumerable<ApiResource> ApiResources =>
+            new ApiResource[]
+            {
+                new ApiResource
+                {
+                    Name = "jp_api",
+                    DisplayName = "JP API",
+                    Description = "OAuth2 Server Management Api",
+                    ApiSecrets = { new Secret(":}sFUz}Pjc]K4yiW>vDjM,+:tq=U989dxw=Vy*ViKrP+bjNbWC3B3&kE23Z=%#Jr".Sha256()) },
+
+                    UserClaims =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "is4-rights",
+                        "username",
+                        "roles"
+                    },
+
+                    Scopes =
+                    {
+                        "jp_api.is4",
+                    }
+                }
+            };
+
 
         public static IEnumerable<Client> Clients =>
             new Client[]
@@ -120,7 +149,39 @@ namespace Chef.Common.IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         "webApi"
                     },
-                }
+                },
+                /*
+                * JP Project ID4 Admin Client
+                */
+                new Client
+                {
+
+                    ClientId = "IS4-Admin",
+                    ClientName = "IS4-Admin",
+                    ClientUri = "http://localhost:4300",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowAccessTokensViaBrowser = false,
+                    RequireConsent = true,
+                    RequirePkce = true,
+                    AllowPlainTextPkce = false,
+                    RequireClientSecret = false,
+                    RedirectUris = new[] {
+                        "http://localhost:4300/login-callback",
+                        "http://localhost:4300/silent-refresh.html"
+                    },
+                    AllowedCorsOrigins = { "http://localhost:4300" },
+                    LogoUri = "https://jpproject.azurewebsites.net/sso/images/brand/logo.png",
+                    PostLogoutRedirectUris = {"http://localhost:4300",},
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "jp_api.is4",
+                        "role"
+                    }
+                },
+
             };
     }
 }
