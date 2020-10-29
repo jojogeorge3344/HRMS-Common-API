@@ -1,5 +1,6 @@
 ﻿using Chef.Common.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using SqlKata;
 using SqlKata.Compilers;
@@ -107,6 +108,8 @@ namespace Chef.Common.Repositories
                         query.WhereIn(fieldName, enumerableString);
                     else if (condition.Value is IEnumerable<int> enumerableInt)
                         query.WhereIn(fieldName, enumerableInt);
+                    else if (condition.Value is IEnumerable<object> enumerableObject)
+                        query.WhereIn(fieldName, enumerableObject);
                     else
                         query.Where(fieldName, SqlSearchOperator.Equal.ToSqlString(), condition.Value);
                     break;
