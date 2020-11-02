@@ -70,7 +70,7 @@ namespace Chef.Common.Models
         public string Email { get; set; }
 
         [StringLength(62)]
-        public string WebSite { get; set; }
+        public string Website { get; set; }
         public int SerialNumber { get; set; }
 
         public bool  IsActive { get; set; }

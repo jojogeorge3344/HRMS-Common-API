@@ -43,5 +43,9 @@ namespace Chef.Common.Test
         {
             return "John";
         }
+        public static bool RandomBoolean()
+        {
+            return new Random().Next(100) % 2 == 0;
+        }
     }
 }

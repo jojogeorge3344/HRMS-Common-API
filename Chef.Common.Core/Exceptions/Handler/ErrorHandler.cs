@@ -32,7 +32,7 @@ namespace Chef.Common.Exceptions
                 await next(context);
             }
             catch (Exception ex)
-            {
+                {
                 await HandleExceptionAsync(context, ex, env);
             }
         }
@@ -81,11 +81,10 @@ namespace Chef.Common.Exceptions
             {
                 var apiException = (Refit.ApiException)exceptions.FirstOrDefault(x => x is Refit.ApiException);
                 var exceptionCode = ApiClientExceptionHelper.ErrorCode(apiException);
-                status = HttpStatusCode.InternalServerError;
+                status = apiException.StatusCode;
                 data = apiException.Data;
                 code = exceptionCode.ToString();
-                var contextMessage = context.GetExceptionMessage(exceptionCode);
-                message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : ApiClientExceptionHelper.ErrorMessage(apiException);
+                message = !string.IsNullOrEmpty(apiException.Content) ? apiException.Content : ApiClientExceptionHelper.ErrorMessage(apiException);
                 detailMessage = ApiClientExceptionHelper.DetailMessage(apiException);
             }
             else if (exceptions.Any(x => x is ResourceAlreadyExistsException))
