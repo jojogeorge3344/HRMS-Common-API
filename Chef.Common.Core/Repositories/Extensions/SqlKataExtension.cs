@@ -367,5 +367,11 @@ namespace Chef.Common.Repositories
         //    var dictionary = JsonConvert.DeserializeObject<IReadOnlyDictionary<string, object>>(json);
         //    return query.AsInsert(dictionary, returnId);
         //}
+
+        public static Query WhereExt(this Query query, object obj)
+        {
+            IDictionary<string, object> expando = obj.ToDictionary(); 
+            return query.Where(new ReadOnlyDictionary<string, object>(expando));
+        }
     }
 }

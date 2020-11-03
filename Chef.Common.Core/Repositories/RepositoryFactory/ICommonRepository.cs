@@ -30,5 +30,6 @@ namespace Chef.Common.Repositories
         Task<int> UpdateAsync(object updateObject, object updateConditionObject);
         Task<int> DeleteAsync(object deleteCondition);
         Task<int> DeleteAsync(Query sqlKataQuery);
+        Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default);
     }
 }
