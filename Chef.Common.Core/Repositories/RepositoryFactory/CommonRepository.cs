@@ -155,8 +155,7 @@ namespace Chef.Common.Repositories
         }
         public async Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>()
-                   .SelectRaw("count(1) as count").Where(whereConditionObject);
+            var query = sqlQueryBuilder.Query<TModel>().AsCount().Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<int>(query); 
         }
     }

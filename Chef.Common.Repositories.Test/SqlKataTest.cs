@@ -49,6 +49,16 @@ namespace Chef.Common.Repositories.Test
             var result = query.Compile();
             Assert.True(true);
         }
+
+        [Fact(Skip = skip), TestPriority(2)]
+        public void TestSelectExt()
+        { 
+            var query = new Query("Item").SelectExt<TestModel>(x=> x.Status, x => x.Values);
+            var result = query.Compile();
+            Assert.True(true);
+        }
+
+
         //[Fact(Skip = skip)]
         //public void TestAsInsertExt()
         //{

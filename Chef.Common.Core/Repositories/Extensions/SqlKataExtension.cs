@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using System.Reflection;
 
@@ -229,7 +230,7 @@ namespace Chef.Common.Repositories
             var schemaName = typeof(T).Namespace.Split('.')[1].ToLower();
             return schemaName + "." + typeof(T).Name.ToLower();
         }
-
+        static string TableNameWOSchema<T>() => typeof(T).Name.ToLower(); 
         /// <summary>
         /// This method is an extension to Sql kata join to obtain tablename using generics
         /// </summary>
@@ -272,6 +273,15 @@ namespace Chef.Common.Repositories
         /// <returns></returns>
         public static Query LeftJoin<T>(this Query query, string first, string second, string op = "=") =>
             query.LeftJoin(TableName<T>(), first, second, op);
+        /// <summary>
+        /// 
+        /// This method is an extension to Sql kata from to obtain tablename using generics
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public static Query From<T>(this Query query) =>
+            query.From(TableName<T>());
 
         /// <summary>
         /// This method is an extension to Sql kata update query with generic update fields added
@@ -279,6 +289,8 @@ namespace Chef.Common.Repositories
         /// <param name="query"></param>
         /// <param name="obj"></param>
         /// <returns></returns>
+        /// 
+
         public static Query AsUpdateExt(this Query query, object obj)
         {
             IDictionary<string, object> expando = obj.ToDictionary();
@@ -320,6 +332,43 @@ namespace Chef.Common.Repositories
             var data = list.Select(x => x.Values);
             return query.AsInsert(columns: columns, data);
         }
+        /// <summary>
+        /// This method is an extension to Sql kata insert query to support bulk insert
+        ///  
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="obj"></param>
+        /// <param name="selectQuery"></param>
+        /// <returns></returns>
+        public static Query AsBulkInsertExt(this Query query, object obj, Query selectQuery)
+        {
+            IDictionary<string, object> expando = obj.ToDictionary();
+            InsertDefaultProperties(ref expando);
+            var columns = GetColumns(expando);
+            return query.AsInsert(columns: columns, selectQuery);
+        }
+        static string GetPropertyName(LambdaExpression propertyExpression)
+        {
+            if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
+            return GetPropertyName(ExpressionHelper.GetMemberExpression(propertyExpression));
+        }
+
+        static string GetPropertyName(MemberExpression memberExpression)
+        {
+            if (memberExpression == null) throw new ArgumentNullException(nameof(memberExpression));
+            return memberExpression.Member.Name.ToLower();
+        }
+
+        public static Query SelectExt<T>(this Query query, params Expression<Func<T, object>>[] fields)
+        {
+            if (fields == null) throw new ArgumentNullException(nameof(fields));
+            var selectfields = fields.Select(f => GetPropertyName(f)).ToArray(); 
+            return query.Select(string.Format("{0}.{{{1}}}", TableNameWOSchema<T>(), string.Join(", ", selectfields))); 
+        }
+
+        public static Query SelectExt<T>(this Query query)
+        => query.Select(string.Format("{0}.*", TableNameWOSchema<T>()));
+         
 
         //TODO: Match it with postgres datetime setting 
         const string DATE_FORMAT = "MM/dd/yyyy";
