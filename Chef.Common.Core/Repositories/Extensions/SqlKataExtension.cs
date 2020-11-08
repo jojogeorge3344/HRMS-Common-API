@@ -1,4 +1,5 @@
-﻿using Chef.Common.Core;
+﻿using AutoMapper.Internal;
+using Chef.Common.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Math.EC.Rfc7748;
@@ -292,7 +293,7 @@ namespace Chef.Common.Repositories
         public static Query LeftJoin<TLeft, TRight>(this Query query, Expression<Func<TLeft, object>> leftField,
             Expression<Func<TRight, object>> rightField, string op = "=")
         {
-            return query.LeftJoin(FieldName<TLeft>(leftField), FieldName<TRight>(rightField), op);
+            return query.LeftJoin(TableName<TLeft>(), FieldName<TLeft>(leftField), FieldName<TRight>(rightField), op);
         }
 
 
@@ -379,12 +380,27 @@ namespace Chef.Common.Repositories
             if (memberExpression == null) throw new ArgumentNullException(nameof(memberExpression));
             return memberExpression.Member.Name.ToLower();
         }
-
+        static IEnumerable<string> GetPropertyNames(NewExpression newExpression)
+        {
+            if (newExpression == null) throw new ArgumentNullException(nameof(newExpression));
+            var expressions = ExpressionHelper.GetMemberExpressions(newExpression);
+            var aliases = ExpressionHelper.GetMemberNames(newExpression).ToArray();
+            return expressions.Select((x,i) => string.Format("{0}{1}", x.Member.Name.ToLower(), (x.Member.Name.ToLower() == aliases[i].ToLower()) ? "": " as " + aliases[i]));
+        }
         public static Query Select<T>(this Query query, params Expression<Func<T, object>>[] fields)
         {
             if (fields == null) throw new ArgumentNullException(nameof(fields));
-            var selectfields = fields.Select(f => GetPropertyName(f)).ToArray(); 
-            return query.Select(string.Format("{0}.{{{1}}}", TableNameWOSchema<T>(), string.Join(", ", selectfields))); 
+            IEnumerable<string> selectfields;
+            if (fields.Count() == 1 && fields.First().Body is NewExpression)
+            {
+                // New Expression
+                selectfields = GetPropertyNames(fields.First().Body as NewExpression).ToArray();
+            } 
+            else
+                selectfields = fields.Select(f => GetPropertyName(f)).ToArray();
+            return query.Select(string.Format("{0}.{{{1}}}", TableNameWOSchema<T>(), string.Join(", ", selectfields)));
+
+
         }
 
         public static Query Select<T>(this Query query)
@@ -453,8 +469,7 @@ namespace Chef.Common.Repositories
         =>  query.Where(FieldName<T>(fieldName), op, value);
          
         public static Query Where<T>(this Query query, Expression<Func<T, object>> fieldName, object value)
-        => query.Where(FieldName<T>(fieldName), value);
-         
+        => query.Where(FieldName<T>(fieldName), value); 
         public static Query WhereInExt<T>(this Query query, Expression<Func<T, object>> fieldName, Func<Query, Query> callback)
         => query.WhereIn(FieldName<T>(fieldName), callback);
 
