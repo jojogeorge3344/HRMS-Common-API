@@ -103,6 +103,14 @@ namespace Chef.Common.Exceptions
                 code = ServiceExceptionCode.DbForeignKeyViolation.ToString();
                 message = ex.Message;
             }
+            else if (exceptions.Any(x => x is ResourceNotFoundException))
+            {
+                var ex = (ResourceHasDependentException)exceptions.FirstOrDefault(x => x is ResourceHasDependentException);
+                status = HttpStatusCode.NotFound;
+                data = ex.Data;
+                code = ServiceExceptionCode.ResourceNotFound.ToString();
+                message = ex.Message;
+            }
             else
             {
                 status = HttpStatusCode.InternalServerError;

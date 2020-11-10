@@ -153,5 +153,10 @@ namespace Chef.Common.Repositories
             var query = sqlKataQuery.AsDelete();
             return await databaseSession.ExecuteAsync(query);
         }
+        public async Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default)
+        {
+            var query = sqlQueryBuilder.Query<TModel>().AsCount().Where(whereConditionObject);
+            return await databaseSession.QueryFirstOrDefaultAsync<int>(query); 
+        }
     }
 }
