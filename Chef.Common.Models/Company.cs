@@ -40,9 +40,11 @@ namespace Chef.Common.Models
         [StringLength(126)]
         [Required]
         public string CountryName { get; set; }
+
         [Required]
         [StringLength(8)]
         public string ZipCode { get; set; }
+        
         [Required]
         public int CurrencyId { get; set; }
 

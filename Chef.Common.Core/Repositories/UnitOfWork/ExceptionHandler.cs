@@ -10,6 +10,7 @@ namespace Chef.Common.Core.Repositories.UnitOfWork
         {
             20,    // The instance of SQL Server you attempted to connect to does not support encryption. 
         };
+
         public bool Retry(Exception ex)
         {
             if (!(ex is NpgsqlException sqlException))

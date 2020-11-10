@@ -17,6 +17,5 @@ namespace Chef.Common.Repositories
         {
             return JsonConvert.SerializeObject(value);
         }
-
     }
 }

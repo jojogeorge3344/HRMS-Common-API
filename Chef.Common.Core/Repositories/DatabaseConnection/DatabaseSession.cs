@@ -14,12 +14,14 @@ namespace Chef.Common.Repositories
         readonly UnitOfWork unitOfWork;
         readonly IDbConnection connection;
         readonly IDbTransaction transaction;
+        
         public DatabaseSession(IConnectionFactory connectionFactory)
         {
             this.unitOfWork = new UnitOfWork(connectionFactory.Connection);
             connection = unitOfWork.Connection;
             transaction = unitOfWork.Transaction;
         }
+
         public IUnitOfWorkSession UnitOfWorkSession(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.ReadCommitted)
           => new UnitOfWorkSession(unitOfWork, isolationLevel);
 
@@ -222,9 +224,6 @@ namespace Chef.Common.Repositories
 
         public GridReader QueryMultiple(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
             connection.QueryMultiple(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags));
-
-
-
         #endregion
 
     }

@@ -4,7 +4,6 @@ using SqlKata;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace Chef.Common.Repositories
@@ -18,6 +17,7 @@ namespace Chef.Common.Repositories
             return new Query(tableName);
         }
     }
+
     public class SqlSearch : IEquatable<SqlSearch>
     {
         public static readonly SqlSearch DefaultInstance = new SqlSearch();
@@ -30,6 +30,7 @@ namespace Chef.Common.Repositories
         {
             return Limit != null ? Limit.GetHashCode() : 0 ^ Groups.GetHashCode() ^ (Page != null? Page.GetHashCode():0);
         }
+
         public override bool Equals(object obj)
         {
             if (!(obj is SqlSearch))
@@ -58,10 +59,12 @@ namespace Chef.Common.Repositories
     {
         public List<SqlSearchConditon> Conditions { get; set; } = new List<SqlSearchConditon>();
         public bool IsOrGroup { get; set; } = false;
+
         public override int GetHashCode()
         {
             return IsOrGroup.GetHashCode() ^ (Conditions.GetHashCode());
         }
+
         public override bool Equals(object obj)
         {
             if (!(obj is SqlSearchGroup))
@@ -89,12 +92,15 @@ namespace Chef.Common.Repositories
     {
         [Required]
         public string Field { get; set; }
+        
         [Required]
         public SqlSearchOperator Operator { get; set; }
+
         /// <summary>
         /// Value
         /// </summary>
         public object Value { get; set; }
+        
         public override bool Equals(object obj)
         {
             if (!(obj is SqlSearchConditon))
@@ -131,6 +137,7 @@ namespace Chef.Common.Repositories
         [Required]
         public int PageLimit { get; set; } = 15;
     }
+
     public enum SqlSearchOperator
     {
         Contains=1,

@@ -1,18 +1,15 @@
-﻿using Chef.Common.Exceptions;
-using Chef.Common.Exceptions.Helper;
+﻿using Chef.Common.Exceptions.Helper;
 using Chef.Common.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 
 namespace Chef.Common.Exceptions
 {

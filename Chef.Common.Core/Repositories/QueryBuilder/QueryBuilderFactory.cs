@@ -10,8 +10,5 @@ namespace Chef.Common.Repositories
 
         public ISqlQueryBuilder SqlQueryBuilder() =>
             new SqlQueryBuilder();
-
     }
-
-
 }

@@ -39,7 +39,9 @@ namespace Chef.Common.Repositories
         public string GetConnectionString()
         {
             var tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
+
             Tenant currentTenant = tenants.FirstOrDefault(t => t.Host.ToLower().Equals(HostName));
+            
             if (currentTenant != null)
                 return currentTenant.ConnectionString;
             else
