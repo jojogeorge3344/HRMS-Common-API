@@ -23,8 +23,6 @@ namespace Chef.Common.ClientServices
             this.configuration = configuration;
         }
 
-
-
         public void Dispose()
         {
             this.Dispose(true);
