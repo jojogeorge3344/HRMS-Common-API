@@ -22,7 +22,6 @@ namespace Chef.Common.Repositories
             this.Connection = connection;
         }
 
-
         #region Internal Functions 
         ~UnitOfWork()
           => Dispose(false);
@@ -105,7 +104,6 @@ namespace Chef.Common.Repositories
                 }
             }
         }
-
 
         public void Dispose()
         {

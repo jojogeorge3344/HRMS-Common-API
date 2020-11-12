@@ -1,4 +1,5 @@
-﻿using Chef.Common.Core;
+﻿using AutoMapper.Internal;
+using Chef.Common.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Math.EC.Rfc7748;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using System.Reflection;
 
@@ -16,6 +18,8 @@ namespace Chef.Common.Repositories
 {
     public static class SqlKataExtension
     {
+        public static string FieldName<T>(Expression<Func<T, object>> fieldName) 
+            => string.Format("{0}.{1}", TableNameWOSchema<T>(), GetPropertyName(fieldName));
         public static IDictionary<string, object> ToDictionary(this object values)
         {
             var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -229,7 +233,7 @@ namespace Chef.Common.Repositories
             var schemaName = typeof(T).Namespace.Split('.')[1].ToLower();
             return schemaName + "." + typeof(T).Name.ToLower();
         }
-
+        static string TableNameWOSchema<T>() => typeof(T).Name.ToLower(); 
         /// <summary>
         /// This method is an extension to Sql kata join to obtain tablename using generics
         /// </summary>
@@ -259,6 +263,13 @@ namespace Chef.Common.Repositories
         /// <param name="query"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
+        /// 
+        public static Query Join<TLeft, TRight>(this Query query, Expression<Func<TLeft, object>> leftField,
+            Expression<Func<TRight, object>> rightField, string op = "=")
+        {
+            return query.Join(TableName<TLeft>(), FieldName<TLeft>(leftField), FieldName<TRight>(rightField), op);
+        }
+
         public static Query LeftJoin<T>(this Query query, Func<Join, Join> callback) =>
             query.LeftJoin(TableName<T>(), callback);
         /// <summary>
@@ -272,6 +283,27 @@ namespace Chef.Common.Repositories
         /// <returns></returns>
         public static Query LeftJoin<T>(this Query query, string first, string second, string op = "=") =>
             query.LeftJoin(TableName<T>(), first, second, op);
+        /// <summary>
+        /// 
+        /// This method is an extension to Sql kata from to obtain tablename using generics
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public static Query LeftJoin<TLeft, TRight>(this Query query, Expression<Func<TLeft, object>> leftField,
+            Expression<Func<TRight, object>> rightField, string op = "=")
+        {
+            return query.LeftJoin(TableName<TLeft>(), FieldName<TLeft>(leftField), FieldName<TRight>(rightField), op);
+        }
+
+
+        public static Join On<TLeft, TRight>(this Join join, Expression<Func<TLeft, object>> leftField,
+            Expression<Func<TRight, object>> rightField, string op = "=")
+        {
+            return join.On(FieldName<TLeft>(leftField), FieldName<TRight>(rightField), op);
+        }
+        public static Query From<T>(this Query query) =>
+            query.From(TableName<T>());
 
         /// <summary>
         /// This method is an extension to Sql kata update query with generic update fields added
@@ -279,6 +311,8 @@ namespace Chef.Common.Repositories
         /// <param name="query"></param>
         /// <param name="obj"></param>
         /// <returns></returns>
+        /// 
+
         public static Query AsUpdateExt(this Query query, object obj)
         {
             IDictionary<string, object> expando = obj.ToDictionary();
@@ -320,41 +354,97 @@ namespace Chef.Common.Repositories
             var data = list.Select(x => x.Values);
             return query.AsInsert(columns: columns, data);
         }
+        /// <summary>
+        /// This method is an extension to Sql kata insert query to support bulk insert
+        ///  
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="obj"></param>
+        /// <param name="selectQuery"></param>
+        /// <returns></returns>
+        public static Query AsBulkInsertExt(this Query query, object obj, Query selectQuery)
+        {
+            IDictionary<string, object> expando = obj.ToDictionary();
+            InsertDefaultProperties(ref expando);
+            var columns = GetColumns(expando);
+            return query.AsInsert(columns: columns, selectQuery);
+        }
+        static string GetPropertyName(LambdaExpression propertyExpression)
+        {
+            if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
+            return GetPropertyName(ExpressionHelper.GetMemberExpression(propertyExpression));
+        }
+
+        static string GetPropertyName(MemberExpression memberExpression)
+        {
+            if (memberExpression == null) throw new ArgumentNullException(nameof(memberExpression));
+            return memberExpression.Member.Name.ToLower();
+        }
+        static IEnumerable<string> GetPropertyNames(NewExpression newExpression)
+        {
+            if (newExpression == null) throw new ArgumentNullException(nameof(newExpression));
+            var expressions = ExpressionHelper.GetMemberExpressions(newExpression);
+            var aliases = ExpressionHelper.GetMemberNames(newExpression).ToArray();
+            return expressions.Select((x,i) => string.Format("{0}{1}", x.Member.Name.ToLower(), (x.Member.Name.ToLower() == aliases[i].ToLower()) ? "": " as " + aliases[i]));
+        }
+        public static Query Select<T>(this Query query, params Expression<Func<T, object>>[] fields)
+        {
+            if (fields == null) throw new ArgumentNullException(nameof(fields));
+            IEnumerable<string> selectfields;
+            if (fields.Count() == 1 && fields.First().Body is NewExpression)
+            {
+                // New Expression
+                selectfields = GetPropertyNames(fields.First().Body as NewExpression).ToArray();
+            } 
+            else
+                selectfields = fields.Select(f => GetPropertyName(f)).ToArray();
+            return query.Select(string.Format("{0}.{{{1}}}", TableNameWOSchema<T>(), string.Join(", ", selectfields)));
+
+
+        }
+
+        public static Query Select<T>(this Query query)
+        => query.Select(string.Format("{0}.*", TableNameWOSchema<T>()));
+
+
 
         //TODO: Match it with postgres datetime setting 
-        const string DATE_FORMAT = "MM/dd/yyyy";
-        public static Query WhereDateGreaterThanOrEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} >= ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
-        public static Query WhereDateGreaterThan(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} > ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
-        public static Query WhereDateLessThanOrEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} <= ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
-        public static Query WhereDateLessThan(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} < ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
-        public static Query WhereDateEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} = ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
-        public static Query WhereDateNotEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} != ?::timestamp", new[] { value.ToString(DATE_FORMAT) });
-        public static Query WhereDateBetween(this Query query, string column, DateTime startDate, DateTime endDate) =>
-             query.Where($"{column} >= ?::timestamp", new[] { startDate.ToString(DATE_FORMAT) }).Where($"{column} <= ?::timestamp", new[] { endDate.ToString(DATE_FORMAT) });
+        const string DATE_FORMAT = "MM/dd/yyyy"; 
+        
+        public static Query WhereDateGreaterThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATE_FORMAT) });
+        public static Query WhereDateGreaterThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} > ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATE_FORMAT) });
+        public static Query WhereDateLessThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATE_FORMAT) });
+        public static Query WhereDateLessThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} < ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATE_FORMAT) });
+        public static Query WhereDateEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} = ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATE_FORMAT) });
+        public static Query WhereDateNotEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} != ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATE_FORMAT) });
+        public static Query WhereDateBetween<T>(this Query query, Expression<Func<T, object>> column, DateTime startDate, DateTime endDate) =>
+             query.Where(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), 
+                 new[] { startDate.ToString(DATE_FORMAT) }).Where(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { endDate.ToString(DATE_FORMAT) });
 
 
         //TODO: Match it with postgres datetime setting
         const string DATETIME_FORMAT = "MM/dd/yyyy hh:mm:ss.fff tt";
-        public static Query WhereDatetimeGreaterThanOrEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} >= ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
-        public static Query WhereDatetimeGreaterThan(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} > ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
-        public static Query WhereDatetimeLessThanOrEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} <= ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
-        public static Query WhereDatetimeLessThan(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} < ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
-        public static Query WhereDatetimeEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} = ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
-        public static Query WhereDatetimeNotEqual(this Query query, string column, DateTime value) =>
-            query.WhereRaw($"{column} != ?::timestamp", new[] { value.ToString(DATETIME_FORMAT) });
-        public static Query WhereDatetimeBetween(this Query query, string column, DateTime startDate, DateTime endDate) =>
-           query.Where($"{column} >= ?::timestamp", new[] { startDate.ToString(DATETIME_FORMAT) }).Where($"{column} <= ?::timestamp", new[] { endDate.ToString(DATETIME_FORMAT) });
+        public static Query WhereDatetimeGreaterThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATETIME_FORMAT) });
+        public static Query WhereDatetimeGreaterThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} > ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATETIME_FORMAT) });
+        public static Query WhereDatetimeLessThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATETIME_FORMAT) });
+        public static Query WhereDatetimeLessThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} < ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATETIME_FORMAT) });
+        public static Query WhereDatetimeEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} = ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATETIME_FORMAT) });
+        public static Query WhereDatetimeNotEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
+            query.WhereRaw(string.Format("{0}.{1} != ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { value.ToString(DATETIME_FORMAT) });
+        public static Query WhereDatetimeBetween<T>(this Query query, Expression<Func<T, object>> column, DateTime startDate, DateTime endDate) =>
+           query.Where(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), 
+               new[] { startDate.ToString(DATETIME_FORMAT) }).Where(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), GetPropertyName(column)), new[] { endDate.ToString(DATETIME_FORMAT) });
 
         //public static Query AsInsertExt(this Query query, object data, bool returnId = false)
         //{
@@ -367,5 +457,23 @@ namespace Chef.Common.Repositories
         //    var dictionary = JsonConvert.DeserializeObject<IReadOnlyDictionary<string, object>>(json);
         //    return query.AsInsert(dictionary, returnId);
         //}
+
+        public static Query WhereExt(this Query query, object obj)
+        {
+            IDictionary<string, object> expando = obj.ToDictionary(); 
+            return query.Where(new ReadOnlyDictionary<string, object>(expando));
+        }
+
+
+        public static Query Where<T>(this Query query,Expression<Func<T, object>> fieldName, string op, object value)
+        =>  query.Where(FieldName<T>(fieldName), op, value);
+         
+        public static Query Where<T>(this Query query, Expression<Func<T, object>> fieldName, object value)
+        => query.Where(FieldName<T>(fieldName), value); 
+        public static Query WhereInExt<T>(this Query query, Expression<Func<T, object>> fieldName, Func<Query, Query> callback)
+        => query.WhereIn(FieldName<T>(fieldName), callback);
+
+        public static Query WhereIn<TModel,T>(this Query query, Expression<Func<TModel, object>> fieldName, IEnumerable<T> values)
+        => query.WhereIn(FieldName<TModel>(fieldName), values);
     }
 }

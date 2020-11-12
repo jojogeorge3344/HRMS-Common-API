@@ -1,8 +1,6 @@
 using Chef.Common.Core;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,10 +9,10 @@ namespace Chef.Common.Repositories
     internal partial class CommonRepository<TModel> : ICommonRepository<TModel> where TModel : Model
     {
         readonly IDatabaseSession databaseSession;
-
         readonly IQueryBuilder<TModel> queryBuilder;
         readonly ISqlQueryBuilder sqlQueryBuilder;
         //readonly UnitOfWork unitOfWork;
+
         public CommonRepository(IDatabaseSession databaseSession,
             ISqlQueryBuilder sqlQueryBuilder, IQueryBuilder<TModel> queryBuilder)
         {
@@ -28,6 +26,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().Where("id", id).AsDelete();
             return await databaseSession.ExecuteAsync(query);
         }
+
         public async Task<int> DeleteAsync(object deleteCondition)
         {
             var query = sqlQueryBuilder.Query<TModel>().Where(deleteCondition).AsDelete();
@@ -78,6 +77,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
+
         //public async Task<int> DeleteAsync(int id)
         //{
         //    var query = sqlQueryBuilder.Query<TModel>().Where(new { id }).AsDelete();
@@ -89,6 +89,7 @@ namespace Chef.Common.Repositories
         //    var query = sqlQueryBuilder.Query<TModel>().Where("id", obj.Id).AsDelete();
         //    return await databaseSession.ExecuteAsync(query);
         //}
+
         //public async Task<int> InsertAsync(TModel obj)
         //{
         //    InsertModelProperties(ref obj);
@@ -103,11 +104,13 @@ namespace Chef.Common.Repositories
         //    var query = sqlQueryBuilder.Query<TModel>().Where("id", obj.Id).AsUpdate(obj.ToLowerReadOnlyDictionary());
         //    return await databaseSession.ExecuteAsync(query);
         //}
+
         public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("id").Limit(noOfRecords);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
+
         public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, object whereConditionObject, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject).OrderByDesc("id").Limit(noOfRecords);
@@ -119,6 +122,7 @@ namespace Chef.Common.Repositories
             obj.CreatedDate = obj.ModifiedDate = DateTime.UtcNow;
             obj.IsArchived = false;
         }
+
         void UpdateModelProperties(ref TModel obj)
         {
             obj.ModifiedBy = "system";
@@ -152,6 +156,12 @@ namespace Chef.Common.Repositories
         {
             var query = sqlKataQuery.AsDelete();
             return await databaseSession.ExecuteAsync(query);
+        }
+
+        public async Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default)
+        {
+            var query = sqlQueryBuilder.Query<TModel>().AsCount().Where(whereConditionObject);
+            return await databaseSession.QueryFirstOrDefaultAsync<int>(query); 
         }
     }
 }

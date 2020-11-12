@@ -21,7 +21,6 @@ namespace Chef.Common.Exceptions.Helper
                 state.StartsWith("34") || state.StartsWith("3D") || state.StartsWith("3F") => ServiceExceptionCode.DbInvalidSqlStatement,//Class 3F — Invalid Schema Name
                 string state when state.StartsWith("53") => ServiceExceptionCode.DbInsufficientResources,//Insufficient Resources
                 _ => ServiceExceptionCode.DbException,
-
             }; 
         }
 
@@ -45,5 +44,4 @@ namespace Chef.Common.Exceptions.Helper
             };
         }
     }
-
 }

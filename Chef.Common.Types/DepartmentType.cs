@@ -13,7 +13,7 @@ namespace Chef.Common.Types
         [Description("Human Resource")]
         HumanResource,
 
-        [Description("Human Resource")]
+        [Description("Marketing")]
         Marketing,
     }
 }

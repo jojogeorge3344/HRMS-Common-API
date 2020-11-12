@@ -2,7 +2,7 @@
 
 namespace Chef.Common.Types
 {
-    public enum NumeralFormat
+    public enum CurrencyNumberFormatType
     {
         [Description("Indian")]
         Indian = 1,

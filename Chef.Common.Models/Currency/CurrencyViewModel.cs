@@ -17,11 +17,11 @@ namespace Chef.Common.Models
 
         public string DisplayFormat { get; set; }
 
-        public NumeralFormat NumeralFormat { get; set; }
+        public CurrencyNumberFormatType CurrencyNumberFormatType { get; set; }
 
-        public int ExchangeVariationUp { get; set; }
+        public float ExchangeVariationUp { get; set; }
 
-        public int ExchangeVariationDown { get; set; }
+        public float ExchangeVariationDown { get; set; }
 
         public bool IsActive { get; set; }
 
