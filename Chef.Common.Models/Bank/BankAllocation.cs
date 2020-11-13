@@ -39,7 +39,7 @@ namespace Chef.Common.Models
         public string AccountName { get; set; }
 
         [Required]
-        public BankAllocationAccountType AccountType { get; set; }
+        public BankAccountType AccountType { get; set; }
 
         [Required]
         public bool IsdefaultBank { get; set; }
