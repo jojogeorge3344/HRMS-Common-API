@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Chef.Common.Core;
+using Dapper;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,21 @@ namespace Chef.Common.Repositories
         readonly UnitOfWork unitOfWork;
         readonly IDbConnection connection;
         readonly IDbTransaction transaction;
-        
-        public DatabaseSession(IConnectionFactory connectionFactory)
+
+        public IUserToken UserToken { get; private set; }
+
+        public DatabaseSession(IConnectionFactory connectionFactory, IUserToken userToken)
         {
             this.unitOfWork = new UnitOfWork(connectionFactory.Connection);
             connection = unitOfWork.Connection;
             transaction = unitOfWork.Transaction;
+            this.UserToken = userToken;
+        }
+        public DatabaseSession(IConnectionFactory connectionFactory)
+        {
+            this.unitOfWork = new UnitOfWork(connectionFactory.Connection);
+            connection = unitOfWork.Connection;
+            transaction = unitOfWork.Transaction; 
         }
 
         public IUnitOfWorkSession UnitOfWorkSession(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.ReadCommitted)

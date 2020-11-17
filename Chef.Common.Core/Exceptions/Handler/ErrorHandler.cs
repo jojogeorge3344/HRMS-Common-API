@@ -108,6 +108,14 @@ namespace Chef.Common.Exceptions
                 code = ServiceExceptionCode.ResourceNotFound.ToString();
                 message = ex.Message;
             }
+            else if (exceptions.Any(x => x is BadRequestException))
+            {
+                var ex = (BadRequestException)exceptions.FirstOrDefault(x => x is BadRequestException);
+                status = HttpStatusCode.BadRequest;
+                data = ex.Data;
+                code = ServiceExceptionCode.BadRequest.ToString();
+                message = ex.Message;
+            }
             else
             {
                 status = HttpStatusCode.InternalServerError;

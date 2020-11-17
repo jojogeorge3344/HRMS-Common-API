@@ -20,20 +20,20 @@ namespace Chef.Common.Repositories
     {
         public static string FieldName<T>(Expression<Func<T, object>> fieldName) 
             => string.Format("{0}.{1}", TableNameWOSchema<T>(), GetPropertyName(fieldName));
-        public static IDictionary<string, object> ToDictionary(this object values)
-        {
-            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            if (values != null)
-            {
-                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
-                {
-                    object obj = propertyDescriptor.GetValue(values);
-                    dictionary.Add(propertyDescriptor.Name.ToLower(), obj);
-                }
-            }
+        //public static IDictionary<string, object> ToDictionary(this object values)
+        //{
+        //    var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        //    if (values != null)
+        //    {
+        //        foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
+        //        {
+        //            object obj = propertyDescriptor.GetValue(values);
+        //            dictionary.Add(propertyDescriptor.Name.ToLower(), obj);
+        //        }
+        //    }
 
-            return dictionary;
-        }
+        //    return dictionary;
+        //}
 
         //public static IDictionary<string, object> ToDictionary(this object data)
         //{
@@ -60,31 +60,95 @@ namespace Chef.Common.Repositories
             return obj.Select(x => x.Key).ToArray();
         }
 
-        static void UpdateDefaultProperties(ref IDictionary<string, object> expando)
-        {
-            if (expando.ContainsKey("createdby"))
-                expando.Remove("createdby");
-            if (expando.ContainsKey("createddate"))
-                expando.Remove("createddate");
-            expando["modifiedby"] = "system"; 
-            expando["modifieddate"] = DateTime.UtcNow;
-        }
-        static void InsertDefaultProperties(ref IDictionary<string, object> expando)
-        {
-            if (expando.ContainsKey("id"))
-                expando.Remove("id");
-            expando["createdby"] = "system";
-            expando["modifiedby"] = "system";
-            expando["createddate"] = DateTime.UtcNow;
-            expando["modifieddate"] = DateTime.UtcNow;
-            expando["isarchived"] = false;
-        }
+        //static void UpdateDefaultProperties(ref IDictionary<string, object> expando)
+        //{
+        //    if (expando.ContainsKey("createdby"))
+        //        expando.Remove("createdby");
+        //    if (expando.ContainsKey("createddate"))
+        //        expando.Remove("createddate");
+        //    //expando["modifiedby"] = "system"; 
+        //    expando["modifieddate"] = DateTime.UtcNow;
+        //}
+        //static void InsertDefaultProperties(ref IDictionary<string, object> expando)
+        //{
+        //    if (expando.ContainsKey("id"))
+        //        expando.Remove("id");
+        //    //expando["createdby"] = "system";
+        //    //expando["modifiedby"] = "system";
+        //    expando["createddate"] = DateTime.UtcNow;
+        //    expando["modifieddate"] = DateTime.UtcNow;
+        //    expando["isarchived"] = false;
+        //}
 
         //public static string LowerCaseSql(this SqlResult query)
         //{
         //    return query.Sql.ToLower();
         //}
 
+        /// <summary>
+        /// This method is an extension to Sql kata update query with generic update fields added
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        /// 
+
+        internal static Query AsUpdateExt(this Query query, IDictionary<string, object> dictionary)
+        {
+            //IDictionary<string, object> expando = obj.ToDictionary();
+            //UpdateDefaultProperties(ref expando);
+            return query.AsUpdate(new ReadOnlyDictionary<string, object>(dictionary));
+        }
+        /// <summary>
+        /// This method is an extension to Sql kata insert query with generic insert fields added
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="obj"></param>
+        /// <param name="returnId"></param>
+        /// <returns></returns>
+        internal static Query AsInsertExt(this Query query, IDictionary<string, object> dictionary, bool returnId = false)
+        {
+            //IDictionary<string, object> expando = obj.ToDictionary();
+            //InsertDefaultProperties(ref expando);
+            return query.AsInsert(new ReadOnlyDictionary<string, object>(dictionary), returnId: returnId);
+        }
+        /// <summary>
+        /// This method is an extension to Sql kata insert query to support bulk insert
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        internal static Query AsBulkInsertExt(this Query query, IEnumerable<IDictionary<string, object>> dictionaries)
+        {
+            //if (objects.Count() == 0)
+            //    throw new Exception("input objects is empty");
+            //List<IDictionary<string, object>> list = new List<IDictionary<string, object>>();
+            //foreach (object record in objects)
+            //{
+            //    IDictionary<string, object> expando = record.ToDictionary();
+            //    InsertDefaultProperties(ref expando);
+            //    list.Add(expando);
+            //}
+            var firstObject = dictionaries.FirstOrDefault();
+            var columns = GetColumns(firstObject);
+            var data = dictionaries.Select(x => x.Values);
+            return query.AsInsert(columns: columns, data);
+        }
+        /// <summary>
+        /// This method is an extension to Sql kata insert query to support bulk insert
+        ///  
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="obj"></param>
+        /// <param name="selectQuery"></param>
+        /// <returns></returns>
+        internal static Query AsBulkInsertExt(this Query query, IDictionary<string, object> dictionary, Query selectQuery)
+        {
+            //IDictionary<string, object> expando = obj.ToDictionary();
+            //InsertDefaultProperties(ref expando);
+            var columns = GetColumns(dictionary);
+            return query.AsInsert(columns: columns, selectQuery);
+        }
 
         static string ToSqlString(this SqlSearchOperator contionalOperator)
         {
@@ -305,70 +369,7 @@ namespace Chef.Common.Repositories
         public static Query From<T>(this Query query) =>
             query.From(TableName<T>());
 
-        /// <summary>
-        /// This method is an extension to Sql kata update query with generic update fields added
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        /// 
-
-        public static Query AsUpdateExt(this Query query, object obj)
-        {
-            IDictionary<string, object> expando = obj.ToDictionary();
-            UpdateDefaultProperties(ref expando);
-            return query.AsUpdate(new ReadOnlyDictionary<string, object>(expando));
-        }
-        /// <summary>
-        /// This method is an extension to Sql kata insert query with generic insert fields added
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="obj"></param>
-        /// <param name="returnId"></param>
-        /// <returns></returns>
-        public static Query AsInsertExt(this Query query, object obj, bool returnId = false)
-        {
-            IDictionary<string, object> expando = obj.ToDictionary();
-            InsertDefaultProperties(ref expando);
-            return query.AsInsert(new ReadOnlyDictionary<string, object>(expando), returnId: returnId);
-        }
-        /// <summary>
-        /// This method is an extension to Sql kata insert query to support bulk insert
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="objects"></param>
-        /// <returns></returns>
-        public static Query AsBulkInsertExt(this Query query, IEnumerable<object> objects)
-        {
-            if (objects.Count() == 0)
-                throw new Exception("input objects is empty");
-            List<IDictionary<string, object>> list = new List<IDictionary<string, object>>();
-            foreach (object record in objects)
-            {
-                IDictionary<string, object> expando = record.ToDictionary();
-                InsertDefaultProperties(ref expando);
-                list.Add(expando);
-            }
-            var firstObject = list.FirstOrDefault();
-            var columns = GetColumns(firstObject);
-            var data = list.Select(x => x.Values);
-            return query.AsInsert(columns: columns, data);
-        }
-        /// <summary>
-        /// This method is an extension to Sql kata insert query to support bulk insert
-        ///  
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="obj"></param>
-        /// <param name="selectQuery"></param>
-        /// <returns></returns>
-        public static Query AsBulkInsertExt(this Query query, object obj, Query selectQuery)
-        {
-            IDictionary<string, object> expando = obj.ToDictionary();
-            InsertDefaultProperties(ref expando);
-            var columns = GetColumns(expando);
-            return query.AsInsert(columns: columns, selectQuery);
-        }
+       
         static string GetPropertyName(LambdaExpression propertyExpression)
         {
             if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
