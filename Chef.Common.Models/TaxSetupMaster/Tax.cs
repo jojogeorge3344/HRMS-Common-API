@@ -32,8 +32,10 @@ namespace Chef.Common.Models
 
         public string TaxDescription { get; set; }
 
-        
-       // public List<SubTax> SubTax { get; set; }
+        public int SegmentId { get; set; }
+        public int FamilyId { get; set; }
+
+        // public List<SubTax> SubTax { get; set; }
 
 
     }
