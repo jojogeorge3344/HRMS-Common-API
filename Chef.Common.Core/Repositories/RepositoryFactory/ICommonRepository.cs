@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Chef.Common.Repositories
 {
     public interface ICommonRepository<T> : IRepository
-        where T : Model
+        where T : IModel
     {
         /// <summary>
         /// 
@@ -19,8 +19,7 @@ namespace Chef.Common.Repositories
         #region Get Async
         Task<T> GetAsync(int id, CancellationToken cancellationToken = default);
         Task<T> GetAsync(object whereConditionObject, CancellationToken cancellationToken = default);
-        Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default);
-
+        Task<T> GetAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default);
         #endregion
 
         #region Get Records Async
@@ -29,6 +28,12 @@ namespace Chef.Common.Repositories
         Task<IEnumerable<T>> GetRecordsAsync(int noOfRecords, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> GetRecordsAsync(int noOfRecords, object whereConditionObject, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> GetRecordsAsync(object whereConditionObject, CancellationToken cancellationToken = default);
+
+        #endregion
+
+        #region Get Record Count 
+        Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default);
+        Task<int> GetRecordCountAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default);
 
         #endregion
 

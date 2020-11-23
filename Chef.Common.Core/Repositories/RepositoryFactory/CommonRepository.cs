@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {
-    internal partial class CommonRepository<TModel> : ICommonRepository<TModel> where TModel : Model
+    internal partial class CommonRepository<TModel> : ICommonRepository<TModel> where TModel : IModel
     {
         readonly IDatabaseSession databaseSession;
         readonly IQueryBuilder<TModel> queryBuilder;
@@ -39,6 +39,12 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
+        public async Task<TModel> GetAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
+        {
+            var query = sqlQueryBuilder.Query<TModel>();
+            query.ApplySqlSearch(sqlSearch); 
+            return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
+        }
         #endregion
 
         #region Get Records Async
@@ -52,7 +58,7 @@ namespace Chef.Common.Repositories
         public async Task<IEnumerable<TModel>> GetRecordsAsync(SqlSearch sqlSearch = null, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>();
-            _ = query.ApplySqlSearch(sqlSearch);
+            query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
@@ -73,10 +79,20 @@ namespace Chef.Common.Repositories
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
+
+        #endregion
+
+        #region Get Record Count
         public async Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>().AsCount().Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<int>(query);
+        }
+        public async Task<int> GetRecordCountAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
+        {
+            var query = sqlQueryBuilder.Query<TModel>().AsCount();
+            query.ApplySqlSearch(sqlSearch);
+            return await databaseSession.QueryFirstOrDefaultAsync<int>(query, cancellationToken: cancellationToken);
         }
         #endregion
 

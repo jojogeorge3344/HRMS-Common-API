@@ -8,6 +8,6 @@ namespace Chef.Common.Repositories
         ///<summary>
         ///This is a Sql Kata Query object. We can apply all Sql Kata query builder operation using this query object
         ///</summary>
-        public Query Query<TModel>() where TModel : Model;
+        public Query Query<TModel>() where TModel : IModel;
     }
 }

@@ -10,6 +10,6 @@ namespace Chef.Common.Repositories
         /// <typeparam name="TModel">Model</typeparam>
         /// <returns>IGenericRepository</returns>
         ICommonRepository<TModel> GenericRepository<TModel>()
-            where TModel : Model;
+            where TModel : IModel;
     }
 }

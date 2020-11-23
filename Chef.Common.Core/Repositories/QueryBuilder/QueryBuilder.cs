@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Chef.Common.Repositories
 {
-    public class QueryBuilder<T> : IQueryBuilder<T> where T : Model
+    public class QueryBuilder<T> : IQueryBuilder<T> where T : IModel
     {
         private readonly Dictionary<string, string> PropertyMap = new Dictionary<string, string>()
         {
