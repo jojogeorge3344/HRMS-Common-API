@@ -27,7 +27,8 @@
         ApiClientRequestTimeout,
 
         //
-        ResourceNotFound,
+        ResourceNotFound, 
+        BadRequest,
         TenantNotFound
     }
 }
