@@ -2,7 +2,7 @@
 
 namespace Chef.Common.Types
 {
-    public enum DueType
+    public enum PaymentDueType
     {
         [Description("Due from Date of Invoice")]
         DateOfInvoice = 1,
