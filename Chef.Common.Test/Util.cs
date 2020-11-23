@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 
 namespace Chef.Common.Test
 {
     public class Util
     {
+        private static Random random = new Random();
         public static string GetUniqueRandomString()
         {
 
@@ -46,6 +48,13 @@ namespace Chef.Common.Test
         public static bool RandomBoolean()
         {
             return new Random().Next(100) % 2 == 0;
+            return random.Next(100) % 2 == 0;
+        }
+        public static string GetRandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

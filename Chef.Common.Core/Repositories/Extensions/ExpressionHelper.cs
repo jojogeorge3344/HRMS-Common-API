@@ -35,5 +35,16 @@ namespace Chef.Common.Repositories
                 throw new NotSupportedException($"'{expression.GetType().FullName}' is not supported for member expression");
             } 
         }
+
+        public static string GetPropertyName(this LambdaExpression propertyExpression)
+        {
+            if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
+            return ExpressionHelper.GetMemberExpression(propertyExpression).GetPropertyName();
+        }
+        public static string GetPropertyName(this MemberExpression memberExpression)
+        {
+            if (memberExpression == null) throw new ArgumentNullException(nameof(memberExpression));
+            return memberExpression.Member.Name.ToLower();
+        }
     }
 }

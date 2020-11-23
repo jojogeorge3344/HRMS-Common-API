@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Core
 {
-    public abstract class Model
+    public abstract class Model : IModel
     {
         [Write(false)]
         [Key]

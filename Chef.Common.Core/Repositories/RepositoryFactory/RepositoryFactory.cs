@@ -13,7 +13,7 @@ namespace Chef.Common.Repositories
         }
 
         public ICommonRepository<TModel> GenericRepository<TModel>()
-           where TModel : Model =>
+           where TModel : IModel =>
         new CommonRepository<TModel>(this.databaseSession, this.sqlqueryBuilder, new QueryBuilder<TModel>());
 
 
