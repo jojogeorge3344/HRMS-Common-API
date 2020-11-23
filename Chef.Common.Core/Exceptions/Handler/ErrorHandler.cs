@@ -1,15 +1,18 @@
-﻿using Chef.Common.Exceptions.Helper;
+﻿using Chef.Common.Exceptions;
+using Chef.Common.Exceptions.Helper;
 using Chef.Common.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace Chef.Common.Exceptions
 {
@@ -106,14 +109,6 @@ namespace Chef.Common.Exceptions
                 status = HttpStatusCode.NotFound;
                 data = ex.Data;
                 code = ServiceExceptionCode.ResourceNotFound.ToString();
-                message = ex.Message;
-            }
-            else if (exceptions.Any(x => x is BadRequestException))
-            {
-                var ex = (BadRequestException)exceptions.FirstOrDefault(x => x is BadRequestException);
-                status = HttpStatusCode.BadRequest;
-                data = ex.Data;
-                code = ServiceExceptionCode.BadRequest.ToString();
                 message = ex.Message;
             }
             else

@@ -1,5 +1,4 @@
-﻿using Chef.Common.Core;
-using Dapper;
+﻿using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +17,7 @@ namespace Chef.Common.Repositories
         /// <param name="isolationLevel">Transaction Isolation Level</param>
         /// <returns>IUnitOfWorkSession</returns>
         IUnitOfWorkSession UnitOfWorkSession(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
-        IUserToken UserToken { get; }
+
 
         #region Execute Scalar Async
         Task<TOutput> ExecuteScalarAsync<TOutput>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default);

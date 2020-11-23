@@ -2,6 +2,9 @@
 
 namespace Chef.Common.Types
 {
+    /// <summary>
+    /// Holds leave status types
+    /// </summary>
     public enum PaymentType
     {
         [Description("Along with Payroll")]

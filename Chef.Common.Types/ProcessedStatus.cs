@@ -2,7 +2,7 @@
 
 namespace Chef.Common.Types
 {
-    public enum RecieptStatusType
+    public enum ProcessedStatus
     {
         [Description("Un Processed")]
         UnProcessed = 1,

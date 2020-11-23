@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Chef.Common.Repositories
 {
@@ -20,19 +17,6 @@ namespace Chef.Common.Repositories
         {
             return JsonConvert.SerializeObject(value);
         }
-        public static IDictionary<string, object> ToDictionary(this object values)
-        {
-            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            if (values != null)
-            {
-                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
-                {
-                    object obj = propertyDescriptor.GetValue(values);
-                    dictionary.Add(propertyDescriptor.Name.ToLower(), obj);
-                }
-            }
 
-            return dictionary;
-        }
     }
 }

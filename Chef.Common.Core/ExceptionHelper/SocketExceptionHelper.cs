@@ -29,4 +29,5 @@ namespace Chef.Common.Exceptions.Helper
             };
         }
     }
+
 }

@@ -9,5 +9,6 @@ namespace Chef.Common.Models
     {
         [Description("Thomsun Infocare")]
         ThomsunInfocare = 1,
+
     }
 }

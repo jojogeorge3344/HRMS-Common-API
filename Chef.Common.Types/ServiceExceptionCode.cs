@@ -28,7 +28,6 @@
 
         //
         ResourceNotFound,
-        BadRequest,
         TenantNotFound
     }
 }
