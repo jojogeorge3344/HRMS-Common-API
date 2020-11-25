@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Chef.Common.Core;
+using Dapper;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -13,15 +14,22 @@ namespace Chef.Common.Repositories
     {
         readonly UnitOfWork unitOfWork;
         readonly IDbConnection connection;
-        readonly IDbTransaction transaction;
-        
+        readonly IDbTransaction transaction; 
+        public IUserToken UserToken { get; private set; }
+
+        public DatabaseSession(IConnectionFactory connectionFactory, IUserToken userToken)
+        {
+            this.unitOfWork = new UnitOfWork(connectionFactory.Connection);
+            connection = unitOfWork.Connection;
+            transaction = unitOfWork.Transaction;
+            this.UserToken = userToken;
+        }
         public DatabaseSession(IConnectionFactory connectionFactory)
         {
             this.unitOfWork = new UnitOfWork(connectionFactory.Connection);
             connection = unitOfWork.Connection;
             transaction = unitOfWork.Transaction;
         }
-
         public IUnitOfWorkSession UnitOfWorkSession(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.ReadCommitted)
           => new UnitOfWorkSession(unitOfWork, isolationLevel);
 
@@ -224,6 +232,9 @@ namespace Chef.Common.Repositories
 
         public GridReader QueryMultiple(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
             connection.QueryMultiple(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags));
+
+
+
         #endregion
 
     }

@@ -41,28 +41,21 @@ namespace Chef.Common.ClientServices
         {
             if (this.httpClients.TryGetValue(name, out var client))
                 return client;
-
             var hostname = httpContextAccessor.HttpContext.Request.Host.Value.ToLower();
-            
             var tenant = configuration.GetSection("Tenants").Get<List<Tenant>>()
                .Where(x => x.Host == hostname).FirstOrDefault();
-            
             if (tenant == null)
                 throw new TenantNotFoundException(hostname + " not configured properly.");
-            
             var apiclient = tenant.ApiClients
                 .Where(x => x.Name == name).FirstOrDefault();
-            
             if (apiclient == null)
                 throw new Exception(string.Format("Tenant/ApiClients name - {0} not configured properly.", name));
-            
             client = new HttpClient
             {
                 BaseAddress = new Uri(apiclient.BaseAddress),
             };
 
             this.httpClients.TryAdd(name, client);
-
             return client;
         }
     }

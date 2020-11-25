@@ -10,7 +10,7 @@ namespace Chef.Common.Repositories
         /// <typeparam name="T">Model</typeparam>
         /// <returns>IQueryBuilder</returns>
         IQueryBuilder<T> QueryBuilder<T>()
-           where T : Model;
+           where T : IModel;
 
         /// <summary>
         /// This is a SqlQueryBuilder object uses SqlKata QueryBuilder under the hood

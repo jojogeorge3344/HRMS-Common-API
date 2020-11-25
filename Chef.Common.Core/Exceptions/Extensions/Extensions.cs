@@ -1,12 +1,22 @@
-﻿using Chef.Common.Types;
+﻿using Chef.Common.Exceptions;
+using Chef.Common.Exceptions.Helper;
+using Chef.Common.Types;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Npgsql;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks; 
 
 namespace Chef.Common.Exceptions
-{
+{ 
     public static class Extensions
     {
         public static string GetMessage(this Exception ex)
@@ -18,6 +28,11 @@ namespace Chef.Common.Exceptions
 
         public static IEnumerable<Exception> GetInnerExceptions(this Exception ex)
         {
+            //if (ex == null)
+            //{
+            //    throw new ArgumentNullException("ex");
+            //}
+
             var innerException = ex;
             do
             {
@@ -41,6 +56,7 @@ namespace Chef.Common.Exceptions
         {
             return String.Join(Environment.NewLine, exceptions.Select(x => x.Message).Distinct());
         }
+
 
         public static void SetExceptionMessage(this HttpContext httpContext, ServiceExceptionCode serviceExceptionCode, string message)
         {

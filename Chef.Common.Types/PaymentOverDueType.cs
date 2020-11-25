@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Chef.Common.Types
 {
-   public enum CodeType
+    public enum PaymentOverDueType
     {
-        TaxJurisdiction = 1,
-        TaxSetup=2
+        DueInvoicesOnly = 1,
+        OverDueDays = 2,
+        AllInvoices = 3
     }
 }

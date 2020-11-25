@@ -2,12 +2,12 @@
 
 namespace Chef.Common.Types
 {
-    public enum DueType
+    public enum PaymentDueType
     {
         [Description("Due from Date of Invoice")]
-        DueFromDateOfInvoice = 1,
+        DateOfInvoice = 1,
 
         [Description("Due from End of Month")]
-        DueFromEndOfMonth = 2,
+        EndOfMonth = 2,
     }
 }

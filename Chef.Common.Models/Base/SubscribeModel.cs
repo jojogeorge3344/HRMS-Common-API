@@ -9,7 +9,6 @@ namespace Chef.Common.Models
         [ForeignKeyId(typeof(Company))]
         [Required]
         public int CompanyId { get; set; }
-
         [ForeignKeyCode(typeof(Company))]
         [Required]
         public string CompanyCode { get; set; }

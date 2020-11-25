@@ -29,6 +29,6 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
-        public List<FinancialYearPeriod> FinancialYearPeriod { get; set; }
+        public List<FinancialYearPeriod> FinancialYearPeriod{ get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Chef.Common.Types
 {
-    public enum BankAllocationAccountType
+    public enum BankAccountType
     {
         Paylink = 1,
         Savings = 2,
