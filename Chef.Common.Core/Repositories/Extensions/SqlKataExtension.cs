@@ -494,5 +494,10 @@ namespace Chef.Common.Repositories
         => query.WhereColumns(FieldName<TFirst>(first), "=", FieldName<TSecond>(second));
 
 
+        public static Join Where<T>(this Join join, Expression<Func<T, object>> fieldName, string op, object value)
+        => join.Where(FieldName<T>(fieldName), op, value);
+        public static Join Where<T>(this Join join, Expression<Func<T, object>> fieldName, object value)
+        => join.Where(FieldName<T>(fieldName), "=", value);
+
     }
 }
