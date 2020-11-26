@@ -143,7 +143,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(updateConditionObject);
             return await databaseSession.ExecuteAsync(query);
         }
-        public async Task<int> UpdateAsync(SqlKata.Query sqlKataQuery, object updateObject)
+        public async Task<int> UpdateAsync(object updateObject, SqlKata.Query sqlKataQuery)
         {
             IDictionary<string, object> expando = updateObject.ToDictionary();
             UpdateModelProperties(ref expando);
