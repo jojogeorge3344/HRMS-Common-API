@@ -492,7 +492,14 @@ namespace Chef.Common.Repositories
         => query.WhereColumns(FieldName<TFirst>(first), op, FieldName<TSecond>(second));
         public static Query WhereColumns<TFirst, TSecond>(this Query query, Expression<Func<TFirst, object>> first, Expression<Func<TSecond, object>> second)
         => query.WhereColumns(FieldName<TFirst>(first), "=", FieldName<TSecond>(second));
-
+        public static Query WhereNotNull<T>(this Query query, Expression<Func<T, object>> fieldName)
+        => query.WhereNotNull(FieldName<T>(fieldName));
+        public static Query OrWhereNotNull<T>(this Query query, Expression<Func<T, object>> fieldName)
+        => query.OrWhereNotNull(FieldName<T>(fieldName));
+        public static Query WhereNull<T>(this Query query, Expression<Func<T, object>> fieldName)
+        => query.WhereNull(FieldName<T>(fieldName));
+        public static Query OrWhereNull<T>(this Query query, Expression<Func<T, object>> fieldName)
+        => query.OrWhereNull(FieldName<T>(fieldName));
 
         public static Join Where<T>(this Join join, Expression<Func<T, object>> fieldName, string op, object value)
         => join.Where(FieldName<T>(fieldName), op, value);
