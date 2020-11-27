@@ -317,6 +317,11 @@ namespace Chef.Common.Repositories
         {
             var keyword = cascade ? " CASCADE" : "";
             return $"DROP TABLE IF EXISTS {TableName}{keyword};";
-        } 
+        }
+        public string GenerateTruncateTableQuery(bool cascade = false, bool restartIdentity = false)
+        { 
+            var keyword = string.Format("{0}{1}", (restartIdentity ? " RESTART IDENTITY" : ""), (cascade ? " CASCADE" : ""));
+            return $"TRUNCATE TABLE {TableName}{keyword};";
+        }
     }
 }
