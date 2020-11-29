@@ -86,18 +86,13 @@ namespace Chef.Common.Repositories.Test
         }
 
 
-        //[Fact(Skip = skip)]
-        //public void TestAsInsertExt()
-        //{
-        //    var testitem = new TestModel { Id = 1, Values = new string[] { "V1", "V2", "V3", "V4" }, Status = false };
-        //    var propertiesCount = testitem.GetType().GetProperties().Count();
-        //    var query = sqlQueryBuilder.Query<TestModel>().AsInsertExt(testitem, returnId: true); 
-        //    var sqlResult = query.Compile();
-        //    var sql = sqlResult.Sql;
-        //    var param = sqlResult.NamedBindings;
-        //    Assert.True(!string.IsNullOrEmpty(sql));
-        //    Assert.True(param.Count == (propertiesCount-1)); 
-        //}
+        [Fact(Skip = skip)]
+        public void TestSqlKataExt()
+        {
+            var query = new Query("Item").Select<TestModel>(x => x.Status);
+            var result = query.Compile();
+            Assert.True(!string.IsNullOrEmpty(result.RawSql)); 
+        }
     }
 
     internal class TestModel : Model

@@ -1,6 +1,7 @@
 using Chef.Common.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -100,14 +101,14 @@ namespace Chef.Common.Repositories
 
         public async Task<int> InsertAsync(TModel insertObject)
         {
-            IDictionary<string, object> expando = insertObject.ToDictionary();
+            IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(insertObject);
             InsertModelProperties(ref expando);
             var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
             return await databaseSession.ExecuteScalarAsync<int>(query);
         }
         public async Task<int> InsertAsync(object insertObject)
         {
-            IDictionary<string, object> expando = insertObject.ToDictionary();
+            IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(insertObject);
             InsertModelProperties(ref expando);
             var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
             return await databaseSession.ExecuteScalarAsync<int>(query);
@@ -117,7 +118,7 @@ namespace Chef.Common.Repositories
             List<IDictionary<string, object>> dictionaries = new List<IDictionary<string, object>>();
             foreach (object record in bulkInsertObjects)
             {
-                IDictionary<string, object> expando = record.ToDictionary();
+                IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(record);
                 InsertModelProperties(ref expando);
                 dictionaries.Add(expando);
             }
@@ -131,21 +132,21 @@ namespace Chef.Common.Repositories
 
         public async Task<int> UpdateAsync(TModel obj)
         {
-            IDictionary<string, object> expando = obj.ToDictionary(); 
+            IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(obj); 
             UpdateModelProperties(ref expando);
             var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(new { id = obj.Id });
             return await databaseSession.ExecuteAsync(query);
         }
         public async Task<int> UpdateAsync(object updateObject, object updateConditionObject)
         {
-            IDictionary<string, object> expando = updateObject.ToDictionary();
+            IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(updateObject);
             UpdateModelProperties(ref expando);
             var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(updateConditionObject);
             return await databaseSession.ExecuteAsync(query);
         }
         public async Task<int> UpdateAsync(object updateObject, SqlKata.Query sqlKataQuery)
         {
-            IDictionary<string, object> expando = updateObject.ToDictionary();
+            IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(updateObject);
             UpdateModelProperties(ref expando);
             var query = sqlKataQuery.AsUpdateExt(expando);
             return await databaseSession.ExecuteAsync(query);
@@ -200,9 +201,6 @@ namespace Chef.Common.Repositories
             }
 
         }
-
-
-
-
+         
     }
 }

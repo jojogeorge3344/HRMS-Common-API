@@ -6,6 +6,7 @@ using Org.BouncyCastle.Math.EC.Rfc7748;
 using SqlKata;
 using SqlKata.Compilers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -146,6 +147,12 @@ namespace Chef.Common.Repositories
                 case SqlSearchOperator.NotEqual:
                     query.WhereNot(fieldName, condition.Operator.ToSqlString(), condition.Value);
                     break;
+                case SqlSearchOperator.IsNull:
+                    query.WhereNull(fieldName);
+                    break;
+                case SqlSearchOperator.IsNotNull:
+                    query.WhereNotNull(fieldName);
+                    break;
             }
             return query;
         }
@@ -183,6 +190,12 @@ namespace Chef.Common.Repositories
                     break;
                 case SqlSearchOperator.NotEqual:
                     query.OrWhereNot(fieldName, condition.Operator.ToSqlString(), condition.Value);
+                    break;
+                case SqlSearchOperator.IsNull:
+                    query.WhereNull(fieldName);
+                    break;
+                case SqlSearchOperator.IsNotNull:
+                    query.WhereNotNull(fieldName);
                     break;
             }
             return query;
@@ -282,8 +295,9 @@ namespace Chef.Common.Repositories
         /// <returns>string</returns>
         static string TableName<T>()
         {
-            var schemaName = typeof(T).Namespace.Split('.')[1].ToLower();
-            return schemaName + "." + typeof(T).Name.ToLower();
+            var type = typeof(T);
+            var schemaName = type.Namespace.Split('.')[1].ToLower();
+            return schemaName + "." + type.Name.ToLower();
         }
         static string TableNameWOSchema<T>() => typeof(T).Name.ToLower();
         /// <summary>
@@ -470,12 +484,8 @@ namespace Chef.Common.Repositories
         //    return query.AsInsert(dictionary, returnId);
         //}
 
-        public static Query WhereExt(this Query query, object obj)
-        {
-            IDictionary<string, object> expando = obj.ToDictionary();
-            return query.Where(new ReadOnlyDictionary<string, object>(expando));
-        }
-
+        public static Query WhereExt(this Query query, IDictionary<string, object> expando)
+        => query.Where(new ReadOnlyDictionary<string, object>(expando)); 
 
         public static Query Where<T>(this Query query, Expression<Func<T, object>> fieldName, string op, object value)
         => query.Where(FieldName<T>(fieldName), op, value);

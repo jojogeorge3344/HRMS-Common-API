@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using SqlKata;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,11 +13,42 @@ namespace Chef.Common.Repositories
 {
     public class SqlQueryBuilder : ISqlQueryBuilder
     {
+        readonly ConcurrentDictionary<Type, PropertyDescriptorCollection> PropertyDescriptors;
+
+        public SqlQueryBuilder()
+        {
+            PropertyDescriptors = new ConcurrentDictionary<Type, PropertyDescriptorCollection>();
+        }
+
         public Query Query<TModel>() where TModel : IModel
         {
             var tableName = string.Format("{0}.{1}", typeof(TModel).Namespace.Split('.')[1].ToLower(),
                 typeof(TModel).Name.ToLower());
             return new Query(tableName);
+        }
+
+        PropertyDescriptorCollection GetPropertyDescriptors(object obj)
+        {
+            var type = obj.GetType();
+            if (this.PropertyDescriptors.TryGetValue(type, out var collection))
+                return collection;
+            collection = TypeDescriptor.GetProperties(obj);
+            this.PropertyDescriptors.TryAdd(type, collection);
+            return collection;
+        }
+
+        public IDictionary<string, object> ToDictionary(object obj)
+        {
+            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            if (obj != null)
+            {
+                foreach (PropertyDescriptor propertyDescriptor in GetPropertyDescriptors(obj))
+                {
+                    object value = propertyDescriptor.GetValue(obj);
+                    dictionary.Add(propertyDescriptor.Name.ToLower(), value);
+                }
+            }
+            return dictionary;
         }
     }
 
@@ -103,6 +136,26 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+        public SqlSearch WhereNull<T>(Expression<Func<T, object>> column)
+        {
+            this.Rules.Add(new SqlSearchRule
+            {
+                Field = column.GetPropertyName(),
+                Operator = SqlSearchOperator.IsNull,
+                Value = null
+            });
+            return this;
+        }
+        public SqlSearch WhereNotNull<T>(Expression<Func<T, object>> column)
+        {
+            this.Rules.Add(new SqlSearchRule
+            {
+                Field = column.GetPropertyName(),
+                Operator = SqlSearchOperator.IsNotNull,
+                Value = null
+            });
+            return this;
+        }
     }
 
     public class SqlSearchGroup : IEquatable<SqlSearchGroup>
@@ -175,6 +228,26 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+        public SqlSearchGroup WhereNull<T>(Expression<Func<T, object>> column)
+        {
+            this.Rules.Add(new SqlSearchRule
+            {
+                Field = column.GetPropertyName(),
+                Operator = SqlSearchOperator.IsNull,
+                Value = null
+            });
+            return this;
+        }
+        public SqlSearchGroup WhereNotNull<T>(Expression<Func<T, object>> column)
+        {
+            this.Rules.Add(new SqlSearchRule
+            {
+                Field = column.GetPropertyName(),
+                Operator = SqlSearchOperator.IsNotNull,
+                Value = null
+            });
+            return this;
+        }
     }
 
 
@@ -243,7 +316,9 @@ namespace Chef.Common.Repositories
         LessThan = 7,
         GreaterThanEqual = 8,
         LessThanEqual = 9,
-        NotEqual = 10
+        NotEqual = 10,
+        IsNull =11,
+        IsNotNull = 12
     }
 
     public enum SqlConditionOperator

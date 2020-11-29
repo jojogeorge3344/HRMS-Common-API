@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace Chef.Common.Repositories
 {
@@ -15,24 +17,24 @@ namespace Chef.Common.Repositories
         //    };
         //    var json = JsonConvert.SerializeObject(value, serializerSettings);
         //    return JsonConvert.DeserializeObject<IReadOnlyDictionary<string, object>>(json);
+        //} 
+        //public static string Serialize<T>(this T value) where T : class
+        //{
+        //    return JsonConvert.SerializeObject(value);
         //}
-        public static string Serialize<T>(this T value) where T : class
-        {
-            return JsonConvert.SerializeObject(value);
-        }
-        public static IDictionary<string, object> ToDictionary(this object values)
-        {
-            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            if (values != null)
-            {
-                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
-                {
-                    object obj = propertyDescriptor.GetValue(values);
-                    dictionary.Add(propertyDescriptor.Name.ToLower(), obj);
-                }
-            }
+        //public static IDictionary<string, object> ToDictionary(this object values)
+        //{
+        //    var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        //    if (values != null)
+        //    {
+        //        foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
+        //        {
+        //            object obj = propertyDescriptor.GetValue(values);
+        //            dictionary.Add(propertyDescriptor.Name.ToLower(), obj);
+        //        }
+        //    }
 
-            return dictionary;
-        }
+        //    return dictionary;
+        //}
     }
 }
