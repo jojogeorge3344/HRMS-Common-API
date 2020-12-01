@@ -11,7 +11,7 @@ namespace Chef.Common.Models
 
         public string Symbol { get; set; }
 
-        public Position SymbolPosition { get; set; }      
+        public Position SymbolPosition { get; set; }
 
         public string Fraction { get; set; }
 

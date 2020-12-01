@@ -1,18 +1,15 @@
-﻿using Chef.Common.Exceptions;
-using Chef.Common.Exceptions.Helper;
+﻿using Chef.Common.Exceptions.Helper;
 using Chef.Common.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 
 namespace Chef.Common.Exceptions
 {
@@ -32,7 +29,7 @@ namespace Chef.Common.Exceptions
                 await next(context);
             }
             catch (Exception ex)
-                {
+            {
                 await HandleExceptionAsync(context, ex, env);
             }
         }
@@ -72,11 +69,11 @@ namespace Chef.Common.Exceptions
                 var dbException = (PostgresException)exceptions.FirstOrDefault(x => x is PostgresException);
                 var exceptionCode = PostgresExceptionHelper.ErrorCode(dbException);
                 status = HttpStatusCode.InternalServerError;
-                data = dbException.Data; 
+                data = dbException.Data;
                 code = exceptionCode.ToString();
                 var contextMessage = context.GetExceptionMessage(exceptionCode);
                 message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : PostgresExceptionHelper.ErrorMessage(dbException);
-            } 
+            }
             else if (exceptions.Any(x => x is Refit.ApiException))
             {
                 var apiException = (Refit.ApiException)exceptions.FirstOrDefault(x => x is Refit.ApiException);
@@ -89,10 +86,10 @@ namespace Chef.Common.Exceptions
             }
             else if (exceptions.Any(x => x is ResourceAlreadyExistsException))
             {
-                var ex = (ResourceAlreadyExistsException)exceptions.FirstOrDefault(x => x is ResourceAlreadyExistsException); 
+                var ex = (ResourceAlreadyExistsException)exceptions.FirstOrDefault(x => x is ResourceAlreadyExistsException);
                 status = HttpStatusCode.Conflict;
                 data = ex.Data;
-                code = ServiceExceptionCode.DbUniqueKeyViolation.ToString(); 
+                code = ServiceExceptionCode.DbUniqueKeyViolation.ToString();
                 message = ex.Message;
             }
             else if (exceptions.Any(x => x is ResourceHasDependentException))
@@ -123,10 +120,10 @@ namespace Chef.Common.Exceptions
             {
                 status = HttpStatusCode.InternalServerError;
                 data = exception.Data;
-                code = "Unhandled"; 
+                code = "Unhandled";
                 message = exception.GetMessage();
             }
-             
+
             if (detailMessage == null)
                 detailMessage = exceptions.GetAllMessages();
             stackTrace = exception.StackTrace;
@@ -138,10 +135,10 @@ namespace Chef.Common.Exceptions
             }
             var result = JsonSerializer.Serialize(
                 new { code, message, data, detailMessage, stackTrace }
-            ); 
+            );
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;
             return context.Response.WriteAsync(result);
         }
-    } 
+    }
 }

@@ -1,28 +1,18 @@
-﻿using Chef.Common.Exceptions;
-using Chef.Common.Exceptions.Helper;
-using Chef.Common.Types;
+﻿using Chef.Common.Types;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Npgsql;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks; 
 
 namespace Chef.Common.Exceptions
-{ 
+{
     public static class Extensions
     {
         public static string GetMessage(this Exception ex)
         {
-            if (ex is AggregateException exception) 
-                return exception.Flatten().InnerException.Message; 
+            if (ex is AggregateException exception)
+                return exception.Flatten().InnerException.Message;
             return ex.Message;
         }
 
@@ -76,7 +66,7 @@ namespace Chef.Common.Exceptions
             if (httpContext.Items.ContainsKey(serviceExceptionCode))
                 return httpContext.Items[serviceExceptionCode].ToString();
             else
-                return string.Empty; 
+                return string.Empty;
         }
     }
 }

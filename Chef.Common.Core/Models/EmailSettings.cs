@@ -1,11 +1,6 @@
-﻿using Chef.Common.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Chef.Common.Core
+﻿namespace Chef.Common.Core
 {
-   public class EmailSettings : Model
+    public class EmailSettings : Model
     {
         public string MailServer { get; set; }
         public int MailPort { get; set; }

@@ -65,7 +65,7 @@ namespace Chef.Common.Repositories
 
         public override int GetHashCode()
         {
-            return Limit != null ? Limit.GetHashCode() : 0 
+            return Limit != null ? Limit.GetHashCode() : 0
                 ^ (Page != null ? Page.GetHashCode() : 0);
         }
 
@@ -89,10 +89,10 @@ namespace Chef.Common.Repositories
                 &&
                 (object.ReferenceEquals(this.Page, other.Page) ||
                 this.Page != null &&
-                this.Page.Equals(other.Page)) 
-                && 
+                this.Page.Equals(other.Page))
+                &&
                 (object.ReferenceEquals(this.Condition, other.Condition) ||
-                this.Condition.Equals(other.Condition)) 
+                this.Condition.Equals(other.Condition))
                 &&
                 (object.ReferenceEquals(this.Rules, other.Rules) ||
                 this.Rules != null &&
@@ -101,13 +101,14 @@ namespace Chef.Common.Repositories
         #endregion
 
         public SqlSearch() { }
-        public SqlSearch(SqlConditionOperator sqlConditionOperator) {
+        public SqlSearch(SqlConditionOperator sqlConditionOperator)
+        {
             Condition = sqlConditionOperator;
         }
 
         public SqlSearch AddGroup(Func<SqlSearch, SqlSearchGroup> sqlSearch)
         {
-           this.Groups.Add(sqlSearch(this));
+            this.Groups.Add(sqlSearch(this));
             return this;
         }
         //public SqlSearch AddGroup(SqlConditionOperator sqlConditionOperator)
@@ -176,15 +177,15 @@ namespace Chef.Common.Repositories
 
         public override int GetHashCode()
         {
-            return  Rules.GetHashCode() ^ Condition.GetHashCode();
+            return Rules.GetHashCode() ^ Condition.GetHashCode();
         }
 
         public bool Equals(SqlSearchGroup other)
         {
             return
-                
+
                 (object.ReferenceEquals(this.Condition, other.Condition) ||
-                this.Condition.Equals(other.Condition)) 
+                this.Condition.Equals(other.Condition))
                 &&
                 (object.ReferenceEquals(this.Rules, other.Rules) ||
                 this.Rules != null &&
@@ -261,7 +262,7 @@ namespace Chef.Common.Repositories
         /// <summary>
         /// Value
         /// </summary>
-        public object Value { get; set; } 
+        public object Value { get; set; }
 
         #region IEquatable overrides
 
@@ -275,7 +276,7 @@ namespace Chef.Common.Repositories
 
         public override int GetHashCode()
         {
-            return Field != null ? Field.GetHashCode() : 0 
+            return Field != null ? Field.GetHashCode() : 0
                 ^ Operator.GetHashCode()
                 ^ (Value != null ? Value.GetHashCode() : 0);
         }
@@ -317,7 +318,7 @@ namespace Chef.Common.Repositories
         GreaterThanEqual = 8,
         LessThanEqual = 9,
         NotEqual = 10,
-        IsNull =11,
+        IsNull = 11,
         IsNotNull = 12
     }
 

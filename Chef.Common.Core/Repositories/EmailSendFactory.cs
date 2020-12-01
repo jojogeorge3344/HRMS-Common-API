@@ -35,7 +35,7 @@ namespace Chef.Common.Repositories
 
                 mimeMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
 
-                mimeMessage.To.Add(new MailboxAddress("",email));
+                mimeMessage.To.Add(new MailboxAddress("", email));
 
                 mimeMessage.Subject = subject;
 

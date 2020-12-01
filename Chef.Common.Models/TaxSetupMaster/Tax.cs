@@ -1,13 +1,10 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Models.Types;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Chef.Common.Models
 {
-   public class Tax : Model
+    public class Tax : Model
     {
         [Required]
         [Unique(true)]
@@ -26,7 +23,7 @@ namespace Chef.Common.Models
         [ForeignKeyId(typeof(TaxJurisdiction))]
         [Required]
         public int TaxJurisdictionId { get; set; }
-        [ForeignKeyCode(typeof(TaxJurisdiction)),Code]
+        [ForeignKeyCode(typeof(TaxJurisdiction)), Code]
         [Required]
         public string TaxJurisdictionCode { get; set; }
 

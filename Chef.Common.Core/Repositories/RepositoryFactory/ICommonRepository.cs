@@ -14,7 +14,7 @@ namespace Chef.Common.Repositories
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>IEnumerable<T></returns>
-        
+
 
         #region Get Async
         Task<T> GetAsync(int id, CancellationToken cancellationToken = default);

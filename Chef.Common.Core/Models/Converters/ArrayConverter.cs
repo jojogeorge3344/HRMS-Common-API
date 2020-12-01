@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Chef.Common.Core
 {
@@ -13,11 +10,11 @@ namespace Chef.Common.Core
             return true;
             //return (objectType.IsArray && typeof(T).IsAssignableFrom(objectType.GetElementType()));
             //return (objectType == typeof(List<T>));
-        } 
+        }
         public override bool CanRead { get { return false; } }
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException(); 
+            throw new NotImplementedException();
             //JToken token = JToken.Load(reader);
             //if (token.Type == JTokenType.Array)
             //{
@@ -33,6 +30,6 @@ namespace Chef.Common.Core
             throw new NotImplementedException();
         }
 
-     
+
     }
 }

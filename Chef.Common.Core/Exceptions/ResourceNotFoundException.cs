@@ -1,11 +1,10 @@
-﻿using Chef.Common.Core;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
 namespace Chef.Common.Exceptions
 {
     [Serializable]
-    public class ResourceNotFoundException : Exception 
+    public class ResourceNotFoundException : Exception
     {
         public ResourceNotFoundException()
         {

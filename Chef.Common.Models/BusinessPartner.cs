@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Chef.Common.Core;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
@@ -73,7 +73,7 @@ namespace Chef.Common.Models
         public string Website { get; set; }
         public int SerialNumber { get; set; }
 
-        public bool  IsActive { get; set; }
+        public bool IsActive { get; set; }
         public int TaxJurisdictionId { get; set; }
         public string TaxName { get; set; }
         public int DefaultPurchaseTax { get; set; }

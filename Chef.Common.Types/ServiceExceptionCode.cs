@@ -12,7 +12,7 @@
         DbInvalidTranasction,
         DbInvalidSqlStatement,
         DbInsufficientResources,
-        DbIntegrityViolation ,
+        DbIntegrityViolation,
         DbException,
 
         // Socket Exception
@@ -23,11 +23,11 @@
         //Api Exception
         ApiClientResourceNotFound,
         ApiClientInternalServerError,
-        ApiClientUnauthorized, 
+        ApiClientUnauthorized,
         ApiClientRequestTimeout,
 
         //
-        ResourceNotFound, 
+        ResourceNotFound,
         BadRequest,
         TenantNotFound
     }

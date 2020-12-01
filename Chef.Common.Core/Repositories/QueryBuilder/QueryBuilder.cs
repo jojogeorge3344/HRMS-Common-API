@@ -1,6 +1,4 @@
 ﻿using Chef.Common.Core;
-using MimeKit.Encodings;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -65,15 +63,15 @@ namespace Chef.Common.Repositories
                     UniqueAttributes = (IEnumerable<UniqueAttribute>)Attribute.GetCustomAttributes(x, typeof(UniqueAttribute), true)
                 })
                 .Where(x => x.UniqueAttributes != null && x.CompositeAttributes != null && x.CompositeAttributes.Count() > 0)
-            .SelectMany(x => x.CompositeAttributes.Select(y=> new { y.Index, y.GroupNumber, Name = x.Property.Name.ToLower()  }))
+            .SelectMany(x => x.CompositeAttributes.Select(y => new { y.Index, y.GroupNumber, Name = x.Property.Name.ToLower() }))
       .GroupBy(y => y.GroupNumber)
             .Select(group => new { group.Key, Enumerable = group.Select(x => x.Name) })
-            .Where(x=>x.Enumerable.Count() > 1)
+            .Where(x => x.Enumerable.Count() > 1)
             .ToDictionary(t => t.Key, t => t.Enumerable);
 
         public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
         public string TableName => SchemaName + "." + typeof(T).Name.ToLower();
-        string GetTableName(Type type) 
+        string GetTableName(Type type)
             => type.Namespace.Split('.')[1].ToLower() + "." + type.Name.ToLower();
         public string TableNameWOSchema => typeof(T).Name.ToLower();
 
@@ -103,16 +101,16 @@ namespace Chef.Common.Repositories
                     Name = prop.Name.ToLower(),
                     Type = GetPropertyType(prop),
                     IsKey = prop.GetCustomAttributes(typeof(KeyAttribute)).Count() > 0,
-                    HasDefaultValue = prop.GetCustomAttributes(typeof(DefaultValueAttribute)).Count() > 0, 
+                    HasDefaultValue = prop.GetCustomAttributes(typeof(DefaultValueAttribute)).Count() > 0,
                     IsRequired = prop.GetCustomAttributes(typeof(RequiredAttribute)).Count() > 0,
                     IsUnique = prop.GetCustomAttributes(typeof(UniqueAttribute)).Count() > 0 && prop.GetCustomAttributes(typeof(CompositeAttribute)).Count() != prop.GetCustomAttributes(typeof(UniqueAttribute)).Count()
                 };
 
                 if (column.HasDefaultValue)
                 {
-                    DefaultValueAttribute attr = (DefaultValueAttribute) prop.GetCustomAttribute(typeof(DefaultValueAttribute)); 
+                    DefaultValueAttribute attr = (DefaultValueAttribute)prop.GetCustomAttribute(typeof(DefaultValueAttribute));
                     object value = prop.PropertyType.IsEnum ? Convert.ChangeType(attr.Value, Enum.GetUnderlyingType(attr.Value.GetType())) : attr.Value;
-                    column.DefaultValue = prop.PropertyType == typeof(string)? "'" + value + "'": value;
+                    column.DefaultValue = prop.PropertyType == typeof(string) ? "'" + value + "'" : value;
                 }
                 if (prop.GetCustomAttribute(typeof(ForeignKeyAttribute)) is ForeignKeyAttribute foreignkeyAttribute)
                 {
@@ -120,8 +118,8 @@ namespace Chef.Common.Repositories
                     column.ForeignKey = string.Format("{0}.{1}", schema, foreignkeyAttribute.Name.ToLower());
                     column.ForeignKeyReference = $" REFERENCES {column.ForeignKey}(id)";
                 }
-                else if(prop.GetCustomAttribute(typeof(ForeignKeyIdAttribute)) is ForeignKeyIdAttribute idForeignKeyAttribute)
-                { 
+                else if (prop.GetCustomAttribute(typeof(ForeignKeyIdAttribute)) is ForeignKeyIdAttribute idForeignKeyAttribute)
+                {
                     column.ForeignKey = GetTableName(idForeignKeyAttribute.ModelType);
                     column.ForeignKeyReference = $" REFERENCES {column.ForeignKey}(id)";
                 }
@@ -230,11 +228,11 @@ namespace Chef.Common.Repositories
             else
             {
                 if (UniqueCompositeFieldNames.Count() > 0)
-                { 
+                {
                     foreach (var record in UniqueCompositeFieldNames)
                     {
                         indexQuery.AppendLine($"CREATE INDEX idx_{TableNameWOSchema}_{++indexCounter} ON {TableName}({string.Join(",", record.Value)});");
-                        createTableQuery.Append(Environment.NewLine + tab + string.Format("constraint composite_{0}_{1} unique({2})", TableNameWOSchema,record.Key, string.Join(",", record.Value)));
+                        createTableQuery.Append(Environment.NewLine + tab + string.Format("constraint composite_{0}_{1} unique({2})", TableNameWOSchema, record.Key, string.Join(",", record.Value)));
                         createTableQuery.Append(",");
                     }
                 }
@@ -245,7 +243,7 @@ namespace Chef.Common.Repositories
             createTableQuery.Append(");");
             createTableQuery.Append(Environment.NewLine + $" ALTER TABLE {TableName} OWNER to postgres; ");
             createTableQuery.Append(Environment.NewLine);
-            createTableQuery.Append(Environment.NewLine); 
+            createTableQuery.Append(Environment.NewLine);
             createTableQuery.Append(indexQuery.ToString());
             createTableQuery.Append(Environment.NewLine);
             createTableQuery.Append(Environment.NewLine);
@@ -319,7 +317,7 @@ namespace Chef.Common.Repositories
             return $"DROP TABLE IF EXISTS {TableName}{keyword};";
         }
         public string GenerateTruncateTableQuery(bool cascade = false, bool restartIdentity = false)
-        { 
+        {
             var keyword = string.Format("{0}{1}", (restartIdentity ? " RESTART IDENTITY" : ""), (cascade ? " CASCADE" : ""));
             return $"TRUNCATE TABLE {TableName}{keyword};";
         }

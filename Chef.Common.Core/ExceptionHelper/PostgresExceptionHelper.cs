@@ -22,7 +22,7 @@ namespace Chef.Common.Exceptions.Helper
                 string state when state.StartsWith("53") => ServiceExceptionCode.DbInsufficientResources,//Insufficient Resources
                 _ => ServiceExceptionCode.DbException,
 
-            }; 
+            };
         }
 
         public static string ErrorMessage(PostgresException pe)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Chef.Common.Repositories
 {
@@ -33,7 +32,7 @@ namespace Chef.Common.Repositories
             else
             {
                 throw new NotSupportedException($"'{expression.GetType().FullName}' is not supported for member expression");
-            } 
+            }
         }
 
         public static string GetPropertyName(this LambdaExpression propertyExpression)

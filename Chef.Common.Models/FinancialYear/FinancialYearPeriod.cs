@@ -1,12 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Chef.Common.Core;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Chef.Common.Core;
 using Chef.Common.Types;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chef.Common.Models
 {
-  public  class FinancialYearPeriod : Model
+    public class FinancialYearPeriod : Model
     {
         [ForeignKey("FinancialYear")]
         [Required]

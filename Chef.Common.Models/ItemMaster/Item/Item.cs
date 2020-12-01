@@ -1,6 +1,5 @@
 ﻿using Chef.Common.Core;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chef.Common.Models
 {
@@ -17,7 +16,7 @@ namespace Chef.Common.Models
         [Unique(true)]
         public string ItemCode { get; set; } = string.Empty;
         [Required]
-        [Unique(true), Composite(Index =2)]
+        [Unique(true), Composite(Index = 2)]
         public string ItemName { get; set; }
         [Required]
         public string ItemDescription { get; set; }

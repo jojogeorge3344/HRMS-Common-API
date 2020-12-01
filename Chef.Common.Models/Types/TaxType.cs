@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace Chef.Common.Models.Types
 {
@@ -11,6 +8,6 @@ namespace Chef.Common.Models.Types
         Purchase = 1,
 
         [Description("Sales")]
-        Sales=2
+        Sales = 2
     }
 }

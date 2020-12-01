@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Chef.Common.Core
+﻿namespace Chef.Common.Core
 {
     public interface IAttributeModel : IModel
-    { 
-        public string AttributeName { set; get; } 
+    {
+        public string AttributeName { set; get; }
         public string AttributeValue { set; get; }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Chef.Common.Core;
+﻿using Chef.Common.Core;
 using Chef.Common.Types;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
 {
@@ -19,7 +19,7 @@ namespace Chef.Common.Models
         public string Symbol { get; set; }
 
         [Required]
-        public Position SymbolPosition { get; set; }      
+        public Position SymbolPosition { get; set; }
 
         [StringLength(15)]
         public string Fraction { get; set; }

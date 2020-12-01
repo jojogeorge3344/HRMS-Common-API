@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Chef.Common.Types
+﻿namespace Chef.Common.Types
 {
-   public enum CodeType
+    public enum CodeType
     {
         TaxJurisdiction = 1,
-        TaxSetup=2
+        TaxSetup = 2
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 
 namespace Chef.Common.Core
 {
@@ -8,11 +7,11 @@ namespace Chef.Common.Core
         public override bool IsValid(object value)
         {
             var collection = value as ICollection;
-            if (collection != null) 
-                return collection.Count > 0; 
+            if (collection != null)
+                return collection.Count > 0;
             var enumerable = value as IEnumerable;
-            if (enumerable != null) 
-                return enumerable.GetEnumerator().MoveNext(); 
+            if (enumerable != null)
+                return enumerable.GetEnumerator().MoveNext();
             return false;
         }
     }

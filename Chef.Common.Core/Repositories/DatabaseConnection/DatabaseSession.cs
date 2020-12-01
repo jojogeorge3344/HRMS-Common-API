@@ -14,7 +14,7 @@ namespace Chef.Common.Repositories
     {
         readonly UnitOfWork unitOfWork;
         readonly IDbConnection connection;
-        readonly IDbTransaction transaction; 
+        readonly IDbTransaction transaction;
         public IUserToken UserToken { get; private set; }
 
         public DatabaseSession(IConnectionFactory connectionFactory, IUserToken userToken)
@@ -147,7 +147,7 @@ namespace Chef.Common.Repositories
         public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null,
           string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
           connection.QueryAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken),
-          map: map, splitOn: splitOn); 
+          map: map, splitOn: splitOn);
         public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object param = null,
           string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
           connection.QueryAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken),
@@ -175,7 +175,7 @@ namespace Chef.Common.Repositories
 
         public Task<IEnumerable<dynamic>> QueryAsync(string sql, Type[] types, Func<object[], dynamic> map, object param = null,
             string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
-           connection.QueryAsync<dynamic>(sql: sql, types: types, map: map,  param, transaction, splitOn: splitOn, commandTimeout: commandTimeout, commandType: commandType);
+           connection.QueryAsync<dynamic>(sql: sql, types: types, map: map, param, transaction, splitOn: splitOn, commandTimeout: commandTimeout, commandType: commandType);
 
         public Task<IEnumerable<TOutput>> QueryAsync<TOutput>(Query query, CancellationToken cancellationToken = default)
         {

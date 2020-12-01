@@ -1,11 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq.Expressions;
-
-namespace Chef.Common.Repositories
+﻿namespace Chef.Common.Repositories
 {
     public static class GenericExtension
     {

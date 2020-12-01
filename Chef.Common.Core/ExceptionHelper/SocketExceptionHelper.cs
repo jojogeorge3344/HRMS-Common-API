@@ -1,5 +1,4 @@
 ﻿using Chef.Common.Types;
-using Npgsql;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
@@ -11,8 +10,8 @@ namespace Chef.Common.Exceptions.Helper
         {
             return se.SocketErrorCode switch
             {
-                SocketError.TimedOut => ServiceExceptionCode.SocketTimeout, 
-                SocketError.ConnectionRefused => ServiceExceptionCode.SocketTimeout, 
+                SocketError.TimedOut => ServiceExceptionCode.SocketTimeout,
+                SocketError.ConnectionRefused => ServiceExceptionCode.SocketTimeout,
                 _ => ServiceExceptionCode.SocketException
             };
         }

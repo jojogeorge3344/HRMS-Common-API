@@ -1,7 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Chef.Common.Core;
+﻿using Chef.Common.Core;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
 {
@@ -29,6 +29,6 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
-        public List<FinancialYearPeriod> FinancialYearPeriod{ get; set; }
+        public List<FinancialYearPeriod> FinancialYearPeriod { get; set; }
     }
 }

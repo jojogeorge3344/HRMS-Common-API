@@ -1,8 +1,5 @@
 ﻿using Chef.Common.Core;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Chef.Common.Models
 {
@@ -13,7 +10,7 @@ namespace Chef.Common.Models
         public int TaxId { get; set; }
         [ForeignKeyCode(typeof(Tax))]
         [Required]
-       
+
         public string TaxCode { get; set; }
 
         [Required]

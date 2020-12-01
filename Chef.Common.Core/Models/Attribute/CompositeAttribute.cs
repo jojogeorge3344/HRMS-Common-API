@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Core
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)] 
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class CompositeAttribute : Attribute
-    { 
+    {
         /// <summary>
         /// Provides Grouping by the GroupNumber
         /// </summary>
@@ -15,7 +14,7 @@ namespace Chef.Common.Core
         /// </summary>
         public int Index { get; set; }
         public CompositeAttribute() { }
-       // public override object TypeId { get { return this; } }
+        // public override object TypeId { get { return this; } }
 
     }
 }

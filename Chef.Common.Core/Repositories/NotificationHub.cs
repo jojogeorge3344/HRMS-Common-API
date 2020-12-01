@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Core
 {
-    public class NotificationHub :Hub
+    public class NotificationHub : Hub
     {
         public async Task LeaveNotification(int leaveRequestId)
         {

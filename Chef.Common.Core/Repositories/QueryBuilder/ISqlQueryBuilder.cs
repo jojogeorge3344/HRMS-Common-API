@@ -1,7 +1,6 @@
 ﻿using Chef.Common.Core;
 using SqlKata;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Chef.Common.Repositories
 {

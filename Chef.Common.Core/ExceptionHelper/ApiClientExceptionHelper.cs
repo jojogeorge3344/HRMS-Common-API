@@ -3,11 +3,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Npgsql;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Chef.Common.Exceptions.Helper
 {
@@ -19,15 +17,15 @@ namespace Chef.Common.Exceptions.Helper
             {
                 HttpStatusCode.RequestTimeout => ServiceExceptionCode.ApiClientRequestTimeout,
                 HttpStatusCode.Unauthorized => ServiceExceptionCode.ApiClientUnauthorized,
-                HttpStatusCode.NotFound => ServiceExceptionCode.ApiClientResourceNotFound, 
+                HttpStatusCode.NotFound => ServiceExceptionCode.ApiClientResourceNotFound,
                 _ => ServiceExceptionCode.ApiClientInternalServerError
 
             };
-        } 
+        }
         public static string ErrorMessage(Refit.ApiException ae)
         {
             return ae.StatusCode switch
-            { 
+            {
                 HttpStatusCode.RequestTimeout => "Apiclient operation timed out.",
                 HttpStatusCode.Unauthorized => "Access to the apiclient resoruce is denied.",
                 HttpStatusCode.NotFound => "Apiclient resoruce not found.",
@@ -74,7 +72,7 @@ namespace Chef.Common.Exceptions.Helper
                 var dbException = (PostgresException)exceptions.FirstOrDefault(x => x is PostgresException);
                 return PostgresExceptionHelper.ErrorMessage(dbException);
             }
-            else 
+            else
             {
                 if (ae.Content != null && IsValidJson(ae.Content))
                 {
@@ -103,9 +101,9 @@ namespace Chef.Common.Exceptions.Helper
                 {
                     var obj = JToken.Parse(strInput);
                     return true;
-                } 
-                catch 
-                { 
+                }
+                catch
+                {
                     return false;
                 }
             }

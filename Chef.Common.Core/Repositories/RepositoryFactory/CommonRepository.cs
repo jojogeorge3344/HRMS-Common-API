@@ -1,7 +1,6 @@
 using Chef.Common.Core;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace Chef.Common.Repositories
     {
         readonly IDatabaseSession databaseSession;
         readonly IQueryBuilder<TModel> queryBuilder;
-        readonly ISqlQueryBuilder sqlQueryBuilder; 
+        readonly ISqlQueryBuilder sqlQueryBuilder;
         //readonly UnitOfWork unitOfWork;
 
         public CommonRepository(IDatabaseSession databaseSession,
@@ -43,7 +42,7 @@ namespace Chef.Common.Repositories
         public async Task<TModel> GetAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>();
-            query.ApplySqlSearch(sqlSearch); 
+            query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
         #endregion
@@ -114,7 +113,7 @@ namespace Chef.Common.Repositories
             return await databaseSession.ExecuteScalarAsync<int>(query);
         }
         public async Task<int> BulkInsertAsync(IEnumerable<object> bulkInsertObjects)
-        { 
+        {
             List<IDictionary<string, object>> dictionaries = new List<IDictionary<string, object>>();
             foreach (object record in bulkInsertObjects)
             {
@@ -132,7 +131,7 @@ namespace Chef.Common.Repositories
 
         public async Task<int> UpdateAsync(TModel obj)
         {
-            IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(obj); 
+            IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(obj);
             UpdateModelProperties(ref expando);
             var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(new { id = obj.Id });
             return await databaseSession.ExecuteAsync(query);
@@ -171,7 +170,7 @@ namespace Chef.Common.Repositories
 
 
         void UpdateModelProperties(ref IDictionary<string, object> expando)
-        {  
+        {
             if (expando.ContainsKey("createdBy"))
                 expando.Remove("createdBy");
             if (expando.ContainsKey("createddate"))
@@ -186,7 +185,7 @@ namespace Chef.Common.Repositories
         }
         void InsertModelProperties(ref IDictionary<string, object> expando)
         {
-             
+
             if (expando.ContainsKey("id"))
                 expando.Remove("id");
             expando["createdby"] = databaseSession.UserToken != null ? databaseSession.UserToken.UserName : "system";
@@ -196,11 +195,11 @@ namespace Chef.Common.Repositories
             expando["isarchived"] = false;
 
             if (typeof(TModel).GetInterfaces().Contains(typeof(IBranchModel)))
-            { 
+            {
                 expando["branchcode"] = databaseSession.UserToken?.BranchCode;
             }
 
         }
-         
+
     }
 }

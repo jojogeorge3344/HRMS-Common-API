@@ -22,8 +22,8 @@ namespace Chef.Common.Repositories
             {
                 return connectionFactory.Connection;
             }
-        }   
-    
+        }
+
         public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
 
         public string TableName => SchemaName + "." + typeof(T).Name;

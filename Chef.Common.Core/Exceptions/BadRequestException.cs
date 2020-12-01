@@ -1,5 +1,4 @@
-﻿using Chef.Common.Core;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
 namespace Chef.Common.Exceptions

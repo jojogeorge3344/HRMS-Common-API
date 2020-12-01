@@ -1,19 +1,10 @@
-﻿using AutoMapper.Internal;
-using Chef.Common.Core;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Math.EC.Rfc7748;
-using SqlKata;
+﻿using SqlKata;
 using SqlKata.Compilers;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http.Headers;
-using System.Reflection;
 
 namespace Chef.Common.Repositories
 {
@@ -106,8 +97,8 @@ namespace Chef.Common.Repositories
         {
             if (query.Variables.ContainsKey("Aliases"))
             {
-                var dictionary = query.Variables["Aliases"] as Dictionary<string, string>; 
-                return (dictionary.ContainsKey(condition.Field.ToLower().Trim())) 
+                var dictionary = query.Variables["Aliases"] as Dictionary<string, string>;
+                return (dictionary.ContainsKey(condition.Field.ToLower().Trim()))
                     ? dictionary[condition.Field.ToLower().Trim()]
                     : condition.Field.ToLower().Trim();
             }
@@ -115,7 +106,7 @@ namespace Chef.Common.Repositories
         }
         static Query AndSearchCondition(this Query query, SqlSearchRule condition)
         {
-            var fieldName = query.GetFieldName(condition); 
+            var fieldName = query.GetFieldName(condition);
             switch (condition.Operator)
             {
                 case SqlSearchOperator.Contains:
@@ -234,7 +225,7 @@ namespace Chef.Common.Repositories
 
         static Query ApplySqlSearchGroups(this Query query,
             IEnumerable<SqlSearchGroup> groups)
-        { 
+        {
             foreach (var group in groups)
             {
                 var queryGroup = new Query();
@@ -287,7 +278,7 @@ namespace Chef.Common.Repositories
         public static string[] GenerateFieldsWithAlias(this Dictionary<string, string> keyValuePairs)
         {
             return keyValuePairs.Select(x => string.Join(" as ", x.Value, x.Key)).ToArray();
-        } 
+        }
         /// <summary>
         /// This method returns database table name
         /// </summary>
@@ -420,7 +411,7 @@ namespace Chef.Common.Repositories
                     }
                     else
                         query.Variables["Aliases"] = keyValuePairs;
-                 }
+                }
                 selectfields = expressions.Select((x, i) => string.Format("{0}{1}", x.Member.Name.ToLower(), (x.Member.Name.ToLower() == aliases[i].ToLower()) ? "" : " as " + aliases[i]));
             }
             else
@@ -485,7 +476,7 @@ namespace Chef.Common.Repositories
         //}
 
         public static Query WhereExt(this Query query, IDictionary<string, object> expando)
-        => query.Where(new ReadOnlyDictionary<string, object>(expando)); 
+        => query.Where(new ReadOnlyDictionary<string, object>(expando));
 
         public static Query Where<T>(this Query query, Expression<Func<T, object>> fieldName, string op, object value)
         => query.Where(FieldName<T>(fieldName), op, value);
