@@ -21,6 +21,11 @@ namespace Chef.Common.Test
             Random random = new Random();
             return (T)values.GetValue(random.Next(values.Length));
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="noOfDigits">Max value is 9</param>
+        /// <returns></returns>
         public static string GetRandomCode(int noOfDigits)
         {
             if (noOfDigits < 1 || noOfDigits > 9)
@@ -47,7 +52,6 @@ namespace Chef.Common.Test
         }
         public static bool RandomBoolean()
         {
-            return new Random().Next(100) % 2 == 0;
             return random.Next(100) % 2 == 0;
         }
         public static string GetRandomString(int length)
@@ -55,6 +59,17 @@ namespace Chef.Common.Test
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        public static int[] GetChunks(int totalQuantity, int chunkSize)
+        {
+            if (chunkSize <= 0)
+                throw new Exception($"chunkSize {chunkSize} cannot be less than or equal zero");
+            int quotient = totalQuantity / chunkSize;
+            int remainder = totalQuantity - (quotient * chunkSize);
+            int[] chunks = new int[chunkSize];
+            for (int i = 0; i < chunks.Length; i++)
+                chunks[i] = (i == 0) ? quotient + remainder : quotient;
+            return chunks;
         }
     }
 }
