@@ -11,7 +11,7 @@ namespace Chef.Common.Repositories
     public static class SqlKataExtension
     {
         public static string FieldName<T>(Expression<Func<T, object>> fieldName)
-            => string.Format("{0}.{1}", TableNameWOSchema<T>(), GetPropertyName(fieldName));
+            => string.Format("{0}.{1}", TableNameWOSchema<T>(), GetPropertyName(fieldName)); 
         internal static string[] GetColumns(IDictionary<string, object> obj)
         {
             return obj.Select(x => x.Key).ToArray();
@@ -386,34 +386,51 @@ namespace Chef.Common.Repositories
             return ExpressionHelper.GetMemberNames(newExpression).ToArray();
         }
 
+        static IEnumerable<string> NewExpressionToSelectFieldsWithAlias<T>(this Query query, Expression<Func<T, object>>[] fields)
+        {
+            IEnumerable<string> selectfields;
+            var tableNameWOSchema = TableNameWOSchema<T>();
+            // New Expression
+            var newExpression = fields.First().Body as NewExpression;
+            var expressions = ExpressionHelper.GetMemberExpressions(newExpression);
+            var aliases = ExpressionHelper.GetMemberNames(newExpression).ToArray();
+            var keyValuePairs = expressions.Select((x, index) => new { Key = aliases[index].ToLower(), Value = x.Member.Name.ToLower() })
+                .Where(x => x.Key != x.Value)
+                 .ToDictionary(x => x.Key, x => tableNameWOSchema + "." + x.Value);
+            if (keyValuePairs.Count > 0)
+            {
+                if (query.Variables.ContainsKey("Aliases"))
+                {
+                    var dictionary = query.Variables["Aliases"] as Dictionary<string, string>;
+                    foreach (var keyValue in keyValuePairs)
+                        dictionary[keyValue.Key]= keyValue.Value;
+                    query.Variables["Aliases"] = dictionary;
+                }
+                else
+                    query.Variables["Aliases"] = keyValuePairs;
+            }
+            selectfields = expressions.Select((x, i) => string.Format("{0}{1}", x.Member.Name.ToLower(), (x.Member.Name.ToLower() == aliases[i].ToLower()) ? "" : " as " + aliases[i]));
+            return selectfields;
+        }
+
+        static IEnumerable<string> NewExpressionToSelectFieldsWithoutAlias<T>(this Query query, Expression<Func<T, object>>[] fields)
+        {
+            IEnumerable<string> selectfields;
+            var tableNameWOSchema = TableNameWOSchema<T>();
+            // New Expression
+            var newExpression = fields.First().Body as NewExpression;
+            var expressions = ExpressionHelper.GetMemberExpressions(newExpression);  
+            selectfields = expressions.Select((x) => x.Member.Name.ToLower());
+            return selectfields;
+        }
+
         public static Query Select<T>(this Query query, params Expression<Func<T, object>>[] fields)
         {
             if (fields == null) throw new ArgumentNullException(nameof(fields));
             var tableNameWOSchema = TableNameWOSchema<T>();
             IEnumerable<string> selectfields;
             if (fields.Count() == 1 && fields.First().Body is NewExpression)
-            {
-                // New Expression
-                var newExpression = fields.First().Body as NewExpression;
-                var expressions = ExpressionHelper.GetMemberExpressions(newExpression);
-                var aliases = ExpressionHelper.GetMemberNames(newExpression).ToArray();
-                var keyValuePairs = expressions.Select((x, index) => new { Key = aliases[index].ToLower(), Value = x.Member.Name.ToLower() })
-                    .Where(x => x.Key != x.Value)
-                     .ToDictionary(x => x.Key, x => tableNameWOSchema + "." + x.Value);
-                if (keyValuePairs.Count > 0)
-                {
-                    if (query.Variables.ContainsKey("Aliases"))
-                    {
-                        var dictionary = query.Variables["Aliases"] as Dictionary<string, string>;
-                        foreach (var keyValue in keyValuePairs)
-                            dictionary.Add(keyValue.Key, keyValue.Value);
-                        query.Variables["Aliases"] = dictionary;
-                    }
-                    else
-                        query.Variables["Aliases"] = keyValuePairs;
-                }
-                selectfields = expressions.Select((x, i) => string.Format("{0}{1}", x.Member.Name.ToLower(), (x.Member.Name.ToLower() == aliases[i].ToLower()) ? "" : " as " + aliases[i]));
-            }
+                selectfields = NewExpressionToSelectFieldsWithAlias<T>(query, fields);
             else
                 selectfields = fields.Select(f => GetPropertyName(f)).ToArray();
             return query.Select(string.Format("{0}.{{{1}}}", tableNameWOSchema, string.Join(", ", selectfields)));
@@ -507,5 +524,22 @@ namespace Chef.Common.Repositories
         public static Join Where<T>(this Join join, Expression<Func<T, object>> fieldName, object value)
         => join.Where(FieldName<T>(fieldName), "=", value);
 
+        public static Query AsMax<T>(this Query query, Expression<Func<T, object>> fieldName)
+        => query.SelectRaw($"MAX ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\"");
+        public static Query AsMin<T>(this Query query, Expression<Func<T, object>> fieldName)
+        => query.SelectRaw($"MIN ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\"");
+        public static Query AsSum<T>(this Query query, Expression<Func<T, object>> fieldName)
+        => query.SelectRaw($"SUM ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\""); 
+        public static Query GroupBy<T>(this Query query, params Expression<Func<T, object>>[] fields)
+        { 
+            var tableNameWOSchema = TableNameWOSchema<T>();
+            IEnumerable<string> selectfields;
+            if (fields.Count() == 1 && fields.First().Body is NewExpression)
+                selectfields = NewExpressionToSelectFieldsWithoutAlias<T>(query, fields);
+            else
+                selectfields = fields.Select(f => GetPropertyName(f)).ToArray();
+            return query.GroupBy(selectfields.Select(x => string.Format("{0}.{1}", tableNameWOSchema, x)).ToArray());
+            //return query.GroupBy(string.Format("{0}.{{{1}}}", tableNameWOSchema, string.Join(", ", selectfields)));
+        } 
     }
 }
