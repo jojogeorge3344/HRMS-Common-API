@@ -45,5 +45,12 @@ namespace Chef.Common.Repositories
             if (memberExpression == null) throw new ArgumentNullException(nameof(memberExpression));
             return memberExpression.Member.Name.ToLower();
         }
+        static string TableNameWOSchema<T>() => typeof(T).Name.ToLower();
+         
+        public static string GetFieldName<T>(this LambdaExpression propertyExpression)
+        {
+            if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
+            return string.Format("{0}.{1}", TableNameWOSchema<T>(), ExpressionHelper.GetMemberExpression(propertyExpression).GetPropertyName());
+        }
     }
 }

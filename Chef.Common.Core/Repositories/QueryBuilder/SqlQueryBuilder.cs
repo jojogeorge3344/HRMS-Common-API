@@ -121,7 +121,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = sqlSearchOperator,
                 Value = value
             });
@@ -131,7 +131,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.Equal,
                 Value = value
             });
@@ -141,7 +141,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNull,
                 Value = null
             });
@@ -151,7 +151,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNotNull,
                 Value = null
             });
@@ -213,7 +213,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = sqlSearchOperator,
                 Value = value
             });
@@ -223,7 +223,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.Equal,
                 Value = value
             });
@@ -233,7 +233,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNull,
                 Value = null
             });
@@ -243,7 +243,7 @@ namespace Chef.Common.Repositories
         {
             this.Rules.Add(new SqlSearchRule
             {
-                Field = column.GetPropertyName(),
+                Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNotNull,
                 Value = null
             });
