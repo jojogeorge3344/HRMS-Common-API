@@ -12,7 +12,7 @@ namespace Chef.Common.Models
 
         [Required]
         [StringLength(8)]
-        public string Code { get; set; }
+        public string Code { get; set; }     
 
         [StringLength(256)]
         public string AddressLine1 { get; set; }
@@ -50,6 +50,9 @@ namespace Chef.Common.Models
 
         [ForeignKey("Common.Company")]
         public int CompanyId { get; set; }
+
+        [StringLength(8)]
+        public string CompanyCode { get; set; }
 
         [StringLength(64)]
         public string CompanyName { get; set; }
