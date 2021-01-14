@@ -14,8 +14,8 @@ namespace Chef.Common.Models
         [StringLength(256)]
         public string Description { get; set; }
 
-        [Write(false)]
-        [Skip(true)]
-        public List<BusinessSitesDetail> BusinessSitesDetails { get; set; }
+        //[Write(false)]
+        //[Skip(true)]
+        //public List<BusinessSitesDetail> BusinessSitesDetails { get; set; }
     }
 }
