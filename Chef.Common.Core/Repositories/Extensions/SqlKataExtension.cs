@@ -523,7 +523,8 @@ namespace Chef.Common.Repositories
         => join.Where(FieldName<T>(fieldName), op, value);
         public static Join Where<T>(this Join join, Expression<Func<T, object>> fieldName, object value)
         => join.Where(FieldName<T>(fieldName), "=", value);
-
+        public static Query OrWhere<T>(this Query query, Expression<Func<T, object>> fieldName, object value)
+        => query.OrWhere(FieldName<T>(fieldName), value);
         public static Query AsMax<T>(this Query query, Expression<Func<T, object>> fieldName)
         => query.SelectRaw($"MAX ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\"");
         public static Query AsMin<T>(this Query query, Expression<Func<T, object>> fieldName)
