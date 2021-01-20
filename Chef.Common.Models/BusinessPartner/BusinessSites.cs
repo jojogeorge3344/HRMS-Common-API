@@ -1,5 +1,4 @@
 ﻿using Chef.Common.Core;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
@@ -13,9 +12,5 @@ namespace Chef.Common.Models
         [Required]
         [StringLength(256)]
         public string Description { get; set; }
-
-        //[Write(false)]
-        //[Skip(true)]
-        //public List<BusinessSitesDetail> BusinessSitesDetails { get; set; }
     }
 }
