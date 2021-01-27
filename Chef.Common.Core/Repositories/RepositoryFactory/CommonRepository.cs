@@ -31,17 +31,17 @@ namespace Chef.Common.Repositories
         #region Get Async
         public async Task<TModel> GetAsync(int id, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(new { id });
+            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(new { id });
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
         public async Task<TModel> GetAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject);
+            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
         public async Task<TModel> GetAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>();
+            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
             query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
@@ -50,32 +50,32 @@ namespace Chef.Common.Repositories
         #region Get Records Async
         public async Task<IEnumerable<TModel>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>();
+            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
 
         }
 
         public async Task<IEnumerable<TModel>> GetRecordsAsync(SqlSearch sqlSearch = null, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>();
+            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
             query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
         public async Task<IEnumerable<TModel>> GetRecordsAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject);
+            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
         public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("id").Limit(noOfRecords);
+            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Limit(noOfRecords);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
         public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject).OrderByDesc("id").Limit(noOfRecords);
+            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject).OrderByDesc("createddate").Limit(noOfRecords);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
@@ -85,12 +85,12 @@ namespace Chef.Common.Repositories
         #region Get Record Count
         public async Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().AsCount().Where(whereConditionObject);
+            var query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<int>(query);
         }
         public async Task<int> GetRecordCountAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().AsCount();
+            var query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate");
             query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryFirstOrDefaultAsync<int>(query, cancellationToken: cancellationToken);
         }
