@@ -6,11 +6,14 @@ namespace Chef.Common.Models
     public class BusinessSites : Model
     {
         [Required]
-        [StringLength(10)]
-        public string Code { get; set; }
+        public int BusinessPartnerId { get; set; }
 
         [Required]
-        [StringLength(256)]
-        public string Description { get; set; }
+        [StringLength(16)]
+        public string BusinessPartnerCode { get; set; }
+
+        [Required]
+        [StringLength(126)]
+        public string BusinessPartnerName { get; set; }
     }
 }

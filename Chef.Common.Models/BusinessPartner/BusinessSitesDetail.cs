@@ -11,14 +11,11 @@ namespace Chef.Common.Models
         public int BusinessSitesId { get; set; }
 
         [Required]
-        public int BusinessPartnerId { get; set; }
-
-        [Required]
-        [StringLength(16)]
-        public string BusinessPartnerCode { get; set; }
+        [StringLength(3)]
+        public string SiteCode { get; set; }
 
         [Required]
         [StringLength(126)]
-        public string BusinessPartnerName { get; set; }
+        public string SiteName { get; set; }
     }
 }
