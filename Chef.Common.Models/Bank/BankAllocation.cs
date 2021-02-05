@@ -30,6 +30,10 @@ namespace Chef.Common.Models
         [StringLength(50)]
         public string IBAN { get; set; }
 
+        public string SwiftCode { get; set; }
+
+        public string IfscCode { get; set; }
+
         [Required]
         [StringLength(36)]
         public string AccountNumber { get; set; }
@@ -43,5 +47,23 @@ namespace Chef.Common.Models
 
         [Required]
         public bool IsdefaultBank { get; set; }
+
+        [Required]
+        public int BankControlAccountId { get; set; }
+
+        [Required]
+        public string BankControlAccountCode { get; set; }
+
+        [Required]
+        public string BankControlAccountName { get; set; }
+
+        [Required]
+        public int BankChargeControlAccountId { get; set; }
+
+        [Required]
+        public string BankChargeControlAccountCode { get; set; }
+
+        [Required]
+        public string BankChargeControlAccountName { get; set; }
     }
 }
