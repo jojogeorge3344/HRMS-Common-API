@@ -56,8 +56,5 @@ namespace Chef.Common.Models
 
         [StringLength(64)]
         public string CompanyName { get; set; }
-
-        [StringLength(8)]
-        public string CompanyCode { get; set; }
     }
 }
