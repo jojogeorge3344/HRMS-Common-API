@@ -17,7 +17,7 @@ namespace Chef.Common.Models
 
         public string DisplayFormat { get; set; }
 
-        public NumeralFormat NumeralFormat { get; set; }
+        public CurrencyNumberFormatType CurrencyNumberFormatType { get; set; }
 
         public float ExchangeVariationUp { get; set; }
 
