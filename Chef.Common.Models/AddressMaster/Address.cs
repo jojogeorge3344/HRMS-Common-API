@@ -23,6 +23,12 @@ namespace Chef.Trading.Models
         [Required]
         public string CountryName { get; set; }
         [Required]
+        public int CityId { get; set; }
+        [Required]
+        public int StateId { get; set; }
+        [Required]
+        public int CountryId { get; set; }
+        [Required]
         public string ZipCode { get; set; }
         public string ContactPerson { get; set; }
         public string ContactNumber { get; set; }
