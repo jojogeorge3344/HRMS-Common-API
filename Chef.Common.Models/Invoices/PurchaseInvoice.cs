@@ -43,7 +43,7 @@ namespace Chef.Finance.Models
         public DateTime POContractDate { get; set; }
 
         public bool IsAgainstPO { get; set; }
-        public int POId { get; set; }
+        public int PurchaseOrderId { get; set; }
         public string PONumber { get; set; }
 
         public DateTime? PODate { get; set; }
