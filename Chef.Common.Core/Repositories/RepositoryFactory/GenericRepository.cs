@@ -41,7 +41,7 @@ namespace Chef.Common.Repositories
         {
             using (Connection)
             {
-                var sql = "SELECT * FROM " + TableName + " ORDER BY id";
+                var sql = "SELECT * FROM " + TableName + " ORDER BY createddate desc";
                 return await Connection.QueryAsync<T>(sql);
             }
         }
