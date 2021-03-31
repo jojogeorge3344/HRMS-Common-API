@@ -541,6 +541,9 @@ namespace Chef.Common.Repositories
                 selectfields = fields.Select(f => GetPropertyName(f)).ToArray();
             return query.GroupBy(selectfields.Select(x => string.Format("{0}.{1}", tableNameWOSchema, x)).ToArray());
             //return query.GroupBy(string.Format("{0}.{{{1}}}", tableNameWOSchema, string.Join(", ", selectfields)));
-        } 
+        }
+
+        public static Query WhereGreaterThan<T>(this Query query, Expression<Func<T, object>> fieldName, object value)
+         => query.Where(FieldName<T>(fieldName), ">", value);
     }
 }
