@@ -58,7 +58,7 @@ namespace Chef.Finance.Models
 
         public string GRNNumber { get; set; }
 
-        public DateTime GRNDate { get; set; }
+        public DateTime? GRNDate { get; set; }
 
         public bool IsSupplier { get; set; }
 
