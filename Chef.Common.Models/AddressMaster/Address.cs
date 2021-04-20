@@ -12,7 +12,7 @@ namespace Chef.Trading.Models
         public string AddressCode { get; set; }
         public string AddressName { get; set; }
         [Required]
-        public string StreetNo { get; set; }
+        public string FaxNo { get; set; }
         [Required]
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
