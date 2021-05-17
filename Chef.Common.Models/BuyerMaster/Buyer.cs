@@ -17,12 +17,12 @@ namespace Chef.Trading.Models
         [Required]
         public string Email { get; set; }
         public decimal BuyerLimit { get; set; }
-        [Required]
+        //[Required]
         [ForeignKeyId(typeof(PurchaseOffice))]
-        public int PurchaseOfficeId { get; set; }
-        [Required]
-        [ForeignKeyCode(typeof(PurchaseOffice))]
-        public string PurchaseOfficeCode { get; set; }
+        public int? PurchaseOfficeId { get; set; } = null;
+        // [Required]
+        //[ForeignKeyCode(typeof(PurchaseOffice))]
+        public string PurchaseOfficeCode { get; set; } 
 
     }
 }
