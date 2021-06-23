@@ -85,7 +85,7 @@ namespace Chef.Trading.Models
         public string SupplierPhone { get; set; }
         public string SupplierFax { get; set; }
         public string SupplierEmail { get; set; }
-        public int SupplierContact { get; set; }
+        public string SupplierContact { get; set; }
         public string BaseCurrencyCode { get; set; }
         public string TxnCurrencyCode { get; set; }
         public float TxnCurrencyExchangeRate { get; set; }
