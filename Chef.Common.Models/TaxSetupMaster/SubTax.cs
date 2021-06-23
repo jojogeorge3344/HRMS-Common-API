@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core;
+using Chef.Common.Types;
 using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
@@ -8,10 +9,10 @@ namespace Chef.Common.Models
         [ForeignKeyId(typeof(Tax))]
         [Required]
         public int TaxId { get; set; }
-        [ForeignKeyCode(typeof(Tax))]
-        [Required]
+        //[ForeignKeyCode(typeof(Tax))]
+        //[Required]
 
-        public string TaxCode { get; set; }
+        //public string TaxCode { get; set; }
 
         [Required]
         [Unique(true)]
@@ -19,6 +20,7 @@ namespace Chef.Common.Models
         [Required]
         public float SubTaxPercent { get; set; }
         [Required]
-        public string TaxBase { get; set; }
+        //public string TaxBase { get; set; }
+        public TaxBase taxBase { get; set; }
     }
 }

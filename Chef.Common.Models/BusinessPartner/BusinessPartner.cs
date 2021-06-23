@@ -74,9 +74,12 @@ namespace Chef.Common.Models
         public int SerialNumber { get; set; }
 
         public bool IsActive { get; set; }
+        [Required]
+        [Unique(true)]
         public int TaxJurisdictionId { get; set; }
+        
         public string TaxName { get; set; }
-        public int DefaultPurchaseTax { get; set; }
-        public int DefaultSalesTax { get; set; }
+        //public int DefaultPurchaseTax { get; set; }
+        //public int DefaultSalesTax { get; set; }
     }
 }

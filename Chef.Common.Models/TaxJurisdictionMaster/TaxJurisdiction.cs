@@ -5,11 +5,12 @@ namespace Chef.Common.Models
 {
     public class TaxJurisdiction : Model
     {
-        [Required(AllowEmptyStrings = true)]
+        //[Required(AllowEmptyStrings = true)]
+        [Required]
         [Unique(true)]
         [Code]
-        public string TaxJurisdictionCode { get; set; } = string.Empty;
-
+       // public string TaxJurisdictionCode { get; set; } = string.Empty;
+        public string TaxJurisdictionCode { get; set; } 
         [Required]
         [Unique(true)]
         public string TaxName { get; set; }
