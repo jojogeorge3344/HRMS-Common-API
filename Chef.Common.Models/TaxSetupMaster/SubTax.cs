@@ -8,7 +8,8 @@ namespace Chef.Common.Models
     {
         [ForeignKeyId(typeof(Tax))]
         [Required]
-        public int TaxId { get; set; }
+
+        public int? TaxId { get; set; } = 0;
         //[ForeignKeyCode(typeof(Tax))]
         //[Required]
 
