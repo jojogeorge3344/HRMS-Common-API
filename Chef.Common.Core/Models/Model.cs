@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using static Chef.Common.Core.TransactionModel;
 
 namespace Chef.Common.Core
 {
@@ -18,5 +19,25 @@ namespace Chef.Common.Core
         public string ModifiedBy { get; set; }
 
         public bool IsArchived { get; set; } = false;
+    }
+    public class TransactionModel: Model
+    {
+        [Write(false)]
+        [Skip(true)]
+        private DateTime TempDate;
+
+       
+        public DateTime TransactionDate
+        {
+            get
+            {
+                return this.TempDate.Date;
+            }
+            set
+            {
+                this.TempDate = value;
+            }
+        }
+        
     }
 }

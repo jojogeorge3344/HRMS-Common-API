@@ -3,24 +3,25 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
     {
-        private readonly IConnectionFactory connectionFactory;
+        private DbSession _session;
 
-        public GenericRepository(IConnectionFactory connectionFactory)
+        public GenericRepository(DbSession session)
         {
-            this.connectionFactory = connectionFactory;
+            _session = session;
         }
 
         public IDbConnection Connection
         {
             get
             {
-                return connectionFactory.Connection;
+                return _session.Connection;
             }
         }
 
@@ -30,56 +31,66 @@ namespace Chef.Common.Repositories
 
         public async virtual Task<int> DeleteAsync(int id)
         {
-            using (Connection)
-            {
-                var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
-                return await Connection.ExecuteAsync(sql, new { Id = id });
-            }
+            var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
+            return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 
         public async virtual Task<IEnumerable<T>> GetAllAsync()
         {
-            using (Connection)
-            {
-                var sql = "SELECT * FROM " + TableName + " ORDER BY createddate desc";
-                return await Connection.QueryAsync<T>(sql);
-            }
+            var sql = "SELECT * FROM " + TableName + " ORDER BY createddate desc";
+            return await Connection.QueryAsync<T>(sql);
         }
 
         public async virtual Task<T> GetAsync(int id)
         {
-            using (Connection)
-            {
-                var sql = "SELECT * FROM " + TableName + " WHERE id = @Id";
-                return await Connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
-            }
+            var sql = "SELECT * FROM " + TableName + " WHERE id = @Id";
+            return await Connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
         }
 
         public async virtual Task<T> InsertAsync(T obj)
         {
             InsertModelProperties(ref obj);
-
-            using (Connection)
+            try
             {
-                try
+                var sql = new QueryBuilder<T>().GenerateInsertQuery();
+                var result = await Connection.QueryFirstOrDefaultAsync<T>(sql, obj);
+                obj.Id = Convert.ToInt32(result.Id);
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                bool value = ex.Message.Contains("duplicate key value violates unique constraint");
+                if (value)
                 {
-                    var sql = new QueryBuilder<T>().GenerateInsertQuery();
-                    var result = await Connection.QueryFirstOrDefaultAsync<T>(sql, obj);
-                    obj.Id = Convert.ToInt32(result.Id);
+                    obj.Id = -1;
                     return obj;
                 }
+                throw ex;
+            }
+        }
 
-                catch (Exception ex)
+        public async virtual Task<List<T>> BulkInsertAsync(List<T> objs)
+        {
+            for (int i = 0; i < objs.Count; i++)
+            {
+                var tmp = objs[i];
+                InsertModelProperties(ref tmp);
+                objs[i] = tmp;
+            }
+            try
+            {
+                var sql = new QueryBuilder<T>().GenerateInsertQuery();
+                var result = await Connection.ExecuteAsync(sql, objs.AsEnumerable());
+                return objs;
+            }
+            catch (Exception ex)
+            {
+                bool value = ex.Message.Contains("duplicate key value violates unique constraint");
+                if (value)
                 {
-                    bool value = ex.Message.Contains("duplicate key value violates unique constraint");
-                    if (value)
-                    {
-                        obj.Id = -1;
-                        return obj;
-                    }
-
-                    throw ex;
+                    return objs;
                 }
+                throw ex;
             }
         }
 
@@ -93,26 +104,20 @@ namespace Chef.Common.Repositories
         public async virtual Task<int> UpdateAsync(T obj)
         {
             UpdateModelProperties(ref obj);
-
-            using (Connection)
+            try
             {
-                try
+                var sql = new QueryBuilder<T>().GenerateUpdateQuery();
+                return await Connection.ExecuteAsync(sql, obj);
+            }
+            catch (Exception ex)
+            {
+                bool value = ex.Message.Contains("duplicate key value violates unique constraint");
+                if (value)
                 {
-                    var sql = new QueryBuilder<T>().GenerateUpdateQuery();
-                    return await Connection.ExecuteAsync(sql, obj);
+                    obj.Id = -1;
+                    return obj.Id;
                 }
-
-                catch (Exception ex)
-                {
-                    bool value = ex.Message.Contains("duplicate key value violates unique constraint");
-                    if (value)
-                    {
-                        obj.Id = -1;
-                        return obj.Id;
-                    }
-
-                    throw ex;
-                }
+                throw ex;
             }
         }
 

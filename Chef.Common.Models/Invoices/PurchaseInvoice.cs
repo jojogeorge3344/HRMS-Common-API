@@ -2,10 +2,11 @@
 using Chef.Common.Types;
 using System;
 using System.ComponentModel.DataAnnotations;
+using static Chef.Common.Core.TransactionModel;
 
 namespace Chef.Finance.Models
 {
-    public class PurchaseInvoice : Model
+    public class PurchaseInvoice :TransactionModel
     {
         [Required]
         public string InvoiceNo { get; set; }
@@ -13,7 +14,7 @@ namespace Chef.Finance.Models
         [Required]
         public DateTime InvoiceDate { get; set; } 
 
-        public DateTime TransactionDate { get; set; }
+       //public  DateTime TransactionDate { get; set; }
 
         public string Description { get; set; }
 
