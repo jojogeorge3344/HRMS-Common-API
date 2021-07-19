@@ -15,5 +15,7 @@ namespace Chef.Common.Types
 
         [Description("Hold")]
         Hold = 4,
+        [Description("Reversal")]
+        Reversal = 5
     }
 }
