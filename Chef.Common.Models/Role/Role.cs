@@ -11,6 +11,6 @@ namespace Chef.Common.Models
         public string Code { get; set; }
         public string Name { get; set; }
         public IList<RoleNode> RoleNodeList { get; set; }
-        public IList<RoleNodePermission> RoleNodePermissionList { get; set; }
+       
     }
 }
