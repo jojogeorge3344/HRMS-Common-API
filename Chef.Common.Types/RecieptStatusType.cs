@@ -2,7 +2,7 @@
 
 namespace Chef.Common.Types
 {
-    public enum RecieptStatusType
+    public enum ReceiptStatusType
     {
         [Description("Unprocessed")]
         Unprocessed = 1,
@@ -15,5 +15,8 @@ namespace Chef.Common.Types
 
         [Description("Hold")]
         Hold = 4,
+
+        [Description("Reversal")]
+        Reversal = 5,
     }
 }
