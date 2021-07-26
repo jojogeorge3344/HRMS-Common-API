@@ -8,7 +8,7 @@ namespace Chef.Common.Models
     {
         [ForeignKeyId(typeof(Tax))]
         [Required]
-
+        [Unique(true), Composite(Index = 1, GroupNumber = 2)]
         public int? TaxId { get; set; } = 0;
         //[ForeignKeyCode(typeof(Tax))]
         //[Required]
@@ -16,7 +16,7 @@ namespace Chef.Common.Models
         //public string TaxCode { get; set; }
 
         [Required]
-        [Unique(true)]
+        [Unique(true), Composite(Index = 2, GroupNumber = 2)]
         public string SubTaxName { get; set; }
         [Required]
         public float SubTaxPercent { get; set; }
