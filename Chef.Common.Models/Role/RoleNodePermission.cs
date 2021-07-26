@@ -16,6 +16,9 @@ namespace Chef.Common.Models
         [ForeignKey("Permission")]
         public int PermissionId { get; set; }
         public string PermissionName { get; set; }
-        
+        [Write(false)]
+        [Skip(true)]
+        public int isactive { get; set; }
+
     }
 }
