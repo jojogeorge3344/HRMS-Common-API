@@ -10,7 +10,9 @@ namespace Chef.Common.Models
     {
         public string Code { get; set; }
         public string Name { get; set; }
-        public IList<RoleNode> RoleNodeList { get; set; }
+        [Write(false)]
+        [Skip(true)]
+        public List<RoleNode> RoleNodeList { get; set; }
        
     }
 }
