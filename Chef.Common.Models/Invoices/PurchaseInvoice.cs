@@ -1,5 +1,6 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Types;
+using Chef.Finance.Types;
 using System;
 using System.ComponentModel.DataAnnotations;
 using static Chef.Common.Core.TransactionModel;
@@ -84,6 +85,8 @@ namespace Chef.Finance.Models
         public decimal TotalAdjustedAmountInBasecurrency { get; set; }
 
         public DocumentStatusType DocumentStatus { get; set; }
+
+        public ApproveStatus ApproveStatus { get; set; }
 
         public PurchaseInvoiceStatusType PurchaseInvoiceStatus { get; set; }
         public int LandingCostElementId { get; set; }
