@@ -37,13 +37,13 @@ namespace Chef.Common.Repositories
 
         public async virtual Task<IEnumerable<T>> GetAllAsync()
         {
-            var sql = "SELECT * FROM " + TableName + " ORDER BY createddate desc";
+            var sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ORDER BY createddate desc";
             return await Connection.QueryAsync<T>(sql);
         }
 
         public async virtual Task<T> GetAsync(int id)
         {
-            var sql = "SELECT * FROM " + TableName + " WHERE id = @Id";
+            var sql = "SELECT * FROM " + TableName + " WHERE  isarchived=false and id = @Id";
             return await Connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
         }
 
