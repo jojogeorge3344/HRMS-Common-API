@@ -1,6 +1,5 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Types;
-using Chef.Finance.Types;
 using System;
 using System.ComponentModel.DataAnnotations;
 using static Chef.Common.Core.TransactionModel;
@@ -86,14 +85,14 @@ namespace Chef.Finance.Models
 
         public DocumentStatusType DocumentStatus { get; set; }
 
-        public ApproveStatus ApproveStatus { get; set; }
-
-        public string ApproveStatusName { get; set; }
-
         public PurchaseInvoiceStatusType PurchaseInvoiceStatus { get; set; }
         public int LandingCostElementId { get; set; }
         public string  LandingCostElementCode { get; set; }
         public string LandingCostElementName { get; set; }
+
+        public InvoiceStatus ApproveStatus { get; set; }
+
+        public string ApproveStatusName { get; set; }
 
         [Write(false)]
         [Skip(true)]
