@@ -90,6 +90,10 @@ namespace Chef.Finance.Models
         public string  LandingCostElementCode { get; set; }
         public string LandingCostElementName { get; set; }
 
+        public InvoiceStatus ApproveStatus { get; set; }
+
+        public string ApproveStatusName { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public PurchaseInvoicePaymentTerm PaymentTerm { get; set; }
@@ -97,10 +101,5 @@ namespace Chef.Finance.Models
         [Write(false)]
         [Skip(true)]
         public PurchaseInvoiceOtherDetail OtherDetail { get; set; }
-
-        public InvoiceStatus ApproveStatus { get; set; }
-
-        public string ApproveStatusName { get; set; }
-
     }
 }

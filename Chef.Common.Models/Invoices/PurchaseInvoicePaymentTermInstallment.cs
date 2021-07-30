@@ -25,6 +25,12 @@ namespace Chef.Finance.Models
 
         public decimal AdjustedAmount { get; set; }
 
+        public decimal AmountInBaseCurrency { get; set; }
+
+        public decimal BalanceAmountInBaseCurrency { get; set; }
+
+        public decimal AdjustedAmountInBaseCurrency { get; set; }        
+
         public int? CreditPeriodInDays { get; set; }
 
         [Required]
