@@ -12,6 +12,9 @@ namespace Chef.Common.Models
         public int NodeId { get; set; }
         public string NodeName { get; set; }
         public int ModuleId { get; set; }
+        [Write(false)]
+        [Skip(true)]
+        public string ModuleName { get; set; }
 
         [ForeignKey("NodePermission")]
         public int NodePermissionId { get; set; }
