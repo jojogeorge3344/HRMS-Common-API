@@ -1,6 +1,7 @@
 ﻿using Chef.Common.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,10 @@ namespace Chef.Common.Models
 {
 				public class FinanceIntegrationConfiguration : Model
 				{
+								[Required]
 								public int ItemCategoryId { get; set; }
 
+								[Required]
 								public string ItemCategoryName { get; set; }
 
 								public int ItemTypeId { get; set; }
@@ -37,6 +40,8 @@ namespace Chef.Common.Models
 
 								public string ItemCommondityName { get; set; }
 
+								[Write(false)]
+								[Skip(true)]
 								public List<IntegrationControlAccount> IntegrationControlAccounts { get; set; }								 
 
 				}
