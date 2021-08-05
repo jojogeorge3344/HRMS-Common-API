@@ -11,7 +11,7 @@ namespace Chef.Common.Models
         public string Code { get; set; }
         public string Name { get; set; }
 
-        public bool IsRoleActive { get; set; }
+        public bool IsRoleActive { get; set; } = false;
         [Write(false)]
         [Skip(true)]
         public List<RoleNode> RoleNodeList { get; set; }
