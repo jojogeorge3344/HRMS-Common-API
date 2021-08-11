@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core;
+using System.Collections.Generic;
 
 namespace Chef.Common.Models
 {
@@ -10,6 +11,12 @@ namespace Chef.Common.Models
         public string Emailid { get; set; }
         public string TimeZone { get; set; }
         public string Password { get; set; }
-        
+        [Write(false)]
+        [Skip(true)]
+        public List<UserRole> UserRoleList { get; set; }
+        [Write(false)]
+        [Skip(true)]
+        public List<UserBranch> UserBranchList { get; set; }
+
     }
 }

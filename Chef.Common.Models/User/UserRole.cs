@@ -14,5 +14,9 @@ namespace Chef.Common.Models
 
         [ForeignKey("Role")]
         public int RoleId { get; set; }
+        //[Write(false)]
+        //[Skip(true)]
+        //public string RoleName { get; set; }
+
     }
 }
