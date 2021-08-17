@@ -11,6 +11,7 @@ namespace Chef.Common.Models
         public string Emailid { get; set; }
         public string TimeZone { get; set; }
         public string Password { get; set; }
+        public bool isUserActive { get; set; }
         [Write(false)]
         [Skip(true)]
         public List<UserRole> UserRoleList { get; set; }
