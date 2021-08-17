@@ -11,7 +11,7 @@ namespace Chef.Common.Models
 
         public string UserName { get; set; }
 
-        [ForeignKey("Branches")]
+        [ForeignKey("Branch")]
         public int BranchId { get; set; }
         //[Write(false)]
         //[Skip(true)]
