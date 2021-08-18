@@ -26,6 +26,7 @@ namespace Chef.Common.Repositories
             { "System.Decimal", "money"},
             { "System.String[]", "text[]"},
             { "System.Int32[]", "int[]"},
+            { "System.TimeSpan", "timestamp"},
             //{ "Enum[]", "integer[]" },
         };
 
