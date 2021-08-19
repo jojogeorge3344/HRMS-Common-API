@@ -11,6 +11,8 @@ namespace Chef.Common.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailId { get; set; }
+        public string Password { get; set; }
+
         public string TimeZone { get; set; }
         public int RoleId { get; set; }
         public string RoleCode { get; set; }
