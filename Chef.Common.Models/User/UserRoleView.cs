@@ -14,6 +14,7 @@ namespace Chef.Common.Models
         public string Password { get; set; }
 
         public string TimeZone { get; set; }
+        public bool IsUserActive { get; set; }
         public int RoleId { get; set; }
         public string RoleCode { get; set; }
         public string RoleName { get; set; }
