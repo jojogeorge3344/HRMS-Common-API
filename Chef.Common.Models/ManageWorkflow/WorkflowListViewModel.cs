@@ -21,6 +21,7 @@ namespace Chef.ApprovalSystem.Models
         public string ApproverRole { get; set; }
         public int SubmoduleId { get; set; }
         public int NodeSubmoduleId { get; set; }
+        public int NodeDocumentId { get; set; }
         public int ModuleId { get; set; }
     }
 }
