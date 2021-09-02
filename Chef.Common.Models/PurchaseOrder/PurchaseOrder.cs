@@ -137,6 +137,7 @@ namespace Chef.Trading.Models
         [DefaultValue(true)]
         public bool DirectDelivery { get; set; }
         [ForeignKeyId(typeof(TermsAndConditionsMaster))]
-        public int? TermsAndConditonId { get; set; } 
+        public int? TermsAndConditonId { get; set; }
+        public bool ShipmentTransportActiveStatus { get; set; } = true;
     }
 }
