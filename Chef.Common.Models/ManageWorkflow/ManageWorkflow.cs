@@ -20,6 +20,8 @@ namespace Chef.ApprovalSystem.Models
 
         [Required]
         public int RoleId { get; set; }
+        public int NodeId { get; set; }
+        public int Level { get; set; }
 
         [Required]
         public string RoleName { get; set; }

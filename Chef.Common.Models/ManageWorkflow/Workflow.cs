@@ -16,6 +16,8 @@ namespace Chef.ApprovalSystem.Models
         public int RoleId { get; set; }//Foreignkey from admin.role
         public string RoleName { get; set; }
         public string WorkflowName { get; set; }
+        public int NodeId { get; set; }
+        public int Level { get; set; }
 
     }
 }
