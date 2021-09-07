@@ -23,7 +23,8 @@ namespace Chef.ApprovalSystem.Models
 
         public string Value { get; set; }
         public string datatype { get; set; }
-
+        [Write(false)]
+        [Skip(true)]
         public int level { get; set; }
         [Write(false)]
         [Skip(true)]
