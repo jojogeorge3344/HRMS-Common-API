@@ -23,5 +23,6 @@ namespace Chef.ApprovalSystem.Models
         public int NodeSubmoduleId { get; set; }
         public int NodeDocumentId { get; set; }
         public int ModuleId { get; set; }
+        public int Level { get; set; }
     }
 }
