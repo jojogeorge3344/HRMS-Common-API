@@ -141,5 +141,7 @@ namespace Chef.Trading.Models
         public bool ShipmentTransportActiveStatus { get; set; } = true;
 
         public string Remark { get; set; }
+        public int PurchaseContractId { get; set; }
+
     }
 }
