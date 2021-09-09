@@ -139,5 +139,7 @@ namespace Chef.Trading.Models
         [ForeignKeyId(typeof(TermsAndConditionsMaster))]
         public int? TermsAndConditonId { get; set; }
         public bool ShipmentTransportActiveStatus { get; set; } = true;
+
+        public string Remark { get; set; }
     }
 }
