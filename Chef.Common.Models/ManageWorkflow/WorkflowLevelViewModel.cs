@@ -12,6 +12,7 @@ namespace Chef.ApprovalSystem.Models
         public int RoleID { get; set; }
         public string RoleName { get; set; }
         public int level { get; set; }
+        public bool IsDefault { get; set; }
         public IEnumerable<WorkflowLevels> WorkflowList { get; set; }
     }
 }
