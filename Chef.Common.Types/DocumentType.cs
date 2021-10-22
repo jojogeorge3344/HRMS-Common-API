@@ -19,6 +19,6 @@
         SupplierCreditNote = 7004,
         BankReconciliation = 7005,
         PurchaseInvoice = 7006,
-        IntegrationJournalJournal = 8000
+        IntegrationTransaction = 8000
     }
 }
