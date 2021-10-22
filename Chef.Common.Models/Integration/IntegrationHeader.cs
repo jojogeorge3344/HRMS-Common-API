@@ -8,7 +8,7 @@ namespace Chef.Common.Models
 {
     public class IntegrationHeader : Model
     {
-        public int BusinessPartnerId { get; set; }
+        public int BusinessPartnerId { get; set; } = 0;
 
         public string BusinessPartnerCode { get; set; }
 
@@ -22,7 +22,7 @@ namespace Chef.Common.Models
         [StringLength(6)]
         public string TransactionCurrencyCode { get; set; }
 
-        public int ExchangeRateId { get; set; }
+        public int ExchangeRateId { get; set; } = 0;
 
         public decimal ExchangeRate { get; set; }
 
