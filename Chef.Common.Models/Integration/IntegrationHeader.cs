@@ -14,10 +14,10 @@ namespace Chef.Common.Models
 
         public string BusinessPartnerName { get; set; }
 
-        public DateTime DocumentDate { get; set; }
+        public DateTime DocumentDate { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public DateTime TransactionDate { get; set; }
+        public DateTime TransactionDate { get; set; }=DateTime.UtcNow;
 
         [StringLength(6)]
         public string TransactionCurrencyCode { get; set; }
@@ -48,7 +48,7 @@ namespace Chef.Common.Models
 
         public int SourceDocumentId { get; set; }
 
-        public DateTime SourceDocumentDate { get; set; }
+        public DateTime SourceDocumentDate { get; set; } = DateTime.UtcNow;
 
         [Write(false)]
         [Skip(true)]
