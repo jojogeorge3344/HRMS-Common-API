@@ -1,5 +1,6 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Types;
+using Chef.Finance.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -50,8 +51,20 @@ namespace Chef.Common.Models
 
         public DateTime SourceDocumentDate { get; set; } = DateTime.UtcNow;
 
+        public TransactionType TransactionType { get; set; }
+
+        public TransactionOrgin TransactionOrgin { get; set; }
+
+        public int InvoiceId { get; set; }
+
+        public String InvocieNumber { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public List<IntegrationAccountSummary> integrationAccountSummaries { get; set; }
+
+        [Write(false)]
+        [Skip(true)]
+        public List<IntegrationPaymentTerm> integrationPaymentTerms { get; set; }
     }
 }
