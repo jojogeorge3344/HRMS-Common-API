@@ -28,6 +28,10 @@
       
         SalesInvoicing = 12,
        
-        SalesReturn  = 13
+        SalesReturn  = 13,
+
+        MatchedAndApproved = 14
+
+
     }
 }
