@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Types
+﻿namespace Chef.Common.Types
 {
     public enum TransactionType
     {
         None = 0,
         
-        GoodsReceipts = 1,
+        GoodsReceipt = 1,
      
         GoodsReturn = 2,
        

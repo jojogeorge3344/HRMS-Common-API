@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Types
 {
-  public enum TransactionOrgin
+    public enum TransactionOrgin
     {
-        PurchaseModule=1,
-        InventoryModule=2,
-        ManufacturingModule=3,
-        SalesModule=4
+        Purchase = 1,
+        Inventory = 2,
+        Manufacturing = 3,
+        Sales = 4
     }
 }
