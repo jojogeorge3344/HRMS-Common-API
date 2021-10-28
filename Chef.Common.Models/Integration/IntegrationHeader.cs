@@ -59,6 +59,8 @@ namespace Chef.Common.Models
 
         public String InvocieNumber { get; set; }
 
+        public decimal InvoiceAmount { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public List<IntegrationAccountSummary> integrationAccountSummaries { get; set; }
