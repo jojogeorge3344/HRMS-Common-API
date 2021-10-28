@@ -9,9 +9,9 @@ namespace Chef.Common.Models
 
         public decimal AmountBaseCurrency { get; set; }
 
-        public decimal AdvanceAmount { get; set; }
+        public decimal AdvanceAmount { get; set; } = 0;
 
-        public decimal AdvanceAmountInBaseCurrecy { get; set; }
+        public decimal AdvanceAmountInBaseCurrecy { get; set; } = 0;
 
         public int NumberOfInstalments { get; set; }
 
