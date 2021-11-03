@@ -12,5 +12,7 @@ namespace Chef.Common.Models
         [Required]
         [StringLength(4)]
         public string Code { get; set; }
+
+        public string DialCode { get; set; }
     }
 }
