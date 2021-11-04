@@ -1,7 +1,7 @@
-﻿using Chef.Common.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {

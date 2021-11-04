@@ -60,12 +60,14 @@ namespace Chef.Common.Repositories
             catch (Exception ex)
             {
                 bool value = ex.Message.Contains("duplicate key value violates unique constraint");
+
                 if (value)
                 {
                     obj.Id = -1;
                     return obj;
                 }
-                throw ex;
+
+                throw;
             }
         }
 
@@ -86,11 +88,13 @@ namespace Chef.Common.Repositories
             catch (Exception ex)
             {
                 bool value = ex.Message.Contains("duplicate key value violates unique constraint");
+
                 if (value)
                 {
                     return objs;
                 }
-                throw ex;
+
+                throw;
             }
         }
 
@@ -112,12 +116,14 @@ namespace Chef.Common.Repositories
             catch (Exception ex)
             {
                 bool value = ex.Message.Contains("duplicate key value violates unique constraint");
+
                 if (value)
                 {
                     obj.Id = -1;
                     return obj.Id;
                 }
-                throw ex;
+
+                throw;
             }
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Chef.Common.Dtos
+﻿namespace Chef.Common.Dtos
 {
     public class TaxLiteDTO
     {

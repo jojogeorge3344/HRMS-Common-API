@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Models
+﻿namespace Chef.Common.Models
 {
     public class NodePermissionViewModel
     {
@@ -13,6 +7,5 @@ namespace Chef.Common.Models
         public int PermissionId { get; set; }
         public string PermissionCode { get; set; }
         public string PermissionName { get; set; }
-
     }
 }

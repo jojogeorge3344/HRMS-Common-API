@@ -11,6 +11,7 @@ namespace Chef.Common.Core
         {
             this.IsUnique = isUnique;
         }
+
         public override object TypeId { get { return this; } }
     }
 }

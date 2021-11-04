@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Chef.Common.Core
 {
@@ -11,7 +11,9 @@ namespace Chef.Common.Core
             //return (objectType.IsArray && typeof(T).IsAssignableFrom(objectType.GetElementType()));
             //return (objectType == typeof(List<T>));
         }
+
         public override bool CanRead { get { return false; } }
+
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
@@ -29,7 +31,5 @@ namespace Chef.Common.Core
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

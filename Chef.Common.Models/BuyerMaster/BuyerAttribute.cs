@@ -1,6 +1,5 @@
-﻿using Chef.Common.Core;
-using System.ComponentModel.DataAnnotations;
-
+﻿using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
 
 namespace Chef.Trading.Models
 {
@@ -15,6 +14,7 @@ namespace Chef.Trading.Models
         [Unique(true), Composite(Index = 2)]
         [Field(Order = 3)]
         public string AttributeName { set; get; }
+
         [Field(Order = 3)]
         public string AttributeValue { set; get; }
     }

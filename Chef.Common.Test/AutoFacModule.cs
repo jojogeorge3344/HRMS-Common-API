@@ -12,6 +12,7 @@ namespace Chef.Common.Test
             {
                 e.Context.InjectProperties(e.Instance);
             };
+
             base.AttachToComponentRegistration(componentRegistry, registration);
         }
     }

@@ -6,6 +6,7 @@ namespace Chef.Common.Dtos
     {
         [Required]
         public string ItemSegmentCode { get; set; } = string.Empty;
+
         [Required]
         public string Host { get; set; }
     }

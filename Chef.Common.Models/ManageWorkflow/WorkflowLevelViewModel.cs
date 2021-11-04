@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Chef.ApprovalSystem.Models
 {
@@ -11,7 +7,7 @@ namespace Chef.ApprovalSystem.Models
         public string LevelName { get; set; }
         public int RoleID { get; set; }
         public string RoleName { get; set; }
-        public int level { get; set; }
+        public int Level { get; set; }
         public bool IsDefault { get; set; }
         public IEnumerable<WorkflowLevels> WorkflowList { get; set; }
     }

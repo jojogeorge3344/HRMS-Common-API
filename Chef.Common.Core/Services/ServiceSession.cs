@@ -5,6 +5,7 @@ namespace Chef.Common.Services
     public class ServiceSession : IServiceSession
     {
         readonly IDatabaseSession databaseSession;
+
         public ServiceSession(IDatabaseSession databaseSession)
         {
             this.databaseSession = databaseSession;

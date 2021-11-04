@@ -1,11 +1,11 @@
-﻿using Chef.Common.Types;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Npgsql;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using Chef.Common.Types;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Npgsql;
 
 namespace Chef.Common.Exceptions.Helper
 {
@@ -22,6 +22,7 @@ namespace Chef.Common.Exceptions.Helper
 
             };
         }
+
         public static string ErrorMessage(Refit.ApiException ae)
         {
             return ae.StatusCode switch

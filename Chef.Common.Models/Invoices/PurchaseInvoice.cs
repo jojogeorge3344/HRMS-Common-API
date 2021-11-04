@@ -1,8 +1,7 @@
-﻿using Chef.Common.Core;
-using Chef.Common.Types;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using static Chef.Common.Core.TransactionModel;
+using Chef.Common.Core;
+using Chef.Common.Types;
 
 namespace Chef.Finance.Models
 {

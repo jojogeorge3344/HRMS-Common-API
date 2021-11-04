@@ -1,6 +1,6 @@
-﻿using Chef.Common.Core;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
@@ -77,7 +77,7 @@ namespace Chef.Common.Models
         [Required]
         [Unique(true)]
         public int TaxJurisdictionId { get; set; }
-        
+
         public string TaxName { get; set; }
         //public int DefaultPurchaseTax { get; set; }
         //public int DefaultSalesTax { get; set; }

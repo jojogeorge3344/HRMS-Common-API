@@ -1,11 +1,11 @@
-﻿using Chef.Common.Core;
-using Dapper;
-using SqlKata;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Chef.Common.Core;
+using Dapper;
+using SqlKata;
 using static Dapper.SqlMapper;
 
 namespace Chef.Common.Repositories
@@ -24,12 +24,14 @@ namespace Chef.Common.Repositories
             transaction = unitOfWork.Transaction;
             this.UserToken = userToken;
         }
+
         public DatabaseSession(IConnectionFactory connectionFactory)
         {
             this.unitOfWork = new UnitOfWork(connectionFactory.Connection);
             connection = unitOfWork.Connection;
             transaction = unitOfWork.Transaction;
         }
+
         public IUnitOfWorkSession UnitOfWorkSession(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.ReadCommitted)
           => new UnitOfWorkSession(unitOfWork, isolationLevel);
 
@@ -68,6 +70,7 @@ namespace Chef.Common.Repositories
         #region Execute Async
         public Task<int> ExecuteAsync(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.ExecuteAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken));
+
         public Task<int> ExecuteAsync(Query query, CancellationToken cancellationToken = default)
         {
             var sqlResult = query.Compile();
@@ -89,8 +92,10 @@ namespace Chef.Common.Repositories
         #region Query First Async
         public Task<TOutput> QueryFirstOrDefaultAsync<TOutput>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.QueryFirstOrDefaultAsync<TOutput>(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken));
+
         public Task<TOutput> QueryFirstAsync<TOutput>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.QueryFirstAsync<TOutput>(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken));
+
         public Task<TOutput> QueryFirstOrDefaultAsync<TOutput>(Query query, CancellationToken cancellationToken = default)
         {
             var sqlResult = query.Compile();
@@ -144,10 +149,12 @@ namespace Chef.Common.Repositories
         #region Query Async 
         public Task<IEnumerable<TOutput>> QueryAsync<TOutput>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.QueryAsync<TOutput>(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken));
+
         public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null,
           string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
           connection.QueryAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken),
           map: map, splitOn: splitOn);
+
         public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object param = null,
           string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
           connection.QueryAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken),
@@ -162,14 +169,17 @@ namespace Chef.Common.Repositories
             string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.QueryAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken),
             map: map, splitOn: splitOn);
+
         public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object param = null,
             string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.QueryAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken),
             map: map, splitOn: splitOn);
+
         public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object param = null,
             string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.QueryAsync(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken),
                 map: map, splitOn: splitOn);
+
         public Task<IEnumerable<dynamic>> QueryAsync(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default) =>
             connection.QueryAsync<dynamic>(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags, cancellationToken));
 
@@ -200,22 +210,27 @@ namespace Chef.Common.Repositories
            string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
            connection.Query(sql: sql, map: map, splitOn: splitOn, param: param,
                transaction: transaction, commandTimeout: commandTimeout, commandType: commandType);
+
         public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object param = null,
            string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
            connection.Query(sql: sql, map: map, splitOn: splitOn, param: param,
                transaction: transaction, commandTimeout: commandTimeout, commandType: commandType);
+
         public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, object param = null,
            string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
            connection.Query(sql: sql, map: map, splitOn: splitOn, param: param,
                transaction: transaction, commandTimeout: commandTimeout, commandType: commandType);
+
         public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object param = null,
            string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
            connection.Query(sql: sql, map: map, splitOn: splitOn, param: param,
                transaction: transaction, commandTimeout: commandTimeout, commandType: commandType);
+
         public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object param = null,
            string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
            connection.Query(sql: sql, map: map, splitOn: splitOn, param: param,
                transaction: transaction, commandTimeout: commandTimeout, commandType: commandType);
+
         public IEnumerable<dynamic> Query(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
             connection.Query<dynamic>(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags));
 
@@ -233,9 +248,6 @@ namespace Chef.Common.Repositories
         public GridReader QueryMultiple(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered) =>
             connection.QueryMultiple(new Dapper.CommandDefinition(sql, param, transaction, commandTimeout, commandType, flags));
 
-
-
         #endregion
-
     }
 }

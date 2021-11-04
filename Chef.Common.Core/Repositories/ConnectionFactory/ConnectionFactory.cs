@@ -1,11 +1,11 @@
-﻿using Chef.Common.Exceptions;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using Chef.Common.Exceptions;
 using Chef.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 
 namespace Chef.Common.Repositories
 {
@@ -21,6 +21,7 @@ namespace Chef.Common.Repositories
             this.configuration = configuration;
             this.connectionString = GetConnectionString();
         }
+
         public IDbConnection Connection
         {
             get
@@ -28,6 +29,7 @@ namespace Chef.Common.Repositories
                 return new NpgsqlConnection(connectionString);
             }
         }
+
         public string HostName
         {
             get

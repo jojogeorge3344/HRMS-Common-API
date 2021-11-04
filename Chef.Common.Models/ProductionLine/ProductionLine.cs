@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core;
+
 namespace Chef.Common.Models
 {
     public class ProductionLine : Model

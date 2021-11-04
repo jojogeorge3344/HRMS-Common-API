@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chef.ApprovalSystem.Models
 {
@@ -27,8 +23,6 @@ namespace Chef.ApprovalSystem.Models
         public string RoleName { get; set; }
         public bool IsDefault { get; set; }
 
-
         public IEnumerable<WorkflowLevels> WorkflowLevelsList { get; set; }       
-        
     }
 }

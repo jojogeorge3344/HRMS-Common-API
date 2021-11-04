@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.ApprovalSystem.Models
+﻿namespace Chef.ApprovalSystem.Models
 {
     public class NodeWorkflowSteps
     {
-        public int nodedocumentid {get;set;}
-        public int workflowid { get;set;}
-        public int roleid { get; set; }
-        public string rolename {get;set;}
-        public string workflowname { get;set;}
-        public string nodecontrolfieldname { get;set;}
-        public string conditionname { get; set; }
-        public string value { get; set; }
-        public string datatype { get; set; }
-        public string operators { get; set; }
-        public bool isdefault { get; set; }
+        public int NodeDocumentId {get;set;}
+        public int WorkFlowId { get;set;}
+        public int RoleId { get; set; }
+        public string RoleName {get;set;}
+        public string WorkFlowName { get;set;}
+        public string NodeControlFieldName { get;set;}
+        public string ConditionName { get; set; }
+        public string Value { get; set; }
+        public string Datatype { get; set; }
+        public string Operators { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

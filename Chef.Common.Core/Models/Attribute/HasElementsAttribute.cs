@@ -7,11 +7,13 @@ namespace Chef.Common.Core
         public override bool IsValid(object value)
         {
             var collection = value as ICollection;
+
             if (collection != null)
                 return collection.Count > 0;
-            var enumerable = value as IEnumerable;
-            if (enumerable != null)
+
+            if (value is IEnumerable enumerable)
                 return enumerable.GetEnumerator().MoveNext();
+
             return false;
         }
     }

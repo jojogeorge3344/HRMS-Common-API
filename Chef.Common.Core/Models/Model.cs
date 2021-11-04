@@ -10,6 +10,7 @@ namespace Chef.Common.Core
         [Key]
         [Field(Order = 1)]
         public int Id { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         public DateTime ModifiedDate { get; set; } = DateTime.UtcNow;
@@ -20,22 +21,23 @@ namespace Chef.Common.Core
 
         public bool IsArchived { get; set; } = false;
     }
+
     public class TransactionModel: Model
     {
         [Write(false)]
         [Skip(true)]
-        private DateTime TempDate;
-
+        private DateTime tempDate;
        
         public DateTime TransactionDate
         {
             get
             {
-                return this.TempDate.Date;
+                return this.tempDate.Date;
             }
+
             set
             {
-                this.TempDate = value;
+                this.tempDate = value;
             }
         }
         

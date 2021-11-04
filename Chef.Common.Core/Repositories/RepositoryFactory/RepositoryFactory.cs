@@ -6,6 +6,7 @@ namespace Chef.Common.Repositories
     {
         readonly IDatabaseSession databaseSession;
         readonly ISqlQueryBuilder sqlqueryBuilder;
+
         public RepositoryFactory(IDatabaseSession databaseSession)
         {
             this.databaseSession = databaseSession;
@@ -15,7 +16,5 @@ namespace Chef.Common.Repositories
         public ICommonRepository<TModel> GenericRepository<TModel>()
            where TModel : IModel =>
         new CommonRepository<TModel>(this.databaseSession, this.sqlqueryBuilder, new QueryBuilder<TModel>());
-
-
     }
 }

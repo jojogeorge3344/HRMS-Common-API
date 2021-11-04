@@ -1,9 +1,9 @@
-using Chef.Common.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Chef.Common.Core;
 
 namespace Chef.Common.Repositories
 {
@@ -34,11 +34,13 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(new { id });
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
+
         public async Task<TModel> GetAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
+
         public async Task<TModel> GetAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
@@ -67,6 +69,8 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
+
+
         public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Limit(noOfRecords);
@@ -88,6 +92,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<int>(query);
         }
+
         public async Task<int> GetRecordCountAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
         {
             var query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate");
@@ -105,6 +110,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
             return await databaseSession.ExecuteScalarAsync<int>(query);
         }
+
         public async Task<int> InsertAsync(object insertObject)
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(insertObject);
@@ -112,6 +118,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
             return await databaseSession.ExecuteScalarAsync<int>(query);
         }
+
         public async Task<int> BulkInsertAsync(IEnumerable<object> bulkInsertObjects)
         {
             List<IDictionary<string, object>> dictionaries = new List<IDictionary<string, object>>();
@@ -136,6 +143,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(new { id = obj.Id });
             return await databaseSession.ExecuteAsync(query);
         }
+
         public async Task<int> UpdateAsync(object updateObject, object updateConditionObject)
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(updateObject);
@@ -143,6 +151,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(updateConditionObject);
             return await databaseSession.ExecuteAsync(query);
         }
+
         public async Task<int> UpdateAsync(object updateObject, SqlKata.Query sqlKataQuery)
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(updateObject);
@@ -159,6 +168,7 @@ namespace Chef.Common.Repositories
             var query = sqlQueryBuilder.Query<TModel>().Where(deleteCondition).AsDelete();
             return await databaseSession.ExecuteAsync(query);
         }
+
         public async Task<int> DeleteAsync(SqlKata.Query sqlKataQuery)
         {
             var query = sqlKataQuery.AsDelete();
@@ -166,8 +176,6 @@ namespace Chef.Common.Repositories
         }
 
         #endregion
-
-
 
         void UpdateModelProperties(ref IDictionary<string, object> expando)
         {
@@ -183,6 +191,7 @@ namespace Chef.Common.Repositories
                 expando["branchcode"] = databaseSession.UserToken?.BranchCode;
             }
         }
+
         void InsertModelProperties(ref IDictionary<string, object> expando)
         {
 
@@ -200,6 +209,5 @@ namespace Chef.Common.Repositories
             }
 
         }
-
     }
 }

@@ -10,6 +10,7 @@ namespace Chef.Trading.Models
         [StringLength(6)]
         [Code]
         public string LocationCode { get; set; }
+
         [Required]
         [Unique(true)]
         public string LocationName { get; set; }

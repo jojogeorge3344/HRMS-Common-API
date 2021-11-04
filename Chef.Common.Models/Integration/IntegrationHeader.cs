@@ -1,9 +1,8 @@
-﻿using Chef.Common.Core;
-using Chef.Common.Types;
-using Chef.Finance.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
+using Chef.Common.Types;
 
 namespace Chef.Common.Models
 {

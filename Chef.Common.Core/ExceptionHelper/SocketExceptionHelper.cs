@@ -1,6 +1,6 @@
-﻿using Chef.Common.Types;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using Chef.Common.Types;
 
 namespace Chef.Common.Exceptions.Helper
 {

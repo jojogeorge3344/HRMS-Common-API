@@ -8,10 +8,12 @@
             var schemaName = type.Namespace.Split('.')[1].ToLower();
             return schemaName + "." + type.Name.ToLower();
         }
+
         public static string TableNameWOSchema(this Model model)
         {
             return model.GetType().Name.ToLower();
         }
+
         public static string SchemaName(this Model model)
         {
             return model.GetType().Namespace.Split('.')[1].ToLower();

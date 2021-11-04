@@ -7,7 +7,7 @@ namespace Chef.Common.Dtos
         public string ItemSegmentCode { get; set; }
 
         public bool AutoGenerateCode { get; set; } = true;
-        public string Host { get; set; }
 
+        public string Host { get; set; }
     }
 }

@@ -1,13 +1,13 @@
-﻿using Chef.Common.Core;
-using Newtonsoft.Json;
-using SqlKata;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using Chef.Common.Core;
+using Newtonsoft.Json;
+using SqlKata;
 
 namespace Chef.Common.Repositories
 {
@@ -127,6 +127,7 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+
         public SqlSearch Where<T>(Expression<Func<T, object>> column, object value)
         {
             this.Rules.Add(new SqlSearchRule
@@ -137,6 +138,7 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+
         public SqlSearch WhereNull<T>(Expression<Func<T, object>> column)
         {
             this.Rules.Add(new SqlSearchRule
@@ -147,6 +149,7 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+
         public SqlSearch WhereNotNull<T>(Expression<Func<T, object>> column)
         {
             this.Rules.Add(new SqlSearchRule
@@ -169,7 +172,7 @@ namespace Chef.Common.Repositories
 
         public override bool Equals(object obj)
         {
-            if (!(obj is SqlSearchGroup))
+            if (obj is not SqlSearchGroup)
                 return false;
 
             return Equals((SqlSearchGroup)obj);
@@ -184,7 +187,7 @@ namespace Chef.Common.Repositories
         {
             return
 
-                (object.ReferenceEquals(this.Condition, other.Condition) ||
+                (object.ReferenceEquals(Condition, other.Condition) ||
                 this.Condition.Equals(other.Condition))
                 &&
                 (object.ReferenceEquals(this.Rules, other.Rules) ||
@@ -198,17 +201,20 @@ namespace Chef.Common.Repositories
         {
             Condition = sqlConditionOperator;
         }
+
         public SqlSearchGroup AddGroup(Func<SqlSearchGroup, SqlSearchGroup> sqlSearch)
         {
             this.Groups.Add(sqlSearch(this));
             return this;
         }
+
         //public SqlSearchGroup AddGroup(SqlConditionOperator sqlConditionOperator)
         //{
         //    var group = new SqlSearchGroup() { Condition = sqlConditionOperator };
         //    Groups.Add(group);
         //    return this;
         //}
+
         public SqlSearchGroup Where<T>(Expression<Func<T, object>> column, SqlSearchOperator sqlSearchOperator, object value)
         {
             this.Rules.Add(new SqlSearchRule
@@ -219,6 +225,7 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+
         public SqlSearchGroup Where<T>(Expression<Func<T, object>> column, object value)
         {
             this.Rules.Add(new SqlSearchRule
@@ -229,6 +236,7 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+
         public SqlSearchGroup WhereNull<T>(Expression<Func<T, object>> column)
         {
             this.Rules.Add(new SqlSearchRule
@@ -239,6 +247,7 @@ namespace Chef.Common.Repositories
             });
             return this;
         }
+
         public SqlSearchGroup WhereNotNull<T>(Expression<Func<T, object>> column)
         {
             this.Rules.Add(new SqlSearchRule
@@ -251,7 +260,6 @@ namespace Chef.Common.Repositories
         }
     }
 
-
     public class SqlSearchRule : IEquatable<SqlSearchRule>
     {
         [Required]
@@ -259,6 +267,7 @@ namespace Chef.Common.Repositories
 
         [Required]
         public SqlSearchOperator Operator { get; set; }
+
         /// <summary>
         /// Value
         /// </summary>
@@ -268,7 +277,7 @@ namespace Chef.Common.Repositories
 
         public override bool Equals(object obj)
         {
-            if (!(obj is SqlSearchRule))
+            if (obj is not SqlSearchRule)
                 return false;
 
             return Equals((SqlSearchRule)obj);

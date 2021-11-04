@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Dtos.ResponseDto
+﻿namespace Chef.Common.Dtos.ResponseDto
 {
     public class ItemDetailsDto
     {
@@ -24,7 +18,5 @@ namespace Chef.Common.Dtos.ResponseDto
         public int ItemSegmentId { get; set; }
         public string ItemSegmentCode { get; set; }
         public string ItemSegmentName { get; set; }
-    
-       
     }
 }

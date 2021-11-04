@@ -1,5 +1,4 @@
-﻿using Chef.Common.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Chef.Common.Core;
 
 namespace Chef.Common.Repositories
 {

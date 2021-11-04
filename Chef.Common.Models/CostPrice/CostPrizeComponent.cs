@@ -7,6 +7,5 @@ namespace Chef.Common.Models.Master
         public int CpcId { get; set; }
         public string CpcCode { get; set; }
         public string CpcName { get; set; }
-
     }
 }

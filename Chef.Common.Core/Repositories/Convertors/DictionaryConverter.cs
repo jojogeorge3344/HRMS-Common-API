@@ -1,16 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Chef.Common.Repositories
 {
     public class DictionaryConverter : JsonConverter
     {
         public override bool CanWrite { get { return false; } }
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(Dictionary<string, object>);
         }
+
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.StartArray)
@@ -51,7 +53,5 @@ namespace Chef.Common.Repositories
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

@@ -1,5 +1,5 @@
-﻿using Chef.Common.Core;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
@@ -9,15 +9,19 @@ namespace Chef.Common.Models
         [Unique(true), Composite(Index = 1)]
         [Field(Order = 2)]
         public string Revision { get; set; }
+
         [Required]
         [Field(Order = 3)]
         public bool IsCurrentRevision { get; set; }
+
         [Required(AllowEmptyStrings = true)]
         [Unique(true)]
         public string ItemCode { get; set; } = string.Empty;
+
         [Required]
         [Unique(true), Composite(Index = 2)]
         public string ItemName { get; set; }
+
         [Required]
         public string ItemDescription { get; set; }
 

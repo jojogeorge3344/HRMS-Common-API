@@ -1,11 +1,11 @@
-﻿using Chef.Common.Core;
-using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Core;
+using Newtonsoft.Json;
 
 namespace Chef.Common.Models
 {
-	public class IntegrationControlAccount : Model
+    public class IntegrationControlAccount : Model
 	{
 		[Required]
 		[ForeignKey("FinanceIntegrationConfiguration")]

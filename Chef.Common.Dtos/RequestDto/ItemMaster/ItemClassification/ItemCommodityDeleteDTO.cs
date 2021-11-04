@@ -6,8 +6,8 @@ namespace Chef.Common.Dtos
     {
         [Required]
         public string ItemCommodityCode { get; set; } = string.Empty;
+
         [Required]
         public string Host { get; set; }
-
     }
 }

@@ -24,6 +24,7 @@ namespace Chef.Common.Exceptions
             //}
 
             var innerException = ex;
+
             do
             {
                 if (innerException is AggregateException exception)

@@ -10,6 +10,7 @@ namespace Chef.Trading.Models
         [StringLength(6)]
         [Code]
         public string PurchaseOfficeCode { get; set; }
+
         [Required]
         [Unique(true)]
         public string PurchaseOfficeName { get; set; }

@@ -12,6 +12,4 @@ namespace Chef.Common.Repositories
             new SqlQueryBuilder();
 
     }
-
-
 }

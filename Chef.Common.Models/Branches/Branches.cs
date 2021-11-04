@@ -1,6 +1,5 @@
 ﻿using Chef.Common.Core;
 
-
 namespace Chef.Common.Models
 {
     public class Branches: Model
@@ -11,6 +10,5 @@ namespace Chef.Common.Models
         public int CompanyId{ get; set; }
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
-
     }
 }

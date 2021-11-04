@@ -1,10 +1,10 @@
-﻿using Chef.Common.Core;
+﻿using System;
+using System.Threading.Tasks;
+using Chef.Common.Core;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using System;
-using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {

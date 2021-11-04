@@ -1,6 +1,6 @@
-﻿using Chef.Common.Core;
+﻿using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
 using Chef.Common.Types;
-using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
 {
@@ -8,7 +8,9 @@ namespace Chef.Common.Models
     {
         [Required]
         public ItemCodeType ItemCodeType { get; set; }
+
         public int? CodeReferenceId { get; set; }
+
         [Required]
         public int Counter { get; set; }
 

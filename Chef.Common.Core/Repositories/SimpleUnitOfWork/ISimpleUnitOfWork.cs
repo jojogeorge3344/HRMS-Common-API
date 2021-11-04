@@ -2,7 +2,7 @@
 
 namespace Chef.Common.Repositories
 {
-				public interface ISimpleUnitOfWork : IDisposable
+    public interface ISimpleUnitOfWork : IDisposable
     {
         void BeginTransaction();
         void Commit();

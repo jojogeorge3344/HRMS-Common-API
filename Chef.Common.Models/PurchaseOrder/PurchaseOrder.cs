@@ -1,8 +1,8 @@
-﻿using Chef.Common.Core;
-using Chef.Trading.Types;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
+using Chef.Trading.Types;
 
 namespace Chef.Trading.Models
 {
@@ -10,28 +10,36 @@ namespace Chef.Trading.Models
     {
         [Required]
         public string BranchCode { get; set; }
+
         [Required]
         [ForeignKeyId(typeof(Warehouse))]
         [Field(Order = 2)]
         public int WarehouseId { get; set; }
+
         [Field(Order = 3)]
         [ForeignKeyCode(typeof(Warehouse))]
         public string WarehouseCode { get; set; }
+
         [Required]
         [Unique(true), Composite(Index = 2)]
         public string PurchaseOrderNumber { get; set; } = string.Empty;
+
         [Required]
         public PurchaseOrderType PurchaseOrderType { get; set; } = PurchaseOrderType.None;
+
         [Required]
         [Field(Order = 2)]
         [Unique(true), Composite(Index = 1)]
         public string Revision { get; set; }
+
         [Required]
         [Field(Order = 3)]
         [DefaultValue(true)]
         public bool IsCurrentRevision { get; set; } = true;
+
         [Required]
         public DateTime PurchaseOrderDate { get; set; } = DateTime.UtcNow;
+
         //[Unique(true)] TODO: We can add this later when we get more requirements for Planned PR
         //public int OriginId { get; set; }
         //[Unique(true)]
@@ -39,43 +47,61 @@ namespace Chef.Trading.Models
         //public string SupplierQuoteReference { get; set; }
         [ForeignKeyId(typeof(Buyer))]
         public int BuyerId { get; set; }
+
         [ForeignKeyCode(typeof(Buyer))]
         public string BuyerCode { get; set; }
+
         [Required]
         [ForeignKeyId(typeof(PurchaseOffice))]
         public int PurchaseOfficeId { get; set; }
+
         [Required]
         [ForeignKeyCode(typeof(PurchaseOffice))]
         public string PurchaseOfficeCode { get; set; }
+
         //TODO: During Purchase Contract 
         //public int PoContactNumber { get; set; }
         [ForeignKeyId(typeof(Address))]
         public int? ShiptoAddressId { get; set; }
+
         [ForeignKeyCode(typeof(Address))]
         public string ShiptoAddressCode { get; set; }
 
         [Required]
         public PurchaseOrderStatus PurchaseOrderStatus { get; set; } = PurchaseOrderStatus.Draft;
+
         public ExchangeType ExchangeType { get; set; } = ExchangeType.None;
 
         public PurchaseOrderCategory PurchaseOrderCategory { get; set; } = PurchaseOrderCategory.Local;
+
         [ForeignKeyId(typeof(PurchaseOrderGroup))]
         public int PoGroupId { get; set; }
+
         public string PurchaseOrderNotes { get; set; }
        
         public string TermsAndCondition { get; set; }
+
         public int PoContractNumber { get; set; }
+
         public int SubContractNumber { get; set; }
+
         public int ServiceOrderNumber { get; set; }
+
         public bool ShippingAdviseRequired { get; set; }
+
         public bool TransportAdviseRequired { get; set; }
+
         public bool AcknowledgementRequired { get; set; }
+
         //Supplier Details
         [Required]
         public string SupplierCode { get; set; }
+
         [Required]
         public string SupplierName { get; set; }
+
         public string SupplierAddressLine1 { get; set; }
+
         public string SupplierAddressLine2 { get; set; }
         public string SupplierCity { get; set; }
         public string SupplierState { get; set; }
