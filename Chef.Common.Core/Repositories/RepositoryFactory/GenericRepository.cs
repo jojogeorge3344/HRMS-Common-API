@@ -1,5 +1,6 @@
 using Chef.Common.Core;
 using Dapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,12 +10,15 @@ using System.Threading.Tasks;
 namespace Chef.Common.Repositories
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
-    {
-        private DbSession _session;
+    { 
 
-        public GenericRepository(DbSession session)
+        private DbSession _session;
+        private IHttpContextAccessor httpContextAccessor;
+
+        public GenericRepository(IHttpContextAccessor httpContextAccessor, DbSession session)
         {
             _session = session;
+            this.httpContextAccessor = httpContextAccessor; 
         }
 
         public IDbConnection Connection
