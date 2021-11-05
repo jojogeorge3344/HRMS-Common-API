@@ -1,26 +1,24 @@
-﻿using Chef.Common.ClientServices;
-using Chef.Common.Models;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using Chef.Common.ClientServices;
+using Chef.Common.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Chef.Common.Test
 {
     public class ApiClientServiceFactory : IApiClientServiceFactory
     {
-        readonly IConfiguration configuration;
-        readonly ConcurrentDictionary<string, HttpClient> httpClients;
+        private readonly IConfiguration configuration;
+        private readonly ConcurrentDictionary<string, HttpClient> httpClients;
 
         public ApiClientServiceFactory(IConfiguration configuration)
         {
             this.httpClients = new ConcurrentDictionary<string, HttpClient>();
             this.configuration = configuration;
         }
-
-
 
         public void Dispose()
         {

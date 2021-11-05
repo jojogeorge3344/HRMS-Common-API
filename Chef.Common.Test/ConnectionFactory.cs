@@ -1,15 +1,14 @@
-﻿using Chef.Common.Repositories;
-using Chef.Common.Models;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Chef.Common.Models;
+using Chef.Common.Repositories;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace Chef.Common.Test
 {
-
     public class ConnectionFactory : IConnectionFactory
     {
         private readonly string connectionString;
