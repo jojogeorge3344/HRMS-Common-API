@@ -35,5 +35,8 @@ namespace Chef.ApprovalSystem.Models
         [Write(false)]
         [Skip(true)]
         public string RoleName { get; set; }
+        [Write(false)]
+        [Skip(true)]
+        public bool IsDefault { get; set; }
     }
 }

@@ -80,7 +80,7 @@ namespace Chef.Common.Models
         public string TaxRegistrationNumber { get; set; }
 
         [StringLength(64)]
-        [Required]
+        //[Required]
         [Unique(true)]
         public string Host { get; set; }
     }

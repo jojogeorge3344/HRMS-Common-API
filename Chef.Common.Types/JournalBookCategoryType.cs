@@ -8,6 +8,7 @@
         PettyCash = 4,
         FixedAssets = 5,
         ACPJournalBooks = 6,
-        CashCollection = 7
+        CashCollection = 7,
+        Integration = 8
     }
 }

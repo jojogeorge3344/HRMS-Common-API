@@ -18,5 +18,6 @@ namespace Chef.ApprovalSystem.Models
         public string value { get; set; }
         public string datatype { get; set; }
         public string operators { get; set; }
+        public bool isdefault { get; set; }
     }
 }

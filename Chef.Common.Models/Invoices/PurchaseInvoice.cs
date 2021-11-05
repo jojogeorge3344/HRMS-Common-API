@@ -101,5 +101,7 @@ namespace Chef.Finance.Models
         [Write(false)]
         [Skip(true)]
         public PurchaseInvoiceOtherDetail OtherDetail { get; set; }
+
+        public string Remark { get; set; }
     }
 }
