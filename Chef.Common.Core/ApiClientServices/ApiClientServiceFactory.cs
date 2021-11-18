@@ -55,8 +55,11 @@ namespace Chef.Common.ClientServices
 
             if (apiclient == null)
                 throw new Exception(string.Format("Tenant/ApiClients name - {0} not configured properly.", name));
-
-            client = new HttpClient
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, sslErrors) => true
+            };
+            client = new HttpClient(handler)
             {
                 BaseAddress = new Uri(apiclient.BaseAddress),
             };
