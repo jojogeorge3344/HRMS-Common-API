@@ -12,6 +12,7 @@ namespace Chef.Common.Models
         public string TimeZone { get; set; }
         public string Password { get; set; }
         public bool IsUserActive { get; set; }
+        public int BranchId { get; set; }
         [Write(false)]
         [Skip(true)]
         public List<UserRole> UserRoleList { get; set; }

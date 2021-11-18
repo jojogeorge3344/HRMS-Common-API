@@ -20,14 +20,17 @@ namespace Chef.Common.Core
         public string ModifiedBy { get; set; } = "system";
 
         public bool IsArchived { get; set; } = false;
+       
     }
-
-    public class TransactionModel: Model
+    
+    public abstract class TransactionModel : Model
     {
+       public int BranchId { get; set; }
         [Write(false)]
         [Skip(true)]
         private DateTime tempDate;
-       
+
+    
         public DateTime TransactionDate
         {
             get
@@ -35,11 +38,12 @@ namespace Chef.Common.Core
                 return this.tempDate.Date;
             }
 
+
+
             set
             {
                 this.tempDate = value;
             }
         }
-        
     }
 }
