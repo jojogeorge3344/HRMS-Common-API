@@ -12,7 +12,7 @@ namespace Chef.Common.Models
         public string LastName { get; set; }
         public string EmailId { get; set; }
         public string Password { get; set; }
-
+        public int BranchId { get; set; }
         public string TimeZone { get; set; }
         public bool IsUserActive { get; set; }
         public int RoleId { get; set; }
