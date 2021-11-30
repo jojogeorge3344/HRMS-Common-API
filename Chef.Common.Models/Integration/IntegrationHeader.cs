@@ -60,6 +60,8 @@ namespace Chef.Common.Models
 
         public decimal InvoiceAmount { get; set; }
 
+        public int FinancialYearId { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public List<IntegrationAccountSummary> integrationAccountSummaries { get; set; }
