@@ -79,6 +79,11 @@ namespace Chef.Common.Models
         public int TaxJurisdictionId { get; set; }
 
         public string TaxName { get; set; }
+        public string TradeLicense { get; set; }
+        
+        public string TaxRegistrationNumber { get; set; }
+
+
         //public int DefaultPurchaseTax { get; set; }
         //public int DefaultSalesTax { get; set; }
     }
