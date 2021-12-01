@@ -26,6 +26,8 @@ namespace Chef.Common.Core
     public abstract class TransactionModel : Model
     {
        public int BranchId { get; set; }
+
+        public int FinancialYearId { get; set; }
         [Write(false)]
         [Skip(true)]
         private DateTime tempDate;
