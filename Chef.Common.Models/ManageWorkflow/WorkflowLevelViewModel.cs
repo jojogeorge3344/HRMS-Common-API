@@ -1,0 +1,19 @@
+﻿using Chef.Common.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Chef.Common.Models
+{
+    public class WorkflowLevelViewModel
+    {
+        public string LevelName { get; set; }
+        public int RoleID { get; set; }
+        public string RoleName { get; set; }
+        public int Level { get; set; }
+        public bool IsDefault { get; set; }
+        public IEnumerable<WorkflowLevels> WorkflowList { get; set; }
+    }
+}
