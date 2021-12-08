@@ -102,5 +102,8 @@ namespace Chef.Finance.Models
         public PurchaseInvoiceOtherDetail OtherDetail { get; set; }
 
         public string Remark { get; set; }
+
+        public bool IsDispute { get; set; }
+        public string DisputeReason { get; set; }
     }
 }
