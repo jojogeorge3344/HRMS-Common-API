@@ -8,7 +8,7 @@ namespace Chef.Common.Repositories
         Task<int> DeleteAsync(int id);
 
         Task<IEnumerable<T>> GetAllAsync();
-
+      
         Task<T> GetAsync(int id);
 
         Task<T> InsertAsync(T obj);

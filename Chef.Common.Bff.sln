@@ -4,6 +4,10 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chef.Common.Gateway", "Chef.Common.Gateway\Chef.Common.Gateway.csproj", "{F3EE5740-7178-451E-AD29-5E00B775CC54}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chef.Common.Core", "Chef.Common.Core\Chef.Common.Core.csproj", "{0E99297A-863B-4985-A3A4-43D72139DFF3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chef.Common.Types", "Chef.Common.Types\Chef.Common.Types.csproj", "{78104E97-5B09-445D-A766-DA6F068ECC11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +18,14 @@ Global
 		{F3EE5740-7178-451E-AD29-5E00B775CC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3EE5740-7178-451E-AD29-5E00B775CC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3EE5740-7178-451E-AD29-5E00B775CC54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E99297A-863B-4985-A3A4-43D72139DFF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E99297A-863B-4985-A3A4-43D72139DFF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E99297A-863B-4985-A3A4-43D72139DFF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E99297A-863B-4985-A3A4-43D72139DFF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78104E97-5B09-445D-A766-DA6F068ECC11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78104E97-5B09-445D-A766-DA6F068ECC11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78104E97-5B09-445D-A766-DA6F068ECC11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78104E97-5B09-445D-A766-DA6F068ECC11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

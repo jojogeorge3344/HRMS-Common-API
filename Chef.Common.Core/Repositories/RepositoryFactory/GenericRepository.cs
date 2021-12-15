@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.Reflection;
 namespace Chef.Common.Repositories
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
@@ -14,11 +14,12 @@ namespace Chef.Common.Repositories
 
         private DbSession _session;
         private IHttpContextAccessor httpContextAccessor;
-
+        public int headerBranchId = 0;
         public GenericRepository(IHttpContextAccessor httpContextAccessor, DbSession session)
         {
             _session = session;
-            this.httpContextAccessor = httpContextAccessor; 
+            this.httpContextAccessor = httpContextAccessor;
+            this.headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
         }
 
         public IDbConnection Connection
@@ -41,10 +42,16 @@ namespace Chef.Common.Repositories
 
         public async virtual Task<IEnumerable<T>> GetAllAsync()
         {
-            var sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ORDER BY createddate desc";
+            var sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";
+            if (typeof(TransactionModel).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+            {
+                sql += " AND branchid = " + this.headerBranchId;
+            }
+            sql += " ORDER BY createddate desc ";
             return await Connection.QueryAsync<T>(sql);
         }
 
+       
         public async virtual Task<T> GetAsync(int id)
         {
             var sql = "SELECT * FROM " + TableName + " WHERE  isarchived=false and id = @Id";
