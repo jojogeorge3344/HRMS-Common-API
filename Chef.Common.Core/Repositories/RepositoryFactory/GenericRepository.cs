@@ -7,11 +7,13 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
+using AutoMapper;
+
 namespace Chef.Common.Repositories
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
-    { 
-
+    {
+        public IMapper Mapper { get; set; }
         private DbSession _session;
         private IHttpContextAccessor httpContextAccessor;
         public int headerBranchId = 0;
