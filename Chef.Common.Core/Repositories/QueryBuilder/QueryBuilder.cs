@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chef.Common.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Chef.Common.Core;
 
 namespace Chef.Common.Repositories
 {
@@ -69,6 +69,8 @@ namespace Chef.Common.Repositories
             .Select(group => new { group.Key, Enumerable = group.Select(x => x.Name) })
             .Where(x => x.Enumerable.Count() > 1)
             .ToDictionary(t => t.Key, t => t.Enumerable);
+
+
 
         public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
         public string TableName => SchemaName + "." + typeof(T).Name.ToLower();
@@ -273,7 +275,35 @@ namespace Chef.Common.Repositories
 
             return insertQuery.ToString();
         }
+        public string GenerateInsertQueryForAudit(string operation, int auditId=0, bool returnId = true)
+        {
+            var insertQuery = new StringBuilder($"INSERT INTO {TableName} ");
 
+            insertQuery.Append("(");
+
+            var properties = GenerateListOfProperties(GetProperties);
+            properties.ForEach(prop => { insertQuery.Append($"{prop},"); });
+
+            insertQuery
+                .Remove(insertQuery.Length - 1, 1)
+                .Append(") VALUES (");
+
+            properties.ForEach(prop =>
+            {
+                if (prop == "AuditId")
+                    insertQuery.Append($"'{auditId}',");
+                else if (prop == "AuditOperation")
+                    insertQuery.Append($"'{operation}',");
+                else
+                    insertQuery.Append($"@{prop},");
+            });
+
+            insertQuery
+                .Remove(insertQuery.Length - 1, 1)
+                .Append(")" + (returnId ? " RETURNING Id" : string.Empty));
+
+            return insertQuery.ToString();
+        }
         public string GenerateUpdateQuery()
         {
             var updateQuery = new StringBuilder($"UPDATE {TableName} SET ");
