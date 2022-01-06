@@ -102,11 +102,11 @@ namespace Chef.Common.Exceptions
             }
             else if (exceptions.Any(x => x is ResourceNotFoundException))
             {
-                var ex = (ResourceHasDependentException)exceptions.FirstOrDefault(x => x is ResourceHasDependentException);
+                var ex = (ResourceNotFoundException)exceptions.FirstOrDefault(x => x is ResourceNotFoundException);
                 status = HttpStatusCode.NotFound;
                 data = ex.Data;
                 code = ServiceExceptionCode.ResourceNotFound.ToString();
-                message = ex.Message;
+                message = ex.Message + "! Please contact Admin."; 
             }
             else if (exceptions.Any(x => x is BadRequestException))
             {
@@ -115,7 +115,7 @@ namespace Chef.Common.Exceptions
                 data = ex.Data;
                 code = ServiceExceptionCode.BadRequest.ToString();
                 message = ex.Message;
-            }
+            }          
             else
             {
                 status = HttpStatusCode.InternalServerError;
