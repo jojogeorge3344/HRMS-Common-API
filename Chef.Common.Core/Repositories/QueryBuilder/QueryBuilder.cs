@@ -147,8 +147,7 @@ namespace Chef.Common.Repositories
                     where attributes.Length <= 0 || (attributes[0] as WriteAttribute)?.Write != false
                     select prop.Name).ToList();
         }
-
-
+     
         private string GetPropertyType(PropertyInfo prop)
         {
             if (prop.PropertyType.IsEnum)
@@ -275,7 +274,7 @@ namespace Chef.Common.Repositories
 
             return insertQuery.ToString();
         }
-        public string GenerateInsertQueryForAudit(string operation, int auditId=0, bool returnId = true)
+        public string GenerateInsertQueryForAudit(string operation,int partentTableID, int auditId=0, bool returnId = true)
         {
             var insertQuery = new StringBuilder($"INSERT INTO {TableName} ");
 
@@ -290,6 +289,9 @@ namespace Chef.Common.Repositories
 
             properties.ForEach(prop =>
             {
+                if(prop== "ParentTableId")
+                    insertQuery.Append($"{partentTableID},");
+                else
                 if (prop == "AuditId")
                     insertQuery.Append($"'{auditId}',");
                 else if (prop == "AuditOperation")
