@@ -19,5 +19,7 @@ namespace Chef.Common.Models
         public string Datatype { get; set; }
         public string Operators { get; set; }
         public bool IsDefault { get; set; }
+        public int Level { get; set; }
+        
     }
 }
