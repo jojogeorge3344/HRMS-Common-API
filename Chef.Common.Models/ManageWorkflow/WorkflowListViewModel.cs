@@ -24,5 +24,7 @@ namespace Chef.Common.Models
         public int NodeDocumentId { get; set; }
         public int ModuleId { get; set; }
         public int Level { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }
