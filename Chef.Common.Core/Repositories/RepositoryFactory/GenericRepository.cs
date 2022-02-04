@@ -41,7 +41,11 @@ namespace Chef.Common.Repositories
             var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
-
+        public async virtual Task<int> ArchiveAsync(int id)
+        {
+            var sql = "UPDATE " + TableName + " SET isarchived=true WHERE id = @Id";
+            return await Connection.ExecuteAsync(sql, new { Id = id });
+        }
         public async virtual Task<IEnumerable<T>> GetAllAsync()
         {
             var sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";

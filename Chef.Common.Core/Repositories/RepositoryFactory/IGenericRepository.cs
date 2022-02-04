@@ -6,7 +6,7 @@ namespace Chef.Common.Repositories
     public interface IGenericRepository<T> : IRepository
     {
         Task<int> DeleteAsync(int id);
-
+        Task<int> ArchiveAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
       
         Task<T> GetAsync(int id);
@@ -16,5 +16,6 @@ namespace Chef.Common.Repositories
         Task<int> UpdateAsync(T obj);
 
         Task<List<T>> BulkInsertAsync(List<T> objs);
+      
     }
 }
