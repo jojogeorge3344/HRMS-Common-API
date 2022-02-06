@@ -71,9 +71,11 @@ namespace Chef.Common.Models
 
         [StringLength(62)]
         public string Website { get; set; }
+
         public int SerialNumber { get; set; }
 
         public bool IsActive { get; set; }
+
         [Required]
         [Unique(true)]
         public int TaxJurisdictionId { get; set; }
@@ -83,8 +85,15 @@ namespace Chef.Common.Models
         
         public string TaxRegistrationNumber { get; set; }
 
+        [Write(false)]
+        [Skip(true)]
+        public string SourceId { get; set; }
+
+        [Write(false)]
+        [Skip(true)]
+        public string SourceCode { get; set; }         
 
         //public int DefaultPurchaseTax { get; set; }
-        //public int DefaultSalesTax { get; set; }
+        //public int DefaultPurchaseTax { get; set; }
     }
 }
