@@ -106,7 +106,7 @@ namespace Chef.Common.Exceptions
                 status = HttpStatusCode.NotFound;
                 data = ex.Data;
                 code = ServiceExceptionCode.ResourceNotFound.ToString();
-                message = ex.Message + "! Please contact Admin."; 
+                message = ex.Message; 
             }
             else if (exceptions.Any(x => x is BadRequestException))
             {
