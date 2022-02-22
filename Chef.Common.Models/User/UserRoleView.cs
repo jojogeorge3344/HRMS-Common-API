@@ -19,6 +19,8 @@ namespace Chef.Common.Models
         public string RoleCode { get; set; }
         public string RoleName { get; set; }
         public int IsRoleActive { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifiedBy { get; set; }
 
     }
 }

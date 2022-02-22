@@ -119,7 +119,6 @@ namespace Chef.Common.Repositories
         {
             obj.CreatedDate = DateTime.UtcNow;
             obj.IsArchived = false;
-            obj.CreatedBy = "system";
         }
 
         public async virtual Task<int> UpdateAsync(T obj)
@@ -146,7 +145,6 @@ namespace Chef.Common.Repositories
 
         public void UpdateModelProperties(ref T obj)
         {
-            obj.ModifiedBy = "system";
             obj.ModifiedDate = DateTime.UtcNow;
         }
     }
