@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Chef.Common.Core;
+using Chef.Common.Models;
 
 namespace Chef.Finance.Models
 {
@@ -13,6 +15,10 @@ namespace Chef.Finance.Models
         public string Narration { get; set; }
 
         [Required]
-        public bool IsAttachments { get; set; }       
+        public bool IsAttachments { get; set; }
+
+        [Write(false)]
+        [Skip(true)]
+        public object[] Files { get; set; }
     }
 }
