@@ -15,9 +15,9 @@ namespace Chef.Common.Core
 
         public DateTime ModifiedDate { get; set; } = DateTime.UtcNow;
 
-        public string CreatedBy { get; set; } = "system";
+        public string CreatedBy { get; set; } 
 
-        public string ModifiedBy { get; set; } = "system";
+        public string ModifiedBy { get; set; } 
 
         public bool IsArchived { get; set; } = false;
        

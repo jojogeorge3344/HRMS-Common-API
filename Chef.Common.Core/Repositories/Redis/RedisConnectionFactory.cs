@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,13 +14,12 @@ namespace Chef.Common.Core.Repositories
     {
         private readonly ConfigurationOptions configuration = null;
         private Lazy<IConnectionMultiplexer> _Connection = null;
-        //All these configurations will be coming from appsettings
-        public RedisConnectionFactory(string host = "192.168.100.56", int port = 6379, bool allowAdmin = false)
+        public RedisConnectionFactory( bool allowAdmin = false)
         {
             configuration = new ConfigurationOptions()
             {
                 //for the redis pool so you can extent later if needed
-                EndPoints = { { host, port }, },
+                EndPoints = { { ConfigurationManager.AppSetting["Redis:Host"], Convert.ToInt32(ConfigurationManager.AppSetting["Redis:Port"]) }, },
                 AllowAdmin = allowAdmin,
                 //Password = "", //to the security for the production
                 ReconnectRetryPolicy = new LinearRetry(5000),
@@ -64,6 +65,17 @@ namespace Chef.Common.Core.Repositories
         public bool DeleteKey(RedisKey key)
         {
             return Database.KeyDelete(key);
+        }
+    }
+    public static class ConfigurationManager
+    {
+        public static IConfiguration AppSetting { get; }
+        static ConfigurationManager()
+        {
+            AppSetting = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json")
+                    .Build();
         }
     }
 }

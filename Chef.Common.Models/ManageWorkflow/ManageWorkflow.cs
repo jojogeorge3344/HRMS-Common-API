@@ -1,4 +1,5 @@
-﻿using Chef.Common.Models;
+﻿using Chef.Common.Core;
+using Chef.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Models
 {
-    public class ManageWorkflow
+    public class ManageWorkflow:Model
     {
         [Required]
         public int DocumentId { get; set; }
@@ -27,8 +28,6 @@ namespace Chef.Common.Models
         [Required]
         public string RoleName { get; set; }
         public bool IsDefault { get; set; }
-
-
         public IEnumerable<WorkflowLevels> WorkflowLevelsList { get; set; }       
         
     }
