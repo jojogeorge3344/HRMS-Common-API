@@ -17,5 +17,6 @@ namespace Chef.Common.Models
         public DateTime DocumentDate { get; set; }
         public decimal TotalAmount { get; set; }
         public string Reportfilename { get; set; }
+        public string UserEmail { get; set; }
     }
 }

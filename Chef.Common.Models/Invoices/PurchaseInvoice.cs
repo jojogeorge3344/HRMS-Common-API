@@ -93,6 +93,11 @@ namespace Chef.Finance.Models
 
         public string ApproveStatusName { get; set; }
 
+        public string ApprovedBy { get; set; }
+        public string RejectedBy { get; set; }
+        public DateTime ApprovedDate { get; set; }
+        public DateTime RejectedDate { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public PurchaseInvoicePaymentTerm PaymentTerm { get; set; }
