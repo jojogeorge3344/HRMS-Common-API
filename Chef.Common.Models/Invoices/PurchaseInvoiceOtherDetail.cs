@@ -17,8 +17,5 @@ namespace Chef.Finance.Models
         [Required]
         public bool IsAttachments { get; set; }
 
-        [Write(false)]
-        [Skip(true)]
-        public object[] Files { get; set; }
     }
 }
