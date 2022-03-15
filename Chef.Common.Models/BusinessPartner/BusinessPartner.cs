@@ -22,7 +22,6 @@ namespace Chef.Common.Models
         public string AddressLine1 { get; set; }
 
         [StringLength(256)]
-
         public string AddressLine2 { get; set; }
 
         [Required]
@@ -74,24 +73,23 @@ namespace Chef.Common.Models
 
         public int SerialNumber { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = false;
 
         [Required]
         [Unique(true)]
         public int TaxJurisdictionId { get; set; }
 
         public string TaxName { get; set; }
+
         public string TradeLicense { get; set; }
         
         public string TaxRegistrationNumber { get; set; }
 
-        [Write(false)]
-        [Skip(true)]
         public string SourceId { get; set; }
 
-        [Write(false)]
-        [Skip(true)]
-        public string SourceCode { get; set; }         
+        public string SourceCode { get; set; }
+
+        public string AlterNativeSourceCode { get; set; }
 
         //public int DefaultPurchaseTax { get; set; }
         //public int DefaultPurchaseTax { get; set; }
