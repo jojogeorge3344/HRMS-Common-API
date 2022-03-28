@@ -23,7 +23,7 @@ namespace Chef.Common.Repositories
             { "System.Double", "real"},
             { "System.String", "text"},
             { "System.DateTime", "timestamp"},
-            { "System.Decimal", "money"},
+            { "System.Decimal", "numeric(20,6)"},
             { "System.String[]", "text[]"},
             { "System.Int32[]", "int[]"},
             { "System.TimeSpan", "timestamp"},
