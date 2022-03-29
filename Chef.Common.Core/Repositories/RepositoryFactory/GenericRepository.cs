@@ -17,6 +17,9 @@ namespace Chef.Common.Repositories
         private DbSession _session;
         private IHttpContextAccessor httpContextAccessor;
         public int headerBranchId = 0;
+        public IQueryBuilderFactory QueryBuilderFactory { get; set; }
+        public ISqlQueryBuilder SqlQueryBuilder => QueryBuilderFactory.SqlQueryBuilder();
+        public IDatabaseSession DatabaseSession { get; set; }
         public GenericRepository(IHttpContextAccessor httpContextAccessor, DbSession session)
         {
             _session = session;
