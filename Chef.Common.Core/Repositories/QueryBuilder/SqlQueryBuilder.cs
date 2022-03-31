@@ -60,6 +60,7 @@ namespace Chef.Common.Repositories
         public SqlConditionOperator Condition { get; set; } = SqlConditionOperator.AND;
         public List<SqlSearchRule> Rules { get; set; } = new List<SqlSearchRule>();
         public List<SqlSearchGroup> Groups { get; set; } = new List<SqlSearchGroup>();
+        public List<SqlFilterRule> FilterRules { get; set; } = new List<SqlFilterRule>();
 
         #region IEquatable overrides
 
@@ -335,5 +336,54 @@ namespace Chef.Common.Repositories
     {
         AND = 1,
         OR = 2
+    }
+
+
+
+    public class SqlFilterRule : IEquatable<SqlFilterRule>
+    {
+        [Required]
+        public string Field { get; set; }
+
+        [Required]
+        public SqlSearchOperator Operator { get; set; }
+
+        /// <summary>
+        /// Value
+        /// </summary>
+        public object Value { get; set; }
+
+        #region IEquatable overrides
+
+        public override bool Equals(object obj)
+        {
+            if (obj is not SqlFilterRule)
+                return false;
+
+            return Equals((SqlFilterRule)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Field != null ? Field.GetHashCode() : 0
+                ^ Operator.GetHashCode()
+                ^ (Value != null ? Value.GetHashCode() : 0);
+        }
+
+        public bool Equals(SqlFilterRule other)
+        {
+            return
+                (object.ReferenceEquals(this.Field, other.Field) ||
+                this.Field != null &&
+                this.Field.Equals(other.Field))
+                 &&
+                (object.ReferenceEquals(this.Operator, other.Operator) ||
+                this.Operator.Equals(other.Operator))
+                 &&
+                (object.ReferenceEquals(this.Value, other.Value) ||
+                this.Value != null &&
+                this.Value.Equals(other.Value));
+        }
+        #endregion
     }
 }
