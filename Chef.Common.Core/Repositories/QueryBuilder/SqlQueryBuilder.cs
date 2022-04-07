@@ -273,6 +273,7 @@ namespace Chef.Common.Repositories
         /// Value
         /// </summary>
         public object Value { get; set; }
+        public string FieldType { get; set; } = null;
 
         #region IEquatable overrides
 
@@ -330,6 +331,7 @@ namespace Chef.Common.Repositories
         NotEqual = 10,
         IsNull = 11,
         IsNotNull = 12
+       
     }
 
     public enum SqlConditionOperator
@@ -352,7 +354,7 @@ namespace Chef.Common.Repositories
         /// Value
         /// </summary>
         public object Value { get; set; }
-
+       
         #region IEquatable overrides
 
         public override bool Equals(object obj)

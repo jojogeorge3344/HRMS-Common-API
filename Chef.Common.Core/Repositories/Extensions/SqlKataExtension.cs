@@ -89,7 +89,9 @@ namespace Chef.Common.Repositories
                 SqlSearchOperator.LessThanEqual => "<=",
                 SqlSearchOperator.GreaterThan => ">",
                 SqlSearchOperator.GreaterThanEqual => ">=",
+               
                 _ => "=",
+                
             };
             return stringOperator;
         }
@@ -128,12 +130,25 @@ namespace Chef.Common.Repositories
                 case SqlSearchOperator.EndsWith:
                     query.WhereEnds(fieldName, condition.Value);
                     break;
+               
                 case SqlSearchOperator.Equal:
                 case SqlSearchOperator.GreaterThan:
                 case SqlSearchOperator.LessThan:
                 case SqlSearchOperator.GreaterThanEqual:
                 case SqlSearchOperator.LessThanEqual:
-                    query.Where(fieldName, condition.Operator.ToSqlString(), condition.Value);
+
+                    if (condition.FieldType == "date")
+                    {
+                        //fieldName = "to_char(" + fieldName + ", 'yyyy-MM-dd')";
+                        query.WhereDate(fieldName, condition.Operator.ToSqlString(), condition.Value);
+
+                    }
+                    else
+                    {
+                        query.Where(fieldName, condition.Operator.ToSqlString(), condition.Value);
+
+                    }
+                   //query.Where(fieldName, condition.Operator.ToSqlString(), condition.Value);
                     break;
                 case SqlSearchOperator.NotEqual:
                     query.WhereNot(fieldName, condition.Operator.ToSqlString(), condition.Value);
@@ -144,6 +159,7 @@ namespace Chef.Common.Repositories
                 case SqlSearchOperator.IsNotNull:
                     query.WhereNotNull(fieldName);
                     break;
+                    
             }
             return query;
         }
