@@ -219,6 +219,8 @@ namespace Chef.Common.Repositories
                 query.ForPage(sqlSearch.Page.PageNo, sqlSearch.Page.PageLimit);
             else if (sqlSearch.Limit.HasValue)
                 query.Limit(sqlSearch.Limit.Value);
+            if (sqlSearch.Offset.HasValue)
+                query.Offset(sqlSearch.Offset.Value);
             return query;
         }
 

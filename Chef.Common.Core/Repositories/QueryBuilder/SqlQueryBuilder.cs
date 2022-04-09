@@ -56,6 +56,7 @@ namespace Chef.Common.Repositories
     {
         public static readonly SqlSearch DefaultInstance = new SqlSearch();
         public int? Limit { get; set; } = null;
+        public int? Offset { get; set; } = null;
         public SqlPage Page { get; set; } = null;
         public SqlConditionOperator Condition { get; set; } = SqlConditionOperator.AND;
         public List<SqlSearchRule> Rules { get; set; } = new List<SqlSearchRule>();
