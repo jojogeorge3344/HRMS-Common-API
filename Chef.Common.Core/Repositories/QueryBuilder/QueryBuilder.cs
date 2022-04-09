@@ -313,10 +313,11 @@ namespace Chef.Common.Repositories
 
             properties.ForEach(prop =>
             {
-                if (!prop.Equals("Id"))
+                if((!prop.Equals("Id"))&& (!prop.Equals("CreatedDate")))
                 {
                     updateQuery.Append($"{prop}=@{prop},");
                 }
+               
             });
 
             updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
