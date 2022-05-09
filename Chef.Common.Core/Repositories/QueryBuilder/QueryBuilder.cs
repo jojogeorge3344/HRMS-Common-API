@@ -313,7 +313,7 @@ namespace Chef.Common.Repositories
 
             properties.ForEach(prop =>
             {
-                if((!prop.Equals("Id"))&& (!prop.Equals("CreatedDate")))
+                if((!prop.Equals("Id"))&& (!prop.Equals("CreatedDate")) && (!prop.Equals("CreatedBy")))
                 {
                     updateQuery.Append($"{prop}=@{prop},");
                 }
