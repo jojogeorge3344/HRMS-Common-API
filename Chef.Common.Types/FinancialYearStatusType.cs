@@ -9,5 +9,8 @@ namespace Chef.Common.Types
 
         [Description("Closed")]
         Closed = 2,
+
+        [Description("Final Closed")]
+        FinalClosed = 3,
     }
 }
