@@ -50,7 +50,6 @@ namespace Chef.Common.Models
         [Required]
         public string CurrencyCode { get; set; }
 
-        [StringLength(12)]
         [Required]
         public string Phone { get; set; }
 
