@@ -15,5 +15,7 @@ namespace Chef.Common.Models
         public string remarks { get; set; }
 
         public int Status { get; set; }
+
+        public DateTime Approveddate { get; set; }
     }
 }
