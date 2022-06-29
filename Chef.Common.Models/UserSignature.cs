@@ -11,7 +11,6 @@ namespace Chef.Common.Models
 {
     public class UserSignature:Model
     {
-        [Required]
         [ForeignKey("Common.User")]
         public int UserId { get; set; }
 
