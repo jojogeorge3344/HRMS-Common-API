@@ -19,5 +19,10 @@ namespace Chef.Common.Models
         public string  FileName { get; set; }
 
         public byte[] Signature { get; set; }
+
+        [Skip(true)]
+        [Write(false)]
+
+        public string Sign { get; set; }
     }
 }
