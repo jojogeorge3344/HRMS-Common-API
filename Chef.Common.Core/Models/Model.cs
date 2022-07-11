@@ -44,7 +44,7 @@ namespace Chef.Common.Core
 
             set
             {
-                this.tempDate = DateTime.UtcNow;
+                this.tempDate = value;
             }
         }
     }
