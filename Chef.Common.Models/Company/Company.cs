@@ -82,5 +82,6 @@ namespace Chef.Common.Models
         //[Required]
         [Unique(true)]
         public string Host { get; set; }
+        public byte[] logo { get; set; }
     }
 }
