@@ -25,6 +25,6 @@ namespace Chef.Common.Models
         public DateTime ExchangeDate { get; set; }
 
         [Required]
-        public float ExchangeRate { get; set; }
+        public decimal ExchangeRate { get; set; }
     }
 }
