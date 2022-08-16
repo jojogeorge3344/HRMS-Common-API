@@ -42,6 +42,7 @@ namespace Chef.Common.Gateway
 
                 return tracer;
             });
+            // services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddOcelot();
             services.AddOpenTracing();
         }
