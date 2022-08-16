@@ -144,7 +144,8 @@ namespace Chef.Common.Repositories
                 var Password = this.Configuration.GetSection("MailSettings")["Password"];
                 smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
                 smtp.Authenticate("test@gmail.com", "****");
-                //await smtp.SendAsync(email);
+
+                //await smtp.SendAsync(email);   // if you send email uncommented this code
 
                 smtp.Disconnect(true);
                 await SendReplayedEmailAsync(request);
@@ -205,7 +206,7 @@ namespace Chef.Common.Repositories
                 var Password = this.Configuration.GetSection("MailSettings")["Password"];
                 smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
                 smtp.Authenticate("Test@gmail.com", "pass****");
-                //await smtp.SendAsync(email);
+                //await smtp.SendAsync(email);  // if you send email uncommented this code
                 smtp.Disconnect(true);
             }
             catch(Exception ex)
@@ -252,7 +253,7 @@ namespace Chef.Common.Repositories
                     }
                 }
             }
-            //builder.HtmlBody = request.Body;
+           
             email.Body = builder.ToMessageBody();
             try
             {
@@ -264,7 +265,7 @@ namespace Chef.Common.Repositories
                 var Password = this.Configuration.GetSection("MailSettings")["Password"];
                 smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
                 smtp.Authenticate("test@thomsuninfocare.com", "pass****");
-               // await smtp.SendAsync(email);
+                // await smtp.SendAsync(email); // if you send email uncommented this code
                 smtp.Disconnect(true);
             }
             catch(Exception ex)
