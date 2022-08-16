@@ -20,7 +20,6 @@ namespace Chef.Common.Repositories
     public interface IEmailSendFactory
     {
         Task SendEmailAsync(string email, string subject, string message);
-        Task<int> SendMail(string message,string status, List<string> email,string ccmail,string frommail,string subject);
         Task<int> SendApprovedEmailAsync(MailRequest mailRequest);
         Task <int>SendReplayedEmailAsync(MailRequest mailRequest);
         Task <int>SendRequestedEmailAsync(MailRequest mailRequest);
@@ -95,59 +94,7 @@ namespace Chef.Common.Repositories
                 throw new InvalidOperationException(ex.Message);
             }
         }
-        public async Task<int> SendMail(string message, string status, List<string> email, string ccmail, string frommail, string subject)
-        {
-            MailAddress fromAddress = new MailAddress("athirak@thomsuninfocare.com");
-            MailAddress toAddress = new MailAddress("deepak@thomsuninfocare.com");
-
-
-            // string FilePath = "C:\\PROJECT\\chef.common\\Chef.Common.Core\\EmailTemplate.html";
-            //StreamReader str = new StreamReader(FilePath);
-            //string MailText = str.ReadToEnd();
-            //str.Close();
-            if (status == "2") status = "approved"; else status = "sendforrequest";
-            //Repalce [newusername] = signup user name   
-            //MailText = MailText.Replace("[newusername]","athira");
-            //MailText = MailText.Replace("[status]", status);
-            //MailText=MailText.Replace("[documentid]",message);
-
-
-            System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
-            //client.Host = ConfigurationManager.AppSetting["Host"];
-            //client.Port = Convert.ToInt32(ConfigurationManager.AppSetting["Port"]);
-            client.EnableSsl = true;
-            client.Timeout = 10000;
-            client.UseDefaultCredentials = false;
-
-            client.Credentials = new NetworkCredential("athirak@thomsuninfocare.com", "Aswina@1");
-
-
-            try
-            {
-                //foreach (string email_to in email)
-                //{
-                //    MailAddress toAddress = new MailAddress(email_to);
-
-                MailMessage mail = new MailMessage(fromAddress.Address, toAddress.Address);
-
-                mail.IsBodyHtml = true;
-                mail.CC.Add(new MailAddress(ccmail));
-                mail.Subject = subject;
-                mail.Body = message;
-                mail.BodyEncoding = System.Text.Encoding.UTF8;
-
-                client.Send(mail);
-                //}
-
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return 1;
-        }
-        public async Task<int> SendApprovedEmailAsync(MailRequest request)
+         public async Task<int> SendApprovedEmailAsync(MailRequest request)
         {
             string FilePath = "C:\\PROJECT\\chef.common\\Chef.Common.Core\\EmailTemplate.html";
             StreamReader str = new StreamReader(FilePath);
@@ -185,8 +132,10 @@ namespace Chef.Common.Repositories
                         }
                     }
                 }
-                //builder.HtmlBody = request.Body;
+               
                 email.Body = builder.ToMessageBody();
+            try
+            {
                 using var smtp = new MailKit.Net.Smtp.SmtpClient();
                 var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
                 var host = this.Configuration.GetSection("MailSettings")["Host"];
@@ -194,11 +143,16 @@ namespace Chef.Common.Repositories
                 var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
                 var Password = this.Configuration.GetSection("MailSettings")["Password"];
                 smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("athirak@thomsuninfocare.com", "Aswina@1");
-                await smtp.SendAsync(email);
+                smtp.Authenticate("test@gmail.com", "****");
+                //await smtp.SendAsync(email);
 
                 smtp.Disconnect(true);
-            await SendReplayedEmailAsync(request);
+                await SendReplayedEmailAsync(request);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
             return 1;
 
 
@@ -211,11 +165,10 @@ namespace Chef.Common.Repositories
             str.Close();
             MailText = MailText.Replace("[username]", request.UserName).Replace("[URL]", "https://192.168.100.54:9034/")
             .Replace("[requestdate]", request.DocumentDate).Replace("[documentnumber]", request.DocumentNumber).Replace("[documentname]", request.DocumentName);
-            //Replace("[email]", request.ToEmail);
+           
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse("athirak @thomsuninfocare.com");
-            //MailboxAddress.Parse(_mailSettings.Mail);
-            //email.To.Add(MailboxAddress.Parse("deepakp@thomsuninfocare.com"));
+            
             foreach (var toemail in request.ToEmail)
             {
                 email.To.Add(MailboxAddress.Parse(toemail));
@@ -223,8 +176,7 @@ namespace Chef.Common.Repositories
             email.Subject = request.Subject;
             var builder = new BodyBuilder();
             builder.HtmlBody = MailText;
-            //email.Body = builder.ToMessageBody();
-
+          
             if (request.Attachments != null)
             {
                 byte[] fileBytes;
@@ -243,16 +195,23 @@ namespace Chef.Common.Repositories
             }
             //builder.HtmlBody = request.Body;
             email.Body = builder.ToMessageBody();
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
-            var host = this.Configuration.GetSection("MailSettings")["Host"];
-            var Port = this.Configuration.GetSection("MailSettings")["Port"];
-            var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
-            var Password = this.Configuration.GetSection("MailSettings")["Password"];
-            smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate("athirak@thomsuninfocare.com", "Aswina@1");
-            await smtp.SendAsync(email);
-            smtp.Disconnect(true);
+            try
+            {
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+                var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
+                var host = this.Configuration.GetSection("MailSettings")["Host"];
+                var Port = this.Configuration.GetSection("MailSettings")["Port"];
+                var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
+                var Password = this.Configuration.GetSection("MailSettings")["Password"];
+                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("Test@gmail.com", "pass****");
+                //await smtp.SendAsync(email);
+                smtp.Disconnect(true);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
             return 1;
         }
         public async Task<int> SendReplayedEmailAsync(MailRequest request)
@@ -264,11 +223,10 @@ namespace Chef.Common.Repositories
             MailText = MailText.Replace("[username]", request.UserName).Replace("[URL]", "https://192.168.100.54:9034/")
             .Replace("[requestdate]", request.DocumentDate).Replace("[documentnumber]", request.DocumentNumber).Replace("[documentname]", request.DocumentName)
             .Replace("[Approvedusername]",request.ApprovedBy);
-            //Replace("[email]", request.ToEmail);
+           
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse("athirak @thomsuninfocare.com");
-            //MailboxAddress.Parse(_mailSettings.Mail);
-            //email.To.Add(MailboxAddress.Parse("deepakp@thomsuninfocare.com"));
+            
             foreach (var toemail in request.ToEmail)
             {
                 email.To.Add(MailboxAddress.Parse(toemail));
@@ -296,16 +254,23 @@ namespace Chef.Common.Repositories
             }
             //builder.HtmlBody = request.Body;
             email.Body = builder.ToMessageBody();
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
-            var host = this.Configuration.GetSection("MailSettings")["Host"];
-            var Port = this.Configuration.GetSection("MailSettings")["Port"];
-            var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
-            var Password = this.Configuration.GetSection("MailSettings")["Password"];
-            smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate("athirak@thomsuninfocare.com", "Aswina@1");
-            await smtp.SendAsync(email);
-            smtp.Disconnect(true);
+            try
+            {
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+                var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
+                var host = this.Configuration.GetSection("MailSettings")["Host"];
+                var Port = this.Configuration.GetSection("MailSettings")["Port"];
+                var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
+                var Password = this.Configuration.GetSection("MailSettings")["Password"];
+                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("test@thomsuninfocare.com", "pass****");
+               // await smtp.SendAsync(email);
+                smtp.Disconnect(true);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
             return 1;
         }
     }
