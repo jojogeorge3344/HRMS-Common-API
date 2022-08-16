@@ -110,5 +110,10 @@ namespace Chef.Finance.Models
 
         public bool IsDispute { get; set; }
         public string DisputeReason { get; set; }
+
+        [Write(false)]
+        [Skip(true)]
+        public string taxregistrationnumber { get; set; }
+
     }
 }
