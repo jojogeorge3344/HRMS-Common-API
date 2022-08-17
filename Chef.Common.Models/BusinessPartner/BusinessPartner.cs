@@ -93,5 +93,14 @@ namespace Chef.Common.Models
 
         //public int DefaultPurchaseTax { get; set; }
         //public int DefaultPurchaseTax { get; set; }
+
+
+        public int financialcompanyid { get; set; }
+
+
+        public string financialcompanycode { get; set; }
+
+
+        public string financialcompanyname { get; set; }
     }
 }
