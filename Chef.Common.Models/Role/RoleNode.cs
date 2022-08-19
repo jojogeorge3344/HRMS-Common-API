@@ -18,7 +18,7 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
-        public string ModifiedNodes { get; set; }
+        public int[] ModifiedNodes { get; set; }
 
         [Write(false)]
         [Skip(true)]
