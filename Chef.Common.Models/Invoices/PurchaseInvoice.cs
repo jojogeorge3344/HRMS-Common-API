@@ -11,10 +11,10 @@ namespace Chef.Finance.Models
         public string InvoiceNo { get; set; }
 
         [Required]
-        public DateTime InvoiceDate { get; set; } 
+        public DateTime InvoiceDate { get; set; }
 
-       //public  DateTime TransactionDate { get; set; }
-
+        //public  DateTime TransactionDate { get; set; }
+        [Required]
         public string Description { get; set; }
 
         [Required]

@@ -70,6 +70,8 @@ namespace Chef.Common.Models
         [StringLength(8)]
         public string BaseCompanyCode { get; set; }
 
+        public string BaseCompanyName { get; set; }
+
         [StringLength(32)]
         [Required]
         public string TaxId { get; set; }
