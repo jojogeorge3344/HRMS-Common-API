@@ -31,7 +31,11 @@ namespace Chef.Common.Models
 
         public string Department { get; set; }
 
+        public int DepartmentId { get; set; }
+
         public string Designation { get; set; }
+
+        public int DesignationId { get; set; }
 
         public string Address { get; set; }
 
