@@ -8,7 +8,7 @@ namespace Chef.Common.Models
     public class FinancialYear : Model
     {
         [Required]
-        [StringLength(32)]
+        [StringLength(50)]
         public string Name { get; set; }
 
         [Required]
