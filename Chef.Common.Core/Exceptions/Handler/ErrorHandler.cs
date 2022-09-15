@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Npgsql;
 using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -127,6 +128,18 @@ namespace Chef.Common.Exceptions
             if (detailMessage == null)
                 detailMessage = exceptions.GetAllMessages();
             stackTrace = exception.StackTrace;
+            var errorMessage = JsonSerializer.Serialize(
+              new { code, message, data, detailMessage, stackTrace }
+          );
+            var path = @"C:\ErrorLogs";
+            bool folderExists = Directory.Exists(path);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            File.AppendAllText(@"C:/ErrorLogs/chef.finance_" + String.Format("{0:dd/MM/yyyy}", DateTime.UtcNow) + ".txt", Environment.NewLine + DateTime.UtcNow.ToString("dd MMMM yyyy HH:mm:ss") + Environment.NewLine + errorMessage + Environment.NewLine);
+
             if (!env.IsEnvironment("Development"))
             {
                 data = null;
