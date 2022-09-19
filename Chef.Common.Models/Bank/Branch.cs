@@ -11,7 +11,7 @@ namespace Chef.Common.Models
         public string Name { get; set; }
 
         [Required]
-        [StringLength(8)]
+        
         public string Code { get; set; }     
 
         [StringLength(256)]
@@ -36,25 +36,23 @@ namespace Chef.Common.Models
         [StringLength(126)]
         public string CountryName { get; set; }
 
-        [StringLength(8)]
+       
         public string ZipCode { get; set; }
 
-        [StringLength(16)]
         public string Phone { get; set; }
 
-        [StringLength(32)]
         public string Fax { get; set; }
 
-        [StringLength(32)]
+        
         public string Email { get; set; }
 
         [ForeignKey("Common.Company")]
         public int CompanyId { get; set; }
 
-        [StringLength(8)]
+        
         public string CompanyCode { get; set; }
 
-        [StringLength(64)]
+        
         public string CompanyName { get; set; }
     }
 }
