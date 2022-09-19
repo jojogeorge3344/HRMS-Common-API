@@ -10,7 +10,7 @@ namespace Chef.Common.Models
         [Required]
         public string Name { get; set; }
 
-        [StringLength(16)]
+       
         [Required]
         public string BpType { get; set; }
 
@@ -35,7 +35,6 @@ namespace Chef.Common.Models
         [Required]
         public int StateId { get; set; }
 
-        [StringLength(126)]
         [Required]
         public string StateName { get; set; }
 
@@ -43,11 +42,9 @@ namespace Chef.Common.Models
         [Required]
         public int CountryId { get; set; }
 
-        [StringLength(126)]
         [Required]
         public string CountryName { get; set; }
 
-        [StringLength(8)]
         [Required]
         public string ZipCode { get; set; }
 
@@ -57,18 +54,14 @@ namespace Chef.Common.Models
         [StringLength(3)]
         public string CurrencyCode { get; set; }
 
-        [StringLength(12)]
         [Required]
         public string Phone { get; set; }
 
-        [StringLength(16)]
         public string Fax { get; set; }
 
-        [StringLength(32)]
         [Required]
         public string Email { get; set; }
 
-        [StringLength(62)]
         public string Website { get; set; }
 
         public int SerialNumber { get; set; }

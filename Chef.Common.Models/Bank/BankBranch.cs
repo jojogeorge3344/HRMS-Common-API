@@ -61,7 +61,6 @@ namespace Chef.Common.Models
         
         public string Phone { get; set; }
 
-        [StringLength(12)]
         public string Fax { get; set; }
 
       
