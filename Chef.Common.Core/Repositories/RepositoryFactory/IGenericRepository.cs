@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
@@ -16,6 +17,8 @@ namespace Chef.Common.Repositories
         Task<int> UpdateAsync(T obj);
 
         Task<List<T>> BulkInsertAsync(List<T> objs);
-      
+        Task<int> InsertAuditAsync(object obj, int parentID, int auditId = 0);
+
+
     }
 }

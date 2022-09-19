@@ -150,5 +150,13 @@ namespace Chef.Common.Repositories
         {
             obj.ModifiedDate = DateTime.UtcNow;
         }
+
+
+        public async Task<int> InsertAuditAsync(object obj,int parentID,int auditId=0)
+        {
+            var auditsql = new QueryBuilder<T>().GenerateInsertQueryForAudit("INSERT", parentID,auditId);
+            return (int)await Connection.ExecuteScalarAsync(auditsql, obj);          
+           // return result;
+        }
     }
 }
