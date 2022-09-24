@@ -6,6 +6,6 @@
         Savings = 2,
         Current = 3,
         Collection = 4,
-        Cash=5
+        Cash = 5
     }
 }

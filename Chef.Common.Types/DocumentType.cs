@@ -21,7 +21,6 @@
         PurchaseInvoice = 7006,
         CashCollectionDeposit = 7007,
         IntegrationTransaction = 8000,
-        GoodsReceiptNote = 10000,
-       
+        GoodsReceiptNote = 10000
     }
 }

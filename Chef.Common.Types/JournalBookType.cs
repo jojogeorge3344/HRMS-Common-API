@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Types
+﻿namespace Chef.Common.Types
 {
     public enum JournalBookTypeCodes
     {
-
         ManualDoubleEntryJournal = 100,
         InterBranchTransactionJournal = 101,
         YearClosingJournal = 102,
         GLCurrencyRevaluation = 103,
         Openingbalancejournal = 104,
         RecurringandReversalJournal = 105,
+
         CustomerCreditNote = 200,
         CustomerCreditNoteAllocation = 201,
         CustomerDepositAllocation = 202,
@@ -27,6 +21,7 @@ namespace Chef.Common.Types
         TradeSalesInvoices = 209,
         CustomerReceiptAgainstInvoices = 210,
         CustomerAdvanceAllocation = 211,
+
         IntercompanyTransactionJournal = 300,
         BankReconciliation = 301,
         ARAPBalanceWriteOff = 302,
@@ -35,34 +30,25 @@ namespace Chef.Common.Types
         SupplierCurrencyRevaluation = 305,
         CustomerCurrencyRevaluation = 306,
         BanktoBankTransfers = 307,
+
         PettyCashPayments = 400,
         PettyCashReimbursement = 401,
+
         SupplierInvoiceWithoutPOMatching = 500,
+        SupplierPaymentAgainstInvoices = 501,
         SupplierAdvancePayment = 502,
         SupplierDepositPayment = 503,
         CustomerRefundofDeposit = 504,
         CustomerRefundofAdvance = 505,
+        SupplierOnAccountPayment = 506,
         SupplierCreditNote = 507,
+        SupplierOnAccountPaymentAllocation = 508,
         SupplierDepositAllocation = 509,
         SupplierAdvanceAllocation = 510,
         SupplierCreditNoteAllocation = 511,
         SupplierInvoiceWithPOMatching = 512,
-        MaterialIssueIntegration = 608,
-        ProductionClosingIntegration = 613,
+
         PurchaseModuleIntegration = 600,
-        MachineTimesheetIntegration = 611,
-       // ManpowerTimesheetIntegration = 610,
-        ManpowerTimesheetIntegration = 609,
-        MatchandApproval = 619,
-        SalesReturnIntegration = 618,
-        SalesInvoicingIntegration = 617,
-        SalesIssueIntegration = 616,
-        SalesModuleIntegration = 614,
-        OverheadAbsorptionIntegration = 612,
-        SupplierPaymentAgainstInvoices = 501,
-        SupplierOnAccountPayment = 506,
-        SupplierOnAccountPaymentAllocation = 508,
-        CashCollectionAccount = 700,
         GoodsReceiptsIntegration = 601,
         GoodsReturnIntegration = 602,
         InventoryModuleIntegration = 603,
@@ -70,7 +56,18 @@ namespace Chef.Common.Types
         InventoryCycleCountingIntegration = 605,
         WarehouseTransferIntegration = 606,
         ManufacturingModuleIntegration = 607,
+        MaterialIssueIntegration = 608,
+        ManpowerTimesheetIntegration = 609,
+        // ManpowerTimesheetIntegration = 610,
+        MachineTimesheetIntegration = 611,
+        ProductionClosingIntegration = 613,
+        OverheadAbsorptionIntegration = 612,
+        SalesModuleIntegration = 614,
+        SalesIssueIntegration = 616,
+        SalesInvoicingIntegration = 617,
+        SalesReturnIntegration = 618,
+        MatchandApproval = 619,
 
-
+        CashCollectionAccount = 700
     }
 }

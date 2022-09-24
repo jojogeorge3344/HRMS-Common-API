@@ -8,10 +8,11 @@ namespace Chef.Common.Types
         Open = 1,
 
         [Description("Match and Approved")]
-        MatchAndApproved = 2,       
+        MatchAndApproved = 2,
 
         [Description("On Hold")]
         Hold = 3,
+
         [Description("Approved")]
         Approved = 4,
     }
