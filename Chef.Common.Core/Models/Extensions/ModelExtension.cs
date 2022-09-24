@@ -4,8 +4,8 @@
     {
         public static string TableName(this Model model)
         {
-            var type = model.GetType();
-            var schemaName = type.Namespace.Split('.')[1].ToLower();
+            System.Type type = model.GetType();
+            string schemaName = type.Namespace.Split('.')[1].ToLower();
             return schemaName + "." + type.Name.ToLower();
         }
 

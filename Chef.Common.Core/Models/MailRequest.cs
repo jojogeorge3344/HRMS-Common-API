@@ -1,11 +1,9 @@
-﻿
-
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 
 namespace Chef.Common.Core
 {
-    public class MailRequest:Model
+    public class MailRequest : Model
     {
         public List<string> ToEmail { get; set; }
         public string Subject { get; set; }
@@ -17,6 +15,5 @@ namespace Chef.Common.Core
         public string DocumentNumber { get; set; }
         public string DocumentDate { get; set; }
         public string ApprovedBy { get; set; }
-        
     }
 }

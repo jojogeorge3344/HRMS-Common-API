@@ -14,9 +14,6 @@ using MailKit.Security;
 
 namespace Chef.Common.Repositories
 {
-    
-
-    
     public interface IEmailSendFactory
     {
         Task SendEmailAsync(string email, string subject, string message);
@@ -27,7 +24,6 @@ namespace Chef.Common.Repositories
 
     public class EmailSendFactory : IEmailSendFactory
     {
-
         //private readonly EmailSettings _emailSettings;
         private readonly IHostingEnvironment _env;
         private readonly MailSettings _mailSettings;

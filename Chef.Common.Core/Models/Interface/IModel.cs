@@ -10,8 +10,6 @@ namespace Chef.Common.Core
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public bool IsArchived { get; set; }
-       
-
     }
 
     public interface INonTransactionModel
@@ -22,8 +20,5 @@ namespace Chef.Common.Core
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public bool IsArchived { get; set; }
-       
     }
-
-   
 }

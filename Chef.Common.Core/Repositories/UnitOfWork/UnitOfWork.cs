@@ -6,12 +6,11 @@ namespace Chef.Common.Repositories
 {
     internal class UnitOfWork : IUnitOfWork
     {
-        Guid transactionIdentifier = Guid.Empty;
-        Guid uniqueIdentifier = Guid.Empty;
-        bool disposed;
-        TransactionState transactionState = TransactionState.Initialized;
+        private Guid transactionIdentifier = Guid.Empty;
+        private Guid uniqueIdentifier = Guid.Empty;
+        private bool disposed;
 
-        public TransactionState TransactionState { get => transactionState; }
+        public TransactionState TransactionState { get; private set; } = TransactionState.Initialized;
 
         public IDbTransaction Transaction { get; private set; }
         public IDbConnection Connection { get; private set; }
@@ -19,7 +18,7 @@ namespace Chef.Common.Repositories
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
         public UnitOfWork(IDbConnection connection)
         {
-            this.Connection = connection;
+            Connection = connection;
         }
 
 
@@ -30,11 +29,17 @@ namespace Chef.Common.Repositories
         protected virtual void Dispose(bool disposing)
         {
             if (disposed)
+            {
                 return;
+            }
+
             if (disposing)
             {
                 if (Connection != null && Connection.State != ConnectionState.Closed)
+                {
                     Connection.Close();
+                }
+
                 Transaction?.Dispose();
                 Transaction = null;
             }
@@ -49,8 +54,8 @@ namespace Chef.Common.Repositories
             // Register only the first (Origin) transaction
             if (Transaction == null)
             {
-                this.Connection.Open();
-                Transaction = Connection.BeginTransaction(isolationLevel); transactionState = TransactionState.Started;
+                Connection.Open();
+                Transaction = Connection.BeginTransaction(isolationLevel); TransactionState = TransactionState.Started;
                 transactionIdentifier = uniqueIdentifier;
             }
             return uniqueIdentifier;
@@ -59,11 +64,14 @@ namespace Chef.Common.Repositories
         public void Rollback(string message = null)
         {
             if (Transaction == null)
+            {
                 throw new Exception("No active transaction to rollback, transaction object is null.Start a new transaction with start method");
+            }
+
             try
             {
                 Transaction?.Rollback();
-                transactionState = TransactionState.Rollbacked;
+                TransactionState = TransactionState.Rollbacked;
                 //message = string.IsNullOrEmpty(message) ? string.Format("Transaction - {0} rollbacked", transactionIdentifier) : message;
                 //throw new Exception(message);
             }
@@ -82,7 +90,9 @@ namespace Chef.Common.Repositories
             //TODO: Log transaction record failed or succeeded with transaction id
             // include membername to identify each calls
             if (Transaction == null)
+            {
                 throw new Exception("No active transaction to submit, transaction object is null.Start a new transaction with start method");
+            }
             // Commit or rollback only for the origin transaction. Other transaction initiators are ignored
             if (transactionId == transactionIdentifier)
             {
@@ -90,13 +100,13 @@ namespace Chef.Common.Repositories
                 {
                     //TODO: Apply Retry Logic based on database error codes 
                     Transaction?.Commit();
-                    transactionState = TransactionState.Succeeded;
+                    TransactionState = TransactionState.Succeeded;
 
                 }
                 catch
                 {
                     Transaction?.Rollback();
-                    transactionState = TransactionState.Rollbacked;
+                    TransactionState = TransactionState.Rollbacked;
                     throw;
                 }
                 finally

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Chef.Common.Repositories
 {
-    interface IUnitOfWork : IDisposable
+    internal interface IUnitOfWork : IDisposable
     {
         IsolationLevel IsolationLevel { get; set; }
         TransactionState TransactionState { get; }

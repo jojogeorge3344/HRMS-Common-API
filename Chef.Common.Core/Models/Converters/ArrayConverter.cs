@@ -12,7 +12,7 @@ namespace Chef.Common.Core
             //return (objectType == typeof(List<T>));
         }
 
-        public override bool CanRead { get { return false; } }
+        public override bool CanRead => false;
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
@@ -25,7 +25,7 @@ namespace Chef.Common.Core
             //throw new Exception($"This property {objectType.Name} is marked with ArrayConverter however it is not an array property");
         }
 
-        public override bool CanWrite { get { return false; } }
+        public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

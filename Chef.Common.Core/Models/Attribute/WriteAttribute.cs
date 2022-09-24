@@ -8,7 +8,7 @@ namespace Chef.Common.Core
 
         public WriteAttribute(bool write)
         {
-            this.Write = write;
+            Write = write;
         }
     }
 }

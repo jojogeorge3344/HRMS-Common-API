@@ -43,18 +43,10 @@ namespace Chef.Common.Exceptions
             object detailMessage = null;
             var stackTrace = String.Empty;
             IDictionary data = null;
+
             var exceptionType = exception.GetType();
             var exceptions = exception.GetInnerExceptions();
-            //if (exceptions.Any(x => x is ServiceException))
-            //{
-            //    var serviceException = (ServiceException)exceptions.FirstOrDefault(x => x is ServiceException);
-            //    status = HttpStatusCode.InternalServerError;
-            //    data = serviceException.Data;
-            //    code = serviceException.ExceptionCode.ToString();
-            //    var contextMessage = context.GetExceptionMessage(serviceException.ExceptionCode);
-            //    message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : serviceException.Message;
-            //}
-            //else 
+
             if (exceptions.Any(x => x is SocketException))
             {
                 var socketException = (SocketException)exceptions.FirstOrDefault(x => x is SocketException);
@@ -107,7 +99,7 @@ namespace Chef.Common.Exceptions
                 status = HttpStatusCode.NotFound;
                 data = ex.Data;
                 code = ServiceExceptionCode.ResourceNotFound.ToString();
-                message = ex.Message; 
+                message = ex.Message;
             }
             else if (exceptions.Any(x => x is BadRequestException))
             {
@@ -116,7 +108,7 @@ namespace Chef.Common.Exceptions
                 data = ex.Data;
                 code = ServiceExceptionCode.BadRequest.ToString();
                 message = ex.Message;
-            }          
+            }
             else
             {
                 status = HttpStatusCode.InternalServerError;
@@ -127,12 +119,22 @@ namespace Chef.Common.Exceptions
 
             if (detailMessage == null)
                 detailMessage = exceptions.GetAllMessages();
+
             stackTrace = exception.StackTrace;
+
             var errorMessage = JsonSerializer.Serialize(
               new { code, message, data, detailMessage, stackTrace }
-          );
+              );
+
+            ///CODE REVIEW
+            ///
+            //WHY DO WE NEED THIS? WHAT ABOUT ERROR Handler
+            //LOGGER is not available???
+
+            //Strict NO
             var path = @"C:\ErrorLogs";
             bool folderExists = Directory.Exists(path);
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

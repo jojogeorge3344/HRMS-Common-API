@@ -46,7 +46,7 @@ namespace Chef.Common.Repositories
         #region Update Async
         Task<int> UpdateAsync(object updateObject, object updateConditionObject);
         Task<int> UpdateAsync(T obj);
-        Task<int> UpdateAsync(object updateObject, SqlKata.Query sqlKataQuery);
+        Task<int> UpdateAsync(object updateObject, Query sqlKataQuery);
         #endregion
 
         #region Delete Async

@@ -6,13 +6,15 @@ namespace Chef.Common.Core
     {
         public override bool IsValid(object value)
         {
-            var collection = value as ICollection;
-
-            if (collection != null)
+            if (value is ICollection collection)
+            {
                 return collection.Count > 0;
+            }
 
             if (value is IEnumerable enumerable)
+            {
                 return enumerable.GetEnumerator().MoveNext();
+            }
 
             return false;
         }

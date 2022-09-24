@@ -1,11 +1,6 @@
-﻿using System;
-
-
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-namespace Chef.Common.Core
+﻿namespace Chef.Common.Core
 {
-    public class MailSettings:Model
+    public class MailSettings : Model
     {
         public string Mail { get; set; }
         public string DisplayName { get; set; }
