@@ -83,10 +83,5 @@ namespace Chef.Common.Models
 
         public string AlterNativeSourceCode { get; set; }
 
-        public int FinancialCompanyId { get; set; }
-
-        public string FinancialCompanyCode { get; set; }
-
-        public string FinancialCompanyName { get; set; }
     }
 }
