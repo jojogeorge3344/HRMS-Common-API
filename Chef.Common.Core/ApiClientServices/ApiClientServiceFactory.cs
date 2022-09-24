@@ -12,9 +12,9 @@ namespace Chef.Common.ClientServices
 {
     public class ApiClientServiceFactory : IApiClientServiceFactory
     {
-        readonly IHttpContextAccessor httpContextAccessor;
-        readonly IConfiguration configuration;
-        readonly ConcurrentDictionary<string, HttpClient> httpClients;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IConfiguration configuration;
+        private readonly ConcurrentDictionary<string, HttpClient> httpClients;
 
         public ApiClientServiceFactory(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {

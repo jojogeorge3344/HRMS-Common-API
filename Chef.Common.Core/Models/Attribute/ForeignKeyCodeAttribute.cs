@@ -17,8 +17,9 @@ namespace Chef.Common.Core
             KeyField = modelType.GetProperties().Where(x => x.GetCustomAttribute(typeof(CodeAttribute)) != null).Select(x => x.Name.ToLower()).FirstOrDefault();
 
             if (string.IsNullOrEmpty(KeyField))
+            {
                 throw new Exception($"Foreignkey code reference not found. Add code attribute to the corresponding property in the primary table - {modelType.Name}");
-
+            }
         }
     }
 }

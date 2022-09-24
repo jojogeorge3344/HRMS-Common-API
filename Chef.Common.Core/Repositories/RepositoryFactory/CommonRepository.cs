@@ -9,9 +9,9 @@ namespace Chef.Common.Repositories
 {
     internal partial class CommonRepository<TModel> : ICommonRepository<TModel> where TModel : IModel
     {
-        readonly IDatabaseSession databaseSession;
-        readonly IQueryBuilder<TModel> queryBuilder;
-        readonly ISqlQueryBuilder sqlQueryBuilder;
+        private readonly IDatabaseSession databaseSession;
+        private readonly IQueryBuilder<TModel> queryBuilder;
+        private readonly ISqlQueryBuilder sqlQueryBuilder;
         //readonly UnitOfWork unitOfWork;
 
         public CommonRepository(IDatabaseSession databaseSession,
@@ -121,14 +121,17 @@ namespace Chef.Common.Repositories
 
         public async Task<int> BulkInsertAsync(IEnumerable<object> bulkInsertObjects)
         {
-            List<IDictionary<string, object>> dictionaries = new List<IDictionary<string, object>>();
+            List<IDictionary<string, object>> dictionaries = new();
+
             foreach (object record in bulkInsertObjects)
             {
                 IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(record);
                 InsertModelProperties(ref expando);
                 dictionaries.Add(expando);
             }
+
             var query = sqlQueryBuilder.Query<TModel>().AsBulkInsertExt(dictionaries);
+
             return await databaseSession.ExecuteAsync(query);
         }
 
@@ -177,7 +180,7 @@ namespace Chef.Common.Repositories
 
         #endregion
 
-        void UpdateModelProperties(ref IDictionary<string, object> expando)
+        private void UpdateModelProperties(ref IDictionary<string, object> expando)
         {
             if (expando.ContainsKey("createdBy"))
                 expando.Remove("createdBy");
@@ -192,7 +195,7 @@ namespace Chef.Common.Repositories
             }
         }
 
-        void InsertModelProperties(ref IDictionary<string, object> expando)
+        private void InsertModelProperties(ref IDictionary<string, object> expando)
         {
 
             if (expando.ContainsKey("id"))

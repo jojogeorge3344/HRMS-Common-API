@@ -9,9 +9,9 @@ namespace Chef.Common.Core
 
         public UniqueAttribute(bool isUnique)
         {
-            this.IsUnique = isUnique;
+            IsUnique = isUnique;
         }
 
-        public override object TypeId { get { return this; } }
+        public override object TypeId => this;
     }
 }

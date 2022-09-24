@@ -17,11 +17,16 @@ namespace Chef.Common.Repositories
         {
             if (reader.TokenType == JsonToken.StartArray)
             {
-                reader.Read();
+                _ = reader.Read();
+
                 if (reader.TokenType == JsonToken.EndArray)
+                {
                     return new Dictionary<string, string>();
+                }
                 else
+                {
                     throw new JsonSerializationException("Non-empty JSON array does not make a valid Dictionary!");
+                }
             }
             else if (reader.TokenType == JsonToken.Null)
             {
@@ -29,12 +34,16 @@ namespace Chef.Common.Repositories
             }
             else if (reader.TokenType == JsonToken.StartObject)
             {
-                Dictionary<string, object> ret = new Dictionary<string, object>();
+                Dictionary<string, object> ret = new();
                 reader.Read();
+
                 while (reader.TokenType != JsonToken.EndObject)
                 {
                     if (reader.TokenType != JsonToken.PropertyName)
+                    {
                         throw new JsonSerializationException("Unexpected token!");
+                    }
+
                     string key = (string)reader.Value;
                     reader.Read();
                     //string value = (string)reader.Value;

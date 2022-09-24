@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Chef.Common.Repositories
+﻿namespace Chef.Common.Repositories
 {
     public sealed class SimpleUnitOfWork : ISimpleUnitOfWork
     {
@@ -27,7 +25,7 @@ namespace Chef.Common.Repositories
             _session.Transaction.Rollback();
             Dispose();
         }
-       
+
         public void Dispose() => _session.Transaction?.Dispose();
     }
 }

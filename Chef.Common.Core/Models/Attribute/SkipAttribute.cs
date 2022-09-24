@@ -8,7 +8,7 @@ namespace Chef.Common.Core
 
         public SkipAttribute(bool skip)
         {
-            this.Skip = skip;
+            Skip = skip;
         }
     }
 }

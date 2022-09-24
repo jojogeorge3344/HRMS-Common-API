@@ -5,11 +5,14 @@ namespace Chef.Common.Repositories
     public class QueryBuilderFactory : IQueryBuilderFactory
     {
         public IQueryBuilder<T> QueryBuilder<T>()
-            where T : IModel =>
-            new QueryBuilder<T>();
+            where T : IModel
+        {
+            return new QueryBuilder<T>();
+        }
 
-        public ISqlQueryBuilder SqlQueryBuilder() =>
-            new SqlQueryBuilder();
-
+        public ISqlQueryBuilder SqlQueryBuilder()
+        {
+            return new SqlQueryBuilder();
+        }
     }
 }

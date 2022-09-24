@@ -14,42 +14,42 @@ namespace Chef.Common.Repositories
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
     {
         public IMapper Mapper { get; set; }
-        private DbSession _session;
-        private IHttpContextAccessor httpContextAccessor;
+        private readonly DbSession _session;
+        private readonly IHttpContextAccessor httpContextAccessor;
         public int headerBranchId = 0;
+
         public IQueryBuilderFactory QueryBuilderFactory { get; set; }
+
         public ISqlQueryBuilder SqlQueryBuilder => QueryBuilderFactory.SqlQueryBuilder();
+
         public IDatabaseSession DatabaseSession { get; set; }
+
         public GenericRepository(IHttpContextAccessor httpContextAccessor, DbSession session)
         {
             _session = session;
             this.httpContextAccessor = httpContextAccessor;
-            this.headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
+            headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
         }
 
-        public IDbConnection Connection
-        {
-            get
-            {
-                return _session.Connection;
-            }
-        }
+        public IDbConnection Connection => _session.Connection;
 
         public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
 
         public string TableName => SchemaName + "." + typeof(T).Name;
 
-        public async virtual Task<int> DeleteAsync(int id)
+        public virtual async Task<int> DeleteAsync(int id)
         {
             var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
-        public async virtual Task<int> ArchiveAsync(int id)
+
+        public virtual async Task<int> ArchiveAsync(int id)
         {
             var sql = "UPDATE " + TableName + " SET isarchived=true WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
-        public async virtual Task<IEnumerable<T>> GetAllAsync()
+
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             var sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";
             if (typeof(TransactionModel).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
@@ -60,14 +60,13 @@ namespace Chef.Common.Repositories
             return await Connection.QueryAsync<T>(sql);
         }
 
-       
-        public async virtual Task<T> GetAsync(int id)
+        public virtual async Task<T> GetAsync(int id)
         {
             var sql = "SELECT * FROM " + TableName + " WHERE  isarchived=false and id = @Id";
             return await Connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
         }
 
-        public async virtual Task<T> InsertAsync(T obj)
+        public virtual async Task<T> InsertAsync(T obj)
         {
             InsertModelProperties(ref obj);
             try
@@ -91,7 +90,7 @@ namespace Chef.Common.Repositories
             }
         }
 
-        public async virtual Task<List<T>> BulkInsertAsync(List<T> objs)
+        public virtual async Task<List<T>> BulkInsertAsync(List<T> objs)
         {
             for (int i = 0; i < objs.Count; i++)
             {
@@ -99,6 +98,7 @@ namespace Chef.Common.Repositories
                 InsertModelProperties(ref tmp);
                 objs[i] = tmp;
             }
+
             try
             {
                 var sql = new QueryBuilder<T>().GenerateInsertQuery();
@@ -124,9 +124,10 @@ namespace Chef.Common.Repositories
             obj.IsArchived = false;
         }
 
-        public async virtual Task<int> UpdateAsync(T obj)
+        public virtual async Task<int> UpdateAsync(T obj)
         {
             UpdateModelProperties(ref obj);
+
             try
             {
                 var sql = new QueryBuilder<T>().GenerateUpdateQuery();
@@ -151,12 +152,11 @@ namespace Chef.Common.Repositories
             obj.ModifiedDate = DateTime.UtcNow;
         }
 
-
-        public async Task<int> InsertAuditAsync(object obj,int parentID,int auditId=0)
+        public async Task<int> InsertAuditAsync(object obj, int parentID, int auditId = 0)
         {
-            var auditsql = new QueryBuilder<T>().GenerateInsertQueryForAudit("INSERT", parentID,auditId);
-            return (int)await Connection.ExecuteScalarAsync(auditsql, obj);          
-           // return result;
+            string auditsql = new QueryBuilder<T>().GenerateInsertQueryForAudit("INSERT", parentID, auditId);
+
+            return (int)await Connection.ExecuteScalarAsync(auditsql, obj);
         }
     }
 }

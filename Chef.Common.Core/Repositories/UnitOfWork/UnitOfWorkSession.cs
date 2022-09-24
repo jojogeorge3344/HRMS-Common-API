@@ -6,12 +6,10 @@ namespace Chef.Common.Repositories
 {
     internal class UnitOfWorkSession : IUnitOfWorkSession
     {
-        readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
         private bool disposedValue;
-        //readonly IsolationLevel isolationLevel = IsolationLevel.ReadCommitted;
 
-        Guid transactionId = Guid.Empty;
-        public Guid TransactionId => transactionId;
+        public Guid TransactionId { get; private set; } = Guid.Empty;
 
         public UnitOfWorkSession(IUnitOfWork unitOfWork, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
@@ -27,11 +25,17 @@ namespace Chef.Common.Repositories
             {
                 if (disposing)
                 {
-                    if (this.unitOfWork.TransactionState == TransactionState.Started)
+                    if (unitOfWork.TransactionState == TransactionState.Started)
+                    {
                         if (Marshal.GetExceptionPointers() != IntPtr.Zero)
+                        {
                             unitOfWork.Rollback();
+                        }
                         else
-                            unitOfWork.Complete(transactionId);
+                        {
+                            unitOfWork.Complete(TransactionId);
+                        }
+                    }
                 }
                 disposedValue = true;
             }
@@ -50,14 +54,18 @@ namespace Chef.Common.Repositories
 
         public void Start(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            if (this.unitOfWork.TransactionState != TransactionState.Started)
-                transactionId = unitOfWork.Start(isolationLevel);
+            if (unitOfWork.TransactionState != TransactionState.Started)
+            {
+                TransactionId = unitOfWork.Start(isolationLevel);
+            }
         }
 
         public void Complete()
         {
-            if (this.unitOfWork.TransactionState == TransactionState.Started)
-                unitOfWork.Complete(transactionId);
+            if (unitOfWork.TransactionState == TransactionState.Started)
+            {
+                unitOfWork.Complete(TransactionId);
+            }
         }
 
         //public void Rollback(string message = null)

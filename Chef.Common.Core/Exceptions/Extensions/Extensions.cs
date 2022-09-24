@@ -11,9 +11,7 @@ namespace Chef.Common.Exceptions
     {
         public static string GetMessage(this Exception ex)
         {
-            if (ex is AggregateException exception)
-                return exception.Flatten().InnerException.Message;
-            return ex.Message;
+            return ex is AggregateException exception ? exception.Flatten().InnerException.Message : ex.Message;
         }
 
         public static IEnumerable<Exception> GetInnerExceptions(this Exception ex)
@@ -23,15 +21,18 @@ namespace Chef.Common.Exceptions
             //    throw new ArgumentNullException("ex");
             //}
 
-            var innerException = ex;
+            Exception innerException = ex;
 
             do
             {
                 if (innerException is AggregateException exception)
                 {
-                    var innerExceptions = exception.Flatten().InnerExceptions;
-                    foreach (var ie in innerExceptions)
+                    System.Collections.ObjectModel.ReadOnlyCollection<Exception> innerExceptions = exception.Flatten().InnerExceptions;
+                    foreach (Exception ie in innerExceptions)
+                    {
                         yield return ie;
+                    }
+
                     innerException = exception.InnerException;
                 }
                 else
@@ -45,7 +46,7 @@ namespace Chef.Common.Exceptions
 
         public static string GetAllMessages(this IEnumerable<Exception> exceptions)
         {
-            return String.Join(Environment.NewLine, exceptions.Select(x => x.Message).Distinct());
+            return string.Join(Environment.NewLine, exceptions.Select(x => x.Message).Distinct());
         }
 
 
@@ -53,21 +54,20 @@ namespace Chef.Common.Exceptions
         {
             if (httpContext.Items.ContainsKey(serviceExceptionCode))
             {
-                StringBuilder builder = new StringBuilder();
-                builder.AppendLine(httpContext.Items[serviceExceptionCode].ToString());
-                builder.AppendLine(message);
+                StringBuilder builder = new();
+                _ = builder.AppendLine(httpContext.Items[serviceExceptionCode].ToString());
+                _ = builder.AppendLine(message);
                 httpContext.Items[serviceExceptionCode] = builder.ToString();
             }
             else
+            {
                 httpContext.Items.Add(serviceExceptionCode, message);
+            }
         }
 
         public static string GetExceptionMessage(this HttpContext httpContext, ServiceExceptionCode serviceExceptionCode)
         {
-            if (httpContext.Items.ContainsKey(serviceExceptionCode))
-                return httpContext.Items[serviceExceptionCode].ToString();
-            else
-                return string.Empty;
+            return httpContext.Items.ContainsKey(serviceExceptionCode) ? httpContext.Items[serviceExceptionCode].ToString() : string.Empty;
         }
     }
 }

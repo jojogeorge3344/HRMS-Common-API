@@ -14,8 +14,10 @@ namespace Chef.Common.Core.Repositories.UnitOfWork
         public bool Retry(Exception ex)
         {
             if (ex is not NpgsqlException sqlException)
+            {
                 //return ex is TimeoutException;
                 return false;
+            }
 
             return RetryErrorCodes.Contains(sqlException.ErrorCode);
         }

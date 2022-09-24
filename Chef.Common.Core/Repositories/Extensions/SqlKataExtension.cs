@@ -11,11 +11,13 @@ namespace Chef.Common.Repositories
     public static class SqlKataExtension
     {
         public static string FieldName<T>(Expression<Func<T, object>> fieldName)
-            => string.Format("{0}.{1}", TableNameWOSchema<T>(), GetPropertyName(fieldName)); 
+            => string.Format("{0}.{1}", TableNameWOSchema<T>(), GetPropertyName(fieldName));
+
         internal static string[] GetColumns(IDictionary<string, object> obj)
         {
             return obj.Select(x => x.Key).ToArray();
         }
+
         /// <summary>
         /// This method is an extension to Sql kata update query with generic update fields added
         /// </summary>
@@ -30,6 +32,7 @@ namespace Chef.Common.Repositories
             //UpdateDefaultProperties(ref expando);
             return query.AsUpdate(new ReadOnlyDictionary<string, object>(dictionary));
         }
+
         /// <summary>
         /// This method is an extension to Sql kata insert query with generic insert fields added
         /// </summary>
@@ -43,6 +46,7 @@ namespace Chef.Common.Repositories
             //InsertDefaultProperties(ref expando);
             return query.AsInsert(new ReadOnlyDictionary<string, object>(dictionary), returnId: returnId);
         }
+
         /// <summary>
         /// This method is an extension to Sql kata insert query to support bulk insert
         /// </summary>
@@ -63,8 +67,10 @@ namespace Chef.Common.Repositories
             var firstObject = dictionaries.FirstOrDefault();
             var columns = GetColumns(firstObject);
             var data = dictionaries.Select(x => x.Values);
+
             return query.AsInsert(columns: columns, data);
         }
+
         /// <summary>
         /// This method is an extension to Sql kata insert query to support bulk insert
         ///  
@@ -81,7 +87,7 @@ namespace Chef.Common.Repositories
             return query.AsInsert(columns: columns, selectQuery);
         }
 
-        static string ToSqlString(this SqlSearchOperator contionalOperator)
+        public static string ToSqlString(this SqlSearchOperator contionalOperator)
         {
             string stringOperator = contionalOperator switch
             {
@@ -89,13 +95,13 @@ namespace Chef.Common.Repositories
                 SqlSearchOperator.LessThanEqual => "<=",
                 SqlSearchOperator.GreaterThan => ">",
                 SqlSearchOperator.GreaterThanEqual => ">=",
-               
                 _ => "=",
-                
             };
+
             return stringOperator;
         }
-        static string GetFieldName(this Query query, SqlSearchRule condition)
+
+        public static string GetFieldName(this Query query, SqlSearchRule condition)
         {
             if (query.Variables.ContainsKey("Aliases"))
             {
@@ -104,16 +110,20 @@ namespace Chef.Common.Repositories
                     ? dictionary[condition.Field.ToLower().Trim()]
                     : condition.Field.ToLower().Trim();
             }
+
             return condition.Field.ToLower().Trim();
         }
-        static Query AndSearchCondition(this Query query, SqlSearchRule condition)
+
+        public static Query AndSearchCondition(this Query query, SqlSearchRule condition)
         {
             var fieldName = query.GetFieldName(condition);
+
             switch (condition.Operator)
             {
                 case SqlSearchOperator.Contains:
                     query.WhereContains(fieldName, condition.Value);
                     break;
+
                 case SqlSearchOperator.In:
                     if (condition.Value is IEnumerable<string> enumerableString)
                         query.WhereIn(fieldName, enumerableString);
@@ -124,13 +134,15 @@ namespace Chef.Common.Repositories
                     else
                         query.Where(fieldName, SqlSearchOperator.Equal.ToSqlString(), condition.Value);
                     break;
+
                 case SqlSearchOperator.StartsWith:
                     query.WhereStarts(fieldName, condition.Value);
                     break;
+
                 case SqlSearchOperator.EndsWith:
                     query.WhereEnds(fieldName, condition.Value);
                     break;
-               
+
                 case SqlSearchOperator.Equal:
                 case SqlSearchOperator.GreaterThan:
                 case SqlSearchOperator.LessThan:
@@ -141,32 +153,35 @@ namespace Chef.Common.Repositories
                     {
                         //fieldName = "to_char(" + fieldName + ", 'yyyy-MM-dd')";
                         query.WhereDate(fieldName, condition.Operator.ToSqlString(), condition.Value);
-
                     }
                     else
                     {
                         query.Where(fieldName, condition.Operator.ToSqlString(), condition.Value);
-
                     }
-                   //query.Where(fieldName, condition.Operator.ToSqlString(), condition.Value);
+
+                    //query.Where(fieldName, condition.Operator.ToSqlString(), condition.Value);
                     break;
+
                 case SqlSearchOperator.NotEqual:
                     query.WhereNot(fieldName, condition.Operator.ToSqlString(), condition.Value);
                     break;
+
                 case SqlSearchOperator.IsNull:
                     query.WhereNull(fieldName);
                     break;
+
                 case SqlSearchOperator.IsNotNull:
                     query.WhereNotNull(fieldName);
                     break;
-                    
             }
+
             return query;
         }
 
-        static Query OrSearchCondition(this Query query, SqlSearchRule condition)
+        public static Query OrSearchCondition(this Query query, SqlSearchRule condition)
         {
             var fieldName = query.GetFieldName(condition);
+
             switch (condition.Operator)
             {
                 case SqlSearchOperator.Contains:
@@ -205,6 +220,7 @@ namespace Chef.Common.Repositories
                     query.WhereNotNull(fieldName);
                     break;
             }
+
             return query;
         }
 
@@ -216,6 +232,7 @@ namespace Chef.Common.Repositories
         public static SqlResult Compile(this Query query)
         {
             var compiler = new PostgresCompiler();
+
             return compiler.Compile(query);
         }
 
@@ -229,25 +246,29 @@ namespace Chef.Common.Repositories
         {
             if (sqlSearch == null || SqlSearch.DefaultInstance.Equals(sqlSearch))
                 return query;
+
             query.ApplySqlSearchRules(sqlSearch.Condition, sqlSearch.Rules);
             query.ApplySqlSearchGroups(sqlSearch.Groups);
+
             if (sqlSearch.Page != null)
                 query.ForPage(sqlSearch.Page.PageNo, sqlSearch.Page.PageLimit);
             else if (sqlSearch.Limit.HasValue)
                 query.Limit(sqlSearch.Limit.Value);
             if (sqlSearch.Offset.HasValue)
                 query.Offset(sqlSearch.Offset.Value);
+
             return query;
         }
 
-
-        static Query ApplySqlSearchGroups(this Query query,
+        public static Query ApplySqlSearchGroups(this Query query,
             IEnumerable<SqlSearchGroup> groups)
         {
             foreach (var group in groups)
             {
                 var queryGroup = new Query();
+
                 ApplySqlSearchRules(queryGroup, group.Condition, group.Rules);
+
                 if (group.Condition == SqlConditionOperator.AND)
                     query.Where(q => queryGroup);
                 else
@@ -255,18 +276,22 @@ namespace Chef.Common.Repositories
                 if (group.Groups.Count > 0)
                     ApplySqlSearchGroups(queryGroup, group.Groups);
             }
+
             return query;
         }
-        static Query ApplyRule(this Query query, SqlConditionOperator sqlConditionOperator,
+
+        public static Query ApplyRule(this Query query, SqlConditionOperator sqlConditionOperator,
          SqlSearchRule sqlSearchRule)
         {
             if (sqlConditionOperator == SqlConditionOperator.AND)
                 query.AndSearchCondition(sqlSearchRule);
             else
                 query.OrSearchCondition(sqlSearchRule);
+
             return query;
         }
-        static Query ApplySqlSearchRules(this Query query, SqlConditionOperator sqlConditionOperator,
+
+        public static Query ApplySqlSearchRules(this Query query, SqlConditionOperator sqlConditionOperator,
             IEnumerable<SqlSearchRule> rules)
         {
             if (!rules.Any())
@@ -276,18 +301,23 @@ namespace Chef.Common.Repositories
             {
                 if (rules.Count() == 1)
                     return query.ApplyRule(sqlConditionOperator, (SqlSearchRule)rules.Single());
+
                 var last = rules.Last();
                 var others = rules.Skip(1).Take(rules.Count() - 2);
+
                 query.ApplyRule(sqlConditionOperator, rule);
+
                 foreach (var c in others)
                 {
                     query.ApplyRule(sqlConditionOperator, (SqlSearchRule)c);
                 }
+
                 query.ApplyRule(sqlConditionOperator, (SqlSearchRule)last);
             }
-            return query;
 
+            return query;
         }
+
         /// <summary>
         /// This method converts key/value (alias/select field) pairs to a string array for usage in Sql kata select query
         /// </summary>
@@ -297,18 +327,22 @@ namespace Chef.Common.Repositories
         {
             return keyValuePairs.Select(x => string.Join(" as ", x.Value, x.Key)).ToArray();
         }
+
         /// <summary>
         /// This method returns database table name
         /// </summary>
         /// <typeparam name="T">Model object</typeparam>
         /// <returns>string</returns>
-        static string TableName<T>()
+        private static string TableName<T>()
         {
             var type = typeof(T);
             var schemaName = type.Namespace.Split('.')[1].ToLower();
+
             return schemaName + "." + type.Name.ToLower();
         }
-        static string TableNameWOSchema<T>() => typeof(T).Name.ToLower();
+
+        private static string TableNameWOSchema<T>() => typeof(T).Name.ToLower();
+
         /// <summary>
         /// This method is an extension to Sql kata join to obtain tablename using generics
         /// </summary>
@@ -319,6 +353,7 @@ namespace Chef.Common.Repositories
         /// <returns></returns>
         public static Query Join<T>(this Query query, Func<Join, Join> callback, string type = "inner join") =>
             query.Join(TableName<T>(), callback, type);
+
         /// <summary>
         /// This method is an extension to Sql kata join to obtain tablename using generics
         /// </summary>
@@ -331,6 +366,7 @@ namespace Chef.Common.Repositories
         /// <returns></returns>
         public static Query Join<T>(this Query query, string first, string second, string op = "=", string type = "inner join") =>
             query.Join(TableName<T>(), first, second, op, type);
+
         /// <summary>
         /// This method is an extension to Sql kata join to obtain tablename using generics
         /// </summary>
@@ -356,6 +392,7 @@ namespace Chef.Common.Repositories
         /// <param name="second"></param>
         /// <param name="op"></param>
         /// <returns></returns>
+
         public static Query LeftJoin<T>(this Query query, string first, string second, string op = "=") =>
             query.LeftJoin(TableName<T>(), first, second, op);
         /// <summary>
@@ -371,40 +408,45 @@ namespace Chef.Common.Repositories
             return query.LeftJoin(TableName<TLeft>(), FieldName<TLeft>(leftField), FieldName<TRight>(rightField), op);
         }
 
-
         public static Join On<TLeft, TRight>(this Join join, Expression<Func<TLeft, object>> leftField,
             Expression<Func<TRight, object>> rightField, string op = "=")
         {
             return join.On(FieldName<TLeft>(leftField), FieldName<TRight>(rightField), op);
         }
+
         public static Query From<T>(this Query query) =>
             query.From(TableName<T>());
 
-
-        static string GetPropertyName(LambdaExpression propertyExpression)
+        private static string GetPropertyName(LambdaExpression propertyExpression)
         {
             if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
+
             return GetPropertyName(ExpressionHelper.GetMemberExpression(propertyExpression));
         }
 
-        static string GetPropertyName(MemberExpression memberExpression)
+        private static string GetPropertyName(MemberExpression memberExpression)
         {
             if (memberExpression == null) throw new ArgumentNullException(nameof(memberExpression));
+
             return memberExpression.Member.Name.ToLower();
         }
-        static IEnumerable<string> GetPropertyNames(NewExpression newExpression)
+
+        private static IEnumerable<string> GetPropertyNames(NewExpression newExpression)
         {
             if (newExpression == null) throw new ArgumentNullException(nameof(newExpression));
+
             var expressions = ExpressionHelper.GetMemberExpressions(newExpression);
             var aliases = ExpressionHelper.GetMemberNames(newExpression).ToArray();
+
             return expressions.Select((x, i) => string.Format("{0}{1}", x.Member.Name.ToLower(), (x.Member.Name.ToLower() == aliases[i].ToLower()) ? "" : " as " + aliases[i]));
         }
-        static IEnumerable<string> GetAliases(NewExpression newExpression)
+
+        private static IEnumerable<string> GetAliases(NewExpression newExpression)
         {
             return ExpressionHelper.GetMemberNames(newExpression).ToArray();
         }
 
-        static IEnumerable<string> NewExpressionToSelectFieldsWithAlias<T>(this Query query, Expression<Func<T, object>>[] fields)
+        private static IEnumerable<string> NewExpressionToSelectFieldsWithAlias<T>(this Query query, Expression<Func<T, object>>[] fields)
         {
             IEnumerable<string> selectfields;
             var tableNameWOSchema = TableNameWOSchema<T>();
@@ -415,85 +457,104 @@ namespace Chef.Common.Repositories
             var keyValuePairs = expressions.Select((x, index) => new { Key = aliases[index].ToLower(), Value = x.Member.Name.ToLower() })
                 .Where(x => x.Key != x.Value)
                  .ToDictionary(x => x.Key, x => tableNameWOSchema + "." + x.Value);
+
             if (keyValuePairs.Count > 0)
             {
                 if (query.Variables.ContainsKey("Aliases"))
                 {
                     var dictionary = query.Variables["Aliases"] as Dictionary<string, string>;
+
                     foreach (var keyValue in keyValuePairs)
-                        dictionary[keyValue.Key]= keyValue.Value;
+                        dictionary[keyValue.Key] = keyValue.Value;
+
                     query.Variables["Aliases"] = dictionary;
                 }
                 else
                     query.Variables["Aliases"] = keyValuePairs;
             }
+
             selectfields = expressions.Select((x, i) => string.Format("{0}{1}", x.Member.Name.ToLower(), (x.Member.Name.ToLower() == aliases[i].ToLower()) ? "" : " as " + aliases[i]));
+
             return selectfields;
         }
 
-        static IEnumerable<string> NewExpressionToSelectFieldsWithoutAlias<T>(this Query query, Expression<Func<T, object>>[] fields)
+        private static IEnumerable<string> NewExpressionToSelectFieldsWithoutAlias<T>(this Query query, Expression<Func<T, object>>[] fields)
         {
             IEnumerable<string> selectfields;
             var tableNameWOSchema = TableNameWOSchema<T>();
             // New Expression
             var newExpression = fields.First().Body as NewExpression;
-            var expressions = ExpressionHelper.GetMemberExpressions(newExpression);  
+            var expressions = ExpressionHelper.GetMemberExpressions(newExpression);
+
             selectfields = expressions.Select((x) => x.Member.Name.ToLower());
+
             return selectfields;
         }
 
         public static Query Select<T>(this Query query, params Expression<Func<T, object>>[] fields)
         {
             if (fields == null) throw new ArgumentNullException(nameof(fields));
+
             var tableNameWOSchema = TableNameWOSchema<T>();
             IEnumerable<string> selectfields;
+
             if (fields.Count() == 1 && fields.First().Body is NewExpression)
                 selectfields = NewExpressionToSelectFieldsWithAlias<T>(query, fields);
             else
                 selectfields = fields.Select(f => GetPropertyName(f)).ToArray();
+
             return query.Select(string.Format("{0}.{{{1}}}", tableNameWOSchema, string.Join(", ", selectfields)));
-
-
         }
+
         public static Query Select<T>(this Query query)
         => query.Select(string.Format("{0}.*", TableNameWOSchema<T>()));
 
-
-
         //TODO: Match it with postgres datetime setting 
-        const string DATE_FORMAT = "MM/dd/yyyy";
+        private const string DATE_FORMAT = "MM/dd/yyyy";
 
         public static Query WhereDateGreaterThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATE_FORMAT) });
+
         public static Query WhereDateGreaterThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} > ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATE_FORMAT) });
+
         public static Query WhereDateLessThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATE_FORMAT) });
+
         public static Query WhereDateLessThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} < ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATE_FORMAT) });
+
         public static Query WhereDateEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} = ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATE_FORMAT) });
+
         public static Query WhereDateNotEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} != ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATE_FORMAT) });
+
         public static Query WhereDateBetween<T>(this Query query, Expression<Func<T, object>> column, DateTime startDate, DateTime endDate) =>
              query.Where(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()),
                  new[] { startDate.ToString(DATE_FORMAT) }).Where(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { endDate.ToString(DATE_FORMAT) });
 
-
         //TODO: Match it with postgres datetime setting
-        const string DATETIME_FORMAT = "MM/dd/yyyy hh:mm:ss.fff tt";
+        private const string DATETIME_FORMAT = "MM/dd/yyyy hh:mm:ss.fff tt";
+
         public static Query WhereDatetimeGreaterThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATETIME_FORMAT) });
+
         public static Query WhereDatetimeGreaterThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} > ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATETIME_FORMAT) });
+
         public static Query WhereDatetimeLessThanOrEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATETIME_FORMAT) });
+
         public static Query WhereDatetimeLessThan<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} < ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATETIME_FORMAT) });
+
         public static Query WhereDatetimeEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} = ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATETIME_FORMAT) });
+
         public static Query WhereDatetimeNotEqual<T>(this Query query, Expression<Func<T, object>> column, DateTime value) =>
             query.WhereRaw(string.Format("{0}.{1} != ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { value.ToString(DATETIME_FORMAT) });
+
         public static Query WhereDatetimeBetween<T>(this Query query, Expression<Func<T, object>> column, DateTime startDate, DateTime endDate) =>
            query.Where(string.Format("{0}.{1} >= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()),
                new[] { startDate.ToString(DATETIME_FORMAT) }).Where(string.Format("{0}.{1} <= ?::timestamp", TableNameWOSchema<T>(), column.GetPropertyName()), new[] { endDate.ToString(DATETIME_FORMAT) });
@@ -526,37 +587,52 @@ namespace Chef.Common.Repositories
 
         public static Query WhereColumns<TFirst, TSecond>(this Query query, Expression<Func<TFirst, object>> first, string op, Expression<Func<TSecond, object>> second)
         => query.WhereColumns(FieldName<TFirst>(first), op, FieldName<TSecond>(second));
+
         public static Query WhereColumns<TFirst, TSecond>(this Query query, Expression<Func<TFirst, object>> first, Expression<Func<TSecond, object>> second)
         => query.WhereColumns(FieldName<TFirst>(first), "=", FieldName<TSecond>(second));
+
         public static Query WhereNotNull<T>(this Query query, Expression<Func<T, object>> fieldName)
         => query.WhereNotNull(FieldName<T>(fieldName));
+
         public static Query OrWhereNotNull<T>(this Query query, Expression<Func<T, object>> fieldName)
         => query.OrWhereNotNull(FieldName<T>(fieldName));
+
         public static Query WhereNull<T>(this Query query, Expression<Func<T, object>> fieldName)
         => query.WhereNull(FieldName<T>(fieldName));
+
         public static Query OrWhereNull<T>(this Query query, Expression<Func<T, object>> fieldName)
         => query.OrWhereNull(FieldName<T>(fieldName));
 
         public static Join Where<T>(this Join join, Expression<Func<T, object>> fieldName, string op, object value)
         => join.Where(FieldName<T>(fieldName), op, value);
+
         public static Join Where<T>(this Join join, Expression<Func<T, object>> fieldName, object value)
         => join.Where(FieldName<T>(fieldName), "=", value);
+
         public static Query OrWhere<T>(this Query query, Expression<Func<T, object>> fieldName, object value)
         => query.OrWhere(FieldName<T>(fieldName), value);
+
         public static Query AsMax<T>(this Query query, Expression<Func<T, object>> fieldName)
         => query.SelectRaw($"MAX ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\"");
+
         public static Query AsMin<T>(this Query query, Expression<Func<T, object>> fieldName)
         => query.SelectRaw($"MIN ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\"");
+
         public static Query AsSum<T>(this Query query, Expression<Func<T, object>> fieldName)
-        => query.SelectRaw($"SUM ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\""); 
+        => query.SelectRaw($"SUM ({FieldName<T>(fieldName)}) as \"{GetPropertyName(fieldName)}\"");
+
         public static Query GroupBy<T>(this Query query, params Expression<Func<T, object>>[] fields)
-        { 
+        {
             var tableNameWOSchema = TableNameWOSchema<T>();
             IEnumerable<string> selectfields;
+
             if (fields.Count() == 1 && fields.First().Body is NewExpression)
+            {
                 selectfields = NewExpressionToSelectFieldsWithoutAlias<T>(query, fields);
+            }
             else
                 selectfields = fields.Select(f => GetPropertyName(f)).ToArray();
+
             return query.GroupBy(selectfields.Select(x => string.Format("{0}.{1}", tableNameWOSchema, x)).ToArray());
             //return query.GroupBy(string.Format("{0}.{{{1}}}", tableNameWOSchema, string.Join(", ", selectfields)));
         }

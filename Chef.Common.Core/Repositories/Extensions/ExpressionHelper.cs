@@ -24,7 +24,9 @@ namespace Chef.Common.Repositories
         {
             //MemberExpression result;
             if (expression is MemberExpression memberExpression)
+            {
                 return memberExpression;
+            }
 
             var unary = expression as UnaryExpression;
             if (unary != null && unary.NodeType == ExpressionType.Convert && unary.Operand is MemberExpression)
@@ -39,22 +41,33 @@ namespace Chef.Common.Repositories
 
         public static string GetPropertyName(this LambdaExpression propertyExpression)
         {
-            if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
-            return ExpressionHelper.GetMemberExpression(propertyExpression).GetPropertyName();
+            if (propertyExpression == null)
+            {
+                throw new ArgumentNullException(nameof(propertyExpression));
+            }
+
+            return GetMemberExpression(propertyExpression).GetPropertyName();
         }
 
         public static string GetPropertyName(this MemberExpression memberExpression)
         {
-            if (memberExpression == null) throw new ArgumentNullException(nameof(memberExpression));
+            if (memberExpression == null)
+            {
+                throw new ArgumentNullException(nameof(memberExpression));
+            }
+
             return memberExpression.Member.Name.ToLower();
         }
 
-        static string TableNameWOSchema<T>() => typeof(T).Name.ToLower();
-         
+        public static string TableNameWOSchema<T>()
+        {
+            return typeof(T).Name.ToLower();
+        }
+
         public static string GetFieldName<T>(this LambdaExpression propertyExpression)
         {
             if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
-            return string.Format("{0}.{1}", TableNameWOSchema<T>(), ExpressionHelper.GetMemberExpression(propertyExpression).GetPropertyName());
+            return string.Format("{0}.{1}", TableNameWOSchema<T>(), GetMemberExpression(propertyExpression).GetPropertyName());
         }
     }
 }

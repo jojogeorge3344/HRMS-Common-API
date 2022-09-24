@@ -8,7 +8,9 @@ namespace Chef.Common.Repositories
         public static T Do<T>(Func<T> func)
         {
             if (func == null)
+            {
                 throw new ArgumentNullException(nameof(func));
+            }
 
             return func();
         }
@@ -16,17 +18,21 @@ namespace Chef.Common.Repositories
         public static async Task<T> DoAsync<T>(Func<Task<T>> func)
         {
             if (func == null)
+            {
                 throw new ArgumentNullException(nameof(func));
+            }
 
             return await func();
         }
 
         public static void Do(Action action)
-            => Do(() =>
-            {
-                action();
-                return true;
-            });
+        {
+            Do(() =>
+                    {
+                        action();
+                        return true;
+                    });
+        }
 
         public static async Task DoAsync(Func<Task> action)
             => await DoAsync(async () =>

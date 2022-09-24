@@ -12,7 +12,7 @@ namespace Chef.Common.Repositories
 {
     public class QueryBuilder<T> : IQueryBuilder<T> where T : IModel
     {
-        private readonly Dictionary<string, string> PropertyMap = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> PropertyMap = new()
         {
             { "System.Int32", "integer" },
             { "Enum", "integer" },
@@ -70,12 +70,13 @@ namespace Chef.Common.Repositories
             .Where(x => x.Enumerable.Count() > 1)
             .ToDictionary(t => t.Key, t => t.Enumerable);
 
-
-
         public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
+
         public string TableName => SchemaName + "." + typeof(T).Name.ToLower();
-        string GetTableName(Type type)
+
+        private string GetTableName(Type type)
             => type.Namespace.Split('.')[1].ToLower() + "." + type.Name.ToLower();
+
         public string TableNameWOSchema => typeof(T).Name.ToLower();
 
         public string PrimaryKey
@@ -86,7 +87,6 @@ namespace Chef.Common.Repositories
                 return property?.Property.Name;
             }
         }
-
 
         private List<Column> GenerateColumnsForTable(IEnumerable<PropertyInfo> listOfProperties)
         {
@@ -147,13 +147,14 @@ namespace Chef.Common.Repositories
                     where attributes.Length <= 0 || (attributes[0] as WriteAttribute)?.Write != false
                     select prop.Name).ToList();
         }
-     
+
         private string GetPropertyType(PropertyInfo prop)
         {
             if (prop.PropertyType.IsEnum)
             {
                 return PropertyMap["Enum"];
             }
+
             if (prop.PropertyType.IsGenericType &&
          prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
@@ -168,27 +169,31 @@ namespace Chef.Common.Repositories
             const string tab = "\t\t";
             var indexQuery = new StringBuilder();
             int indexCounter = 0;
+
             var createTableQuery = new StringBuilder($"CREATE TABLE IF NOT EXISTS {TableName} (");
             //var columns = GenerateColumnsForTable(GetProperties);
             var columns = GenerateColumnsForTable(SortedProperties);
+
             columns.ForEach(column =>
             {
                 if (column.IsKey && !IsJunctionTable)
                 {
-                    createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} SERIAL PRIMARY KEY,");
+                    _ = createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} SERIAL PRIMARY KEY,");
                 }
                 else
                 {
-                    createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} {column.Type}");
+                    _ = createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} {column.Type}");
 
                     if (column.IsRequired)
                     {
-                        createTableQuery.Append(" NOT NULL");
+                        _ = createTableQuery.Append(" NOT NULL");
                     }
+
                     if (column.HasDefaultValue)
                     {
-                        createTableQuery.Append(" DEFAULT " + column.DefaultValue);
+                        _ = createTableQuery.Append(" DEFAULT " + column.DefaultValue);
                     }
+
                     if (column.ForeignKeyReference != null)
                     {
                         createTableQuery.Append(column.ForeignKeyReference);
@@ -238,6 +243,7 @@ namespace Chef.Common.Repositories
                         createTableQuery.Append(",");
                     }
                 }
+
                 createTableQuery.Remove(createTableQuery.Length - 1, 1); //remove last comma
             }
 
@@ -257,24 +263,25 @@ namespace Chef.Common.Repositories
         {
             var insertQuery = new StringBuilder($"INSERT INTO {TableName} ");
 
-            insertQuery.Append("(");
+            _ = insertQuery.Append('(');
 
             var properties = GenerateListOfProperties(GetProperties);
-            properties.ForEach(prop => { insertQuery.Append($"{prop},"); });
+            properties.ForEach(prop => { _ = insertQuery.Append($"{prop},"); });
 
-            insertQuery
+            _ = insertQuery
                 .Remove(insertQuery.Length - 1, 1)
                 .Append(") VALUES (");
 
-            properties.ForEach(prop => { insertQuery.Append($"@{prop},"); });
+            properties.ForEach(prop => { _ = insertQuery.Append($"@{prop},"); });
 
-            insertQuery
+            _ = insertQuery
                 .Remove(insertQuery.Length - 1, 1)
                 .Append(")" + (returnId ? " RETURNING Id" : string.Empty));
 
             return insertQuery.ToString();
         }
-        public string GenerateInsertQueryForAudit(string operation,int partentTableID, int auditId=0, bool returnId = true)
+
+        public string GenerateInsertQueryForAudit(string operation, int partentTableID, int auditId = 0, bool returnId = true)
         {
             var insertQuery = new StringBuilder($"INSERT INTO {TableName} ");
 
@@ -289,10 +296,9 @@ namespace Chef.Common.Repositories
 
             properties.ForEach(prop =>
             {
-                if(prop== "ParentTableId")
+                if (prop == "ParentTableId")
                     insertQuery.Append($"{partentTableID},");
-                else
-                if (prop == "AuditId")
+                else if (prop == "AuditId")
                     insertQuery.Append($"'{auditId}',");
                 else if (prop == "AuditOperation")
                     insertQuery.Append($"'{operation}',");
@@ -306,6 +312,7 @@ namespace Chef.Common.Repositories
 
             return insertQuery.ToString();
         }
+
         public string GenerateUpdateQuery()
         {
             var updateQuery = new StringBuilder($"UPDATE {TableName} SET ");
@@ -313,11 +320,10 @@ namespace Chef.Common.Repositories
 
             properties.ForEach(prop =>
             {
-                if((!prop.Equals("Id"))&& (!prop.Equals("CreatedDate")) && (!prop.Equals("CreatedBy")))
+                if ((!prop.Equals("Id")) && (!prop.Equals("CreatedDate")) && (!prop.Equals("CreatedBy")))
                 {
                     updateQuery.Append($"{prop}=@{prop},");
                 }
-               
             });
 
             updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
@@ -350,6 +356,7 @@ namespace Chef.Common.Repositories
             var keyword = cascade ? " CASCADE" : "";
             return $"DROP TABLE IF EXISTS {TableName}{keyword};";
         }
+
         public string GenerateTruncateTableQuery(bool cascade = false, bool restartIdentity = false)
         {
             var keyword = string.Format("{0}{1}", (restartIdentity ? " RESTART IDENTITY" : ""), (cascade ? " CASCADE" : ""));

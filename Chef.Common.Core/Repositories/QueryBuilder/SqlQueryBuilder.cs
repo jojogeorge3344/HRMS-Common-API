@@ -13,7 +13,7 @@ namespace Chef.Common.Repositories
 {
     public class SqlQueryBuilder : ISqlQueryBuilder
     {
-        readonly ConcurrentDictionary<Type, PropertyDescriptorCollection> PropertyDescriptors;
+        public readonly ConcurrentDictionary<Type, PropertyDescriptorCollection> PropertyDescriptors;
 
         public SqlQueryBuilder()
         {
@@ -22,24 +22,31 @@ namespace Chef.Common.Repositories
 
         public Query Query<TModel>() where TModel : IModel
         {
-            var tableName = string.Format("{0}.{1}", typeof(TModel).Namespace.Split('.')[1].ToLower(),
+            string tableName = string.Format("{0}.{1}", typeof(TModel).Namespace.Split('.')[1].ToLower(),
                 typeof(TModel).Name.ToLower());
             return new Query(tableName);
         }
 
-        PropertyDescriptorCollection GetPropertyDescriptors(object obj)
+        public PropertyDescriptorCollection GetPropertyDescriptors(object obj)
         {
-            var type = obj.GetType();
-            if (this.PropertyDescriptors.TryGetValue(type, out var collection))
+            Type type = obj.GetType();
+
+            if (PropertyDescriptors.TryGetValue(type, out PropertyDescriptorCollection collection))
+            {
                 return collection;
+            }
+
             collection = TypeDescriptor.GetProperties(obj);
-            this.PropertyDescriptors.TryAdd(type, collection);
+
+            _ = PropertyDescriptors.TryAdd(type, collection);
+
             return collection;
         }
 
         public IDictionary<string, object> ToDictionary(object obj)
         {
             var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
             if (obj != null)
             {
                 foreach (PropertyDescriptor propertyDescriptor in GetPropertyDescriptors(obj))
@@ -48,13 +55,14 @@ namespace Chef.Common.Repositories
                     dictionary.Add(propertyDescriptor.Name.ToLower(), value);
                 }
             }
+
             return dictionary;
         }
     }
 
     public class SqlSearch : IEquatable<SqlSearch>
     {
-        public static readonly SqlSearch DefaultInstance = new SqlSearch();
+        public static readonly SqlSearch DefaultInstance = new();
         public int? Limit { get; set; } = null;
         public int? Offset { get; set; } = null;
         public SqlPage Page { get; set; } = null;
@@ -73,36 +81,29 @@ namespace Chef.Common.Repositories
 
         public override bool Equals(object obj)
         {
-            if (!(obj is SqlSearch))
-                return false;
-
-            return Equals((SqlSearch)obj);
+            return obj is SqlSearch search && Equals(search);
         }
 
-        public bool Equals(SqlSearch other)
-        {
-            if (other == null)
-                return false;
-
-            return
-                (object.ReferenceEquals(this.Limit, other.Limit) ||
-                this.Limit != null &&
-                this.Limit.Equals(other.Limit))
+        public bool Equals(SqlSearch other) => other == null
+                ? false
+                : (ReferenceEquals(Limit, other.Limit) ||
+                (this.Limit != null &&
+                Limit.Equals(other.Limit)))
                 &&
-                (object.ReferenceEquals(this.Page, other.Page) ||
-                this.Page != null &&
-                this.Page.Equals(other.Page))
+                (ReferenceEquals(this.Page, other.Page) ||
+                (this.Page != null &&
+                this.Page.Equals(other.Page)))
                 &&
-                (object.ReferenceEquals(this.Condition, other.Condition) ||
+                (ReferenceEquals(this.Condition, other.Condition) ||
                 this.Condition.Equals(other.Condition))
                 &&
-                (object.ReferenceEquals(this.Rules, other.Rules) ||
-                this.Rules != null &&
-                 Rules.SequenceEqual(other.Rules));
-        }
+                (ReferenceEquals(this.Rules, other.Rules) ||
+                (this.Rules != null &&
+                 Rules.SequenceEqual(other.Rules)));
         #endregion
 
         public SqlSearch() { }
+
         public SqlSearch(SqlConditionOperator sqlConditionOperator)
         {
             Condition = sqlConditionOperator;
@@ -110,7 +111,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearch AddGroup(Func<SqlSearch, SqlSearchGroup> sqlSearch)
         {
-            this.Groups.Add(sqlSearch(this));
+            Groups.Add(sqlSearch(this));
             return this;
         }
         //public SqlSearch AddGroup(SqlConditionOperator sqlConditionOperator)
@@ -121,18 +122,19 @@ namespace Chef.Common.Repositories
         //}
         public SqlSearch Where<T>(Expression<Func<T, object>> column, SqlSearchOperator sqlSearchOperator, object value)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = sqlSearchOperator,
                 Value = value
             });
+
             return this;
         }
 
         public SqlSearch Where<T>(Expression<Func<T, object>> column, object value)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.Equal,
@@ -143,7 +145,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearch WhereNull<T>(Expression<Func<T, object>> column)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNull,
@@ -154,7 +156,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearch WhereNotNull<T>(Expression<Func<T, object>> column)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNotNull,
@@ -174,10 +176,7 @@ namespace Chef.Common.Repositories
 
         public override bool Equals(object obj)
         {
-            if (obj is not SqlSearchGroup)
-                return false;
-
-            return Equals((SqlSearchGroup)obj);
+            return obj is SqlSearchGroup && Equals((SqlSearchGroup)obj);
         }
 
         public override int GetHashCode()
@@ -189,12 +188,12 @@ namespace Chef.Common.Repositories
         {
             return
 
-                (object.ReferenceEquals(Condition, other.Condition) ||
-                this.Condition.Equals(other.Condition))
+                (ReferenceEquals(Condition, other.Condition) ||
+                Condition.Equals(other.Condition))
                 &&
-                (object.ReferenceEquals(this.Rules, other.Rules) ||
-                this.Rules != null &&
-                 Rules.SequenceEqual(other.Rules));
+                (ReferenceEquals(Rules, other.Rules) ||
+                (Rules != null &&
+                 Rules.SequenceEqual(other.Rules)));
         }
         #endregion
 
@@ -206,7 +205,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearchGroup AddGroup(Func<SqlSearchGroup, SqlSearchGroup> sqlSearch)
         {
-            this.Groups.Add(sqlSearch(this));
+            Groups.Add(sqlSearch(this));
             return this;
         }
 
@@ -219,7 +218,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearchGroup Where<T>(Expression<Func<T, object>> column, SqlSearchOperator sqlSearchOperator, object value)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = sqlSearchOperator,
@@ -230,7 +229,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearchGroup Where<T>(Expression<Func<T, object>> column, object value)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.Equal,
@@ -241,7 +240,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearchGroup WhereNull<T>(Expression<Func<T, object>> column)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNull,
@@ -252,7 +251,7 @@ namespace Chef.Common.Repositories
 
         public SqlSearchGroup WhereNotNull<T>(Expression<Func<T, object>> column)
         {
-            this.Rules.Add(new SqlSearchRule
+            Rules.Add(new SqlSearchRule
             {
                 Field = column.GetFieldName<T>(),
                 Operator = SqlSearchOperator.IsNotNull,
@@ -280,10 +279,7 @@ namespace Chef.Common.Repositories
 
         public override bool Equals(object obj)
         {
-            if (obj is not SqlSearchRule)
-                return false;
-
-            return Equals((SqlSearchRule)obj);
+            return obj is SqlSearchRule && Equals((SqlSearchRule)obj);
         }
 
         public override int GetHashCode()
@@ -296,16 +292,16 @@ namespace Chef.Common.Repositories
         public bool Equals(SqlSearchRule other)
         {
             return
-                (object.ReferenceEquals(this.Field, other.Field) ||
-                this.Field != null &&
-                this.Field.Equals(other.Field))
+                (ReferenceEquals(Field, other.Field) ||
+                (Field != null &&
+                Field.Equals(other.Field)))
                  &&
-                (object.ReferenceEquals(this.Operator, other.Operator) ||
-                this.Operator.Equals(other.Operator))
+                (ReferenceEquals(Operator, other.Operator) ||
+                Operator.Equals(other.Operator))
                  &&
-                (object.ReferenceEquals(this.Value, other.Value) ||
-                this.Value != null &&
-                this.Value.Equals(other.Value));
+                (ReferenceEquals(Value, other.Value) ||
+                (Value != null &&
+                Value.Equals(other.Value)));
         }
         #endregion
     }
@@ -332,7 +328,6 @@ namespace Chef.Common.Repositories
         NotEqual = 10,
         IsNull = 11,
         IsNotNull = 12
-       
     }
 
     public enum SqlConditionOperator
@@ -340,8 +335,6 @@ namespace Chef.Common.Repositories
         AND = 1,
         OR = 2
     }
-
-
 
     public class SqlFilterRule : IEquatable<SqlFilterRule>
     {
@@ -355,15 +348,12 @@ namespace Chef.Common.Repositories
         /// Value
         /// </summary>
         public object Value { get; set; }
-       
+
         #region IEquatable overrides
 
         public override bool Equals(object obj)
         {
-            if (obj is not SqlFilterRule)
-                return false;
-
-            return Equals((SqlFilterRule)obj);
+            return obj is SqlFilterRule && Equals((SqlFilterRule)obj);
         }
 
         public override int GetHashCode()
@@ -376,16 +366,16 @@ namespace Chef.Common.Repositories
         public bool Equals(SqlFilterRule other)
         {
             return
-                (object.ReferenceEquals(this.Field, other.Field) ||
-                this.Field != null &&
-                this.Field.Equals(other.Field))
+                (ReferenceEquals(Field, other.Field) ||
+                (Field != null &&
+                Field.Equals(other.Field)))
                  &&
-                (object.ReferenceEquals(this.Operator, other.Operator) ||
-                this.Operator.Equals(other.Operator))
+                (ReferenceEquals(Operator, other.Operator) ||
+                Operator.Equals(other.Operator))
                  &&
-                (object.ReferenceEquals(this.Value, other.Value) ||
-                this.Value != null &&
-                this.Value.Equals(other.Value));
+                (ReferenceEquals(Value, other.Value) ||
+                (Value != null &&
+                Value.Equals(other.Value)));
         }
         #endregion
     }

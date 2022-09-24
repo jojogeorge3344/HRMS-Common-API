@@ -11,14 +11,14 @@ namespace Chef.Common.Repositories
 
         public IgnoreContractResolver(IEnumerable<string> propNamesToIgnore)
         {
-            this.ignoreProps = new HashSet<string>(propNamesToIgnore);
+            ignoreProps = new HashSet<string>(propNamesToIgnore);
         }
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
-            if (this.ignoreProps.Contains(property.PropertyName))
+            if (ignoreProps.Contains(property.PropertyName))
             {
                 property.ShouldSerialize = _ => false;
             }

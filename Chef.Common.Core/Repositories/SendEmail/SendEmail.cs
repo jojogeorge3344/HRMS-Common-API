@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
-using Chef.Common.Core;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Hosting;
@@ -10,13 +8,11 @@ using MimeKit;
 
 namespace Chef.Common.Core.Repositories
 {
-   public interface ISendEmail
+    public interface ISendEmail
     {
-        
-            Task SendEmailAsync(MailRequest mailRequest);
-
-        
+        Task SendEmailAsync(MailRequest mailRequest);
     }
+
     public class SendEmail : ISendEmail
     {
         private readonly EmailSettings _emailSettings;
@@ -29,16 +25,21 @@ namespace Chef.Common.Core.Repositories
             _emailSettings = emailSettings.Value;
             _env = env;
         }
+
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
             var email = new MimeMessage();
+
             email.Sender = MailboxAddress.Parse(_emailSettings.SenderEmail);
-          //  email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
+            //  email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
             email.Subject = mailRequest.Subject;
+
             var builder = new BodyBuilder();
+
             if (mailRequest.Attachments != null)
             {
                 byte[] fileBytes;
+
                 foreach (var file in mailRequest.Attachments)
                 {
                     if (file.Length > 0)
@@ -48,10 +49,12 @@ namespace Chef.Common.Core.Repositories
                             file.CopyTo(ms);
                             fileBytes = ms.ToArray();
                         }
+
                         builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
                     }
                 }
             }
+
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
             using var smtp = new SmtpClient();
@@ -62,4 +65,3 @@ namespace Chef.Common.Core.Repositories
         }
     }
 }
-    
