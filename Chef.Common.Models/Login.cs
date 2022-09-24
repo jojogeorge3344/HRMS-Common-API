@@ -3,7 +3,7 @@ using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
-    public class Login :Model
+    public class Login : Model
     {
         [EmailAddress]
         public string Username { get; set; }

@@ -3,7 +3,7 @@ using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
-    public class SubModule :Model
+    public class SubModule : Model
     {
         [Required]
         public string SubModuleName { get; set; }

@@ -10,6 +10,6 @@ namespace Chef.Common.Models
         public string Host { get; set; }
         public string ConnectionString { get; set; }
         public List<ApiClient> ApiClients { get; set; }
-        public List<identity> Identityserver { get; set; }
+        public List<Identity> Identityserver { get; set; }
     }
 }

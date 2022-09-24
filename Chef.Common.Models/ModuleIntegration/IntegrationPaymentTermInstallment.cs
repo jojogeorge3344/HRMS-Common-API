@@ -5,7 +5,7 @@ using Chef.Common.Core;
 namespace Chef.Common.Models
 {
     public class IntegrationPaymentTermInstallment : Model
-    { 
+    {
         [Required]
         public int LineNumber { get; set; }
 

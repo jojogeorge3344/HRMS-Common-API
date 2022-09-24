@@ -7,7 +7,7 @@ namespace Chef.Common.Models
     {
         [ForeignKey("Node")]
         public int NodeId { get; set; }
-       
+
         [ForeignKey("Permission")]
         public int PermissionId { get; set; }
     }

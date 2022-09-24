@@ -56,7 +56,7 @@ namespace Chef.Common.Models
 
         public int InvoiceId { get; set; }
 
-        public String InvoiceNumber { get; set; }
+        public string InvoiceNumber { get; set; }
 
         public decimal InvoiceAmount { get; set; }
 

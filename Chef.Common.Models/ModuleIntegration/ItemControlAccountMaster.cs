@@ -5,7 +5,7 @@ namespace Chef.Common.Models
 {
     public class ItemControlAccountMaster : Model
     {
-        [Required] 
+        [Required]
         public string Code { get; set; }
 
         [Required]
@@ -18,6 +18,6 @@ namespace Chef.Common.Models
         public string CategoryCode { get; set; }
 
         [Required]
-        public string CategoryName { get; set; }         
+        public string CategoryName { get; set; }
     }
 }

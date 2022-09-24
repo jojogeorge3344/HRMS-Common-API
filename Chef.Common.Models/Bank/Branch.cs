@@ -34,13 +34,13 @@ namespace Chef.Common.Models
 
         [StringLength(126)]
         public string CountryName { get; set; }
-       
+
         public string ZipCode { get; set; }
 
         public string Phone { get; set; }
 
         public string Fax { get; set; }
-        
+
         public string Email { get; set; }
 
         [ForeignKey("Common.Company")]

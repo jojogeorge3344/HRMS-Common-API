@@ -8,7 +8,7 @@ namespace Chef.Common.Models
         [Required]
         [Unique(true)]
         [Code]
-        public string TaxJurisdictionCode { get; set; } 
+        public string TaxJurisdictionCode { get; set; }
 
         [Required]
         [Unique(true)]

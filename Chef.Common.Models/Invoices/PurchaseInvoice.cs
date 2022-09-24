@@ -89,7 +89,7 @@ namespace Chef.Finance.Models
 
         public int LandingCostElementId { get; set; }
 
-        public string  LandingCostElementCode { get; set; }
+        public string LandingCostElementCode { get; set; }
 
         public string LandingCostElementName { get; set; }
 
@@ -121,6 +121,6 @@ namespace Chef.Finance.Models
 
         [Write(false)]
         [Skip(true)]
-        public string taxregistrationnumber { get; set; }
+        public string TaxRegistrationNumber { get; set; }
     }
 }

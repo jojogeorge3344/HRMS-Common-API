@@ -29,6 +29,6 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
-        public int isactive { get; set; }
+        public int IsActive { get; set; }
     }
 }

@@ -27,6 +27,6 @@ namespace Chef.Common.Models
 
         public bool IsDefault { get; set; }
 
-        public IEnumerable<WorkflowLevels> WorkflowLevelsList { get; set; }       
+        public IEnumerable<WorkflowLevels> WorkflowLevelsList { get; set; }
     }
 }

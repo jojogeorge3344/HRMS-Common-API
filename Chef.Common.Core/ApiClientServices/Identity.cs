@@ -1,6 +1,6 @@
 ﻿namespace Chef.Common.Models
 {
-    public class identity
+    public class Identity
     {
         public string Host { get; set; }
         public string ClientId { get; set; }
@@ -9,6 +9,5 @@
         public string ResponseType { get; set; }
         public string RedirectUri { get; set; }
         public string GrantType { get; set; }
-        
     }
 }

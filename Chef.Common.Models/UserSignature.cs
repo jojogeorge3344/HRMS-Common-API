@@ -10,7 +10,7 @@ namespace Chef.Common.Models
 
         public string UserEmail { get; set; }
 
-        public string  FileName { get; set; }
+        public string FileName { get; set; }
 
         public byte[] Signature { get; set; }
 
