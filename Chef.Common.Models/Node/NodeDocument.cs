@@ -3,7 +3,7 @@ using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
-    public class NodeDocument:Model
+    public class NodeDocument : Model
     {
         [ForeignKey("Node")]
         public int NodeId { get; set; }

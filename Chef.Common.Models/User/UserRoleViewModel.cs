@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Models
+﻿namespace Chef.Common.Models
 {
     public class UserRoleViewModel
     {
@@ -13,7 +7,7 @@ namespace Chef.Common.Models
         public string UserName { get; set; }
 
         public int RoleId { get; set; }
-       
+
         public string RoleName { get; set; }
     }
 }

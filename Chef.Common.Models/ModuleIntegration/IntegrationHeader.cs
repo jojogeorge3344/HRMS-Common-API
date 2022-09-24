@@ -17,7 +17,7 @@ namespace Chef.Common.Models
         public DateTime DocumentDate { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public DateTime TransactionDate { get; set; }=DateTime.UtcNow;
+        public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
 
         [StringLength(6)]
         public string TransactionCurrencyCode { get; set; }
@@ -64,10 +64,10 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
-        public List<IntegrationAccountSummary> integrationAccountSummaries { get; set; }
+        public List<IntegrationAccountSummary> IntegrationAccountSummaries { get; set; }
 
         [Write(false)]
         [Skip(true)]
-        public List<IntegrationPaymentTerm> integrationPaymentTerms { get; set; }
+        public List<IntegrationPaymentTerm> IntegrationPaymentTerms { get; set; }
     }
 }

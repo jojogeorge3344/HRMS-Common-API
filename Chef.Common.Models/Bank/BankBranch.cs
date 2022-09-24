@@ -52,18 +52,15 @@ namespace Chef.Common.Models
         [StringLength(8)]
         public string ZipCode { get; set; }
 
-        
         public string IFSC { get; set; }
 
         [StringLength(11)]
         public string SWIFTBIC { get; set; }
 
-        
         public string Phone { get; set; }
 
         public string Fax { get; set; }
 
-      
         public string Email { get; set; }
 
         [StringLength(64)]

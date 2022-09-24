@@ -1,12 +1,10 @@
-﻿using Chef.Common.Core;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
-  public class UserRole: Model
+    public class UserRole : Model
     {
-
         [ForeignKey("User")]
         public int UserId { get; set; }
 
@@ -14,9 +12,5 @@ namespace Chef.Common.Models
 
         [ForeignKey("Role")]
         public int RoleId { get; set; }
-        //[Write(false)]
-        //[Skip(true)]
-        //public string RoleName { get; set; }
-
     }
 }

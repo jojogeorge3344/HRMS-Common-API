@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Models
+﻿namespace Chef.Common.Models
 {
     public class UserRoleView
     {
@@ -21,6 +15,5 @@ namespace Chef.Common.Models
         public int IsRoleActive { get; set; }
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
-
     }
 }

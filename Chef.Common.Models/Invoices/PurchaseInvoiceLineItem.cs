@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chef.Finance.Models
 {
-    public class PurchaseInvoiceLineItem :TransactionModel
+    public class PurchaseInvoiceLineItem : TransactionModel
     {
         [Required]
         [ForeignKey("PurchaseInvoice")]

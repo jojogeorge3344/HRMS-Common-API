@@ -4,7 +4,7 @@ using Chef.Common.Core;
 namespace Chef.Common.Models
 {
     public class NodePermission : Model
-    {       
+    {
         [ForeignKey("Node")]
         public int NodeId { get; set; }
        

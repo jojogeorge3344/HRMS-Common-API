@@ -22,13 +22,9 @@ namespace Chef.Trading.Models
 
         public decimal BuyerLimit { get; set; }
 
-        //[Required]
         [ForeignKeyId(typeof(PurchaseOffice))]
         public int? PurchaseOfficeId { get; set; } = null;
 
-        // [Required]
-        //[ForeignKeyCode(typeof(PurchaseOffice))]
-        public string PurchaseOfficeCode { get; set; } 
-
+        public string PurchaseOfficeCode { get; set; }
     }
 }

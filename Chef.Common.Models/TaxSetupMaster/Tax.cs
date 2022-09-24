@@ -15,6 +15,7 @@ namespace Chef.Common.Models
         [Required]
         [Unique(true)]
         public string TaxName { get; set; }
+
         [Required]
         public TaxType TaxType { get; set; }
 
@@ -23,22 +24,22 @@ namespace Chef.Common.Models
 
         [ForeignKeyId(typeof(TaxJurisdiction))]
         [Required]
-        
         [Unique(true), Composite(Index = 1, GroupNumber = 2)]
         public int TaxJurisdictionId { get; set; }
+
         [ForeignKeyCode(typeof(TaxJurisdiction)), Code]
         [Required]
-        [ Composite(Index = 2, GroupNumber = 2)]
+        [Composite(Index = 2, GroupNumber = 2)]
         public string TaxJurisdictionCode { get; set; }
 
         public string TaxDescription { get; set; }
         [Composite(Index = 3, GroupNumber = 2)]
+
         public int? SegmentId { get; set; } = 0;
         [Composite(Index = 4, GroupNumber = 2)]
+
         public int? FamilyId { get; set; } = 0;
 
-         public IEnumerable<SubTax> SubTax { get; set; }
-
-
+        public IEnumerable<SubTax> SubTax { get; set; }
     }
 }

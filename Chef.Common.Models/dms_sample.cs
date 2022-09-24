@@ -3,13 +3,10 @@ using System;
 
 namespace Chef.Common.Models
 {
-    public class dms_sample : IModel
+    public class DMSSample : IModel
     {
-        //public int Id { get; set; }
-
         public string DocumentType { get; set; }
         public string DocumentName { get; set; }
-
         public string Remarks { get; set; }
         public int Id { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;

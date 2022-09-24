@@ -10,18 +10,15 @@ namespace Chef.Common.Models
         [Required]
         [Unique(true), Composite(Index = 1, GroupNumber = 2)]
         public int? TaxId { get; set; } = 0;
-        //[ForeignKeyCode(typeof(Tax))]
-        //[Required]
-
-        //public string TaxCode { get; set; }
 
         [Required]
         [Unique(true), Composite(Index = 2, GroupNumber = 2)]
         public string SubTaxName { get; set; }
+
         [Required]
         public float SubTaxPercent { get; set; }
+
         [Required]
-        //public string TaxBase { get; set; }
-        public TaxBase taxBase { get; set; }
+        public TaxBase TaxBase { get; set; }
     }
 }

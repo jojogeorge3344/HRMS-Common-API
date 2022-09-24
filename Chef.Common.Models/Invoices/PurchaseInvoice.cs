@@ -5,7 +5,7 @@ using Chef.Common.Types;
 
 namespace Chef.Finance.Models
 {
-    public class PurchaseInvoice :TransactionModel
+    public class PurchaseInvoice : TransactionModel
     {
         [Required]
         public string InvoiceNo { get; set; }
@@ -13,7 +13,6 @@ namespace Chef.Finance.Models
         [Required]
         public DateTime InvoiceDate { get; set; }
 
-        //public  DateTime TransactionDate { get; set; }
         [Required]
         public string Description { get; set; }
 
@@ -43,7 +42,9 @@ namespace Chef.Finance.Models
         public DateTime POContractDate { get; set; }
 
         public bool IsAgainstPO { get; set; }
+
         public int PurchaseOrderId { get; set; }
+
         public string PONumber { get; set; }
 
         public DateTime? PODate { get; set; }
@@ -85,8 +86,11 @@ namespace Chef.Finance.Models
         public DocumentStatusType DocumentStatus { get; set; }
 
         public PurchaseInvoiceStatusType PurchaseInvoiceStatus { get; set; }
+
         public int LandingCostElementId { get; set; }
+
         public string  LandingCostElementCode { get; set; }
+
         public string LandingCostElementName { get; set; }
 
         public InvoiceStatus ApproveStatus { get; set; }
@@ -94,8 +98,11 @@ namespace Chef.Finance.Models
         public string ApproveStatusName { get; set; }
 
         public string ApprovedBy { get; set; }
+
         public string RejectedBy { get; set; }
+
         public DateTime ApprovedDate { get; set; }
+
         public DateTime RejectedDate { get; set; }
 
         [Write(false)]
@@ -109,11 +116,11 @@ namespace Chef.Finance.Models
         public string Remark { get; set; }
 
         public bool IsDispute { get; set; }
+
         public string DisputeReason { get; set; }
 
         [Write(false)]
         [Skip(true)]
         public string taxregistrationnumber { get; set; }
-
     }
 }

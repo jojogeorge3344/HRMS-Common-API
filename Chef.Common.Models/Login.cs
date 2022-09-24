@@ -1,14 +1,9 @@
-﻿using Chef.Common.Core;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
-   public class Login :Model
+    public class Login :Model
     {
         [EmailAddress]
         public string Username { get; set; }

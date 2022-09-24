@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chef.Common.Models
 {
@@ -35,6 +30,5 @@ namespace Chef.Common.Models
         /// false: supporting documents. viewing is showed as link
         /// </summary>
         public bool IsPrintPreview { get; set; } = false;
-
     }
 }

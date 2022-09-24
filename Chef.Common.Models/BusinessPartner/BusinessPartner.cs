@@ -10,7 +10,6 @@ namespace Chef.Common.Models
         [Required]
         public string Name { get; set; }
 
-       
         [Required]
         public string BpType { get; set; }
 
@@ -75,7 +74,7 @@ namespace Chef.Common.Models
         public string TaxName { get; set; }
 
         public string TradeLicense { get; set; }
-        
+
         public string TaxRegistrationNumber { get; set; }
 
         public string SourceId { get; set; }
@@ -84,16 +83,10 @@ namespace Chef.Common.Models
 
         public string AlterNativeSourceCode { get; set; }
 
-        //public int DefaultPurchaseTax { get; set; }
-        //public int DefaultPurchaseTax { get; set; }
+        public int FinancialCompanyId { get; set; }
 
+        public string FinancialCompanyCode { get; set; }
 
-        public int financialcompanyid { get; set; }
-
-
-        public string financialcompanycode { get; set; }
-
-
-        public string financialcompanyname { get; set; }
+        public string FinancialCompanyName { get; set; }
     }
 }

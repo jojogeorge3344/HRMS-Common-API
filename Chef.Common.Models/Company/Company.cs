@@ -64,18 +64,15 @@ namespace Chef.Common.Models
 
         public string BaseCompanyName { get; set; }
 
-        
         [Required]
         public string TaxId { get; set; }
 
-        
         [Required]
         public string TaxRegistrationNumber { get; set; }
 
-        
-        //[Required]
         [Unique(true)]
         public string Host { get; set; }
-        public byte[] logo { get; set; }
+
+        public byte[] Logo { get; set; }
     }
 }

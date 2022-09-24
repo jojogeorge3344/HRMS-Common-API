@@ -1,10 +1,5 @@
-﻿using Chef.Common.Core;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
@@ -19,6 +14,5 @@ namespace Chef.Common.Models
         public int NodeId { get; set; }
         public int Level { get; set; }
         public bool IsDefault { get; set; }
-
     }
 }

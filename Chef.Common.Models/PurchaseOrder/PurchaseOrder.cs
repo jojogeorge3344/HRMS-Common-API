@@ -78,7 +78,7 @@ namespace Chef.Trading.Models
         public int PoGroupId { get; set; }
 
         public string PurchaseOrderNotes { get; set; }
-       
+
         public string TermsAndCondition { get; set; }
 
         public int PoContractNumber { get; set; }

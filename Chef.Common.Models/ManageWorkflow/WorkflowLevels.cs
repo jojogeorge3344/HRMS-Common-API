@@ -1,10 +1,5 @@
-﻿using Chef.Common.Core;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
@@ -22,23 +17,29 @@ namespace Chef.Common.Models
         public string ConditionName { get; set; }
 
         public string Value { get; set; }
+
         public string DataType { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public int Level { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public string LevelName { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public int RoleID { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public string RoleName { get; set; }
+
         [Write(false)]
         [Skip(true)]
         public bool IsDefault { get; set; }
-        public string operators { get; set; }
 
+        public string Operators { get; set; }
     }
 }

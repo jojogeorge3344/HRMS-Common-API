@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace Chef.Common.Models
 {
-   public class RoleNode:Model
+    public class RoleNode : Model
     {
         [ForeignKey("Role")]
         public int RoleId { get; set; }

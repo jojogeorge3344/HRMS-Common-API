@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Models
+﻿namespace Chef.Common.Models
 {
     public class NodeWorkflowSteps
     {
@@ -20,6 +14,5 @@ namespace Chef.Common.Models
         public string Operators { get; set; }
         public bool IsDefault { get; set; }
         public int Level { get; set; }
-        
     }
 }
