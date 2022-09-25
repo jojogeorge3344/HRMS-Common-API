@@ -15,5 +15,7 @@ namespace Chef.Common.Core
         public string DocumentNumber { get; set; }
         public string DocumentDate { get; set; }
         public string ApprovedBy { get; set; }
+        public string TemplateFilepath { get; set; }
+        
     }
 }

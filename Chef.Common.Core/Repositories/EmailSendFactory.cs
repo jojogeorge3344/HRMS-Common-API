@@ -25,13 +25,14 @@ namespace Chef.Common.Repositories
     public class EmailSendFactory : IEmailSendFactory
     {
         //private readonly EmailSettings _emailSettings;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment Webenv;
         private readonly MailSettings _mailSettings;
         private IConfiguration Configuration;
-        public EmailSendFactory(IOptions<MailSettings> mailSettings, IConfiguration _configuration)
+        public EmailSendFactory(IOptions<MailSettings> mailSettings, IConfiguration _configuration,IWebHostEnvironment _env)
         {
             _mailSettings = mailSettings.Value;
             Configuration = _configuration;
+            Webenv = _env;
         }
         //public EmailSendFactory(
         //    IOptions<EmailSettings> emailSettings,
@@ -63,17 +64,17 @@ namespace Chef.Common.Repositories
                     // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                    if (_env.IsDevelopment())
-                    {
-                        // The third parameter is useSSL (true if the client should make an SSL-wrapped
-                        // connection to the server; otherwise, false).
-                       // await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.MailPort, false);
+                    ////if (_env.IsDevelopment())
+                    ////{
+                    ////    // The third parameter is useSSL (true if the client should make an SSL-wrapped
+                    ////    // connection to the server; otherwise, false).
+                    ////   // await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.MailPort, false);
                         
-                    }
-                    else
-                    {
-                       // await client.ConnectAsync(_emailSettings.MailServer);
-                    }
+                    ////}
+                    ////else
+                    ////{
+                    ////   // await client.ConnectAsync(_emailSettings.MailServer);
+                    ////}
 
                     // Note: only needed if the SMTP server requires authentication
                   //  await client.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.Password);
@@ -92,8 +93,9 @@ namespace Chef.Common.Repositories
         }
          public async Task<int> SendApprovedEmailAsync(MailRequest request)
         {
-            string FilePath = "C:\\PROJECT\\chef.common\\Chef.Common.Core\\EmailTemplate.html";
-            StreamReader str = new StreamReader(FilePath);
+            var Result = 0;
+            string FilePath = request.TemplateFilepath+"\\EmailTemplate.html";
+              StreamReader str = new StreamReader(FilePath);
             string MailText = str.ReadToEnd();
             str.Close();
             MailText = MailText.Replace("[username]", request.UserName).Replace("[URL]", "https://192.168.100.54:9034/api/approvalsystem")
@@ -101,7 +103,7 @@ namespace Chef.Common.Repositories
             .Replace("[Approvedusername]",request.ApprovedBy);
             //Replace("[email]", request.ToEmail);
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse("athirak @thomsuninfocare.com");
+            email.Sender = MailboxAddress.Parse(request.UserEmail);
             //MailboxAddress.Parse(_mailSettings.Mail);
             foreach (var toemail in request.ToEmail)
             {
@@ -135,28 +137,39 @@ namespace Chef.Common.Repositories
                 using var smtp = new MailKit.Net.Smtp.SmtpClient();
                 var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
                 var host = this.Configuration.GetSection("MailSettings")["Host"];
-                var Port = this.Configuration.GetSection("MailSettings")["Port"];
-                var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
+                int Port = Convert.ToInt32(this.Configuration.GetSection("MailSettings")["Port"]);
+                var Mail = this.Configuration.GetSection("MailSettings")["Email"];
                 var Password = this.Configuration.GetSection("MailSettings")["Password"];
-                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("test@gmail.com", "****");
-
-                //await smtp.SendAsync(email);   // if you send email uncommented this code
+                var Issend = Convert.ToBoolean(this.Configuration.GetSection("MailSettings")["isMailSend"]);
+                smtp.Connect("smtp.office365.com", Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(Mail, Password);
+                if (Issend)
+                {
+                    await smtp.SendAsync(email);
+                    await SendReplayedEmailAsync(request);
+                    Result = 1;
+                }
+                else
+                    Result = 0;
 
                 smtp.Disconnect(true);
-                await SendReplayedEmailAsync(request);
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
-            return 1;
+            return Result;
 
 
         }
         public async Task<int> SendRequestedEmailAsync(MailRequest request)
         {
-            string FilePath = "C:\\PROJECT\\chef.common\\Chef.Common.Core\\SendRequestemail.html";
+            var Result = 0;
+            var maSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
+           
+           string FilePath = request.TemplateFilepath ;
+          
             StreamReader str = new StreamReader(FilePath);
             string MailText = str.ReadToEnd();
             str.Close();
@@ -164,7 +177,7 @@ namespace Chef.Common.Repositories
             .Replace("[requestdate]", request.DocumentDate).Replace("[documentnumber]", request.DocumentNumber).Replace("[documentname]", request.DocumentName);
            
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse("athirak @thomsuninfocare.com");
+            email.Sender = MailboxAddress.Parse(request.UserEmail);
             
             foreach (var toemail in request.ToEmail)
             {
@@ -196,24 +209,38 @@ namespace Chef.Common.Repositories
             {
                 using var smtp = new MailKit.Net.Smtp.SmtpClient();
                 var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
-                var host = this.Configuration.GetSection("MailSettings")["Host"];
-                var Port = this.Configuration.GetSection("MailSettings")["Port"];
-                var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
+                var host = this.Configuration.GetSection("MailSettings")["Host"]; 
+                int Port = Convert.ToInt32(this.Configuration.GetSection("MailSettings")["Port"]);
+                var Mail = this.Configuration.GetSection("MailSettings")["Email"];
                 var Password = this.Configuration.GetSection("MailSettings")["Password"];
-                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("Test@gmail.com", "pass****");
-                //await smtp.SendAsync(email);  // if you send email uncommented this code
+                var Issend = Convert.ToBoolean(this.Configuration.GetSection("MailSettings")["isMailSend"]);
+                smtp.Connect("smtp.office365.com", Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(Mail,Password);
+                if (Issend)
+                {
+                    await smtp.SendAsync(email);
+                    Result = 1;
+                }
+                else
+                    Result = 0;
+
                 smtp.Disconnect(true);
+              
             }
             catch(Exception ex)
             {
                 throw;
             }
-            return 1;
+            return Result;
         }
         public async Task<int> SendReplayedEmailAsync(MailRequest request)
         {
-            string FilePath = "C:\\PROJECT\\chef.common\\Chef.Common.Core\\ReplyEmail.html";
+            var Result = 0;
+            var maSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
+
+            string FilePath = request.TemplateFilepath;
+            FilePath = FilePath + "\\ReplyEmail.html";
+
             StreamReader str = new StreamReader(FilePath);
             string MailText = str.ReadToEnd();
             str.Close();
@@ -222,7 +249,7 @@ namespace Chef.Common.Repositories
             .Replace("[Approvedusername]",request.ApprovedBy);
            
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse("athirak @thomsuninfocare.com");
+            email.Sender = MailboxAddress.Parse(request.UserEmail);
             
             foreach (var toemail in request.ToEmail)
             {
@@ -256,19 +283,27 @@ namespace Chef.Common.Repositories
                 using var smtp = new MailKit.Net.Smtp.SmtpClient();
                 var mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
                 var host = this.Configuration.GetSection("MailSettings")["Host"];
-                var Port = this.Configuration.GetSection("MailSettings")["Port"];
-                var Mail = this.Configuration.GetSection("MailSettings")["Mail"];
+                int Port = Convert.ToInt32(this.Configuration.GetSection("MailSettings")["Port"]);
+                var Mail = this.Configuration.GetSection("MailSettings")["Email"];
                 var Password = this.Configuration.GetSection("MailSettings")["Password"];
-                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("test@thomsuninfocare.com", "pass****");
-                // await smtp.SendAsync(email); // if you send email uncommented this code
+                var Issend = Convert.ToBoolean(this.Configuration.GetSection("MailSettings")["isMailSend"]);
+                smtp.Connect("smtp.office365.com", Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(Mail, Password);
+                if (Issend)
+                {
+                    await smtp.SendAsync(email);
+                    Result = 1;
+                }
+                else
+                    Result = 0;
                 smtp.Disconnect(true);
+              
             }
             catch(Exception ex)
             {
                 throw;
             }
-            return 1;
+            return Result;
         }
     }
 }
