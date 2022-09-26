@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Chef.Common.Core;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Chef.Common.Core;
 
 namespace Chef.Finance.Models
 {

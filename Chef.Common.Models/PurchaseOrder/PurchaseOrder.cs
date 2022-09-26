@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Chef.Common.Core;
+using Chef.Trading.Types;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Chef.Common.Core;
-using Chef.Trading.Types;
 
 namespace Chef.Trading.Models
 {

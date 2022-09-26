@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
-using StackExchange.Redis;
 
 namespace Chef.Common.Core.Repositories
 {

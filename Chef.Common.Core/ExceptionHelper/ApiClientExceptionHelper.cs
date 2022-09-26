@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using Chef.Common.Types;
+﻿using Chef.Common.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Npgsql;
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Chef.Common.Exceptions.Helper
 {

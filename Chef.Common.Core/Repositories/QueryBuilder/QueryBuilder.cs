@@ -90,16 +90,16 @@ namespace Chef.Common.Repositories
 
         private List<Column> GenerateColumnsForTable(IEnumerable<PropertyInfo> listOfProperties)
         {
-            var table = new List<Column>();
+            List<Column> table = new();
 
-            foreach (var prop in listOfProperties)
+            foreach (PropertyInfo prop in listOfProperties)
             {
 
                 if (prop.GetCustomAttribute(typeof(SkipAttribute)) is SkipAttribute)
                 {
                     continue;
                 }
-                var column = new Column
+                Column column = new()
                 {
                     Name = prop.Name.ToLower(),
                     Type = GetPropertyType(prop),
@@ -117,7 +117,7 @@ namespace Chef.Common.Repositories
                 }
                 if (prop.GetCustomAttribute(typeof(ForeignKeyAttribute)) is ForeignKeyAttribute foreignkeyAttribute)
                 {
-                    var schema = prop.DeclaringType.FullName.Split('.')[1].ToLower();
+                    string schema = prop.DeclaringType.FullName.Split('.')[1].ToLower();
                     column.ForeignKey = string.Format("{0}.{1}", schema, foreignkeyAttribute.Name.ToLower());
                     column.ForeignKeyReference = $" REFERENCES {column.ForeignKey}(id)";
                 }
@@ -167,12 +167,12 @@ namespace Chef.Common.Repositories
         public string GenerateCreateTableQuery()
         {
             const string tab = "\t\t";
-            var indexQuery = new StringBuilder();
+            StringBuilder indexQuery = new();
             int indexCounter = 0;
 
-            var createTableQuery = new StringBuilder($"CREATE TABLE IF NOT EXISTS {TableName} (");
+            StringBuilder createTableQuery = new($"CREATE TABLE IF NOT EXISTS {TableName} (");
             //var columns = GenerateColumnsForTable(GetProperties);
-            var columns = GenerateColumnsForTable(SortedProperties);
+            List<Column> columns = GenerateColumnsForTable(SortedProperties);
 
             columns.ForEach(column =>
             {
@@ -217,7 +217,7 @@ namespace Chef.Common.Repositories
 
             if (IsJunctionTable)
             {
-                var foreignKeyColumns = columns.Where(c => !string.IsNullOrEmpty(c.ForeignKey)).ToList();
+                List<Column> foreignKeyColumns = columns.Where(c => !string.IsNullOrEmpty(c.ForeignKey)).ToList();
 
                 if (foreignKeyColumns.Count() > 0)
                 {
@@ -236,7 +236,7 @@ namespace Chef.Common.Repositories
             {
                 if (UniqueCompositeFieldNames.Count() > 0)
                 {
-                    foreach (var record in UniqueCompositeFieldNames)
+                    foreach (KeyValuePair<int, IEnumerable<string>> record in UniqueCompositeFieldNames)
                     {
                         indexQuery.AppendLine($"CREATE INDEX idx_{TableNameWOSchema}_{++indexCounter} ON {TableName}({string.Join(",", record.Value)});");
                         createTableQuery.Append(Environment.NewLine + tab + string.Format("constraint composite_{0}_{1} unique({2})", TableNameWOSchema, record.Key, string.Join(",", record.Value)));
@@ -261,11 +261,11 @@ namespace Chef.Common.Repositories
 
         public string GenerateInsertQuery(bool returnId = true)
         {
-            var insertQuery = new StringBuilder($"INSERT INTO {TableName} ");
+            StringBuilder insertQuery = new($"INSERT INTO {TableName} ");
 
             _ = insertQuery.Append('(');
 
-            var properties = GenerateListOfProperties(GetProperties);
+            List<string> properties = GenerateListOfProperties(GetProperties);
             properties.ForEach(prop => { _ = insertQuery.Append($"{prop},"); });
 
             _ = insertQuery
@@ -283,11 +283,11 @@ namespace Chef.Common.Repositories
 
         public string GenerateInsertQueryForAudit(string operation, int partentTableID, int auditId = 0, bool returnId = true)
         {
-            var insertQuery = new StringBuilder($"INSERT INTO {TableName} ");
+            StringBuilder insertQuery = new($"INSERT INTO {TableName} ");
 
             insertQuery.Append("(");
 
-            var properties = GenerateListOfProperties(GetProperties);
+            List<string> properties = GenerateListOfProperties(GetProperties);
             properties.ForEach(prop => { insertQuery.Append($"{prop},"); });
 
             insertQuery
@@ -297,13 +297,21 @@ namespace Chef.Common.Repositories
             properties.ForEach(prop =>
             {
                 if (prop == "ParentTableId")
+                {
                     insertQuery.Append($"{partentTableID},");
+                }
                 else if (prop == "AuditId")
+                {
                     insertQuery.Append($"'{auditId}',");
+                }
                 else if (prop == "AuditOperation")
+                {
                     insertQuery.Append($"'{operation}',");
+                }
                 else
+                {
                     insertQuery.Append($"@{prop},");
+                }
             });
 
             insertQuery
@@ -315,8 +323,8 @@ namespace Chef.Common.Repositories
 
         public string GenerateUpdateQuery()
         {
-            var updateQuery = new StringBuilder($"UPDATE {TableName} SET ");
-            var properties = GenerateListOfProperties(GetProperties);
+            StringBuilder updateQuery = new($"UPDATE {TableName} SET ");
+            List<string> properties = GenerateListOfProperties(GetProperties);
 
             properties.ForEach(prop =>
             {
@@ -334,8 +342,8 @@ namespace Chef.Common.Repositories
 
         public string GenerateUpdateQueryOnConflict()
         {
-            var updateQuery = new StringBuilder($"UPDATE SET ");
-            var properties = GenerateListOfProperties(GetProperties);
+            StringBuilder updateQuery = new($"UPDATE SET ");
+            List<string> properties = GenerateListOfProperties(GetProperties);
 
             properties.ForEach(prop =>
             {
@@ -353,13 +361,13 @@ namespace Chef.Common.Repositories
 
         public string GenerateDropTableQuery(bool cascade = false)
         {
-            var keyword = cascade ? " CASCADE" : "";
+            string keyword = cascade ? " CASCADE" : "";
             return $"DROP TABLE IF EXISTS {TableName}{keyword};";
         }
 
         public string GenerateTruncateTableQuery(bool cascade = false, bool restartIdentity = false)
         {
-            var keyword = string.Format("{0}{1}", (restartIdentity ? " RESTART IDENTITY" : ""), (cascade ? " CASCADE" : ""));
+            string keyword = string.Format("{0}{1}", restartIdentity ? " RESTART IDENTITY" : "", cascade ? " CASCADE" : "");
             return $"TRUNCATE TABLE {TableName}{keyword};";
         }
     }

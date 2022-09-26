@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Chef.Common.Core;
+using Newtonsoft.Json;
+using SqlKata;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
-using Chef.Common.Core;
-using Newtonsoft.Json;
-using SqlKata;
 
 namespace Chef.Common.Repositories
 {
@@ -45,7 +45,7 @@ namespace Chef.Common.Repositories
 
         public IDictionary<string, object> ToDictionary(object obj)
         {
-            var dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, object> dictionary = new(StringComparer.OrdinalIgnoreCase);
 
             if (obj != null)
             {

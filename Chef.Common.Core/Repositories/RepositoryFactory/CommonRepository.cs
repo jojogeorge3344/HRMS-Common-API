@@ -1,9 +1,9 @@
+using Chef.Common.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Chef.Common.Core;
 
 namespace Chef.Common.Repositories
 {
@@ -24,26 +24,26 @@ namespace Chef.Common.Repositories
 
         public async Task<int> DeleteAsync(int id)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where("id", id).AsDelete();
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().Where("id", id).AsDelete();
             return await databaseSession.ExecuteAsync(query);
         }
 
         #region Get Async
         public async Task<TModel> GetAsync(int id, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(new { id });
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(new { id });
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
         public async Task<TModel> GetAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
         public async Task<TModel> GetAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
             query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryFirstOrDefaultAsync<TModel>(query, cancellationToken: cancellationToken);
         }
@@ -52,34 +52,34 @@ namespace Chef.Common.Repositories
         #region Get Records Async
         public async Task<IEnumerable<TModel>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
 
         }
 
         public async Task<IEnumerable<TModel>> GetRecordsAsync(SqlSearch sqlSearch = null, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate");
             query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
         public async Task<IEnumerable<TModel>> GetRecordsAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
 
         public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Limit(noOfRecords);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().OrderByDesc("createddate").Limit(noOfRecords);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
         public async Task<IEnumerable<TModel>> GetRecordsAsync(int noOfRecords, object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject).OrderByDesc("createddate").Limit(noOfRecords);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().Where(whereConditionObject).OrderByDesc("createddate").Limit(noOfRecords);
             return await databaseSession.QueryAsync<TModel>(query, cancellationToken: cancellationToken);
         }
 
@@ -89,13 +89,13 @@ namespace Chef.Common.Repositories
         #region Get Record Count
         public async Task<int> GetRecordCountAsync(object whereConditionObject, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate").Where(whereConditionObject);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate").Where(whereConditionObject);
             return await databaseSession.QueryFirstOrDefaultAsync<int>(query);
         }
 
         public async Task<int> GetRecordCountAsync(SqlSearch sqlSearch, CancellationToken cancellationToken = default)
         {
-            var query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate");
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().AsCount().OrderByDesc("createddate");
             query.ApplySqlSearch(sqlSearch);
             return await databaseSession.QueryFirstOrDefaultAsync<int>(query, cancellationToken: cancellationToken);
         }
@@ -107,7 +107,7 @@ namespace Chef.Common.Repositories
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(insertObject);
             InsertModelProperties(ref expando);
-            var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
             return await databaseSession.ExecuteScalarAsync<int>(query);
         }
 
@@ -115,7 +115,7 @@ namespace Chef.Common.Repositories
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(insertObject);
             InsertModelProperties(ref expando);
-            var query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().AsInsertExt(expando, returnId: true);
             return await databaseSession.ExecuteScalarAsync<int>(query);
         }
 
@@ -130,7 +130,7 @@ namespace Chef.Common.Repositories
                 dictionaries.Add(expando);
             }
 
-            var query = sqlQueryBuilder.Query<TModel>().AsBulkInsertExt(dictionaries);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().AsBulkInsertExt(dictionaries);
 
             return await databaseSession.ExecuteAsync(query);
         }
@@ -143,7 +143,7 @@ namespace Chef.Common.Repositories
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(obj);
             UpdateModelProperties(ref expando);
-            var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(new { id = obj.Id });
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(new { id = obj.Id });
             return await databaseSession.ExecuteAsync(query);
         }
 
@@ -151,7 +151,7 @@ namespace Chef.Common.Repositories
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(updateObject);
             UpdateModelProperties(ref expando);
-            var query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(updateConditionObject);
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().AsUpdateExt(expando).Where(updateConditionObject);
             return await databaseSession.ExecuteAsync(query);
         }
 
@@ -159,7 +159,7 @@ namespace Chef.Common.Repositories
         {
             IDictionary<string, object> expando = sqlQueryBuilder.ToDictionary(updateObject);
             UpdateModelProperties(ref expando);
-            var query = sqlKataQuery.AsUpdateExt(expando);
+            SqlKata.Query query = sqlKataQuery.AsUpdateExt(expando);
             return await databaseSession.ExecuteAsync(query);
         }
 
@@ -168,13 +168,13 @@ namespace Chef.Common.Repositories
         #region Delete Async 
         public async Task<int> DeleteAsync(object deleteCondition)
         {
-            var query = sqlQueryBuilder.Query<TModel>().Where(deleteCondition).AsDelete();
+            SqlKata.Query query = sqlQueryBuilder.Query<TModel>().Where(deleteCondition).AsDelete();
             return await databaseSession.ExecuteAsync(query);
         }
 
         public async Task<int> DeleteAsync(SqlKata.Query sqlKataQuery)
         {
-            var query = sqlKataQuery.AsDelete();
+            SqlKata.Query query = sqlKataQuery.AsDelete();
             return await databaseSession.ExecuteAsync(query);
         }
 
@@ -183,9 +183,15 @@ namespace Chef.Common.Repositories
         private void UpdateModelProperties(ref IDictionary<string, object> expando)
         {
             if (expando.ContainsKey("createdBy"))
+            {
                 expando.Remove("createdBy");
+            }
+
             if (expando.ContainsKey("createddate"))
+            {
                 expando.Remove("createddate");
+            }
+
             expando["modifiedby"] = databaseSession.UserToken != null ? databaseSession.UserToken.UserName : "system";
             expando["modifieddate"] = DateTime.UtcNow;
 
@@ -199,7 +205,10 @@ namespace Chef.Common.Repositories
         {
 
             if (expando.ContainsKey("id"))
+            {
                 expando.Remove("id");
+            }
+
             expando["createdby"] = databaseSession.UserToken != null ? databaseSession.UserToken.UserName : "system";
             expando["modifiedby"] = databaseSession.UserToken != null ? databaseSession.UserToken.UserName : "system";
             expando["createddate"] = DateTime.UtcNow;

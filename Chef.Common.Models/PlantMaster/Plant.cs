@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Chef.Common.Core;
+﻿using Chef.Common.Core;
+using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Trading.Models
 {

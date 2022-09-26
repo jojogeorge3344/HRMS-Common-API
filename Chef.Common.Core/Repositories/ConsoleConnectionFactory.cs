@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using Chef.Common.Exceptions;
+﻿using Chef.Common.Exceptions;
 using Chef.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace Chef.Common.Repositories
 {
@@ -34,8 +34,8 @@ namespace Chef.Common.Repositories
 
         public string GetConnectionString()
         {
-            var tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
-            var currentTenant = tenants.FirstOrDefault(t => t.Host.ToLower().Equals(HostName));
+            List<Tenant> tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
+            Tenant currentTenant = tenants.FirstOrDefault(t => t.Host.ToLower().Equals(HostName));
 
             if (currentTenant != null)
             {

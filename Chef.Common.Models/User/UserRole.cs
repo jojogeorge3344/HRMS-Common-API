@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Chef.Common.Core;
+﻿using Chef.Common.Core;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chef.Common.Models
 {

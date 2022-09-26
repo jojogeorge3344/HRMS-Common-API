@@ -6,9 +6,9 @@ namespace Chef.Common.Core
     {
         public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
         {
-            var destinationType = typeof(TDest);
+            System.Type destinationType = typeof(TDest);
 
-            foreach (var property in destinationType.GetProperties())
+            foreach (System.Reflection.PropertyInfo property in destinationType.GetProperties())
             {
                 expression.ForMember(property.Name, opt => opt.Ignore());
             }

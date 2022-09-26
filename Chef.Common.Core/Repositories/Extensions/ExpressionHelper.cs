@@ -28,7 +28,7 @@ namespace Chef.Common.Repositories
                 return memberExpression;
             }
 
-            var unary = expression as UnaryExpression;
+            UnaryExpression unary = expression as UnaryExpression;
             if (unary != null && unary.NodeType == ExpressionType.Convert && unary.Operand is MemberExpression)
             {
                 return (MemberExpression)unary.Operand;
@@ -66,7 +66,11 @@ namespace Chef.Common.Repositories
 
         public static string GetFieldName<T>(this LambdaExpression propertyExpression)
         {
-            if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
+            if (propertyExpression == null)
+            {
+                throw new ArgumentNullException(nameof(propertyExpression));
+            }
+
             return string.Format("{0}.{1}", TableNameWOSchema<T>(), GetMemberExpression(propertyExpression).GetPropertyName());
         }
     }

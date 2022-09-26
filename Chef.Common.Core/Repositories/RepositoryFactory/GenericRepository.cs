@@ -1,3 +1,4 @@
+using AutoMapper;
 using Chef.Common.Core;
 using Dapper;
 using Microsoft.AspNetCore.Http;
@@ -5,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Reflection;
-using AutoMapper;
+using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {
@@ -39,19 +39,19 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<int> DeleteAsync(int id)
         {
-            var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
+            string sql = "DELETE FROM " + TableName + " WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 
         public virtual async Task<int> ArchiveAsync(int id)
         {
-            var sql = "UPDATE " + TableName + " SET isarchived=true WHERE id = @Id";
+            string sql = "UPDATE " + TableName + " SET isarchived=true WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            var sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";
+            string sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";
             if (typeof(TransactionModel).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 sql += " AND branchid = " + this.headerBranchId;
@@ -62,7 +62,7 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<T> GetAsync(int id)
         {
-            var sql = "SELECT * FROM " + TableName + " WHERE  isarchived=false and id = @Id";
+            string sql = "SELECT * FROM " + TableName + " WHERE  isarchived=false and id = @Id";
             return await Connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
         }
 
@@ -71,8 +71,8 @@ namespace Chef.Common.Repositories
             InsertModelProperties(ref obj);
             try
             {
-                var sql = new QueryBuilder<T>().GenerateInsertQuery();
-                var result = await Connection.QueryFirstOrDefaultAsync<T>(sql, obj);
+                string sql = new QueryBuilder<T>().GenerateInsertQuery();
+                T result = await Connection.QueryFirstOrDefaultAsync<T>(sql, obj);
                 obj.Id = Convert.ToInt32(result.Id);
                 return obj;
             }
@@ -94,15 +94,15 @@ namespace Chef.Common.Repositories
         {
             for (int i = 0; i < objs.Count; i++)
             {
-                var tmp = objs[i];
+                T tmp = objs[i];
                 InsertModelProperties(ref tmp);
                 objs[i] = tmp;
             }
 
             try
             {
-                var sql = new QueryBuilder<T>().GenerateInsertQuery();
-                var result = await Connection.ExecuteAsync(sql, objs.AsEnumerable());
+                string sql = new QueryBuilder<T>().GenerateInsertQuery();
+                int result = await Connection.ExecuteAsync(sql, objs.AsEnumerable());
                 return objs;
             }
             catch (Exception ex)
@@ -130,7 +130,7 @@ namespace Chef.Common.Repositories
 
             try
             {
-                var sql = new QueryBuilder<T>().GenerateUpdateQuery();
+                string sql = new QueryBuilder<T>().GenerateUpdateQuery();
                 return await Connection.ExecuteAsync(sql, obj);
             }
             catch (Exception ex)

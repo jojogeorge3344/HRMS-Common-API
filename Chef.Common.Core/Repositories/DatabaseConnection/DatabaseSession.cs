@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Chef.Common.Core;
+using Dapper;
+using SqlKata;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Chef.Common.Core;
-using Dapper;
-using SqlKata;
 using static Dapper.SqlMapper;
 
 namespace Chef.Common.Repositories

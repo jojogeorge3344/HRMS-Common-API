@@ -41,36 +41,36 @@ namespace Chef.Common.Exceptions
             string code;
             string message = null;
             object detailMessage = null;
-            var stackTrace = String.Empty;
+            string stackTrace = String.Empty;
             IDictionary data = null;
 
-            var exceptionType = exception.GetType();
-            var exceptions = exception.GetInnerExceptions();
+            Type exceptionType = exception.GetType();
+            System.Collections.Generic.IEnumerable<Exception> exceptions = exception.GetInnerExceptions();
 
             if (exceptions.Any(x => x is SocketException))
             {
-                var socketException = (SocketException)exceptions.FirstOrDefault(x => x is SocketException);
-                var exceptionCode = SocketExceptionHelper.ErrorCode(socketException);
+                SocketException socketException = (SocketException)exceptions.FirstOrDefault(x => x is SocketException);
+                ServiceExceptionCode exceptionCode = SocketExceptionHelper.ErrorCode(socketException);
                 status = HttpStatusCode.InternalServerError;
                 data = socketException.Data;
                 code = exceptionCode.ToString();
-                var contextMessage = context.GetExceptionMessage(exceptionCode);
+                string contextMessage = context.GetExceptionMessage(exceptionCode);
                 message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : SocketExceptionHelper.ErrorMessage(socketException);
             }
             else if (exceptions.Any(x => x is PostgresException))
             {
-                var dbException = (PostgresException)exceptions.FirstOrDefault(x => x is PostgresException);
-                var exceptionCode = PostgresExceptionHelper.ErrorCode(dbException);
+                PostgresException dbException = (PostgresException)exceptions.FirstOrDefault(x => x is PostgresException);
+                ServiceExceptionCode exceptionCode = PostgresExceptionHelper.ErrorCode(dbException);
                 status = HttpStatusCode.InternalServerError;
                 data = dbException.Data;
                 code = exceptionCode.ToString();
-                var contextMessage = context.GetExceptionMessage(exceptionCode);
+                string contextMessage = context.GetExceptionMessage(exceptionCode);
                 message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : PostgresExceptionHelper.ErrorMessage(dbException);
             }
             else if (exceptions.Any(x => x is Refit.ApiException))
             {
-                var apiException = (Refit.ApiException)exceptions.FirstOrDefault(x => x is Refit.ApiException);
-                var exceptionCode = ApiClientExceptionHelper.ErrorCode(apiException);
+                Refit.ApiException apiException = (Refit.ApiException)exceptions.FirstOrDefault(x => x is Refit.ApiException);
+                ServiceExceptionCode exceptionCode = ApiClientExceptionHelper.ErrorCode(apiException);
                 status = apiException.StatusCode;
                 data = apiException.Data;
                 code = exceptionCode.ToString();
@@ -79,7 +79,7 @@ namespace Chef.Common.Exceptions
             }
             else if (exceptions.Any(x => x is ResourceAlreadyExistsException))
             {
-                var ex = (ResourceAlreadyExistsException)exceptions.FirstOrDefault(x => x is ResourceAlreadyExistsException);
+                ResourceAlreadyExistsException ex = (ResourceAlreadyExistsException)exceptions.FirstOrDefault(x => x is ResourceAlreadyExistsException);
                 status = HttpStatusCode.Conflict;
                 data = ex.Data;
                 code = ServiceExceptionCode.DbUniqueKeyViolation.ToString();
@@ -87,7 +87,7 @@ namespace Chef.Common.Exceptions
             }
             else if (exceptions.Any(x => x is ResourceHasDependentException))
             {
-                var ex = (ResourceHasDependentException)exceptions.FirstOrDefault(x => x is ResourceHasDependentException);
+                ResourceHasDependentException ex = (ResourceHasDependentException)exceptions.FirstOrDefault(x => x is ResourceHasDependentException);
                 status = HttpStatusCode.InternalServerError;
                 data = ex.Data;
                 code = ServiceExceptionCode.DbForeignKeyViolation.ToString();
@@ -95,7 +95,7 @@ namespace Chef.Common.Exceptions
             }
             else if (exceptions.Any(x => x is ResourceNotFoundException))
             {
-                var ex = (ResourceNotFoundException)exceptions.FirstOrDefault(x => x is ResourceNotFoundException);
+                ResourceNotFoundException ex = (ResourceNotFoundException)exceptions.FirstOrDefault(x => x is ResourceNotFoundException);
                 status = HttpStatusCode.NotFound;
                 data = ex.Data;
                 code = ServiceExceptionCode.ResourceNotFound.ToString();
@@ -103,7 +103,7 @@ namespace Chef.Common.Exceptions
             }
             else if (exceptions.Any(x => x is BadRequestException))
             {
-                var ex = (BadRequestException)exceptions.FirstOrDefault(x => x is BadRequestException);
+                BadRequestException ex = (BadRequestException)exceptions.FirstOrDefault(x => x is BadRequestException);
                 status = HttpStatusCode.BadRequest;
                 data = ex.Data;
                 code = ServiceExceptionCode.BadRequest.ToString();
@@ -118,11 +118,13 @@ namespace Chef.Common.Exceptions
             }
 
             if (detailMessage == null)
+            {
                 detailMessage = exceptions.GetAllMessages();
+            }
 
             stackTrace = exception.StackTrace;
 
-            var errorMessage = JsonSerializer.Serialize(
+            string errorMessage = JsonSerializer.Serialize(
               new { code, message, data, detailMessage, stackTrace }
               );
 
@@ -132,7 +134,7 @@ namespace Chef.Common.Exceptions
             //LOGGER is not available???
 
             //Strict NO
-            var path = @"C:\ErrorLogs";
+            string path = @"C:\ErrorLogs";
             bool folderExists = Directory.Exists(path);
 
             if (!Directory.Exists(path))
@@ -148,7 +150,7 @@ namespace Chef.Common.Exceptions
                 detailMessage = null;
                 stackTrace = null;
             }
-            var result = JsonSerializer.Serialize(
+            string result = JsonSerializer.Serialize(
                 new { code, message, data, detailMessage, stackTrace }
             );
             context.Response.ContentType = "application/json";

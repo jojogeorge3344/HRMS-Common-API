@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Chef.Common.Exceptions;
+using Chef.Common.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Chef.Common.Exceptions;
-using Chef.Common.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 namespace Chef.Common.ClientServices
 {
@@ -31,7 +31,7 @@ namespace Chef.Common.ClientServices
 
         protected virtual void Dispose(bool disposing)
         {
-            foreach (var httpClient in this.httpClients)
+            foreach (KeyValuePair<string, HttpClient> httpClient in this.httpClients)
             {
                 httpClient.Value.Dispose();
             }
@@ -39,23 +39,30 @@ namespace Chef.Common.ClientServices
 
         public HttpClient CreateClient(string name)
         {
-            if (this.httpClients.TryGetValue(name, out var client))
+            if (this.httpClients.TryGetValue(name, out HttpClient client))
+            {
                 return client;
+            }
 
-            var hostname = httpContextAccessor.HttpContext.Request.Host.Value.ToLower();
+            string hostname = httpContextAccessor.HttpContext.Request.Host.Value.ToLower();
 
-            var tenant = configuration.GetSection("Tenants").Get<List<Tenant>>()
+            Tenant tenant = configuration.GetSection("Tenants").Get<List<Tenant>>()
                .Where(x => x.Host == hostname).FirstOrDefault();
 
             if (tenant == null)
+            {
                 throw new TenantNotFoundException(hostname + " not configured properly.");
+            }
 
-            var apiclient = tenant.ApiClients
+            ApiClient apiclient = tenant.ApiClients
                 .Where(x => x.Name == name).FirstOrDefault();
 
             if (apiclient == null)
+            {
                 throw new Exception(string.Format("Tenant/ApiClients name - {0} not configured properly.", name));
-            var handler = new HttpClientHandler
+            }
+
+            HttpClientHandler handler = new()
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, sslErrors) => true
             };

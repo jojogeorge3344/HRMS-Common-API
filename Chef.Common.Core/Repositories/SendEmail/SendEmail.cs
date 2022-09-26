@@ -1,10 +1,10 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Chef.Common.Core.Repositories
 {
@@ -28,23 +28,23 @@ namespace Chef.Common.Core.Repositories
 
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
-            var email = new MimeMessage();
+            MimeMessage email = new();
 
             email.Sender = MailboxAddress.Parse(_emailSettings.SenderEmail);
             //  email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
             email.Subject = mailRequest.Subject;
 
-            var builder = new BodyBuilder();
+            BodyBuilder builder = new();
 
             if (mailRequest.Attachments != null)
             {
                 byte[] fileBytes;
 
-                foreach (var file in mailRequest.Attachments)
+                foreach (Microsoft.AspNetCore.Http.IFormFile file in mailRequest.Attachments)
                 {
                     if (file.Length > 0)
                     {
-                        using (var ms = new MemoryStream())
+                        using (MemoryStream ms = new())
                         {
                             file.CopyTo(ms);
                             fileBytes = ms.ToArray();
@@ -57,7 +57,7 @@ namespace Chef.Common.Core.Repositories
 
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
-            using var smtp = new SmtpClient();
+            using SmtpClient smtp = new();
             smtp.Connect(_emailSettings.MailServer, _emailSettings.MailPort, SecureSocketOptions.StartTls);
             smtp.Authenticate(_emailSettings.SenderEmail, _emailSettings.Password);
             await smtp.SendAsync(email);

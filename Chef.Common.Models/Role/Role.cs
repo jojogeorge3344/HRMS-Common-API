@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Chef.Common.Core;
+﻿using Chef.Common.Core;
+using System.Collections.Generic;
 
 namespace Chef.Common.Models
 {

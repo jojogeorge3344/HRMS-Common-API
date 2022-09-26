@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Chef.Common.Core;
+using Chef.Common.Types;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Chef.Common.Core;
-using Chef.Common.Types;
 
 namespace Chef.Common.Models
 {

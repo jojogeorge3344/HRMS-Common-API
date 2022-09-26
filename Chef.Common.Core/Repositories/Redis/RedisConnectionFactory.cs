@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Chef.Common.Core.Repositories
 {
@@ -44,7 +44,9 @@ namespace Chef.Common.Core.Repositories
             RedisValue redisValue = Database.StringGet(key, flags);
 
             if (!redisValue.HasValue)
+            {
                 return default;
+            }
 
             List<T> deserializedValue = JsonConvert.DeserializeObject<List<T>>(redisValue);
 
@@ -54,7 +56,10 @@ namespace Chef.Common.Core.Repositories
         //Set Data To Redis
         public bool SetData(RedisKey key, object value, TimeSpan? expiry = null, When when = When.Always, CommandFlags flags = CommandFlags.None)
         {
-            if (value == null) return false;
+            if (value == null)
+            {
+                return false;
+            }
 
             return Database.StringSet(key, JsonConvert.SerializeObject(value), expiry, when, flags);
         }
