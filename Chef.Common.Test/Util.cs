@@ -5,7 +5,7 @@ namespace Chef.Common.Test
 {
     public class Util
     {
-        private static Random random = new Random();
+        private static readonly Random random = new();
         public static string GetUniqueRandomString()
         {
 
@@ -18,7 +18,7 @@ namespace Chef.Common.Test
         public static T GetRandomEnum<T>()
         {
             Array values = Enum.GetValues(typeof(T));
-            Random random = new Random();
+            Random random = new();
             return (T)values.GetValue(random.Next(values.Length));
         }
         /// <summary>
@@ -29,8 +29,11 @@ namespace Chef.Common.Test
         public static string GetRandomCode(int noOfDigits)
         {
             if (noOfDigits < 1 || noOfDigits > 9)
+            {
                 throw new Exception($"{noOfDigits} has to be greater than 0 and less than 9");
-            var maxNumber = Convert.ToInt32("999999999".Substring(0, noOfDigits));
+            }
+
+            int maxNumber = Convert.ToInt32("999999999".Substring(0, noOfDigits));
             return string.Format($"{{0:D{noOfDigits}}}", new Random().Next(1, maxNumber));
         }
 
@@ -63,12 +66,18 @@ namespace Chef.Common.Test
         public static int[] GetChunks(int totalQuantity, int chunkSize)
         {
             if (chunkSize <= 0)
+            {
                 throw new Exception($"chunkSize {chunkSize} cannot be less than or equal zero");
+            }
+
             int quotient = totalQuantity / chunkSize;
             int remainder = totalQuantity - (quotient * chunkSize);
             int[] chunks = new int[chunkSize];
             for (int i = 0; i < chunks.Length; i++)
+            {
                 chunks[i] = (i == 0) ? quotient + remainder : quotient;
+            }
+
             return chunks;
         }
     }

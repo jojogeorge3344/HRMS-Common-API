@@ -1,14 +1,12 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Repositories;
-using System;
-using Xunit;
 
 namespace Chef.Common.Test
 {
     public class GenericRepositoryTest<T> //: IGenericRepositoryTest<T>
         where T : Model
     {
-        IGenericRepository<T> repository;
+        private readonly IGenericRepository<T> repository;
         public GenericRepositoryTest(IGenericRepository<T> repository)
         {
             this.repository = repository;

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Chef.Common.ClientServices;
+using Chef.Common.Models;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Chef.Common.ClientServices;
-using Chef.Common.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace Chef.Common.Test
 {
@@ -28,7 +28,7 @@ namespace Chef.Common.Test
 
         protected virtual void Dispose(bool disposing)
         {
-            foreach (var httpClient in this.httpClients)
+            foreach (KeyValuePair<string, HttpClient> httpClient in this.httpClients)
             {
                 httpClient.Value.Dispose();
             }
@@ -36,13 +36,16 @@ namespace Chef.Common.Test
 
         public HttpClient CreateClient(string name)
         {
-            if (this.httpClients.TryGetValue(name, out var client))
+            if (this.httpClients.TryGetValue(name, out HttpClient client))
+            {
                 return client;
-            var unittesttenantname = configuration.GetValue<string>("UnitTestTenantName");
-            var tenant = configuration.GetSection("Tenants").Get<List<Tenant>>()
+            }
+
+            string unittesttenantname = configuration.GetValue<string>("UnitTestTenantName");
+            Tenant tenant = configuration.GetSection("Tenants").Get<List<Tenant>>()
                 .Where(t => t.Name.ToLower().Equals(unittesttenantname.ToLower())).FirstOrDefault();
 
-            var apiclient = tenant.ApiClients
+            ApiClient apiclient = tenant.ApiClients
                 .Where(x => x.Name == name).FirstOrDefault();
 
             client = new HttpClient

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Linq;
 using Xunit.Sdk;
 
 namespace Chef.Common.Test
@@ -24,7 +21,7 @@ namespace Chef.Common.Test
 
         public override System.Collections.Generic.IEnumerable<object[]> GetData(System.Reflection.MethodInfo testMethod)
         {
-            foreach (var iterationNumber in Enumerable.Range(start: 1, count: this.count))
+            foreach (int iterationNumber in Enumerable.Range(start: 1, count: this.count))
             {
                 yield return new object[] { iterationNumber };
             }

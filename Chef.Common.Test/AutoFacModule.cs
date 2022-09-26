@@ -5,7 +5,7 @@ using Autofac.Core.Registration;
 namespace Chef.Common.Test
 {
     public class InjectPropertiesByDefaultModule : Autofac.Module
-    { 
+    {
         protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
         {
             registration.Activating += (s, e) =>

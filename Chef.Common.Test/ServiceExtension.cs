@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 
 namespace Chef.Common.Test
 {
@@ -13,8 +11,8 @@ namespace Chef.Common.Test
             services.AddHttpClient(type.FullName, clientFactory)
                 .Services.AddTransient(type, services =>
                 {
-                    var httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
-                    var httpClient = httpClientFactory.CreateClient(type.FullName);
+                    IHttpClientFactory httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
+                    HttpClient httpClient = httpClientFactory.CreateClient(type.FullName);
                     return Refit.RestService.For(type, httpClient);
                 });
 

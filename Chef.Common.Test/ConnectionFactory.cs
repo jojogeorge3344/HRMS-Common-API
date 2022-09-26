@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using Chef.Common.Models;
+﻿using Chef.Common.Models;
 using Chef.Common.Repositories;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace Chef.Common.Test
 {
@@ -29,13 +29,17 @@ namespace Chef.Common.Test
 
         public string GetConnectionString()
         {
-            var unittesttenantname = configuration.GetValue<string>("UnitTestTenantName");
-            var tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
+            string unittesttenantname = configuration.GetValue<string>("UnitTestTenantName");
+            List<Tenant> tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
             Tenant currentTenant = tenants.FirstOrDefault(t => t.Name.ToLower().Equals(unittesttenantname.ToLower()));
             if (currentTenant != null)
+            {
                 return currentTenant.ConnectionString;
+            }
             else
+            {
                 throw new Exception("Connection string not configured properly. Set HostName to *");
+            }
         }
     }
 
