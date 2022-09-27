@@ -134,7 +134,7 @@ namespace Chef.Common.Exceptions
             //LOGGER is not available???
 
             //Strict NO
-            string path = @"C:\ErrorLogs";
+            string path = @"ErrorLogs/";
             bool folderExists = Directory.Exists(path);
 
             if (!Directory.Exists(path))
@@ -142,7 +142,7 @@ namespace Chef.Common.Exceptions
                 Directory.CreateDirectory(path);
             }
 
-            File.AppendAllText(@"C:/ErrorLogs/" + String.Format("{0:dd/MM/yyyy}", DateTime.UtcNow) + ".txt", Environment.NewLine + DateTime.UtcNow.ToString("dd MMMM yyyy HH:mm:ss") + Environment.NewLine + errorMessage + Environment.NewLine);
+            File.AppendAllText(@"ErrorLogs/" + String.Format("{0:dd/MM/yyyy}", DateTime.UtcNow) + ".txt", Environment.NewLine + DateTime.UtcNow.ToString("dd MMMM yyyy HH:mm:ss") + Environment.NewLine + errorMessage + Environment.NewLine);
 
             if (!env.IsEnvironment("Development"))
             {

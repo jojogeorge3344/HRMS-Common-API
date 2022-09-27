@@ -13,16 +13,18 @@ namespace Chef.Common.Repositories
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
     {
-        public IMapper Mapper { get; set; }
         private readonly DbSession _session;
         private readonly IHttpContextAccessor httpContextAccessor;
-        public int headerBranchId = 0;
+        private readonly int headerBranchId;
 
+        public IMapper Mapper { get; set; }
+        public IDatabaseSession DatabaseSession { get; set; }
         public IQueryBuilderFactory QueryBuilderFactory { get; set; }
-
         public ISqlQueryBuilder SqlQueryBuilder => QueryBuilderFactory.SqlQueryBuilder();
 
-        public IDatabaseSession DatabaseSession { get; set; }
+        protected IDbConnection Connection => _session.Connection;
+        protected string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
+        protected string TableName => SchemaName + "." + typeof(T).Name;
 
         public GenericRepository(IHttpContextAccessor httpContextAccessor, DbSession session)
         {
@@ -30,12 +32,6 @@ namespace Chef.Common.Repositories
             this.httpContextAccessor = httpContextAccessor;
             headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
         }
-
-        public IDbConnection Connection => _session.Connection;
-
-        public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
-
-        public string TableName => SchemaName + "." + typeof(T).Name;
 
         public virtual async Task<int> DeleteAsync(int id)
         {
