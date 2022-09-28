@@ -8,10 +8,12 @@ namespace Chef.Common.Test
     {
         protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
         {
-            registration.Activating += (s, e) =>
+            //TODO
+            //Remove This Method
+            /*registration.Activating += (s, e) =>
             {
                 e.Context.InjectProperties(e.Instance);
-            };
+            };*/
 
             base.AttachToComponentRegistration(componentRegistry, registration);
         }

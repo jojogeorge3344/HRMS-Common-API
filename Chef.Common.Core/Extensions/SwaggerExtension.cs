@@ -16,10 +16,10 @@ namespace Chef.Common.Core.Extensions
             {
                 config.PostProcess = document =>
                 {
-                    document.Info.Version = "v1";
-                    document.Info.Title = "ToDo API";
-                    document.Info.Description = "A simple ASP.NET Core web API";
-                    document.Info.TermsOfService = "None";
+                    document.Info.Version = version;
+                    document.Info.Title = title;
+                    document.Info.Description = description;
+                    document.Info.TermsOfService = terms;
                 };
             });
         }
