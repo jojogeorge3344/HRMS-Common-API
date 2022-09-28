@@ -15,13 +15,13 @@ namespace Chef.Common.Repositories
     {
         private readonly DbSession _session;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly int headerBranchId;
 
         public IMapper Mapper { get; set; }
         public IDatabaseSession DatabaseSession { get; set; }
         public IQueryBuilderFactory QueryBuilderFactory { get; set; }
         public ISqlQueryBuilder SqlQueryBuilder => QueryBuilderFactory.SqlQueryBuilder();
 
+        protected int HeaderBranchId { get; }
         protected IDbConnection Connection => _session.Connection;
         protected string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
         protected string TableName => SchemaName + "." + typeof(T).Name;
@@ -30,7 +30,7 @@ namespace Chef.Common.Repositories
         {
             _session = session;
             this.httpContextAccessor = httpContextAccessor;
-            headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
+            HeaderBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
         }
 
         public virtual async Task<int> DeleteAsync(int id)
@@ -50,7 +50,7 @@ namespace Chef.Common.Repositories
             string sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";
             if (typeof(TransactionModel).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
-                sql += " AND branchid = " + this.headerBranchId;
+                sql += " AND branchid = " + this.HeaderBranchId;
             }
             sql += " ORDER BY createddate desc ";
             return await Connection.QueryAsync<T>(sql);

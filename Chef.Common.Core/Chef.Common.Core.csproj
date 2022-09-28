@@ -34,6 +34,7 @@
     <PackageReference Include="MimeKit" Version="3.4.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.66" />
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Repositories\TableTypeAttribute.cs" />
@@ -41,9 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Repositories\UnitOfWork\oxyq0xtf.24a~" />
+    <None Remove="Logging\" />
+    <None Remove="Autofac.Extras.DynamicProxy" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\" />
   </ItemGroup>
 </Project>
 
