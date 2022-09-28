@@ -11,8 +11,7 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="AutoMapper.Extensions.EnumMapping" Version="1.1.0" />
+    <PackageReference Include="AutoMapper.Extensions.EnumMapping" Version="2.0.1" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.9" />
@@ -44,6 +43,7 @@
     <None Remove="Repositories\UnitOfWork\oxyq0xtf.24a~" />
     <None Remove="Logging\" />
     <None Remove="Autofac.Extras.DynamicProxy" />
+    <None Remove="AutoMapper" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />

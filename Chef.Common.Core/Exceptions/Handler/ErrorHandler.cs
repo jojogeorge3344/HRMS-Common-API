@@ -132,17 +132,23 @@ namespace Chef.Common.Exceptions
             ///
             //WHY DO WE NEED THIS? WHAT ABOUT ERROR Handler
             //LOGGER is not available???
-
-            //Strict NO
-            string path = @"ErrorLogs/";
-            bool folderExists = Directory.Exists(path);
-
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
+                //Strict NO
+                string path = @"ErrorLogs/";
+                bool folderExists = Directory.Exists(path);
 
-            File.AppendAllText(@"ErrorLogs/" + String.Format("{0:dd/MM/yyyy}", DateTime.UtcNow) + ".txt", Environment.NewLine + DateTime.UtcNow.ToString("dd MMMM yyyy HH:mm:ss") + Environment.NewLine + errorMessage + Environment.NewLine);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                File.AppendAllText(@"ErrorLogs/" + String.Format("{0:dd/MM/yyyy}", DateTime.UtcNow) + ".txt", Environment.NewLine + DateTime.UtcNow.ToString("dd MMMM yyyy HH:mm:ss") + Environment.NewLine + errorMessage + Environment.NewLine);
+            }
+            catch
+            {
+                //do nothing.. and it is fatal
+            }
 
             if (!env.IsEnvironment("Development"))
             {
@@ -153,8 +159,10 @@ namespace Chef.Common.Exceptions
             string result = JsonSerializer.Serialize(
                 new { code, message, data, detailMessage, stackTrace }
             );
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;
+
             return context.Response.WriteAsync(result);
         }
     }
