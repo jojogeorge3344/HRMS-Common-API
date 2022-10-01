@@ -47,12 +47,14 @@
     <None Remove="Autofac.Extras.DynamicProxy" />
     <None Remove="AutoMapper" />
     <None Remove="NSwag.AspNetCore" />
+    <None Remove="Exceptions\CustomExceptions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Logging\" />
+    <Folder Include="Exceptions\CustomExceptions\" />
   </ItemGroup>
 </Project>
 
