@@ -1,9 +1,4 @@
-﻿using Chef.Common.Exceptions.Helper;
-using Chef.Common.Types;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Npgsql;
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -11,16 +6,26 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Chef.Common.Exceptions.Helper;
+using Chef.Common.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace Chef.Common.Exceptions
 {
     public class ErrorHandler
     {
         private readonly RequestDelegate next;
+        private readonly ILogger<ErrorHandler> logger;
 
-        public ErrorHandler(RequestDelegate next)
+        public ErrorHandler(
+            RequestDelegate next,
+            ILogger<ErrorHandler> logger)
         {
             this.next = next;
+            this.logger = logger;
         }
 
         public async Task Invoke(HttpContext context, IHostEnvironment env)
@@ -35,14 +40,13 @@ namespace Chef.Common.Exceptions
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception, IHostEnvironment env)
+        private Task HandleExceptionAsync(HttpContext context, Exception exception, IHostEnvironment env)
         {
             HttpStatusCode status;
             string code;
             string message = null;
-            object detailMessage = null;
-            string stackTrace = String.Empty;
             IDictionary data = null;
+            string contextMessage = string.Empty;
 
             Type exceptionType = exception.GetType();
             System.Collections.Generic.IEnumerable<Exception> exceptions = exception.GetInnerExceptions();
@@ -54,7 +58,7 @@ namespace Chef.Common.Exceptions
                 status = HttpStatusCode.InternalServerError;
                 data = socketException.Data;
                 code = exceptionCode.ToString();
-                string contextMessage = context.GetExceptionMessage(exceptionCode);
+                contextMessage = context.GetExceptionMessage(exceptionCode);
                 message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : SocketExceptionHelper.ErrorMessage(socketException);
             }
             else if (exceptions.Any(x => x is PostgresException))
@@ -64,7 +68,7 @@ namespace Chef.Common.Exceptions
                 status = HttpStatusCode.InternalServerError;
                 data = dbException.Data;
                 code = exceptionCode.ToString();
-                string contextMessage = context.GetExceptionMessage(exceptionCode);
+                contextMessage = context.GetExceptionMessage(exceptionCode);
                 message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : PostgresExceptionHelper.ErrorMessage(dbException);
             }
             else if (exceptions.Any(x => x is Refit.ApiException))
@@ -75,7 +79,6 @@ namespace Chef.Common.Exceptions
                 data = apiException.Data;
                 code = exceptionCode.ToString();
                 message = !string.IsNullOrEmpty(apiException.Content) ? apiException.Content : ApiClientExceptionHelper.ErrorMessage(apiException);
-                detailMessage = ApiClientExceptionHelper.DetailMessage(apiException);
             }
             else if (exceptions.Any(x => x is ResourceAlreadyExistsException))
             {
@@ -109,6 +112,14 @@ namespace Chef.Common.Exceptions
                 code = ServiceExceptionCode.BadRequest.ToString();
                 message = ex.Message;
             }
+            else if (exceptions.Any(x => x is ApplicationException))
+            {
+                ApplicationException ex = (ApplicationException)exceptions.FirstOrDefault(x => x is ApplicationException);
+                status = HttpStatusCode.InternalServerError;
+                data = ex.Data;
+                code = ServiceExceptionCode.ApplicationException.ToString();
+                message = ex.Message;
+            }
             else
             {
                 status = HttpStatusCode.InternalServerError;
@@ -117,47 +128,10 @@ namespace Chef.Common.Exceptions
                 message = exception.GetMessage();
             }
 
-            if (detailMessage == null)
-            {
-                detailMessage = exceptions.GetAllMessages();
-            }
+            logger.LogError(exception.ToString());
 
-            stackTrace = exception.StackTrace;
-
-            string errorMessage = JsonSerializer.Serialize(
-              new { code, message, data, detailMessage, stackTrace }
-              );
-
-            ///CODE REVIEW
-            ///
-            //WHY DO WE NEED THIS? WHAT ABOUT ERROR Handler
-            //LOGGER is not available???
-            try
-            {
-                //Strict NO
-                string path = @"ErrorLogs/";
-                bool folderExists = Directory.Exists(path);
-
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                File.AppendAllText(@"ErrorLogs/" + String.Format("{0:dd/MM/yyyy}", DateTime.UtcNow) + ".txt", Environment.NewLine + DateTime.UtcNow.ToString("dd MMMM yyyy HH:mm:ss") + Environment.NewLine + errorMessage + Environment.NewLine);
-            }
-            catch
-            {
-                //do nothing.. and it is fatal
-            }
-
-            if (!env.IsEnvironment("Development"))
-            {
-                data = null;
-                detailMessage = null;
-                stackTrace = null;
-            }
             string result = JsonSerializer.Serialize(
-                new { code, message, data, detailMessage, stackTrace }
+                new { code, message, data }
             );
 
             context.Response.ContentType = "application/json";

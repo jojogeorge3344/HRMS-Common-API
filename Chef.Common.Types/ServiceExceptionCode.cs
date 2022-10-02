@@ -29,6 +29,9 @@
         //
         ResourceNotFound,
         BadRequest,
-        TenantNotFound
+        TenantNotFound,
+
+        //Application exception code should be constant.
+        ApplicationException = 1001
     }
 }
