@@ -4,9 +4,9 @@ using System.Runtime.Serialization;
 namespace Chef.Common.Exceptions
 {
     [Serializable]
-    public class BankCannotBeDeletedException : Exception
+    public class BankNotFoundException : Exception
     {
-        public BankCannotBeDeletedException(string message) : base(message)
+        public BankNotFoundException(string message) : base(message)
         {
         }
     }
