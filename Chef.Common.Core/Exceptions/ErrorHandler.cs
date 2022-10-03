@@ -131,7 +131,11 @@ namespace Chef.Common.Exceptions
             logger.LogError(exception.ToString());
 
             string result = JsonSerializer.Serialize(
-                new { code, message, data }
+                new {
+                    code,
+                    message,
+                    data
+                }
             );
 
             context.Response.ContentType = "application/json";
