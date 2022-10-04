@@ -16,11 +16,6 @@ namespace Chef.Common.Exceptions
 
         public static IEnumerable<Exception> GetInnerExceptions(this Exception ex)
         {
-            //if (ex == null)
-            //{
-            //    throw new ArgumentNullException("ex");
-            //}
-
             Exception innerException = ex;
 
             do
