@@ -68,9 +68,25 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class StateCannotBeDeletedException : Exception
+    {
+        public StateCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
     public class FinancialYearNotFoundException : Exception
     {
         public FinancialYearNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class TaxJurisdictionCannotBeDeletedException : Exception
+    {
+        public TaxJurisdictionCannotBeDeletedException(string message) : base(message)
         {
         }
     }
