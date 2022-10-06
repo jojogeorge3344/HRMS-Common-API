@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Chef.Common.Repositories;
+﻿using Chef.Common.Repositories;
+using System.Data;
 
 namespace Chef.Common.Services
 {
@@ -8,7 +8,7 @@ namespace Chef.Common.Services
         public IServiceSession ServiceSession { get; set; }
 
         public IUnitOfWorkSession UnitOfWorkSession(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
-        { 
+        {
             return ServiceSession.UnitOfWorkSession(isolationLevel);
         }
     }

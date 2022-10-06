@@ -19,7 +19,7 @@ namespace Chef.Common.Repositories
         {
             this.context = context;
             this.configuration = configuration;
-            this.connectionString = GetConnectionString();
+            connectionString = GetConnectionString();
         }
 
         public IDbConnection Connection

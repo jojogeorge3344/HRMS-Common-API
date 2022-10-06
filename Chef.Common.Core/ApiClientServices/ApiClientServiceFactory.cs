@@ -19,19 +19,19 @@ namespace Chef.Common.ClientServices
         public ApiClientServiceFactory(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             this.httpContextAccessor = httpContextAccessor;
-            this.httpClients = new ConcurrentDictionary<string, HttpClient>();
+            httpClients = new ConcurrentDictionary<string, HttpClient>();
             this.configuration = configuration;
         }
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            foreach (KeyValuePair<string, HttpClient> httpClient in this.httpClients)
+            foreach (KeyValuePair<string, HttpClient> httpClient in httpClients)
             {
                 httpClient.Value.Dispose();
             }
@@ -39,7 +39,7 @@ namespace Chef.Common.ClientServices
 
         public HttpClient CreateClient(string name)
         {
-            if (this.httpClients.TryGetValue(name, out HttpClient client))
+            if (httpClients.TryGetValue(name, out HttpClient client))
             {
                 return client;
             }
@@ -71,7 +71,7 @@ namespace Chef.Common.ClientServices
                 BaseAddress = new Uri(apiclient.BaseAddress),
             };
 
-            this.httpClients.TryAdd(name, client);
+            httpClients.TryAdd(name, client);
 
             return client;
         }

@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Chef.Common.Core.Extensions
 {
-	public static class SwaggerExtension
-	{
+    public static class SwaggerExtension
+    {
         public static void ConfigureSwagger(
             this IServiceCollection services,
             string version,

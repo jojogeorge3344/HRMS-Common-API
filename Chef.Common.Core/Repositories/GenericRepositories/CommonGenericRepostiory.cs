@@ -1,5 +1,4 @@
 ﻿using Chef.Common.Core;
-using Chef.Common.Repositories;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

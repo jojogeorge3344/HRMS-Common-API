@@ -50,7 +50,7 @@ namespace Chef.Common.Repositories
             string sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";
             if (typeof(TransactionModel).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
-                sql += " AND branchid = " + this.HeaderBranchId;
+                sql += " AND branchid = " + HeaderBranchId;
             }
             sql += " ORDER BY createddate desc ";
             return await Connection.QueryAsync<T>(sql);

@@ -87,18 +87,18 @@ namespace Chef.Common.Repositories
         public bool Equals(SqlSearch other) => other == null
                 ? false
                 : (ReferenceEquals(Limit, other.Limit) ||
-                (this.Limit != null &&
+                (Limit != null &&
                 Limit.Equals(other.Limit)))
                 &&
-                (ReferenceEquals(this.Page, other.Page) ||
-                (this.Page != null &&
-                this.Page.Equals(other.Page)))
+                (ReferenceEquals(Page, other.Page) ||
+                (Page != null &&
+                Page.Equals(other.Page)))
                 &&
-                (ReferenceEquals(this.Condition, other.Condition) ||
-                this.Condition.Equals(other.Condition))
+                (ReferenceEquals(Condition, other.Condition) ||
+                Condition.Equals(other.Condition))
                 &&
-                (ReferenceEquals(this.Rules, other.Rules) ||
-                (this.Rules != null &&
+                (ReferenceEquals(Rules, other.Rules) ||
+                (Rules != null &&
                  Rules.SequenceEqual(other.Rules)));
         #endregion
 
