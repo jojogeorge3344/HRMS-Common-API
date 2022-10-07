@@ -178,4 +178,28 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+
+    [Serializable]
+    public class UserNotFoundException : ApplicationException
+    {
+        public UserNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class BranchCannotBeDeletedException : ApplicationException
+    {
+        public BranchCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class DuplicateBranchFoundException : ApplicationException
+    {
+        public DuplicateBranchFoundException(string message) : base(message)
+        {
+        }
+    }
 }

@@ -17,7 +17,7 @@ namespace Chef.Common.Core.Repositories
             configuration = new ConfigurationOptions()
             {
                 //for the redis pool so you can extent later if needed
-                EndPoints = { { ConfigurationManager.AppSetting["Redis:Host"], Convert.ToInt32(ConfigurationManager.AppSetting["Redis:Port"]) }, },
+                EndPoints = { { AppConfigurationManager.AppSetting["Redis:Host"], Convert.ToInt32(AppConfigurationManager.AppSetting["Redis:Port"]) }, },
                 AllowAdmin = allowAdmin,
                 //Password = "", //to the security for the production
                 ReconnectRetryPolicy = new LinearRetry(5000),
@@ -76,11 +76,11 @@ namespace Chef.Common.Core.Repositories
         }
     }
 
-    public static class ConfigurationManager
+    public static class AppConfigurationManager
     {
         public static IConfiguration AppSetting { get; }
 
-        static ConfigurationManager()
+        static AppConfigurationManager()
         {
             AppSetting = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
