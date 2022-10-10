@@ -16,7 +16,9 @@ namespace Chef.Common.ClientServices
         private readonly IConfiguration configuration;
         private readonly ConcurrentDictionary<string, HttpClient> httpClients;
 
-        public ApiClientServiceFactory(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public ApiClientServiceFactory(
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.httpClients = new ConcurrentDictionary<string, HttpClient>();
@@ -66,6 +68,7 @@ namespace Chef.Common.ClientServices
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, sslErrors) => true
             };
+
             client = new HttpClient(handler)
             {
                 BaseAddress = new Uri(apiclient.BaseAddress),

@@ -202,4 +202,12 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+
+    [Serializable]
+    public class DuplicateEmailFoundException : ApplicationException
+    {
+        public DuplicateEmailFoundException(string message) : base(message)
+        {
+        }
+    }
 }
