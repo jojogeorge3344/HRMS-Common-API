@@ -10,12 +10,10 @@
     <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="ApprovalSystem\" />
     <None Remove="Console\" />
     <None Remove="Finance\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ApprovalSystem\" />
     <Folder Include="Console\" />
     <Folder Include="Finance\" />
   </ItemGroup>

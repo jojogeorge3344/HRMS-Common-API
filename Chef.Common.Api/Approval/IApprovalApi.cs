@@ -3,7 +3,7 @@ using Refit;
 
 namespace Chef.Common.Api
 {
-    public interface IApprovalSystemApi
+    public interface IApprovalApi
     {
         [Get("/ManageWorkflow/GetAllAssignedRoles/{roleId}")]
         Task<IEnumerable<ManageWorkflow>> GetAllAssignedRolesAsync(int roleId);
