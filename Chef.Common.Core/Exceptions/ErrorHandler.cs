@@ -61,16 +61,6 @@ namespace Chef.Common.Exceptions
                 contextMessage = context.GetExceptionMessage(exceptionCode);
                 message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : SocketExceptionHelper.ErrorMessage(socketException);
             }
-            else if (exceptions.Any(x => x is PostgresException))
-            {
-                PostgresException dbException = (PostgresException)exceptions.FirstOrDefault(x => x is PostgresException);
-                ServiceExceptionCode exceptionCode = PostgresExceptionHelper.ErrorCode(dbException);
-                status = HttpStatusCode.InternalServerError;
-                data = dbException.Data;
-                code = exceptionCode.ToString();
-                contextMessage = context.GetExceptionMessage(exceptionCode);
-                message = !string.IsNullOrEmpty(contextMessage) ? contextMessage : PostgresExceptionHelper.ErrorMessage(dbException);
-            }
             else if (exceptions.Any(x => x is Refit.ApiException))
             {
                 Refit.ApiException apiException = (Refit.ApiException)exceptions.FirstOrDefault(x => x is Refit.ApiException);

@@ -18,7 +18,7 @@ namespace Chef.Common.Api
         [Get("/Master/GetAllCurrencies")]
         Task<IEnumerable<Currency>> GetCurrenciesAsync();
 
-        [Get("/State/GetAllByCountry/")]
+        [Get("/State/GetAllByCountry/{countryId}")]
         Task<IEnumerable<State>> GetStatesAsync(int countryId);
     }
 }

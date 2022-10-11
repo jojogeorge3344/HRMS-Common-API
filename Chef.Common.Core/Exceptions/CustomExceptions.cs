@@ -1,7 +1,40 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Chef.Common.Exceptions
 {
+    [Serializable]
+    public class TenantNotFoundException : ApplicationException
+    {
+        public TenantNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class ResourceNotFoundException : ApplicationException
+    {
+        public ResourceNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class ResourceHasDependentException : ApplicationException
+    {
+        public ResourceHasDependentException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class ResourceAlreadyExistsException : Exception
+    {
+        public ResourceAlreadyExistsException(string message) : base(message)
+        {
+        }
+    }
+
     [Serializable]
     public class CurrencyNotFoundException : ApplicationException
     {
