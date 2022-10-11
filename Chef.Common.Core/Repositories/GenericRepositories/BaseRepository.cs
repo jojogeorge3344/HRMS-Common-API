@@ -1,5 +1,4 @@
 ﻿using Chef.Common.Core;
-using Chef.Common.Repositories;
 using System.Data;
 
 namespace Chef.Common.Repositories

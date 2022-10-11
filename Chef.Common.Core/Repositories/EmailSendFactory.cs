@@ -129,12 +129,12 @@ namespace Chef.Common.Repositories
             try
             {
                 using MailKit.Net.Smtp.SmtpClient smtp = new();
-                MailSettings mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
-                string host = this.Configuration.GetSection("MailSettings")["Host"];
-                int Port = Convert.ToInt32(this.Configuration.GetSection("MailSettings")["Port"]);
-                string Mail = this.Configuration.GetSection("MailSettings")["Email"];
-                string Password = this.Configuration.GetSection("MailSettings")["Password"];
-                bool Issend = Convert.ToBoolean(this.Configuration.GetSection("MailSettings")["isMailSend"]);
+                MailSettings mailSettings = Configuration.GetSection("MailSettings").Get<MailSettings>();
+                string host = Configuration.GetSection("MailSettings")["Host"];
+                int Port = Convert.ToInt32(Configuration.GetSection("MailSettings")["Port"]);
+                string Mail = Configuration.GetSection("MailSettings")["Email"];
+                string Password = Configuration.GetSection("MailSettings")["Password"];
+                bool Issend = Convert.ToBoolean(Configuration.GetSection("MailSettings")["isMailSend"]);
                 smtp.Connect("smtp.office365.com", Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(Mail, Password);
                 if (Issend)
@@ -151,7 +151,7 @@ namespace Chef.Common.Repositories
                 smtp.Disconnect(true);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -162,7 +162,7 @@ namespace Chef.Common.Repositories
         public async Task<int> SendRequestedEmailAsync(MailRequest request)
         {
             int Result = 0;
-            MailSettings maSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
+            MailSettings maSettings = Configuration.GetSection("MailSettings").Get<MailSettings>();
 
             string FilePath = request.TemplateFilepath;
 
@@ -204,12 +204,12 @@ namespace Chef.Common.Repositories
             try
             {
                 using MailKit.Net.Smtp.SmtpClient smtp = new();
-                MailSettings mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
-                string host = this.Configuration.GetSection("MailSettings")["Host"];
-                int Port = Convert.ToInt32(this.Configuration.GetSection("MailSettings")["Port"]);
-                string Mail = this.Configuration.GetSection("MailSettings")["Email"];
-                string Password = this.Configuration.GetSection("MailSettings")["Password"];
-                bool Issend = Convert.ToBoolean(this.Configuration.GetSection("MailSettings")["isMailSend"]);
+                MailSettings mailSettings = Configuration.GetSection("MailSettings").Get<MailSettings>();
+                string host = Configuration.GetSection("MailSettings")["Host"];
+                int Port = Convert.ToInt32(Configuration.GetSection("MailSettings")["Port"]);
+                string Mail = Configuration.GetSection("MailSettings")["Email"];
+                string Password = Configuration.GetSection("MailSettings")["Password"];
+                bool Issend = Convert.ToBoolean(Configuration.GetSection("MailSettings")["isMailSend"]);
                 smtp.Connect("smtp.office365.com", Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(Mail, Password);
                 if (Issend)
@@ -225,7 +225,7 @@ namespace Chef.Common.Repositories
                 smtp.Disconnect(true);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -234,7 +234,7 @@ namespace Chef.Common.Repositories
         public async Task<int> SendReplayedEmailAsync(MailRequest request)
         {
             int Result = 0;
-            MailSettings maSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
+            MailSettings maSettings = Configuration.GetSection("MailSettings").Get<MailSettings>();
 
             string FilePath = request.TemplateFilepath;
             FilePath = FilePath + "\\ReplyEmail.html";
@@ -279,12 +279,12 @@ namespace Chef.Common.Repositories
             try
             {
                 using MailKit.Net.Smtp.SmtpClient smtp = new();
-                MailSettings mailSettings = this.Configuration.GetSection("MailSettings").Get<MailSettings>();
-                string host = this.Configuration.GetSection("MailSettings")["Host"];
-                int Port = Convert.ToInt32(this.Configuration.GetSection("MailSettings")["Port"]);
-                string Mail = this.Configuration.GetSection("MailSettings")["Email"];
-                string Password = this.Configuration.GetSection("MailSettings")["Password"];
-                bool Issend = Convert.ToBoolean(this.Configuration.GetSection("MailSettings")["isMailSend"]);
+                MailSettings mailSettings = Configuration.GetSection("MailSettings").Get<MailSettings>();
+                string host = Configuration.GetSection("MailSettings")["Host"];
+                int Port = Convert.ToInt32(Configuration.GetSection("MailSettings")["Port"]);
+                string Mail = Configuration.GetSection("MailSettings")["Email"];
+                string Password = Configuration.GetSection("MailSettings")["Password"];
+                bool Issend = Convert.ToBoolean(Configuration.GetSection("MailSettings")["isMailSend"]);
                 smtp.Connect("smtp.office365.com", Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(Mail, Password);
                 if (Issend)
@@ -300,7 +300,7 @@ namespace Chef.Common.Repositories
                 smtp.Disconnect(true);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

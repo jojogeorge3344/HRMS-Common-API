@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Castle.DynamicProxy;
+﻿using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 
 namespace Chef.Common.Core.Logging
@@ -17,7 +15,7 @@ namespace Chef.Common.Core.Logging
         public void Intercept(IInvocation invocation)
         {
             //TODO optimize for the production.
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
 
             logger.LogInformation($">> {invocation.TargetType.FullName}.{invocation.Method.Name}");
 

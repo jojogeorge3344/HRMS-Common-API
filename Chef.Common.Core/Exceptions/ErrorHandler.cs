@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Chef.Common.Exceptions.Helper;
+using Chef.Common.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Npgsql;
+using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -6,12 +12,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Chef.Common.Exceptions.Helper;
-using Chef.Common.Types;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Npgsql;
 
 namespace Chef.Common.Exceptions
 {
@@ -131,7 +131,8 @@ namespace Chef.Common.Exceptions
             logger.LogError(exception.ToString());
 
             string result = JsonSerializer.Serialize(
-                new {
+                new
+                {
                     code,
                     message,
                     data
