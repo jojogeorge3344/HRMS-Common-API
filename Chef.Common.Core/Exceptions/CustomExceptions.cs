@@ -220,6 +220,14 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class BranchNotFoundException : ApplicationException
+    {
+        public BranchNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
     public class BranchCannotBeDeletedException : ApplicationException
     {
         public BranchCannotBeDeletedException(string message) : base(message)
