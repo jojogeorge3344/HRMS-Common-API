@@ -10,12 +10,4 @@
     <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
     <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Remove="Console\" />
-    <None Remove="Finance\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Console\" />
-    <Folder Include="Finance\" />
-  </ItemGroup>
 </Project>
