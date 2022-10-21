@@ -26,14 +26,14 @@ namespace Chef.Common.Api
         [Get("/NodeField/GetAllNodeControlFields/{nodeId}")]
         Task<IEnumerable<NodeControlField>> GetAllNodeControlFields(int nodeId);
 
-        [Get("/User/GetUserNodes/{id}")]
+        [Get("/User/GetUserNodes/{userId}")]
         Task<IEnumerable<UserPermission>> GetUserNodes(int userId);
 
         //TODO - check the multiple parameters
         [Get("/User/GetUserRolesByUserIdAndNodename/{userId}/{nodeName}")]
         Task<IEnumerable<UserRoleDto>> GetUserRolesByUserIdAndNodename(int userId, string nodeName);
 
-        [Get("User/GetUserRolesByUserId/{userId}")]
+        [Get("/User/GetUserRolesByUserId/{userId}")]
         Task<IEnumerable<UserMetaData>> GetUserRolesByUserId(int userId);
     }
 }

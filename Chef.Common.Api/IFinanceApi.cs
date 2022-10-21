@@ -12,6 +12,7 @@ namespace Chef.Common.Api
         [Post("/JournalBook/InsertJournalBooksForBranch")]
         Task<Branch> CreateJournalBooksForBranchAsync([Body] Branch branch);
 
+
         [Put("/Purchaseinvoice/UpdateStatus/{Invoiceid}/{status}/{remark}")]
         Task<int> UpdateInvoiceRegisterStatus(int Invoiceid, int status, string remark);
 
