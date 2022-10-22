@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Net.Http;
 using Chef.Common.Models;
 
-namespace Chef.Common.Api
+namespace Chef.Common.Core
 {
 	public interface IRefitSettings
 	{

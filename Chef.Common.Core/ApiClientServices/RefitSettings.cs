@@ -1,10 +1,14 @@
-﻿using Chef.Common.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using Chef.Common.Core.Extensions;
 using Chef.Common.Exceptions;
 using Chef.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
-namespace Chef.Common.Api
+namespace Chef.Common.Core
 {
     public class RefitSettings : IRefitSettings
 	{
@@ -32,11 +36,10 @@ namespace Chef.Common.Api
                 .Where(x => x.Name == module).FirstOrDefault()
                 ?? throw new Exception(string.Format("Tenant/ApiClients name - {0} not configured properly.", module));
 
-
             client.BaseAddress = new Uri(apiClient.BaseAddress);
 
             //set auth token if available
-            var token = TokenDecryptor.GetToken(this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString());
+            var token = TokenDecryptorExtension.GetToken(this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString());
             if (token != null)
             {
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);

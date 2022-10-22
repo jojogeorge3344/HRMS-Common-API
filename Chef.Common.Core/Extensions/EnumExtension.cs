@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core.Extensions
 {
     public static class EnumExtension
     {

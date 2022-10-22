@@ -1,9 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core.Extensions
 {
-    public static class TokenDecryptor
+    public static class TokenDecryptorExtension
     {
         public static JwtSecurityToken Call(string token)
         {

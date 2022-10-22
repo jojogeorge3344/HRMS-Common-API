@@ -10,4 +10,10 @@
     <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
     <ProjectReference Include="..\Chef.Common.Api\Chef.Common.Api.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="UserRole\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UserRole\" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using Chef.Common.Api;
 using Chef.Common.Core.Repositories;
 using Chef.Common.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,7 @@ namespace Chef.Common.Authentication
     public class ChefAuthorizationFilter : IAuthorizationFilter
     {
         private readonly IRedisConnectionFactory redisConnectionFactory;
-        private readonly IAdminApi adminApi;
+        private readonly IUserRoleService userRoleService;
 
         public string Feature { get; set; }
         public string NodeCode { get; set; }
@@ -18,12 +17,12 @@ namespace Chef.Common.Authentication
         public ChefAuthorizationFilter(string feature,
             string nodeCode,
             IRedisConnectionFactory redisConnectionFactory,
-            IAdminApi adminApi)
+            IUserRoleService userRoleService)
         {
             this.Feature = feature;
             this.NodeCode = nodeCode;
             this.redisConnectionFactory = redisConnectionFactory;
-            this.adminApi = adminApi;
+            this.userRoleService = userRoleService;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -57,7 +56,7 @@ namespace Chef.Common.Authentication
 
         private async Task<IEnumerable<UserMetaData>> GetUserData(int id)
         {
-            return await adminApi.GetUserRolesByUserId(id);
+            return await userRoleService.GetUserRolesByUserIdAsync(id);
         }
     }
 
