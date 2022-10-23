@@ -26,6 +26,11 @@ namespace Chef.Common.Api
             services.AddRefitClient<IDmsApi>().ConfigureHttpClient(ConfigureHttpClientForDms);
         }
 
+        public static void AddRefitClientForAdmin(this IServiceCollection services)
+        {
+            services.AddRefitClient<IAdminApi>().ConfigureHttpClient(ConfigureHttpClientForAdmin);
+        }
+
         private static void ConfigureHttpClientForConsole(IServiceProvider sp, HttpClient client)
         {
             sp.GetRequiredService<IRefitSettings>().Configure("Console", ref client);
@@ -44,6 +49,11 @@ namespace Chef.Common.Api
         private static void ConfigureHttpClientForDms(IServiceProvider sp, HttpClient client)
         {
             sp.GetRequiredService<IRefitSettings>().Configure("DMS", ref client);
+        }
+
+        private static void ConfigureHttpClientForAdmin(IServiceProvider sp, HttpClient client)
+        {
+            sp.GetRequiredService<IRefitSettings>().Configure("Admin", ref client);
         }
     }
 }

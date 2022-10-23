@@ -250,4 +250,12 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+
+    [Serializable]
+    public class UserSignatureNotFoundException : ApplicationException
+    {
+        public UserSignatureNotFoundException(string message) : base(message)
+        {
+        }
+    }
 }

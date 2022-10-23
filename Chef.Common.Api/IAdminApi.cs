@@ -20,6 +20,9 @@ namespace Chef.Common.Api
         [Get("/Node/GetAllSubModules/{moduleId}")]
         Task<IEnumerable<Node>> GetAllSubModules(int moduleId);
 
+        [Get("/Node/GetAllDocuments/{subModuleId}")]
+        Task<IEnumerable<Node>> GetAllDocuments(int subModuleId);
+
         [Get("/Node/GetNodeID/{nodeName}")]
         Task<int> GetNodeId(string nodeName);
 
