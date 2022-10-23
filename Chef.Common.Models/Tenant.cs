@@ -1,5 +1,6 @@
 ﻿namespace Chef.Common.Models
 {
+    //TODO - Why this commented?
     //public class Tenant : Model
     //{
     //    /// <summary>

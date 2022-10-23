@@ -29,5 +29,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="NewFolder\" />
+    <Folder Include="State\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="State\" />
   </ItemGroup>
 </Project>

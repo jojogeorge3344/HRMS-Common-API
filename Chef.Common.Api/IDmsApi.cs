@@ -10,6 +10,6 @@ namespace Chef.Common.Api
         Task<string> GetAll(string Url);
 
         [Get("/FileUpload/UpdateFile")]
-        Task<string> UpdateFileStream(FileSaving ms, string token);
+        Task<string> UpdateFileStream(Models.DocumentFile ms, string token);
     }
 }
