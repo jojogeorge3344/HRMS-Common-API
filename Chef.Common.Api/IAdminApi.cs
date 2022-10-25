@@ -5,6 +5,20 @@ namespace Chef.Common.Api
 {
     public interface IAdminApi
     {
+
+        [Get("/User/GetUserBranchByUserId")]
+        Task<IEnumerable<UserBranchViewModel>> GetAllUserBranches(int userId);
+
+        [Get("/Branch/GetAll")]
+        Task<IEnumerable<Branch>> GetBranches();
+
+        //TODO - How get branch by id returns multiple??? Is it one branch id has multiple branches?
+        //TODO - or is it a company id???
+        [Get("/Branch/GetBranchById")]
+        Task<IEnumerable<Branch>> GetBranchesById(int id);
+
+
+
         [Get("/Role/GetAllRoles")]
         Task<IEnumerable<Role>> GetAllRoles();
 

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
+    <ProjectReference Include="..\Chef.Common.Model.Dtos\Chef.Common.Model.Dtos.csproj" />
+    <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
+  </ItemGroup>
+</Project>
