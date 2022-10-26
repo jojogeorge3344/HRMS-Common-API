@@ -13,7 +13,7 @@ namespace Chef.Common.Services.Extensions
             //Register Services
             //TODO Properties are autowired for the timebeing.
             builder.RegisterAssemblyTypes(typeof(ICommonBranchRepository).Assembly)
-                 .Where(t => t.IsAssignableTo<IBaseService>())
+                 .Where(t => t.IsAssignableTo<IRepository>())
                  .AsImplementedInterfaces()
                  .InstancePerLifetimeScope()
                  .EnableInterfaceInterceptors()

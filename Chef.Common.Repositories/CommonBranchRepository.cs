@@ -75,8 +75,8 @@ namespace Chef.Common.Repositories
                               br.name, 
                               ubr.isdefault 
                             FROM 
-                              userbranch ubr 
-                              JOIN branch br ON ubr.branchid = br.id 
+                              common.userbranch ubr 
+                              JOIN common.branch br ON ubr.branchid = br.id 
                             WHERE 
                               ubr.userid = userId
                             AND br.isarchived = false";

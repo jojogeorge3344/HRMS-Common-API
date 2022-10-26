@@ -3,7 +3,7 @@ using Chef.Common.Model.Dtos;
 
 namespace Chef.Common.Repositories
 {
-	public interface ICommonBranchRepository
+	public interface ICommonBranchRepository : IRepository
     {
         Task<BranchDto> Get(int id);
         Task<BranchDto> Get(string code);
