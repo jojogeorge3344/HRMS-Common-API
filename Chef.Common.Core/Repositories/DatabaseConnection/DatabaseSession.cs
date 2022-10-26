@@ -1,11 +1,11 @@
-﻿using Chef.Common.Core;
-using Dapper;
-using SqlKata;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Chef.Common.Core;
+using Dapper;
+using SqlKata;
 using static Dapper.SqlMapper;
 
 namespace Chef.Common.Repositories
@@ -36,7 +36,6 @@ namespace Chef.Common.Repositories
         {
             return new UnitOfWorkSession(unitOfWork, isolationLevel);
         }
-
 
         #region Execute Scalar Async
         public Task<TOutput> ExecuteScalarAsync<TOutput>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null, CommandFlags flags = CommandFlags.Buffered, CancellationToken cancellationToken = default)

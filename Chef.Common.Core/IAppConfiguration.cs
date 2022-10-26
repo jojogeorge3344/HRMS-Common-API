@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Chef.Common.Models;
 
 namespace Chef.Common.Core
 {
     public interface IAppConfiguration
     {
-        public string GetHostString(string Host, string Name);
+        TenantDto GetTenant(string host);
+        string GetTenantModuleHost(string host, string moduleName);
     }
 }

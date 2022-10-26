@@ -1,11 +1,9 @@
-﻿using Chef.Common.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Chef.Common.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Chef.Common.Core
 {
@@ -13,21 +11,34 @@ namespace Chef.Common.Core
     {
         private readonly IConfiguration configuration;
 
-        public AppConfiguration(IConfiguration configuration)
+        public AppConfiguration(IWebHostEnvironment environment)
         {
-            this.configuration = configuration;
+            var path = System.IO.Path.Combine(
+                environment.ContentRootPath,
+                "..",
+                "..",
+                "chef.common",
+                "Chef.Common.Core");
+
+            //load the tenant 
+            var builder = new ConfigurationBuilder()
+                   .SetBasePath(environment.ContentRootPath)
+                   .AddJsonFile($"{path}/tenants.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                   .AddJsonFile("tenants.json", optional: true, reloadOnChange: true);
+
+            this.configuration = builder.Build();
         }
 
-        public string GetHostString(string Host, string Name)
+        public TenantDto GetTenant(string host)
         {
-            var tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
+            var tenants = configuration.GetSection("Tenants").Get<List<TenantDto>>();
+            return tenants.FirstOrDefault(t => host.Contains(t.Host));
+        }
 
-            Tenant currentTenant = tenants.FirstOrDefault(t => t.Host.ToLower().Equals(Host));
-
-            string Baseaddress = currentTenant.ApiClients.Where(x => x.Name.Equals(Name)).Select(x => x.BaseAddress).FirstOrDefault();
-            Baseaddress = Baseaddress + "/";
-            return Baseaddress;
+        public string GetTenantModuleHost(string host, string moduleName)
+        {
+            var tenant = GetTenant(host);
+            return tenant.Modules.FirstOrDefault(m => m.Name.Equals(moduleName)).Host;
         }
     }
 }
-

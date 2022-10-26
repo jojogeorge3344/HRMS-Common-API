@@ -1,32 +1,28 @@
-﻿using Chef.Common.Exceptions;
-using Chef.Common.Models;
+﻿using System.Data;
+using Chef.Common.Core;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Npgsql;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 
 namespace Chef.Common.Repositories
 {
     public class ConnectionFactory : IConnectionFactory
     {
-        private readonly string connectionString;
         private readonly IHttpContextAccessor context;
-        private readonly IConfiguration configuration;
+        private readonly IAppConfiguration appConfiguration;
 
-        public ConnectionFactory(IConfiguration configuration, IHttpContextAccessor context)
+        public ConnectionFactory(
+            IAppConfiguration appConfiguration,
+            IHttpContextAccessor context)
         {
             this.context = context;
-            this.configuration = configuration;
-            connectionString = GetConnectionString();
+            this.appConfiguration = appConfiguration;
         }
 
         public IDbConnection Connection
         {
             get
             {
-                return new NpgsqlConnection(connectionString);
+                return new NpgsqlConnection(GetConnectionString());
             }
         }
 
@@ -38,18 +34,9 @@ namespace Chef.Common.Repositories
             }
         }
 
-        public string GetConnectionString()
+        private string GetConnectionString()
         {
-            List<Tenant> tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
-            Tenant currentTenant = tenants.FirstOrDefault(t => t.Host.ToLower().Equals(HostName));
-            if (currentTenant != null)
-            {
-                return currentTenant.ConnectionString;
-            }
-            else
-            {
-                throw new TenantNotFoundException(HostName + " not configured properly.");
-            }
+            return appConfiguration.GetTenant(HostName).ConnectionString;
         }
     }
 }

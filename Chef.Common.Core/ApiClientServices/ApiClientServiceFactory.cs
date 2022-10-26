@@ -56,7 +56,7 @@ namespace Chef.Common.ClientServices
                 throw new TenantNotFoundException(hostname + " not configured properly.");
             }
 
-            ApiClient apiclient = tenant.ApiClients
+            Module apiclient = tenant.Modules
                 .Where(x => x.Name == name).FirstOrDefault();
 
             if (apiclient == null)
@@ -71,7 +71,7 @@ namespace Chef.Common.ClientServices
 
             client = new HttpClient(handler)
             {
-                BaseAddress = new Uri(apiclient.BaseAddress),
+                BaseAddress = new Uri(apiclient.Host),
             };
 
             httpClients.TryAdd(name, client);

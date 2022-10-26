@@ -1,12 +1,8 @@
-﻿using Chef.Common.Exceptions;
-using Chef.Common.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
-using System.Linq;
+using Chef.Common.Core;
+using Microsoft.AspNetCore.Http;
+using Npgsql;
 
 namespace Chef.Common.Repositories
 {
@@ -16,12 +12,12 @@ namespace Chef.Common.Repositories
         public IDbConnection Connection { get; }
         public IDbTransaction Transaction { get; set; }
         private readonly IHttpContextAccessor context;
-        private readonly IConfiguration configuration;
+        private readonly IAppConfiguration appConfiguration;
 
-        public DbSession(IConfiguration configuration, IHttpContextAccessor context)
+        public DbSession(IAppConfiguration appConfiguration, IHttpContextAccessor context)
         {
             this.context = context;
-            this.configuration = configuration;
+            this.appConfiguration = appConfiguration;
 
             _id = Guid.NewGuid();
             Connection = DBConnection;
@@ -32,15 +28,9 @@ namespace Chef.Common.Repositories
 
         public string HostName => context.HttpContext?.Request.Host.Value.ToLower();
 
-        public string GetConnectionString()
+        private string GetConnectionString()
         {
-            List<Tenant> tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
-
-            Tenant currentTenant = tenants.FirstOrDefault(t => t.Host.ToLower().Equals(HostName));
-
-            return currentTenant != null
-                ? currentTenant.ConnectionString
-                : throw new TenantNotFoundException(HostName + " not configured properly.");
+            return appConfiguration.GetTenant(HostName).ConnectionString;
         }
 
         public void Dispose()

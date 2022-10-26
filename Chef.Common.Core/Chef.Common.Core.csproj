@@ -56,5 +56,13 @@
     <Folder Include="Logging\" />
     <Folder Include="Repositories\RepositoryFactory\Interfaces\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="tenants.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="tenants.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
 

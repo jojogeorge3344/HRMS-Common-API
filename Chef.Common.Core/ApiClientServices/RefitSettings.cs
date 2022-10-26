@@ -32,11 +32,11 @@ namespace Chef.Common.Core
                .Where(x => x.Host == hostname).FirstOrDefault()
                ?? throw new TenantNotFoundException(hostname + " not configured properly.");
 
-            ApiClient apiClient = tenant.ApiClients?
+            Module apiClient = tenant.Modules?
                 .Where(x => x.Name == module).FirstOrDefault()
                 ?? throw new Exception(string.Format("Tenant/ApiClients name - {0} not configured properly.", module));
 
-            client.BaseAddress = new Uri(apiClient.BaseAddress);
+            client.BaseAddress = new Uri(apiClient.Host);
 
             //set auth token if available
             var token = TokenDecryptorExtension.GetToken(this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString());
