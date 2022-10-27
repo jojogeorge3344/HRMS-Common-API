@@ -7,7 +7,9 @@ namespace Chef.Common.Authentication
 {
     public class UserRoleRepository : GenericRepository<User>, IUserRoleRepository
     {
-        public UserRoleRepository(IHttpContextAccessor httpContextAccessor, DbSession session) : base(httpContextAccessor, session)
+        public UserRoleRepository(
+            IHttpContextAccessor httpContextAccessor,
+            IConnectionFactory connectionFactory) : base(httpContextAccessor, connectionFactory)
         {
         }
 

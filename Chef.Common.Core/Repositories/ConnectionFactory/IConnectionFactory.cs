@@ -4,6 +4,7 @@ namespace Chef.Common.Repositories
 {
     public interface IConnectionFactory
     {
-        public IDbConnection Connection { get; }
+        IDbConnection Connection { get; }
+        IDbTransaction Transaction { get; set; }
     }
 }

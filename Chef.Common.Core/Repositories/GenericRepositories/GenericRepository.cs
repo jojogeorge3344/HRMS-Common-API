@@ -1,19 +1,19 @@
-using AutoMapper;
-using Chef.Common.Core;
-using Dapper;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
+using Chef.Common.Core;
+using Dapper;
+using Microsoft.AspNetCore.Http;
 
 namespace Chef.Common.Repositories
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
     {
-        private readonly DbSession _session;
+        private readonly IConnectionFactory connectionFactory;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public IMapper Mapper { get; set; }
@@ -22,13 +22,15 @@ namespace Chef.Common.Repositories
         public ISqlQueryBuilder SqlQueryBuilder => QueryBuilderFactory.SqlQueryBuilder();
 
         protected int HeaderBranchId { get; }
-        protected IDbConnection Connection => _session.Connection;
+        protected IDbConnection Connection => connectionFactory.Connection;
         protected string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
         protected string TableName => SchemaName + "." + typeof(T).Name;
 
-        public GenericRepository(IHttpContextAccessor httpContextAccessor, DbSession session)
+        public GenericRepository(
+            IHttpContextAccessor httpContextAccessor
+            , IConnectionFactory connectionFactory)
         {
-            _session = session;
+            this.connectionFactory = connectionFactory;
             this.httpContextAccessor = httpContextAccessor;
             HeaderBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
         }
@@ -41,13 +43,13 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<int> ArchiveAsync(int id)
         {
-            string sql = "UPDATE " + TableName + " SET isarchived=true WHERE id = @Id";
+            string sql = "UPDATE " + TableName + " SET isarchived = true WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            string sql = "SELECT * FROM " + TableName + " WHERE isarchived=false ";
+            string sql = "SELECT * FROM " + TableName + " WHERE isarchived = false ";
             if (typeof(TransactionModel).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 sql += " AND branchid = " + HeaderBranchId;
@@ -58,32 +60,15 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<T> GetAsync(int id)
         {
-            string sql = "SELECT * FROM " + TableName + " WHERE  isarchived=false and id = @Id";
+            string sql = "SELECT * FROM " + TableName + " WHERE  isarchived = false and id = @Id";
             return await Connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
         }
 
-        public virtual async Task<T> InsertAsync(T obj)
+        public virtual async Task<int> InsertAsync(T obj)
         {
             InsertModelProperties(ref obj);
-            try
-            {
-                string sql = new QueryBuilder<T>().GenerateInsertQuery();
-                T result = await Connection.QueryFirstOrDefaultAsync<T>(sql, obj);
-                obj.Id = Convert.ToInt32(result.Id);
-                return obj;
-            }
-            catch (Exception ex)
-            {
-                bool value = ex.Message.Contains("duplicate key value violates unique constraint");
-
-                if (value)
-                {
-                    obj.Id = -1;
-                    return obj;
-                }
-
-                throw;
-            }
+            string sql = new QueryBuilder<T>().GenerateInsertQuery();
+            return await Connection.QueryFirstOrDefaultAsync<int>(sql, obj);
         }
 
         public virtual async Task<List<T>> BulkInsertAsync(List<T> objs)
@@ -103,6 +88,7 @@ namespace Chef.Common.Repositories
             }
             catch (Exception ex)
             {
+                //TODO revisit
                 bool value = ex.Message.Contains("duplicate key value violates unique constraint");
 
                 if (value)
@@ -124,23 +110,8 @@ namespace Chef.Common.Repositories
         {
             UpdateModelProperties(ref obj);
 
-            try
-            {
-                string sql = new QueryBuilder<T>().GenerateUpdateQuery();
-                return await Connection.ExecuteAsync(sql, obj);
-            }
-            catch (Exception ex)
-            {
-                bool value = ex.Message.Contains("duplicate key value violates unique constraint");
-
-                if (value)
-                {
-                    obj.Id = -1;
-                    return obj.Id;
-                }
-
-                throw;
-            }
+            string sql = new QueryBuilder<T>().GenerateUpdateQuery();
+            return await Connection.ExecuteAsync(sql, obj);
         }
 
         public void UpdateModelProperties(ref T obj)

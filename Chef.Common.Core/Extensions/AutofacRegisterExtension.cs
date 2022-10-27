@@ -4,16 +4,25 @@ using Chef.Common.Core.Logging;
 using Chef.Common.Core.Repositories;
 using Chef.Common.Repositories;
 using Chef.Common.Services;
+using System.Configuration;
 
 namespace Chef.Common.Core.Extensions
 {
     public static class AutofacRegisterExtension
 	{
-		public static void RegisterDBComponents(this ContainerBuilder builder)
+        public static void RegisterTenantDBConnectionFactory(this ContainerBuilder builder)
+        {
+            builder.RegisterType<TenantConnectionFactory>().As<IConnectionFactory>().InstancePerLifetimeScope();
+        }
+
+        public static void RegisterConsoleDBConnectionFactory(this ContainerBuilder builder)
+        {
+            builder.RegisterType<ConsoleConnectionFactory>().As<IConnectionFactory>().InstancePerLifetimeScope();
+        }
+
+        public static void RegisterDBComponents(this ContainerBuilder builder)
 		{
             //Register DB components
-            builder.RegisterType<ConnectionFactory>().As<IConnectionFactory>().InstancePerLifetimeScope();
-            builder.RegisterType<DbSession>().InstancePerLifetimeScope();
             builder.RegisterType<DatabaseSession>().As<IDatabaseSession>().InstancePerLifetimeScope();
             builder.RegisterType<SimpleUnitOfWork>().As<ISimpleUnitOfWork>().InstancePerDependency();
             builder.RegisterType<QueryBuilderFactory>().As<IQueryBuilderFactory>().InstancePerDependency();

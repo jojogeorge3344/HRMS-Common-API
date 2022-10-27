@@ -5,7 +5,7 @@ using Chef.Common.Repositories;
 
 namespace Chef.Common.Services
 {
-    public interface IGenericService<TModel>
+    public interface IGenericService<TModel> : IBaseService
     {
         Task<TModel> GetAsync(int id, CancellationToken cancellationToken = default);
         Task<IEnumerable<TModel>> GetAllAsync(CancellationToken cancellationToken = default);

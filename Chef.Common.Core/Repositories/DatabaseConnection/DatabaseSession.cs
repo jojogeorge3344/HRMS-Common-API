@@ -10,7 +10,7 @@ using static Dapper.SqlMapper;
 
 namespace Chef.Common.Repositories
 {
-    public class DatabaseSession : IDatabaseSession
+    public partial class DatabaseSession : IDatabaseSession
     {
         private readonly UnitOfWork unitOfWork;
         private readonly IDbConnection connection;

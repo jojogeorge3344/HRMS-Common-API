@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
     <ProjectReference Include="..\Chef.Common.Api\Chef.Common.Api.csproj" />
   </ItemGroup>
   <ItemGroup>

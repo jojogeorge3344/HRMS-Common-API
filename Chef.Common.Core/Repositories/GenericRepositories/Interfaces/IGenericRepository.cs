@@ -10,7 +10,7 @@ namespace Chef.Common.Repositories
         Task<int> ArchiveAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetAsync(int id);
-        Task<T> InsertAsync(T obj);
+        Task<int> InsertAsync(T obj);
         Task<int> UpdateAsync(T obj);
         Task<List<T>> BulkInsertAsync(List<T> objs);
         Task<int> InsertAuditAsync(object obj, int parentID, int auditId = 0);

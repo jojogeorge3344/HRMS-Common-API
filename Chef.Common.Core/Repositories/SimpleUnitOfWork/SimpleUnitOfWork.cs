@@ -2,30 +2,33 @@
 {
     public sealed class SimpleUnitOfWork : ISimpleUnitOfWork
     {
-        private readonly DbSession _session;
+        private readonly IConnectionFactory connectionFactory;
 
-        public SimpleUnitOfWork(DbSession session)
+        public SimpleUnitOfWork(IConnectionFactory connectionFactory)
         {
-            _session = session;
+            this.connectionFactory = connectionFactory;
         }
 
         public void BeginTransaction()
         {
-            _session.Transaction = _session.Connection.BeginTransaction();
+            connectionFactory.Transaction = connectionFactory.Connection.BeginTransaction();
         }
 
         public void Commit()
         {
-            _session.Transaction.Commit();
+            connectionFactory.Transaction.Commit();
             Dispose();
         }
 
         public void Rollback()
         {
-            _session.Transaction.Rollback();
+            connectionFactory.Transaction.Rollback();
             Dispose();
         }
 
-        public void Dispose() => _session.Transaction?.Dispose();
+        public void Dispose()
+        {
+            connectionFactory.Transaction?.Dispose();
+        }
     }
 }
