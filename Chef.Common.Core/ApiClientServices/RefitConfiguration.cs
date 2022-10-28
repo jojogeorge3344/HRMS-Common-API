@@ -10,17 +10,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Chef.Common.Core
 {
-    public class RefitSettings : IRefitSettings
+    public class RefitConfiguration : IRefitConfiguration
 	{
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IConfiguration configuration;
+        private readonly IAppConfiguration appConfiguration;
 
-        public RefitSettings(
+        public RefitConfiguration(
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration)
+            IAppConfiguration appConfiguration)
         {
             this.httpContextAccessor = httpContextAccessor;
-            this.configuration = configuration;
+            this.appConfiguration = appConfiguration;
         }
 
         public void Configure(string module, ref HttpClient client)
@@ -28,9 +28,7 @@ namespace Chef.Common.Core
             string hostname = httpContextAccessor.HttpContext?.Request.Host.Value.ToLower()
                 ?? throw new HttpRequestException("Http context accessor is not initialized.");
 
-            Tenant tenant = configuration.GetSection("Tenants").Get<List<Tenant>>()?
-               .Where(x => x.Host == hostname).FirstOrDefault()
-               ?? throw new TenantNotFoundException(hostname + " not configured properly.");
+            TenantDto tenant = appConfiguration.GetTenant(hostname);
 
             Module apiClient = tenant.Modules?
                 .Where(x => x.Name == module).FirstOrDefault()

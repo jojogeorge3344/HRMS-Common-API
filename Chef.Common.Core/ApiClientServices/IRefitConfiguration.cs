@@ -4,7 +4,7 @@ using Chef.Common.Models;
 
 namespace Chef.Common.Core
 {
-	public interface IRefitSettings
+	public interface IRefitConfiguration
 	{
 		void Configure(string module, ref HttpClient client);
 	}

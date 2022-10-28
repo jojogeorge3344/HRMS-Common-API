@@ -47,6 +47,7 @@
     <None Remove="AutoMapper" />
     <None Remove="NSwag.AspNetCore" />
     <None Remove="Repositories\RepositoryFactory\Interfaces\" />
+    <None Remove="Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
@@ -54,6 +55,7 @@
   <ItemGroup>
     <Folder Include="Logging\" />
     <Folder Include="Repositories\RepositoryFactory\Interfaces\" />
+    <Folder Include="Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="tenants.json">

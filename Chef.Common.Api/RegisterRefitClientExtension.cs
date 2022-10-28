@@ -33,27 +33,27 @@ namespace Chef.Common.Api
 
         private static void ConfigureHttpClientForConsole(IServiceProvider sp, HttpClient client)
         {
-            sp.GetRequiredService<IRefitSettings>().Configure("Console", ref client);
+            sp.GetRequiredService<IRefitConfiguration>().Configure("Console", ref client);
         }
 
         private static void ConfigureHttpClientForFinance(IServiceProvider sp, HttpClient client)
         {
-            sp.GetRequiredService<IRefitSettings>().Configure("Finance", ref client);
+            sp.GetRequiredService<IRefitConfiguration>().Configure("Finance", ref client);
         }
 
         private static void ConfigureHttpClientForApproval(IServiceProvider sp, HttpClient client)
         {
-            sp.GetRequiredService<IRefitSettings>().Configure("ApprovalSystem", ref client);
+            sp.GetRequiredService<IRefitConfiguration>().Configure("Approval", ref client);
         }
 
         private static void ConfigureHttpClientForDms(IServiceProvider sp, HttpClient client)
         {
-            sp.GetRequiredService<IRefitSettings>().Configure("DMS", ref client);
+            sp.GetRequiredService<IRefitConfiguration>().Configure("DMS", ref client);
         }
 
         private static void ConfigureHttpClientForAdmin(IServiceProvider sp, HttpClient client)
         {
-            sp.GetRequiredService<IRefitSettings>().Configure("Admin", ref client);
+            sp.GetRequiredService<IRefitConfiguration>().Configure("Admin", ref client);
         }
     }
 }

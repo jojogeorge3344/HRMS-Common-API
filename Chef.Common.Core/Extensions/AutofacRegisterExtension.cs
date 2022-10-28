@@ -53,7 +53,7 @@ namespace Chef.Common.Core.Extensions
         public static void RegisterApiServiceComponents(this ContainerBuilder builder)
         {
             builder.RegisterType<ApiClientServiceFactory>().As<IApiClientServiceFactory>().InstancePerLifetimeScope();
-            builder.RegisterType<RefitSettings>().As<IRefitSettings>().InstancePerLifetimeScope();
+            builder.RegisterType<RefitConfiguration>().As<IRefitConfiguration>().InstancePerLifetimeScope();
         }
     }
 }

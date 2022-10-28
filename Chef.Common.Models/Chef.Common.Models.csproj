@@ -28,7 +28,6 @@
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="NewFolder\" />
     <Folder Include="State\" />
   </ItemGroup>
   <ItemGroup>
