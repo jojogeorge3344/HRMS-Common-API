@@ -11,7 +11,7 @@ namespace Chef.Common.Services
 
         Task<T> GetAsync(int id);
 
-        Task<T> InsertAsync(T obj);
+        Task<int> InsertAsync(T obj);
 
         Task<int> UpdateAsync(T obj);
     }
