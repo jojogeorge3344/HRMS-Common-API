@@ -8,6 +8,8 @@ using AutoMapper;
 using Chef.Common.Core;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using SqlKata.Compilers;
+using SqlKata.Execution;
 
 namespace Chef.Common.Repositories
 {
@@ -17,14 +19,16 @@ namespace Chef.Common.Repositories
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public IMapper Mapper { get; set; }
+
         public IDatabaseSession DatabaseSession { get; set; }
         public IQueryBuilderFactory QueryBuilderFactory { get; set; }
         public ISqlQueryBuilder SqlQueryBuilder => QueryBuilderFactory.SqlQueryBuilder();
-
         protected int HeaderBranchId { get; }
         protected IDbConnection Connection => connectionFactory.Connection;
         protected string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
         protected string TableName => SchemaName + "." + typeof(T).Name;
+
+        protected QueryFactory QueryFactory { get; set; }
 
         public GenericRepository(
             IHttpContextAccessor httpContextAccessor
@@ -33,6 +37,7 @@ namespace Chef.Common.Repositories
             this.connectionFactory = connectionFactory;
             this.httpContextAccessor = httpContextAccessor;
             HeaderBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
+            QueryFactory = new QueryFactory(Connection, new PostgresCompiler());
         }
 
         public virtual async Task<int> DeleteAsync(int id)

@@ -21,10 +21,10 @@ namespace Chef.Common.Models
         [Required]
         public DateTime EndDate { get; set; }
 
-        //TO DO require clarification
+        //TODO require clarification
         public string Frequency { get; set; }
 
-        //TO DO require clarification
+        //TODO require clarification
         public string PeriodFormat { get; set; }
 
         [Write(false)]
