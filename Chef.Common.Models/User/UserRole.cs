@@ -1,5 +1,5 @@
-﻿using Chef.Common.Core;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
@@ -7,8 +7,6 @@ namespace Chef.Common.Models
     {
         [ForeignKey("User")]
         public int UserId { get; set; }
-
-        public string UserName { get; set; }
 
         [ForeignKey("Role")]
         public int RoleId { get; set; }

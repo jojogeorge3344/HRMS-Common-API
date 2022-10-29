@@ -220,6 +220,15 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class RoleNotFoundException : ApplicationException
+    {
+        public RoleNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+
+    [Serializable]
     public class BranchNotFoundException : ApplicationException
     {
         public BranchNotFoundException(string message) : base(message)
@@ -244,9 +253,25 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class RoleCannotBeDeletedException : ApplicationException
+    {
+        public RoleCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
     public class DuplicateEmailFoundException : ApplicationException
     {
         public DuplicateEmailFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class DuplicateNameFoundException : ApplicationException
+    {
+        public DuplicateNameFoundException(string message) : base(message)
         {
         }
     }

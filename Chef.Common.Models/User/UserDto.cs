@@ -1,15 +1,17 @@
-﻿using Chef.Common.Core;
+﻿using System.Collections.Generic;
 
 namespace Chef.Common.Models
 {
-    public class User : Model
+    public class UserDto
     {
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Emailid { get; set; }
+        public string Email { get; set; }
         public string TimeZone { get; set; }
-        public string Password { get; set; }
         public bool IsActive { get; set; }
         public int DefaultBranchId { get; set; }
+        public IList<RoleDto> Roles { get; set; }
+        public IList<BranchDto> Branches { get; set; }
     }
 }
