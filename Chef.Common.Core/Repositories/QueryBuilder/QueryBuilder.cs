@@ -1,5 +1,4 @@
-﻿using Chef.Common.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Chef.Common.Core;
 
 namespace Chef.Common.Repositories
 {
@@ -44,16 +44,6 @@ namespace Chef.Common.Repositories
                 .Select(x => x.Property)
                 .ToList();
 
-        //private Dictionary<string, IEnumerable<CompositeAttribute>> UniqueCompositeFieldNames => typeof(T)
-        //        .GetProperties()
-        //        .Select(x => new
-        //        {
-        //            Property = x,
-        //            CompositeAttributes = (IEnumerable<CompositeAttribute>)Attribute.GetCustomAttributes(x, typeof(CompositeAttribute), true),
-        //            UniqueAttributes = (IEnumerable<UniqueAttribute>)Attribute.GetCustomAttributes(x, typeof(UniqueAttribute), true)
-        //        })
-        //        .Where(x => x.UniqueAttributes != null && x.CompositeAttributes != null && x.CompositeAttributes.Count() > 0)
-        //    .Select(x => new { name = x.Property.Name.ToLower(), attributes = x.CompositeAttributes }).ToDictionary(t => t.name, t => t.attributes);
 
         private Dictionary<int, IEnumerable<string>> UniqueCompositeFieldNames => typeof(T)
                 .GetProperties()
@@ -63,9 +53,9 @@ namespace Chef.Common.Repositories
                     CompositeAttributes = (IEnumerable<CompositeAttribute>)Attribute.GetCustomAttributes(x, typeof(CompositeAttribute), true),
                     UniqueAttributes = (IEnumerable<UniqueAttribute>)Attribute.GetCustomAttributes(x, typeof(UniqueAttribute), true)
                 })
-                .Where(x => x.UniqueAttributes != null && x.CompositeAttributes != null && x.CompositeAttributes.Count() > 0)
+            .Where(x => x.UniqueAttributes != null && x.CompositeAttributes != null && x.CompositeAttributes.Count() > 0)
             .SelectMany(x => x.CompositeAttributes.Select(y => new { y.Index, y.GroupNumber, Name = x.Property.Name.ToLower() }))
-      .GroupBy(y => y.GroupNumber)
+            .GroupBy(y => y.GroupNumber)
             .Select(group => new { group.Key, Enumerable = group.Select(x => x.Name) })
             .Where(x => x.Enumerable.Count() > 1)
             .ToDictionary(t => t.Key, t => t.Enumerable);
@@ -129,9 +119,6 @@ namespace Chef.Common.Repositories
                 else if (prop.GetCustomAttribute(typeof(ForeignKeyCodeAttribute)) is ForeignKeyCodeAttribute codeForeignKeyAttribute)
                 {
                     column.ForeignKey = GetTableName(codeForeignKeyAttribute.ModelType);
-                    //var codePropertyName = codeForeignKeyAttribute.ModelType.GetProperties().Where(x => x.GetCustomAttribute(typeof(CodeAttribute)) != null).Select(x => x.Name.ToLower()).FirstOrDefault();
-                    //if (string.IsNullOrEmpty(codePropertyName))
-                    //    throw new Exception("Foreignkey code reference not found. Add Code attribute to the corresponding primary table");
                     column.ForeignKeyReference = $" REFERENCES {column.ForeignKey}({codeForeignKeyAttribute.KeyField})";
                 }
                 table.Add(column);

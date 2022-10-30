@@ -76,7 +76,7 @@ namespace Chef.Common.Repositories
             return await Connection.QueryFirstOrDefaultAsync<int>(sql, obj);
         }
 
-        public virtual async Task<List<T>> BulkInsertAsync(List<T> objs)
+        public virtual async Task<int> BulkInsertAsync(List<T> objs)
         {
             for (int i = 0; i < objs.Count; i++)
             {
@@ -88,19 +88,10 @@ namespace Chef.Common.Repositories
             try
             {
                 string sql = new QueryBuilder<T>().GenerateInsertQuery();
-                int result = await Connection.ExecuteAsync(sql, objs.AsEnumerable());
-                return objs;
+                return await Connection.ExecuteAsync(sql, objs.AsEnumerable());
             }
-            catch (Exception ex)
+            catch
             {
-                //TODO revisit
-                bool value = ex.Message.Contains("duplicate key value violates unique constraint");
-
-                if (value)
-                {
-                    return objs;
-                }
-
                 throw;
             }
         }

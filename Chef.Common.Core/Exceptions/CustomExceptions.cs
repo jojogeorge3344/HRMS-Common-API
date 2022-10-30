@@ -164,6 +164,22 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class DuplicateTaxJurisdicationException : ApplicationException
+    {
+        public DuplicateTaxJurisdicationException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class DuplicateTaxNameException : ApplicationException
+    {
+        public DuplicateTaxNameException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
     public class DepartmentNotFoundException : ApplicationException
     {
         public DepartmentNotFoundException(string message) : base(message)

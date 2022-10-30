@@ -33,13 +33,13 @@ namespace Chef.Common.Models
         public string TaxJurisdictionCode { get; set; }
 
         public string TaxDescription { get; set; }
+
         [Composite(Index = 3, GroupNumber = 2)]
-
         public int? SegmentId { get; set; } = 0;
-        [Composite(Index = 4, GroupNumber = 2)]
 
+        [Composite(Index = 4, GroupNumber = 2)]
         public int? FamilyId { get; set; } = 0;
 
-        public IEnumerable<SubTax> SubTax { get; set; }
+        public IEnumerable<SubTax> SubTaxes { get; set; }
     }
 }
