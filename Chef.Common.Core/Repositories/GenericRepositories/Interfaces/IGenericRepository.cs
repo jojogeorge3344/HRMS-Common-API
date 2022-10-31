@@ -13,6 +13,7 @@ namespace Chef.Common.Repositories
         Task<int> InsertAsync(T obj);
         Task<int> UpdateAsync(T obj);
         Task<int> BulkInsertAsync(List<T> objs);
+        Task<int> BulkUpdateAsync(List<T> objs);
         Task<int> InsertAuditAsync(object obj, int parentID, int auditId = 0);
     }
 }

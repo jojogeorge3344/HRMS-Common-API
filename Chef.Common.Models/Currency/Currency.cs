@@ -36,6 +36,6 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
-        public List<CurrencyDenomination> CurrencyDenomination { get; set; }
+        public List<CurrencyDenomination> Denominations { get; set; }
     }
 }

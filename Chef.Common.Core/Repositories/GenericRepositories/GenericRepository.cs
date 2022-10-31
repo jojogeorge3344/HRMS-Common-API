@@ -42,13 +42,13 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<int> DeleteAsync(int id)
         {
-            string sql = "DELETE FROM " + TableName + " WHERE id = @Id";
+            var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 
         public virtual async Task<int> ArchiveAsync(int id)
         {
-            string sql = "UPDATE " + TableName + " SET isarchived = true WHERE id = @Id";
+            var sql = "UPDATE " + TableName + " SET isarchived = true WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 
@@ -65,35 +65,29 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<T> GetAsync(int id)
         {
-            string sql = "SELECT * FROM " + TableName + " WHERE  isarchived = false and id = @Id";
+            var sql = "SELECT * FROM " + TableName + " WHERE  isarchived = false and id = @Id";
             return await Connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
         }
 
         public virtual async Task<int> InsertAsync(T obj)
         {
             InsertModelProperties(ref obj);
-            string sql = new QueryBuilder<T>().GenerateInsertQuery();
+            var sql = new QueryBuilder<T>().GenerateInsertQuery();
             return await Connection.QueryFirstOrDefaultAsync<int>(sql, obj);
         }
 
         public virtual async Task<int> BulkInsertAsync(List<T> objs)
         {
-            for (int i = 0; i < objs.Count; i++)
-            {
-                T tmp = objs[i];
-                InsertModelProperties(ref tmp);
-                objs[i] = tmp;
-            }
+            objs.ForEach(t => InsertModelProperties(ref t));
+            var sql = new QueryBuilder<T>().GenerateInsertQuery();
+            return await Connection.ExecuteAsync(sql, objs.AsEnumerable());
+        }
 
-            try
-            {
-                string sql = new QueryBuilder<T>().GenerateInsertQuery();
-                return await Connection.ExecuteAsync(sql, objs.AsEnumerable());
-            }
-            catch
-            {
-                throw;
-            }
+        public virtual async Task<int> BulkUpdateAsync(List<T> objs)
+        {
+            objs.ForEach(t => InsertModelProperties(ref t));
+            var sql = new QueryBuilder<T>().GenerateUpdateQuery();
+            return await Connection.ExecuteAsync(sql, objs.AsEnumerable());
         }
 
         public void InsertModelProperties(ref T obj)
@@ -106,7 +100,7 @@ namespace Chef.Common.Repositories
         {
             UpdateModelProperties(ref obj);
 
-            string sql = new QueryBuilder<T>().GenerateUpdateQuery();
+            var sql = new QueryBuilder<T>().GenerateUpdateQuery();
             return await Connection.ExecuteAsync(sql, obj);
         }
 
@@ -117,7 +111,7 @@ namespace Chef.Common.Repositories
 
         public async Task<int> InsertAuditAsync(object obj, int parentID, int auditId = 0)
         {
-            string auditsql = new QueryBuilder<T>().GenerateInsertQueryForAudit("INSERT", parentID, auditId);
+            var auditsql = new QueryBuilder<T>().GenerateInsertQueryForAudit("INSERT", parentID, auditId);
 
             return (int)await Connection.ExecuteScalarAsync(auditsql, obj);
         }
