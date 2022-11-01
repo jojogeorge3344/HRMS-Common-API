@@ -1,7 +1,6 @@
-﻿using Chef.Common.Core;
+﻿using System.ComponentModel.DataAnnotations;
+using Chef.Common.Core;
 using Chef.Common.Types;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
 {
@@ -33,9 +32,5 @@ namespace Chef.Common.Models
         public float ExchangeVariationDown { get; set; }
 
         public bool IsActive { get; set; }
-
-        [Write(false)]
-        [Skip(true)]
-        public List<CurrencyDenomination> Denominations { get; set; }
     }
 }

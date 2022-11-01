@@ -1,6 +1,6 @@
-﻿using Chef.Common.Core;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Chef.Common.Core;
 
 namespace Chef.Common.Models
 {
@@ -76,12 +76,5 @@ namespace Chef.Common.Models
         public string TradeLicense { get; set; }
 
         public string TaxRegistrationNumber { get; set; }
-
-        public string SourceId { get; set; }
-
-        public string SourceCode { get; set; }
-
-        public string AlterNativeSourceCode { get; set; }
-
     }
 }

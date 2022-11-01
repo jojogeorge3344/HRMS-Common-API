@@ -1,5 +1,6 @@
 ﻿namespace Chef.Common.Core
 {
+    //TODO: This class should be removed.
     public static class ModelExtension
     {
         public static string TableName(this Model model)

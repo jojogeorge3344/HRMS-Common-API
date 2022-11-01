@@ -54,7 +54,7 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            string sql = "SELECT * FROM " + TableName + " WHERE isarchived = false ";
+            string sql = "SELECT * FROM " + TableName + " WHERE isarchived = false";
             if (typeof(TransactionModel).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 sql += " AND branchid = " + HeaderBranchId;

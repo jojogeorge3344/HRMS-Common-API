@@ -10,9 +10,9 @@ namespace Chef.Common.Core
         [Field(Order = 1)]
         public int Id { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedDate { get; set; }
 
-        public DateTime ModifiedDate { get; set; } = DateTime.UtcNow;
+        public DateTime ModifiedDate { get; set; }
 
         public string CreatedBy { get; set; }
 
@@ -27,7 +27,7 @@ namespace Chef.Common.Core
 
         public int FinancialYearId { get; set; }
 
-        ///CODE REVIEW: Why we need a TEMP Date. What is the business Reason?
+        ///TODO: CODE REVIEW: Why we need a TEMP Date. What is the business Reason?
         [Write(false)]
         [Skip(true)]
         private DateTime TempDate;

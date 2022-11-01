@@ -1,4 +1,5 @@
-﻿using SqlKata;
+﻿using Chef.Common.Repositories;
+using SqlKata;
 using SqlKata.Execution;
 
 namespace Chef.Common.Core
@@ -37,6 +38,40 @@ namespace Chef.Common.Core
             var schema = typeof(T).Namespace.Split('.')[1].ToLower();
             return q.Where($"{schema}.{typeof(T).Name.ToLower()}.{field}", val);
         }
+
+        public static void AddArchiveFilter(this SqlSearch search)
+        {
+            search.Rules.Add(
+                new SqlSearchRule()
+                {
+                    Field = "isarchived",
+                    Operator = SqlSearchOperator.Equal,
+                    Value = false
+                });
+        }
+
+        public static void AddActiveFilter(this SqlSearch search)
+        {
+            search.Rules.Add(
+                new SqlSearchRule()
+                {
+                    Field = "isactive",
+                    Operator = SqlSearchOperator.Equal,
+                    Value = false
+                });
+        }
+
+        public static void AddBranchFiller(this SqlSearch search, int branchId)
+        {
+            search.Rules.Add(
+                 new SqlSearchRule()
+                 {
+                     Field = "branchid",
+                     Operator = SqlSearchOperator.Equal,
+                     Value = branchId
+                 });
+        }
+
     }
 }
 
