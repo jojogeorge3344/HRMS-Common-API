@@ -42,13 +42,13 @@ namespace Chef.Common.Repositories
 
         public virtual async Task<int> DeleteAsync(int id)
         {
-            var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
+            var sql = "UPDATE " + TableName + " SET isarchived = true WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 
-        public virtual async Task<int> ArchiveAsync(int id)
+        public virtual async Task<int> DeletePermanentAsync(int id)
         {
-            var sql = "UPDATE " + TableName + " SET isarchived = true WHERE id = @Id";
+            var sql = "DELETE FROM " + TableName + " WHERE id = @Id";
             return await Connection.ExecuteAsync(sql, new { Id = id });
         }
 

@@ -28,7 +28,5 @@ namespace Chef.Common.Models
         public int CurrencyId { get; set; }
 
         public int Value { get; set; }
-
-        public DenominationType Type { get; set; }
     }
 }

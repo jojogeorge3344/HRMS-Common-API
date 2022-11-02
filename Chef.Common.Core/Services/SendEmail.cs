@@ -15,22 +15,18 @@ namespace Chef.Common.Core.Repositories
 
     public class SendEmail : ISendEmail
     {
-        private readonly EmailSettings _emailSettings;
-        private readonly IHostingEnvironment _env;
+        private readonly EmailSettings emailSettings;
 
-        public SendEmail(
-            IOptions<EmailSettings> emailSettings,
-            IHostingEnvironment env)
+        public SendEmail(IOptions<EmailSettings> emailSettings)
         {
-            _emailSettings = emailSettings.Value;
-            _env = env;
+            this.emailSettings = emailSettings.Value;
         }
 
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
             MimeMessage email = new();
 
-            email.Sender = MailboxAddress.Parse(_emailSettings.SenderEmail);
+            email.Sender = MailboxAddress.Parse(emailSettings.SenderEmail);
             //  email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
             email.Subject = mailRequest.Subject;
 
@@ -58,8 +54,8 @@ namespace Chef.Common.Core.Repositories
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
             using SmtpClient smtp = new();
-            smtp.Connect(_emailSettings.MailServer, _emailSettings.MailPort, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_emailSettings.SenderEmail, _emailSettings.Password);
+            smtp.Connect(emailSettings.MailServer, emailSettings.MailPort, SecureSocketOptions.StartTls);
+            smtp.Authenticate(emailSettings.SenderEmail, emailSettings.Password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }

@@ -33,6 +33,11 @@ namespace Chef.Common.Core
                 $"{rschema}.{rname}.{tname}.Id");
         }
 
+        public static Query WhereNotArchived(this Query q)
+        {
+            return q.Where("isarchived", false);
+        }
+
         public static Query Where<T>(this Query q, string field, object val)
         {
             var schema = typeof(T).Namespace.Split('.')[1].ToLower();

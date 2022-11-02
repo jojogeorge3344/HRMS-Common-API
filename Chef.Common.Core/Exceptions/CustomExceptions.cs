@@ -12,6 +12,14 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class CompanyNotFoundException : ApplicationException
+    {
+        public CompanyNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
     public class ResourceNotFoundException : ApplicationException
     {
         public ResourceNotFoundException(string message) : base(message)
@@ -296,6 +304,14 @@ namespace Chef.Common.Exceptions
     public class UserSignatureNotFoundException : ApplicationException
     {
         public UserSignatureNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class CurrencyExchangeRateDuplicateException : Exception
+    {
+        public CurrencyExchangeRateDuplicateException(string message) : base(message)
         {
         }
     }
