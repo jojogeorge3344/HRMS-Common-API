@@ -1,9 +1,50 @@
 ﻿{
+  "ConsoleDBConnection"
   "Tenants": [
     {
       "Name": "ThomsunInfoCare",
       "BaseCompany": "Thomsun",
       "Host": "localhost",
+      "ConnectionString": "Server = 192.168.100.53; Port = 5432; Database = ChefDB; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
+      "Modules": [
+        {
+          "Name": "Console",
+          "Host": "https://localhost:5001/api/console"
+        },
+        {
+          "Name": "Admin",
+          "Host": "https://localhost:5002/api/admin"
+        },
+        {
+          "Name": "Dms",
+          "Host": "https://localhost:5003/api/dms"
+        },
+        {
+          "Name": "Approval",
+          "Host": "https://localhost:5004/api/approval"
+        },
+        {
+          "Name": "Finance",
+          "Host": "https://localhost:5005/api/finance"
+        },
+        {
+          "Name": "Trading",
+          "Host": "https://localhost:5006/api/trading"
+        },
+        {
+          "Name": "HRMS",
+          "Host": "https://localhost:5007/api/hrms"
+        },
+        {
+          "Name": "Manufacturing",
+          "Host": "https://localhost:5008/api/manufacturing"
+        }
+      ]
+    },
+    {
+      "Name": "CAPRICORN",
+      "BaseCompany": "Thomsun",
+      "Host": "capricorn.com",
       "ConnectionString": "Server = 192.168.100.53; Port = 5432; Database = ChefDB; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
       "Modules": [
         {

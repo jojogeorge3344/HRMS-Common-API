@@ -244,6 +244,14 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class DuplicateUserException : ApplicationException
+    {
+        public DuplicateUserException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
     public class RoleNotFoundException : ApplicationException
     {
         public RoleNotFoundException(string message) : base(message)

@@ -36,6 +36,7 @@
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="SqlKata.Execution" Version="2.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.10" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Repositories\TableTypeAttribute.cs" />
@@ -50,6 +51,7 @@
     <None Remove="Repositories\RepositoryFactory\Interfaces\" />
     <None Remove="Configuration\" />
     <None Remove="SqlKata.Execution" />
+    <None Remove="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
