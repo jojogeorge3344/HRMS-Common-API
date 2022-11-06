@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Chef.Common.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -7,11 +6,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace Chef.Common.Core
 {
-    public class AppConfiguration: IAppConfiguration
+    public class TenantProvider: ITenantProvider
     {
         private readonly IConfiguration configuration;
 
-        public AppConfiguration(IWebHostEnvironment environment)
+        public TenantProvider(IWebHostEnvironment environment)
         {
             var path = System.IO.Path.Combine(
                 environment.ContentRootPath,
@@ -20,7 +19,7 @@ namespace Chef.Common.Core
                 "chef.common",
                 "Chef.Common.Core");
 
-            //load the tenant 
+            //load the tenants
             var builder = new ConfigurationBuilder()
                    .SetBasePath(environment.ContentRootPath)
                    .AddJsonFile($"{path}/tenants.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
@@ -29,16 +28,10 @@ namespace Chef.Common.Core
             this.configuration = builder.Build();
         }
 
-        public TenantDto GetTenant(string host)
+        public Tenant Get(string host)
         {
-            var tenants = configuration.GetSection("Tenants").Get<List<TenantDto>>();
+            var tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
             return tenants.FirstOrDefault(t => host.Contains(t.Host));
-        }
-
-        public string GetTenantModuleHost(string host, string moduleName)
-        {
-            var tenant = GetTenant(host);
-            return tenant.Modules.FirstOrDefault(m => m.Name.Equals(moduleName)).Host;
         }
     }
 }

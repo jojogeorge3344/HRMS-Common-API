@@ -13,11 +13,11 @@ namespace Chef.Common.Core
     public class RefitConfiguration : IRefitConfiguration
 	{
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IAppConfiguration appConfiguration;
+        private readonly ITenantProvider appConfiguration;
 
         public RefitConfiguration(
             IHttpContextAccessor httpContextAccessor,
-            IAppConfiguration appConfiguration)
+            ITenantProvider appConfiguration)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.appConfiguration = appConfiguration;
@@ -28,7 +28,7 @@ namespace Chef.Common.Core
             string hostname = httpContextAccessor.HttpContext?.Request.Host.Value.ToLower()
                 ?? throw new HttpRequestException("Http context accessor is not initialized.");
 
-            TenantDto tenant = appConfiguration.GetTenant(hostname);
+            var tenant = appConfiguration.Get(hostname);
 
             Module apiClient = tenant.Modules?
                 .Where(x => x.Name == module).FirstOrDefault()

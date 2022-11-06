@@ -12,14 +12,14 @@ namespace Chef.Common.Repositories
     {
         private readonly Guid _id;
         private readonly IHttpContextAccessor context;
-        private readonly IAppConfiguration appConfiguration;
+        private readonly ITenantProvider tenandProvider;
 
         public TenantConnectionFactory(
-            IAppConfiguration appConfiguration,
+            ITenantProvider tenantProvider,
             IHttpContextAccessor context)
         {
             this.context = context;
-            this.appConfiguration = appConfiguration;
+            this.tenandProvider = tenantProvider;
 
             _id = Guid.NewGuid();
             Connection.Open();
@@ -38,7 +38,7 @@ namespace Chef.Common.Repositories
         private string GetConnectionString()
         {
             var hostName = context.HttpContext?.Request.Host.Value.ToLower(); 
-            return appConfiguration.GetTenant(hostName).ConnectionString;
+            return tenandProvider.Get(hostName).ConnectionString;
         }
 
         public void Dispose()

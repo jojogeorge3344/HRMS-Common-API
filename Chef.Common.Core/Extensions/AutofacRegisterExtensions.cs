@@ -8,7 +8,7 @@ using System.Configuration;
 
 namespace Chef.Common.Core.Extensions
 {
-    public static class AutofacRegisterExtension
+    public static class AutofacRegisterExtensions
 	{
         public static void RegisterTenantDBConnectionFactory(this ContainerBuilder builder)
         {
@@ -47,7 +47,7 @@ namespace Chef.Common.Core.Extensions
             builder.RegisterType<EmailSendFactory>().As<IEmailSendFactory>().InstancePerDependency();
 
             //app configuration
-            builder.RegisterType<AppConfiguration>().As<IAppConfiguration>().InstancePerLifetimeScope();
+            builder.RegisterType<TenantProvider>().As<ITenantProvider>().InstancePerLifetimeScope();
         }
 
         public static void RegisterApiServiceComponents(this ContainerBuilder builder)
