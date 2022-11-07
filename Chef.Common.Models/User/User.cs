@@ -1,17 +1,27 @@
 ﻿using Chef.Common.Core;
-using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
-namespace Chef.Common.Models;
-
-public class User : IdentityUser
+namespace Chef.Common.Models
 {
-    [Unique(true)]
-    public string EmailId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string TimeZone { get; set; }
-    //TODO: Move this to Identity
-    public string Password { get; set; }
-    public bool IsActive { get; set; }
-    public int DefaultBranchId { get; set; }
+    public class User : Model
+    {
+        public string Code { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Emailid { get; set; }
+        public string TimeZone { get; set; }
+        public string Password { get; set; }
+        public bool IsUserActive { get; set; }
+        public int BranchId { get; set; }
+
+        [Write(false)]
+        [Skip(true)]
+        public List<UserRole> UserRoleList { get; set; }
+
+        [Write(false)]
+        [Skip(true)]
+        public List<UserBranch> UserBranchList { get; set; }
+        public bool IsActive { get; set; }
+        public int DefaultBranchId { get; set; }
+    }
 }

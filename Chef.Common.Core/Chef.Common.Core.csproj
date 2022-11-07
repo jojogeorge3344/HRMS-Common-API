@@ -48,7 +48,6 @@
     <None Remove="Autofac.Extras.DynamicProxy" />
     <None Remove="AutoMapper" />
     <None Remove="NSwag.AspNetCore" />
-    <None Remove="Configuration\" />
     <None Remove="SqlKata.Execution" />
     <None Remove="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" />
   </ItemGroup>
@@ -57,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Logging\" />
-    <Folder Include="Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="tenants.json">

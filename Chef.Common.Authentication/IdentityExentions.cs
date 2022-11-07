@@ -1,15 +1,48 @@
-﻿using System;
+﻿using System.Text;
+using Chef.Common.Authentication.Models;
+using Chef.Common.Authentication.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Chef.Common.Core.Extensions;
+namespace Chef.Common.Authentication.Extensions;
 
 public static class IdenityExentions
 {
-    public static void ConfigureIdentityOptions(this IServiceCollection services)
+    public static void AddConsoleIdenity(this IServiceCollection services, IConfiguration configuration)
+    {
+        //Add services to the container.
+        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
+        services.AddDbContext<ConsoleIdentityDbContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        //Add Identity and JWT
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ConsoleIdentityDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.ConfigurePasswordPolicies();
+    }
+
+    public static void AddTenantIdentity(this IServiceCollection services, IConfiguration configuration)
+    {
+        //Add services to the container.
+        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
+        services.AddDbContext<TenantIdenityDbContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        //Add Identity and JWT
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<TenantIdenityDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.ConfigurePasswordPolicies();
+    }
+
+    private static void ConfigurePasswordPolicies(this IServiceCollection services)
     {
         services.Configure<IdentityOptions>(options =>
         {
@@ -54,4 +87,3 @@ public static class IdenityExentions
         });
     }
 }
-

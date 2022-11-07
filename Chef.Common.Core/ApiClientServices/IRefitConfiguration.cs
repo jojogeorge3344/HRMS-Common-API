@@ -1,12 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using Chef.Common.Models;
+﻿using System.Net.Http;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core;
+
+public interface IRefitConfiguration
 {
-	public interface IRefitConfiguration
-	{
-		void Configure(string module, ref HttpClient client);
-	}
+    void Configure(string module, ref HttpClient client);
 }
 

@@ -1,9 +1,9 @@
 ﻿using Chef.Common.Models;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core;
+
+public interface ITenantProvider
 {
-    public interface ITenantProvider
-    {
-        Tenant Get(string host);
-    }
+    Tenant Get(string host);
+    Tenant GetCurrent();
 }

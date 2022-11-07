@@ -30,9 +30,11 @@
   <ItemGroup>
     <Folder Include="State\" />
     <Folder Include="User\Ex\" />
+    <Folder Include="UserAuthentication\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="State\" />
     <None Remove="User\Ex\" />
+    <None Remove="UserAuthentication\" />
   </ItemGroup>
 </Project>

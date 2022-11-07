@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chef.Common.Models.UserAuthentication
+namespace Chef.Common.Authentication.Models
 {
     public static class UserRoles
     {
