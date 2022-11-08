@@ -30,6 +30,7 @@ public class ConsoleConnectionFactory : IConnectionFactory, IDisposable
 
     public void Dispose()
     {
+        Connection?.Close();
         Connection?.Dispose();
     }
 }

@@ -10,6 +10,5 @@ namespace Chef.Common.Models
         public string Host { get; set; }
         public string ConnectionString { get; set; }
         public List<Module> Modules { get; set; }
-        public List<Identity> Identityserver { get; set; }
     }
 }

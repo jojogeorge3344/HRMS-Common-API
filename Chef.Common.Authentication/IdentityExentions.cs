@@ -15,7 +15,7 @@ public static class IdenityExentions
     public static void AddConsoleIdenity(this IServiceCollection services, IConfiguration configuration)
     {
         //Add services to the container.
-        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
+        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Console Connection string 'DefaultConnection' not found.");
         services.AddDbContext<ConsoleIdentityDbContext>(options =>
             options.UseNpgsql(connectionString));
 
@@ -30,9 +30,7 @@ public static class IdenityExentions
     public static void AddTenantIdentity(this IServiceCollection services, IConfiguration configuration)
     {
         //Add services to the container.
-        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
-        services.AddDbContext<TenantIdenityDbContext>(options =>
-            options.UseNpgsql(connectionString));
+        services.AddDbContext<TenantIdenityDbContext>();
 
         //Add Identity and JWT
         services.AddIdentity<ApplicationUser, IdentityRole>()

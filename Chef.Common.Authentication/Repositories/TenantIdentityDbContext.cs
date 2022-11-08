@@ -18,6 +18,9 @@ public class TenantIdenityDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        //set the default schema
+        builder.HasDefaultSchema("common");
+
         base.OnModelCreating(builder);
     }
 
