@@ -29,6 +29,7 @@ namespace Chef.Common.Types
         CashCollectionDeposit = 7007,
         IntegrationTransaction = 8000,
         GoodsReceiptNote = 10000,
-        IntegrationHeader = 9000
+        IntegrationHeader = 8010,
+        BankCharges = 9000
     }
 }
