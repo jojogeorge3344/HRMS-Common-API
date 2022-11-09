@@ -3,8 +3,7 @@
     public enum TransactionOrgin
     {
         Purchase = 1,
-        Inventory = 2,
-        Manufacturing = 3,
-        Sales = 4
+        SalesOrder = 2,
+        Warehouse = 3
     }
 }
