@@ -34,7 +34,6 @@ namespace Chef.Common.Core.Extensions
             builder.RegisterType<LoggingInterceptor>();
 
             //register generic services
-            builder.RegisterType<ServiceFactory>().As<IServiceFactory>().InstancePerLifetimeScope();
             builder.RegisterType<ServiceSession>().As<IServiceSession>().InstancePerLifetimeScope();
 
             //register repository factory

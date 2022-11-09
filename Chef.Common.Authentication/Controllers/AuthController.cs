@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> ChangePassword(ChangePasswordModel changePasswordModel)
     {
-        return Ok(await authenticationRepository.ChangePassword(changePasswordModel)
+        return Ok(await authenticationRepository.ChangePassword(changePasswordModel));
     }
 
     [HttpPost]

@@ -46,5 +46,11 @@ namespace Chef.Common.Core
             var tenants = configuration.GetSection("Tenants").Get<List<Tenant>>();
             return tenants.FirstOrDefault(t => host.Contains(t.Host));
         }
+
+        public string GetModuleHost(string name)
+        {
+            var tenant = GetCurrent();
+            return tenant.Modules.FirstOrDefault(m => m.Name == name).Host;
+        }
     }
 }

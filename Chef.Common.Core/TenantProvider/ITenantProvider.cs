@@ -6,4 +6,5 @@ public interface ITenantProvider
 {
     Tenant Get(string host);
     Tenant GetCurrent();
+    string GetModuleHost(string name);
 }
