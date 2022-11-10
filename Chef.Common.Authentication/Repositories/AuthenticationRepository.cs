@@ -149,5 +149,10 @@ public class AuthenticationRepository : IAuthenticationRepository
         );
         return tokenOptions;
     }
+
+    public async Task<ApplicationUser> GetAuthUser()
+    {
+        return await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+    }
 }
 

@@ -5,7 +5,7 @@ using Npgsql;
 
 namespace Chef.Common.Repositories;
 
-public class ConsoleConnectionFactory : IConnectionFactory, IDisposable
+public class ConsoleConnectionFactory : IConsoleConnectionFactory, IDisposable
 {
     private readonly Guid _id;
     private readonly IConfiguration configuration;

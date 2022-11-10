@@ -12,12 +12,12 @@ namespace Chef.Common.Core.Extensions
 	{
         public static void RegisterTenantDBConnectionFactory(this ContainerBuilder builder)
         {
-            builder.RegisterType<TenantConnectionFactory>().As<IConnectionFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<TenantConnectionFactory>().As<ITenantConnectionFactory>().InstancePerLifetimeScope();
         }
 
         public static void RegisterConsoleDBConnectionFactory(this ContainerBuilder builder)
         {
-            builder.RegisterType<ConsoleConnectionFactory>().As<IConnectionFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<ConsoleConnectionFactory>().As<IConsoleConnectionFactory>().InstancePerLifetimeScope();
         }
 
         public static void RegisterDBComponents(this ContainerBuilder builder)

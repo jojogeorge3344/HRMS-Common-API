@@ -5,7 +5,7 @@ using Npgsql;
 
 namespace Chef.Common.Repositories
 {
-    public class TenantConnectionFactory : IConnectionFactory, IDisposable
+    public class TenantConnectionFactory : ITenantConnectionFactory, IDisposable
     {
         private readonly Guid _id;
         private readonly ITenantProvider tenandProvider;

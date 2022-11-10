@@ -7,4 +7,5 @@ public interface IAuthenticationRepository
     Task<AuthToken> Login(LoginDto loginModel);
     Task<IdentityResult> ChangePassword(ChangePasswordModel changePasswordModel);
     Task<UserDto> GetCurrentUser();
+    Task<ApplicationUser> GetAuthUser();
 }
