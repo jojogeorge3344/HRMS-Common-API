@@ -17,16 +17,20 @@
     <None Remove="Microsoft.EntityFrameworkCore" />
     <None Remove="Microsoft.EntityFrameworkCore.Relational" />
     <None Remove="Npgsql" />
+    <None Remove="Extensions\" />
+    <None Remove="AutoMapper.Contrib.Autofac.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
     <Folder Include="Models\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0-rc.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
     <PackageReference Include="Npgsql" Version="7.0.0-rc.2" />
+    <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection" Version="7.0.0" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Chef.Common.Authentication.Models;
-using Chef.Common.Exceptions;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using AutoMapper;
 
 namespace Chef.Common.Authentication.Repositories;
 
@@ -14,33 +7,33 @@ public class AuthenticationRepository : IAuthenticationRepository
     private readonly IConfiguration configuration;
     private readonly UserManager<ApplicationUser> userManager;
     private readonly RoleManager<IdentityRole> roleManager;
+    private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly IMapper mapper;
 
     public AuthenticationRepository(
         IConfiguration configuration,
         UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager)
+        RoleManager<IdentityRole> roleManager,
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper)
     {
         this.configuration = configuration;
         this.userManager = userManager;
         this.roleManager = roleManager;
+        this.httpContextAccessor = httpContextAccessor;
+        this.mapper = mapper;
     }
 
-    public async Task<IdentityResult> RegisterAdmin(RegisterModel registerModel)
+    public async Task<IdentityResult> RegisterAdmin(RegisterDto registerModel)
     {
-        var userExists = await userManager.FindByNameAsync(registerModel.Email);
+        var userExists = await userManager.FindByNameAsync(registerModel.UserName);
         if (userExists != null)
         {
             throw new DuplicateUserException("User name already exists!");
         }
 
-        ApplicationUser user = new ApplicationUser()
-        {
-            FirstName = registerModel.FirstName,
-            LastName = registerModel.LastName,
-            Email = registerModel.Email,
-            SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = registerModel.Email
-        };
+        var user = mapper.Map<ApplicationUser>(registerModel);
+        user.SecurityStamp = Guid.NewGuid().ToString();
 
         var result = await userManager.CreateAsync(user, registerModel.Password);
 
@@ -56,29 +49,23 @@ public class AuthenticationRepository : IAuthenticationRepository
         return result;
     }
 
-    public async Task<IdentityResult> RegisterUser(RegisterModel registerModel)
+    public async Task<IdentityResult> RegisterUser(RegisterDto registerModel)
     {
-        var userExists = await userManager.FindByNameAsync(registerModel.Email);
+        var userExists = await userManager.FindByNameAsync(registerModel.UserName);
         if (userExists != null)
         {
             throw new DuplicateUserException("User name already exists!");
         }
 
-        ApplicationUser user = new ApplicationUser()
-        {
-            FirstName = registerModel.FirstName,
-            LastName = registerModel.LastName,
-            Email = registerModel.Email,
-            SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = registerModel.Email
-        };
-
+        var user = mapper.Map<ApplicationUser>(registerModel);
+        user.SecurityStamp = Guid.NewGuid().ToString();
+        
         return await userManager.CreateAsync(user, registerModel.Password);
     }
 
-    public async Task<AuthToken> Login(LoginModel loginModel)
+    public async Task<AuthToken> Login(LoginDto loginModel)
     {
-        var user = await userManager.FindByNameAsync(loginModel.Email);
+        var user = await userManager.FindByNameAsync(loginModel.Username);
         if (user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))
         {
             var signingCredentials = GetSigningCredentials();
@@ -118,6 +105,12 @@ public class AuthenticationRepository : IAuthenticationRepository
         }
 
         throw new UserNotFoundException("Either the username or password is invalid");
+    }
+
+    public async Task<UserDto> GetCurrentUser()
+    {
+        var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+        return mapper.Map<UserDto>(user);
     }
 
     private async Task<List<Claim>> GetClaims(ApplicationUser? user)

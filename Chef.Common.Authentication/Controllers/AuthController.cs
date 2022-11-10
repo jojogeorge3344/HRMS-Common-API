@@ -1,7 +1,4 @@
-﻿using Chef.Common.Authentication.Models;
-using Chef.Common.Authentication.Repositories;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace Chef.Common.Authentication.Controllers;
 
@@ -17,7 +14,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AuthToken>> Login([FromBody] LoginModel loginModel)
+    public async Task<ActionResult<AuthToken>> Login([FromBody] LoginDto loginModel)
     {
         return Ok(await authenticationRepository.Login(loginModel));
     }
@@ -29,14 +26,21 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterModel registerModel)
+    public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterDto registerModel)
     {
         return Ok(await this.authenticationRepository.RegisterUser(registerModel));
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel registerModel)
+    public async Task<ActionResult<IdentityResult>> RegisterAdmin([FromBody] RegisterDto registerModel)
     {
         return Ok(await this.authenticationRepository.RegisterAdmin(registerModel));
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<ActionResult<UserDto>> GetCurrentUser()
+    {
+        return Ok(await this.authenticationRepository.GetCurrentUser());
     }
 }

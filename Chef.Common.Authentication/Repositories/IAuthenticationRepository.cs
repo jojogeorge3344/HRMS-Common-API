@@ -1,12 +1,10 @@
-﻿using Chef.Common.Authentication.Models;
-using Microsoft.AspNetCore.Identity;
-
-namespace Chef.Common.Authentication.Repositories;
+﻿namespace Chef.Common.Authentication.Repositories;
 
 public interface IAuthenticationRepository
 {
-    Task<IdentityResult> RegisterUser(RegisterModel registerModel);
-    Task<IdentityResult> RegisterAdmin(RegisterModel registerModel);
-    Task<AuthToken> Login(LoginModel loginModel);
+    Task<IdentityResult> RegisterUser(RegisterDto registerModel);
+    Task<IdentityResult> RegisterAdmin(RegisterDto registerModel);
+    Task<AuthToken> Login(LoginDto loginModel);
     Task<IdentityResult> ChangePassword(ChangePasswordModel changePasswordModel);
+    Task<UserDto> GetCurrentUser();
 }
