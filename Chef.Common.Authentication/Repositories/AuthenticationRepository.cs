@@ -76,7 +76,7 @@ public class AuthenticationRepository : IAuthenticationRepository
         return await userManager.CreateAsync(user, registerModel.Password);
     }
 
-    public async Task<string> Login(LoginModel loginModel)
+    public async Task<AuthToken> Login(LoginModel loginModel)
     {
         var user = await userManager.FindByNameAsync(loginModel.Email);
         if (user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))
@@ -84,10 +84,14 @@ public class AuthenticationRepository : IAuthenticationRepository
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims(user);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            return new AuthToken()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions)
+            };
         }
 
-        throw new UserNotFoundException("Either the username or password is invalid");
+        throw new UserNotFoundException("Either the username or password is invalid.");
     }
 
     public async Task<IdentityResult> ChangePassword(ChangePasswordModel changePasswordModel)

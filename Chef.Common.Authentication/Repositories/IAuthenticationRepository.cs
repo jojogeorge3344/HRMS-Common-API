@@ -7,6 +7,6 @@ public interface IAuthenticationRepository
 {
     Task<IdentityResult> RegisterUser(RegisterModel registerModel);
     Task<IdentityResult> RegisterAdmin(RegisterModel registerModel);
-    Task<string> Login(LoginModel loginModel);
+    Task<AuthToken> Login(LoginModel loginModel);
     Task<IdentityResult> ChangePassword(ChangePasswordModel changePasswordModel);
 }

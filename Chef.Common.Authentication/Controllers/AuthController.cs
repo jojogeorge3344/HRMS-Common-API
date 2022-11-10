@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Login([FromBody] LoginModel loginModel)
+    public async Task<ActionResult<AuthToken>> Login([FromBody] LoginModel loginModel)
     {
         return Ok(await authenticationRepository.Login(loginModel));
     }
