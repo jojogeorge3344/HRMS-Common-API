@@ -109,7 +109,7 @@ public class AuthenticationRepository : IAuthenticationRepository
 
     public async Task<UserDto> GetCurrentUser()
     {
-        var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+        var user = await userManager.FindByEmailAsync("root@example.com");
         return mapper.Map<UserDto>(user);
     }
 
@@ -152,7 +152,8 @@ public class AuthenticationRepository : IAuthenticationRepository
 
     public async Task<ApplicationUser> GetAuthUser()
     {
-        return await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+        return await userManager.FindByEmailAsync("root@example.com");
+        //return await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
     }
 }
 

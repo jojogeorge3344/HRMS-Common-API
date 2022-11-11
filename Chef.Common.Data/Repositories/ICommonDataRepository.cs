@@ -1,6 +1,10 @@
-﻿namespace Chef.Common.Data.Repositories;
+﻿using Chef.Common.Models;
+using Chef.Common.Repositories;
 
-public interface ICommonDataRepository
+namespace Chef.Common.Data.Repositories;
+
+public interface ICommonDataRepository : IRepository
 {
+    Task<IEnumerable<Branch>> GetBranches();
 }
 
