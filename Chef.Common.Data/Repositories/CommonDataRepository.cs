@@ -1,6 +1,4 @@
-﻿using Chef.Common.Repositories;
-
-namespace Chef.Common.Data.Repositories;
+﻿namespace Chef.Common.Data.Repositories;
 
 public class CommonDataRepository : TenantGenericRepository, ICommonDataRepository
 {

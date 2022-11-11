@@ -1,9 +1,4 @@
-﻿using Chef.Common.Core;
-using Chef.Common.Models;
-using Chef.Common.Repositories;
-using SqlKata.Execution;
-
-namespace Chef.Common.Data.Repositories;
+﻿namespace Chef.Common.Data.Repositories;
 
 public class MasterDataRepository : ConsoleGenericRepository, IMasterDataRepository
 {
@@ -182,6 +177,15 @@ public class MasterDataRepository : ConsoleGenericRepository, IMasterDataReposit
             .Where("countryid", countryId)
             .WhereNotArchived()
             .GetAsync<State>();
+    }
+
+    public async Task<IEnumerable<TimeZone>> GetTimeZones()
+    {
+        return await QueryFactory
+            .Query<TimeZone>()
+            .Select("id", "name", "code")
+            .WhereNotArchived()
+            .GetAsync<TimeZone>();
     }
 }
 

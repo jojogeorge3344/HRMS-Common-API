@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
         return Ok(await this.authenticationRepository.RegisterAdmin(registerModel));
     }
 
-    [HttpPost]
+    [HttpGet]
     [Authorize]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {

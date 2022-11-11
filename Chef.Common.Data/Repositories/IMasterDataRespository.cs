@@ -1,7 +1,4 @@
-﻿using Chef.Common.Models;
-using Chef.Common.Repositories;
-
-namespace Chef.Common.Data.Repositories;
+﻿namespace Chef.Common.Data.Repositories;
 
 public interface IMasterDataRepository : IRepository
 {
@@ -31,5 +28,7 @@ public interface IMasterDataRepository : IRepository
     Task<IEnumerable<ItemFamily>> GetItemFamilies(int segmentId);
     Task<IEnumerable<ItemClass>> GetItemClasses(int familyId);
     Task<IEnumerable<ItemCommodity>> GetItemCommodities(int itemClassId);
+
+    Task<IEnumerable<TimeZone>> GetTimeZones();
 }
 

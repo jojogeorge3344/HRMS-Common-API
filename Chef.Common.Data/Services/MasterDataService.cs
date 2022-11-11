@@ -1,8 +1,4 @@
-﻿using System;
-using Chef.Common.Data.Repositories;
-using Chef.Common.Models;
-
-namespace Chef.Common.Data.Services;
+﻿namespace Chef.Common.Data.Services;
 
 public class MasterDataService : IMasterDataService
 {
@@ -96,6 +92,11 @@ public class MasterDataService : IMasterDataService
     public Task<IEnumerable<State>> GetStates(int countryId)
     {
         return masterDataRespository.GetStates(countryId);
+    }
+
+    public Task<IEnumerable<TimeZone>> GetTimeZones()
+    {
+        return masterDataRespository.GetTimeZones();
     }
 }
 

@@ -1,6 +1,4 @@
-﻿using Chef.Common.Data.Repositories;
-
-namespace Chef.Common.Data.Services;
+﻿namespace Chef.Common.Data.Services;
 
 public class CommonDataService : ICommonDataService
 {

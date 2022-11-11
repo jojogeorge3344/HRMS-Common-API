@@ -1,7 +1,4 @@
-﻿using Chef.Common.Models;
-using Chef.Common.Services;
-
-namespace Chef.Common.Data.Services;
+﻿namespace Chef.Common.Data.Services;
 
 public interface IMasterDataService : IBaseService
 {
@@ -31,4 +28,6 @@ public interface IMasterDataService : IBaseService
     Task<IEnumerable<ItemFamily>> GetItemFamilies(int segmentId);
     Task<IEnumerable<ItemClass>> GetItemClasses(int familyId);
     Task<IEnumerable<ItemCommodity>> GetItemCommodities(int itemClassId);
+
+    Task<IEnumerable<TimeZone>> GetTimeZones();
 }
