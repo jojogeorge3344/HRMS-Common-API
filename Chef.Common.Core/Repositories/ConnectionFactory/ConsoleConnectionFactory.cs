@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using Chef.Common.Core;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
@@ -8,11 +9,11 @@ namespace Chef.Common.Repositories;
 public class ConsoleConnectionFactory : IConsoleConnectionFactory, IDisposable
 {
     private readonly Guid _id;
-    private readonly IConfiguration configuration;
+    private readonly ITenantProvider tenantProvider;
 
-    public ConsoleConnectionFactory(IConfiguration configuration)
+    public ConsoleConnectionFactory(ITenantProvider tenantProvider)
     {
-        this.configuration = configuration;
+        this.tenantProvider = tenantProvider;
 
         _id = Guid.NewGuid();
         Connection.Open();
@@ -22,7 +23,7 @@ public class ConsoleConnectionFactory : IConsoleConnectionFactory, IDisposable
     {
         get
         {
-            return new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
+            return new NpgsqlConnection(tenantProvider.GetConsoleConnectionString());
         }
     }
 

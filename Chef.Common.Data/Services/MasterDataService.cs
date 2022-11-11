@@ -6,9 +6,9 @@ namespace Chef.Common.Data.Services;
 
 public class MasterDataService : IMasterDataService
 {
-    private readonly IMasterDataRespository masterDataRespository;
+    private readonly IMasterDataRepository masterDataRespository;
 
-    public MasterDataService(IMasterDataRespository masterDataRespository)
+    public MasterDataService(IMasterDataRepository masterDataRespository)
     {
         this.masterDataRespository = masterDataRespository;
     }

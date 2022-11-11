@@ -1,15 +1,14 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Models;
 using Chef.Common.Repositories;
-using Microsoft.AspNetCore.Http;
 using SqlKata.Execution;
 
 namespace Chef.Common.Data.Repositories;
 
-public class MasterDataRepository : GenericRepository<Model>, IMasterDataRespository
+public class MasterDataRepository : ConsoleGenericRepository, IMasterDataRepository
 {
-    public MasterDataRepository(IHttpContextAccessor httpContextAccessor, IConsoleConnectionFactory consoleConnectionFactory)
-        : base(httpContextAccessor, consoleConnectionFactory)
+    public MasterDataRepository(IConsoleConnectionFactory consoleConnectionFactory)
+        : base(consoleConnectionFactory)
     {
     }
 

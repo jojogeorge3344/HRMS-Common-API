@@ -2,8 +2,14 @@
 
 public class ConsoleIdentityDbContext : IdentityDbContext<ApplicationUser>
 {
-    public ConsoleIdentityDbContext(DbContextOptions<ConsoleIdentityDbContext> options) : base(options)
+    private readonly ITenantProvider tenantProvider;
+
+    public ConsoleIdentityDbContext(
+        DbContextOptions<ConsoleIdentityDbContext> options,
+        ITenantProvider tenantProvider)
+        : base(options)
     {
+        this.tenantProvider = tenantProvider;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -12,5 +18,13 @@ public class ConsoleIdentityDbContext : IdentityDbContext<ApplicationUser>
         builder.HasDefaultSchema("common");
 
         base.OnModelCreating(builder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseNpgsql(tenantProvider.GetConsoleConnectionString());
+        }
     }
 }

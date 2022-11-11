@@ -18,20 +18,17 @@ namespace Chef.Common.Core
         {
             httpContext = httpContextAccessor?.HttpContext;
 
-            var path = System.IO.Path.Combine(
-                environment.ContentRootPath,
-                "..",
-                "..",
-                "chef.common",
-                "Chef.Common.Core");
-
             //load the tenants
             var builder = new ConfigurationBuilder()
-                   .SetBasePath(environment.ContentRootPath)
-                   .AddJsonFile($"{path}/tenants.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                   .AddJsonFile($"tenants.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                    .AddJsonFile("tenants.json", optional: true, reloadOnChange: true);
 
             this.configuration = builder.Build();
+        }
+
+        public string GetConsoleConnectionString()
+        {
+            return configuration.GetSection("ConsoleConnection").Value;
         }
 
         public Tenant Get(string host)

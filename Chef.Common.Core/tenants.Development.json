@@ -1,4 +1,6 @@
 ﻿{
+  "ConsoleConnection": "Server = 192.168.100.53; Port = 5432; Database = ConsoleDB; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
+  //"DefaultConnection": "Server = 144.126.158.243; Port = 5432; Database = ThomsunGroupConsoleUAT; User Id = postgres; Password = Thomsun@2022; Pooling=true;"
   "Tenants": [
     {
       "Name": "ThomsunInfoCare",

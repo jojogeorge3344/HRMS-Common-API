@@ -3,7 +3,7 @@ using Chef.Common.Repositories;
 
 namespace Chef.Common.Data.Repositories;
 
-public interface IMasterDataRespository : IRepository
+public interface IMasterDataRepository : IRepository
 {
     Task<IEnumerable<Country>> GetCountries();
     Task<IEnumerable<State>> GetStates(int countryId);

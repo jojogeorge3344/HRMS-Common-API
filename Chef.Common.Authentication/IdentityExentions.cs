@@ -1,23 +1,13 @@
-﻿using System.Text;
-using Chef.Common.Authentication.Models;
-using Chef.Common.Authentication.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Chef.Common.Authentication.Extensions;
 
 public static class IdenityExentions
 {
-    public static void AddConsoleIdenity(this IServiceCollection services, IConfiguration configuration)
+    public static void AddConsoleIdentity(this IServiceCollection services)
     {
-        //Add services to the container.
-        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Console Connection string 'DefaultConnection' not found.");
-        services.AddDbContext<ConsoleIdentityDbContext>(options =>
-            options.UseNpgsql(connectionString));
+        services.AddDbContext<ConsoleIdentityDbContext>();
 
         //Add Identity and JWT
         services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -27,14 +17,14 @@ public static class IdenityExentions
         services.ConfigurePasswordPolicies();
     }
 
-    public static void AddTenantIdentity(this IServiceCollection services, IConfiguration configuration)
+    public static void AddTenantIdentity(this IServiceCollection services)
     {
         //Add services to the container.
-        services.AddDbContext<TenantIdenityDbContext>();
+        services.AddDbContext<TenantIdentityDbContext>();
 
         //Add Identity and JWT
         services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<TenantIdenityDbContext>()
+            .AddEntityFrameworkStores<TenantIdentityDbContext>()
             .AddDefaultTokenProviders();
 
         services.ConfigurePasswordPolicies();

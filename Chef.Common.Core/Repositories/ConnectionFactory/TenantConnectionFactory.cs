@@ -8,11 +8,11 @@ namespace Chef.Common.Repositories
     public class TenantConnectionFactory : ITenantConnectionFactory, IDisposable
     {
         private readonly Guid _id;
-        private readonly ITenantProvider tenandProvider;
+        private readonly ITenantProvider tenantProvider;
 
         public TenantConnectionFactory(ITenantProvider tenantProvider)
         {
-            this.tenandProvider = tenantProvider;
+            this.tenantProvider = tenantProvider;
 
             _id = Guid.NewGuid();
             Connection.Open();
@@ -30,7 +30,7 @@ namespace Chef.Common.Repositories
 
         private string GetConnectionString()
         {
-            return tenandProvider.GetCurrent().ConnectionString;
+            return tenantProvider.GetCurrent().ConnectionString;
         }
 
         public void Dispose()

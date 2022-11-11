@@ -1,4 +1,5 @@
 ﻿{
+  "ConsoleConnection": "Server = 192.168.100.53; Port = 5432; Database = ConsoleDB; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
   "Tenants": [
     {
       "Name": "ThomsunInfoCare",

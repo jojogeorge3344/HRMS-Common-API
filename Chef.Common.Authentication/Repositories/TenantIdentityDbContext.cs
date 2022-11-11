@@ -1,14 +1,15 @@
 ﻿namespace Chef.Common.Authentication.Repositories;
 
-public class TenantIdenityDbContext : IdentityDbContext<ApplicationUser>
+public class TenantIdentityDbContext : IdentityDbContext<ApplicationUser>
 {
-    private readonly ITenantProvider tenandProvider;
-    public TenantIdenityDbContext(
-        DbContextOptions<TenantIdenityDbContext> options,
-        ITenantProvider tenandProvider)
+    private readonly ITenantProvider tenantProvider;
+
+    public TenantIdentityDbContext(
+        DbContextOptions<TenantIdentityDbContext> options,
+        ITenantProvider tenantProvider)
         : base(options)
     {
-        this.tenandProvider = tenandProvider;
+        this.tenantProvider = tenantProvider;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -23,7 +24,7 @@ public class TenantIdenityDbContext : IdentityDbContext<ApplicationUser>
     {
         if (!optionsBuilder.IsConfigured)
         {
-            var tenant = tenandProvider.GetCurrent();
+            var tenant = tenantProvider.GetCurrent();
             optionsBuilder.UseNpgsql(tenant.ConnectionString);
         }
     }
