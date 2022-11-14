@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {
+    /// <summary>
+    /// TODO: Depreciated. Eventually will be removed.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface ICommonRepository<T> : IRepository
         where T : IModel
     {

@@ -4,7 +4,7 @@ using Chef.Common.Core;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
-namespace Chef.Common.Repositories;
+namespace Chef.Common.Core.Repositories;
 
 public class ConsoleConnectionFactory : IConsoleConnectionFactory, IDisposable
 {

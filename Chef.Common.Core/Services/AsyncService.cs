@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using Chef.Common.Repositories;
 
-namespace Chef.Common.Services
+namespace Chef.Common.Core.Services
 {
     public abstract class AsyncService<T> : IAsyncService<T>
     {

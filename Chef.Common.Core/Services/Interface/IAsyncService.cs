@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Chef.Common.Services
+﻿namespace Chef.Common.Core.Services
 {
     public interface IAsyncService<T> : IBaseService
     {

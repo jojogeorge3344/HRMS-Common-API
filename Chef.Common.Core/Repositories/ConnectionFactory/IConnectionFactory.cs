@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Chef.Common.Repositories;
+namespace Chef.Common.Core.Repositories;
 
 public interface IConnectionFactory
 {

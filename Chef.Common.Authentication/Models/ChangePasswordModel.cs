@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Chef.Common.Authentication.Models;
+﻿namespace Chef.Common.Authentication.Models;
 
 public class ChangePasswordModel
 {

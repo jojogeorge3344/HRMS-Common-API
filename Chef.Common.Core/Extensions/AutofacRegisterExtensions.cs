@@ -1,10 +1,8 @@
 ﻿using Autofac;
 using Chef.Common.ClientServices;
 using Chef.Common.Core.Logging;
-using Chef.Common.Core.Repositories;
 using Chef.Common.Repositories;
 using Chef.Common.Services;
-using System.Configuration;
 
 namespace Chef.Common.Core.Extensions
 {
@@ -12,7 +10,7 @@ namespace Chef.Common.Core.Extensions
 	{
         public static void RegisterTenantDBConnectionFactory(this ContainerBuilder builder)
         {
-            builder.RegisterType<TenantConnectionFactory>().As<IConnectionFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<TenantConnectionFactory>().As<ITenantConnectionFactory>().InstancePerLifetimeScope();
         }
 
         public static void RegisterDBComponents(this ContainerBuilder builder)

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace Chef.Common.Authentication.Controllers;
+﻿namespace Chef.Common.Authentication.Controllers;
 
 [Route("api/[controller]/[action]")]
 [ApiController]

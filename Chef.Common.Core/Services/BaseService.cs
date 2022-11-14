@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chef.Common.Core.Services;
 using Chef.Common.Repositories;
 using System.Data;
 

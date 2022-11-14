@@ -3,7 +3,7 @@ using System.Data;
 using Chef.Common.Core;
 using Npgsql;
 
-namespace Chef.Common.Repositories
+namespace Chef.Common.Core.Repositories
 {
     public class TenantConnectionFactory : ITenantConnectionFactory, IDisposable
     {

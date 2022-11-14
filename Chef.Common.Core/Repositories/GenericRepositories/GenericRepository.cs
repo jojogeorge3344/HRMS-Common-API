@@ -5,14 +5,20 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
-using Chef.Common.Core;
+using Chef.Common.Core.Extensions;
+using Chef.Common.Repositories;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using SqlKata;
 using SqlKata.Compilers;
 using SqlKata.Execution;
 
-namespace Chef.Common.Repositories;
+namespace Chef.Common.Core.Repositories;
 
+/// <summary>
+/// TODO: Depreciated. Eventually will be removed.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
 {
     private readonly IConnectionFactory connectionFactory;
@@ -43,8 +49,13 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Mod
 
     public virtual async Task<int> DeleteAsync(int id)
     {
-        var sql = "UPDATE " + TableName + " SET isarchived = true WHERE id = @Id";
-        return await Connection.ExecuteAsync(sql, new { Id = id });
+        return await QueryFactory
+            .Query<T>()
+            .Where("id", id)
+            .UpdateAsync(new
+            {
+                isarchived = true
+            });
     }
 
     public virtual async Task<int> DeletePermanentAsync(int id)
@@ -93,6 +104,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Mod
 
     public void InsertModelProperties(ref T obj)
     {
+        var accesor = HttpHelper.HttpContext.Request;
         obj.CreatedDate = DateTime.UtcNow;
         obj.IsArchived = false;
     }
@@ -118,30 +130,126 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Mod
     }
 }
 
-public abstract class ConsoleGenericRepository
+public abstract class GRepository<T> : IGenericRepository<T> where T : Model
 {
-    private readonly IConsoleConnectionFactory consoleConnectionFactory;
+    private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly IConnectionFactory connectionFactory;
 
     protected QueryFactory QueryFactory { get; set; }
-    protected IDbConnection Connection => consoleConnectionFactory.Connection;
+    protected IDbConnection Connection => connectionFactory.Connection;
 
-    public ConsoleGenericRepository(IConsoleConnectionFactory consoleConnectionFactory)
+    public GRepository(
+        IHttpContextAccessor httpContextAccessor,
+        IConnectionFactory connectionFactory)
     {
-        this.consoleConnectionFactory = consoleConnectionFactory;
+        this.httpContextAccessor = httpContextAccessor;
+        this.connectionFactory = connectionFactory;
         QueryFactory = new QueryFactory(Connection, new PostgresCompiler());
+    }
+
+    public async Task<int> DeleteAsync(int id)
+    {
+        return await QueryFactory
+            .Query<T>()
+            .Where("id", id)
+            .UpdateAsync(new
+            {
+                isarchived = true
+            });
+    }
+
+    public async Task<int> DeletePermanentAsync(int id)
+    {
+        return await QueryFactory
+            .Query<T>()
+            .Where("id", id)
+            .DeleteAsync();
+    }
+
+    public async Task<IEnumerable<T>> GetAllAsync()
+    {
+        return await QueryFactory
+            .Query<T>()
+            .WhereNotArchived()
+            .GetAsync<T>();
+    }
+
+    public async Task<T> GetAsync(int id)
+    {
+        return await QueryFactory
+            .Query<T>()
+            .Where("id", id)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<T>();
+    }
+
+    public async Task<int> InsertAsync(T obj)
+    {
+        return await QueryFactory
+            .Query<T>()
+            .InsertDefaults<T>(ref obj)
+            .InsertGetIdAsync<int>(obj);
+    }
+
+    public async Task<int> BulkInsertAsync(List<T> objs)
+    {
+        return await QueryFactory
+            .Query<T>()
+            .InsertDefaults<T>(ref objs)
+            .InsertAsync(objs);
+    }
+
+    public async Task<int> UpdateAsync(T obj)
+    {
+        return await QueryFactory
+            .Query<T>()
+            .UpdateDefaults<T>(ref obj)
+            .UpdateAsync(obj);
+    }
+
+    public async Task<int> BulkUpdateAsync(List<T> objs)
+    {
+        return await QueryFactory
+            .Query<T>()
+            .UpdateDefaults<T>(ref objs)
+            .UpdateAsync(objs);
+    }
+
+    public Task<int> InsertAuditAsync(object obj, int parentID, int auditId = 0)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void InsertDefaults(ref T obj)
+    {
+        obj.CreatedDate = DateTime.UtcNow;
+        obj.IsArchived = false;
+        obj.CreatedBy = "System";
+    }
+
+    public void UpdateDefaults(ref T obj)
+    {
+        obj.ModifiedDate = DateTime.UtcNow;
+        obj.ModifiedBy = "System";
     }
 }
 
-public abstract class TenantGenericRepository
+public abstract class ConsoleRepository<T> : GRepository<T> where T : Model
 {
-    private readonly ITenantConnectionFactory tenantConnectionFactory;
-
-    protected QueryFactory QueryFactory { get; set; }
-    protected IDbConnection Connection => tenantConnectionFactory.Connection;
-
-    public TenantGenericRepository(ITenantConnectionFactory tenantConnectionFactory)
+    public ConsoleRepository(
+        IHttpContextAccessor httpContextAccessor,
+        IConsoleConnectionFactory consoleConnectionFactory)
+        :base(httpContextAccessor, consoleConnectionFactory)
     {
-        this.tenantConnectionFactory = tenantConnectionFactory;
-        QueryFactory = new QueryFactory(Connection, new PostgresCompiler());
+    }
+}
+
+public abstract class TenantRepository<T> : GenericRepository<T> where T : Model
+{
+    public TenantRepository(
+        IHttpContextAccessor httpContextAccessor,
+        ITenantConnectionFactory tenantConnectionFactory)
+        :base(httpContextAccessor, tenantConnectionFactory)
+    {
     }
 }

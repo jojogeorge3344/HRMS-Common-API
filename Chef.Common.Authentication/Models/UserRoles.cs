@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Chef.Common.Authentication.Models;
+﻿namespace Chef.Common.Authentication.Models;
 
 //Predefined roles.
 public static class UserRoles

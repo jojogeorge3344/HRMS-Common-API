@@ -1,6 +1,5 @@
-﻿namespace Chef.Common.Services
+﻿namespace Chef.Common.Core.Services;
+
+public interface IBaseService
 {
-    public interface IBaseService
-    {
-    }
 }

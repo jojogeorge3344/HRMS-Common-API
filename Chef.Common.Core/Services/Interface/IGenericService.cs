@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
+using Chef.Common.Core.Services;
 using Chef.Common.Repositories;
 
 namespace Chef.Common.Services

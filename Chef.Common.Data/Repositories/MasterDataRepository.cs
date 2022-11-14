@@ -1,9 +1,11 @@
 ﻿namespace Chef.Common.Data.Repositories;
 
-public class MasterDataRepository : ConsoleGenericRepository, IMasterDataRepository
+public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataRepository
 {
-    public MasterDataRepository(IConsoleConnectionFactory consoleConnectionFactory)
-        : base(consoleConnectionFactory)
+    public MasterDataRepository(
+        IHttpContextAccessor httpContextAccessor,
+        IConsoleConnectionFactory consoleConnectionFactory)
+        : base(httpContextAccessor, consoleConnectionFactory)
     {
     }
 

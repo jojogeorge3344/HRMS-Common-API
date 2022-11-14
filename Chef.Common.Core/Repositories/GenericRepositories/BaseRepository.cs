@@ -3,6 +3,9 @@ using System.Data;
 
 namespace Chef.Common.Repositories
 {
+    /// <summary>
+    /// TODO: Depreciated. Eventually will be removed.
+    /// </summary>
     public abstract class BaseRepository : IBaseRepository
     {
         public IRepositoryFactory RepositoryFactory { get; set; }

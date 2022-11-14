@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {
+    /// <summary>
+    /// TODO: Depreciated. Eventually will be removed.
+    /// </summary>
+    /// <typeparam name="TModel"></typeparam>
     public abstract class CommonGenericRepository<TModel> : BaseRepository, ICommonGenericRepository<TModel>
         where TModel : Model
     {

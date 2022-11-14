@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {
+    /// <summary>
+    /// TODO : Depreciated. Eventually will be removed.
+    /// </summary>
+    /// <typeparam name="TModel"></typeparam>
     internal partial class CommonRepository<TModel> : ICommonRepository<TModel> where TModel : IModel
     {
         private readonly IDatabaseSession databaseSession;

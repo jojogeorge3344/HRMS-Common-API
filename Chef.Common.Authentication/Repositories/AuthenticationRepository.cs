@@ -5,10 +5,11 @@ namespace Chef.Common.Authentication.Repositories;
 public class AuthenticationRepository : IAuthenticationRepository
 {
     private readonly IConfiguration configuration;
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly RoleManager<IdentityRole> roleManager;
     private readonly IHttpContextAccessor httpContextAccessor;
     private readonly IMapper mapper;
+
+    private readonly UserManager<ApplicationUser> userManager;
+    private readonly RoleManager<IdentityRole> roleManager;
 
     public AuthenticationRepository(
         IConfiguration configuration,
@@ -26,7 +27,7 @@ public class AuthenticationRepository : IAuthenticationRepository
 
     public async Task<IdentityResult> RegisterAdmin(RegisterDto registerModel)
     {
-        var userExists = await userManager.FindByNameAsync(registerModel.UserName);
+        var userExists = await userManager.FindByNameAsync(registerModel.Username);
         if (userExists != null)
         {
             throw new DuplicateUserException("User name already exists!");
@@ -51,7 +52,7 @@ public class AuthenticationRepository : IAuthenticationRepository
 
     public async Task<IdentityResult> RegisterUser(RegisterDto registerModel)
     {
-        var userExists = await userManager.FindByNameAsync(registerModel.UserName);
+        var userExists = await userManager.FindByNameAsync(registerModel.Username);
         if (userExists != null)
         {
             throw new DuplicateUserException("User name already exists!");
@@ -68,6 +69,11 @@ public class AuthenticationRepository : IAuthenticationRepository
         var user = await userManager.FindByNameAsync(loginModel.Username);
         if (user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))
         {
+            if(!HasPermissions(user))
+            {
+                throw new UnauthorizedAccessException("User do not have permission to login.");
+            }
+
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims(user);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
@@ -79,6 +85,13 @@ public class AuthenticationRepository : IAuthenticationRepository
         }
 
         throw new UserNotFoundException("Either the username or password is invalid.");
+    }
+
+    private bool HasPermissions(ApplicationUser user)
+    {
+        //TODO
+        //Check user has permission to login to this module.
+        return true;
     }
 
     public async Task<IdentityResult> ChangePassword(ChangePasswordModel changePasswordModel)

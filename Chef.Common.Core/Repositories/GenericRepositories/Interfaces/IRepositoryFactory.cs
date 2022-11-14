@@ -2,6 +2,9 @@
 
 namespace Chef.Common.Repositories
 {
+    /// <summary>
+    /// TODO: Depreciated. Evetually will be removed.
+    /// </summary>
     public interface IRepositoryFactory
     {
         /// <summary>

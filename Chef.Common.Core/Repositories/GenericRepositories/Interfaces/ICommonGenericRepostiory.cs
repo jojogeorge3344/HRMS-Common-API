@@ -4,6 +4,10 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Repositories
 {
+    /// <summary>
+    /// Depreciated. Use only Generic Repository
+    /// </summary>
+    /// <typeparam name="TModel"></typeparam>
     public interface ICommonGenericRepository<TModel>
     {
         Task<TModel> GetAsync(int id, CancellationToken cancellationToken = default);

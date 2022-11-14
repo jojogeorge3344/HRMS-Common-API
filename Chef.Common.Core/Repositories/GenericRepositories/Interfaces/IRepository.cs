@@ -1,6 +1,5 @@
-﻿namespace Chef.Common.Repositories
+﻿namespace Chef.Common.Core.Repositories;
+
+public interface IRepository
 {
-    public interface IRepository
-    {
-    }
 }

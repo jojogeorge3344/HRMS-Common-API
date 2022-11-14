@@ -2,6 +2,9 @@
 
 namespace Chef.Common.Repositories
 {
+    /// <summary>
+    /// TODO: Depreciated. Eventually will be removed.
+    /// </summary>
     public class RepositoryFactory : IRepositoryFactory
     {
         private readonly IDatabaseSession databaseSession;

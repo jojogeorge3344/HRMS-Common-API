@@ -1,8 +1,7 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Chef.Common.Repositories
+namespace Chef.Common.Core.Repositories
 {
     public interface IGenericRepository<T> : IRepository
     {

@@ -1,11 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using Chef.Common.Core.Repositories;
-using Chef.Common.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Primitives;
-
-namespace Chef.Common.Authentication
+﻿namespace Chef.Common.Authentication
 {
     public class ChefAuthorizationFilter : IAuthorizationFilter
     {
