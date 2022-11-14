@@ -8,17 +8,16 @@ namespace Chef.Common.Core.Extensions
 {
     public static class AutofacRegisterExtensions
 	{
-        public static void RegisterTenantDBConnectionFactory(this ContainerBuilder builder)
+        public static void RegisterConsoleDBComponents(this ContainerBuilder builder)
         {
-            builder.RegisterType<TenantConnectionFactory>().As<ITenantConnectionFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<ConsoleConnectionFactory>().As<IConsoleConnectionFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<ConsoleSimpleUnitOfWork>().As<IConsoleSimpleUnitOfWork>().InstancePerLifetimeScope();
         }
 
-        public static void RegisterDBComponents(this ContainerBuilder builder)
-		{
-            //Register DB components
-            builder.RegisterType<DatabaseSession>().As<IDatabaseSession>().InstancePerLifetimeScope();
-            builder.RegisterType<SimpleUnitOfWork>().As<ISimpleUnitOfWork>().InstancePerDependency();
-            builder.RegisterType<QueryBuilderFactory>().As<IQueryBuilderFactory>().InstancePerDependency();
+        public static void RegisterTenantDBComponents(this ContainerBuilder builder)
+        {
+            builder.RegisterType<TenantConnectionFactory>().As<ITenantConnectionFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<TenantSimpleUnitOfWork>().As<ITenantSimpleUnitOfWork>().InstancePerLifetimeScope();
         }
 
         public static void RegisterFrameworkComponents(this ContainerBuilder builder)

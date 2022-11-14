@@ -8,6 +8,7 @@ namespace Chef.Common.Core
         [Write(false)]
         [Key]
         [Field(Order = 1)]
+        [SqlKata.Ignore]
         public int Id { get; set; }
 
         public DateTime CreatedDate { get; set; }

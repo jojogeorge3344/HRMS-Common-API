@@ -1,6 +1,6 @@
 ﻿namespace Chef.Common.Repositories
 {
-    public sealed class SimpleUnitOfWork : ISimpleUnitOfWork
+    public abstract class SimpleUnitOfWork : ISimpleUnitOfWork
     {
         private readonly IConnectionFactory connectionFactory;
 
@@ -31,4 +31,19 @@
             connectionFactory.Transaction?.Dispose();
         }
     }
+
+    public sealed class ConsoleSimpleUnitOfWork : SimpleUnitOfWork, IConsoleSimpleUnitOfWork
+    {
+        public ConsoleSimpleUnitOfWork(IConsoleConnectionFactory connectionFactory) : base(connectionFactory)
+        {
+        }
+    }
+
+    public sealed class TenantSimpleUnitOfWork : SimpleUnitOfWork, ITenantSimpleUnitOfWork
+    {
+        public TenantSimpleUnitOfWork(ITenantConnectionFactory connectionFactory) : base(connectionFactory)
+        {
+        }
+    }
+
 }

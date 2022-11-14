@@ -144,7 +144,7 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
     {
         this.httpContextAccessor = httpContextAccessor;
         this.connectionFactory = connectionFactory;
-        QueryFactory = new QueryFactory(Connection, new PostgresCompiler());
+        QueryFactory = new QueryFactory(Connection, new ChefPostgresCompiler());
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -188,7 +188,7 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
         return await QueryFactory
             .Query<T>()
             .InsertDefaults<T>(ref obj)
-            .InsertGetIdAsync<int>(obj);
+            .InsertAsync(obj);
     }
 
     public async Task<int> BulkInsertAsync(List<T> objs)
@@ -252,4 +252,10 @@ public abstract class TenantRepository<T> : GenericRepository<T> where T : Model
         :base(httpContextAccessor, tenantConnectionFactory)
     {
     }
+}
+
+public class ChefPostgresCompiler : PostgresCompiler
+{
+    protected override string OpeningIdentifier { get; set; } = "";
+    protected override string ClosingIdentifier { get; set; } = "";
 }

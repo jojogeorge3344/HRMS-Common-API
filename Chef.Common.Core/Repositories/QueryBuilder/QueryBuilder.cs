@@ -60,14 +60,14 @@ namespace Chef.Common.Repositories
             .Where(x => x.Enumerable.Count() > 1)
             .ToDictionary(t => t.Key, t => t.Enumerable);
 
-        public string SchemaName => typeof(T).Namespace.Split('.')[1];
+        public string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
 
-        public string TableName => SchemaName + "." + typeof(T).Name;
+        public string TableName => SchemaName + "." + typeof(T).Name.ToLower();
 
         private string GetTableName(Type type)
-            => type.Namespace.Split('.')[1].ToLower() + "." + type.Name;
+            => type.Namespace.Split('.')[1].ToLower() + "." + type.Name.ToLower();
 
-        public string TableNameWOSchema => typeof(T).Name;
+        public string TableNameWOSchema => typeof(T).Name.ToLower();
 
         public string PrimaryKey
         {
@@ -165,20 +165,20 @@ namespace Chef.Common.Repositories
             {
                 if (column.IsKey && !IsJunctionTable)
                 {
-                    createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} SERIAL PRIMARY KEY,");
+                    _ = createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} SERIAL PRIMARY KEY,");
                 }
                 else
                 {
-                    createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} {column.Type}");
+                    _ = createTableQuery.Append(Environment.NewLine + tab + $"{column.Name} {column.Type}");
 
                     if (column.IsRequired)
                     {
-                        createTableQuery.Append(" NOT NULL");
+                        _ = createTableQuery.Append(" NOT NULL");
                     }
 
                     if (column.HasDefaultValue)
                     {
-                        createTableQuery.Append(" DEFAULT " + column.DefaultValue);
+                        _ = createTableQuery.Append(" DEFAULT " + column.DefaultValue);
                     }
 
                     if (column.ForeignKeyReference != null)
@@ -250,18 +250,18 @@ namespace Chef.Common.Repositories
         {
             StringBuilder insertQuery = new($"INSERT INTO {TableName} ");
 
-            insertQuery.Append('(');
+            _ = insertQuery.Append('(');
 
             List<string> properties = GenerateListOfProperties(GetProperties);
-            properties.ForEach(prop => { insertQuery.Append($"{prop},"); });
+            properties.ForEach(prop => { _ = insertQuery.Append($"{prop},"); });
 
-            insertQuery
+            _ = insertQuery
                 .Remove(insertQuery.Length - 1, 1)
                 .Append(") VALUES (");
 
-            properties.ForEach(prop => { insertQuery.Append($"@{prop},"); });
+            properties.ForEach(prop => { _ = insertQuery.Append($"@{prop},"); });
 
-            insertQuery
+            _ = insertQuery
                 .Remove(insertQuery.Length - 1, 1)
                 .Append(")" + (returnId ? " RETURNING Id" : string.Empty));
 

@@ -9,33 +9,31 @@ namespace Chef.Common.Core.Repositories
     {
         private readonly Guid _id;
         private readonly ITenantProvider tenantProvider;
+        private readonly IDbConnection dbConnection;
 
         public TenantConnectionFactory(ITenantProvider tenantProvider)
         {
             this.tenantProvider = tenantProvider;
 
             _id = Guid.NewGuid();
-            Connection.Open();
+            dbConnection = new NpgsqlConnection(tenantProvider.GetCurrent().ConnectionString);
+            dbConnection.Open();
         }
 
         public IDbConnection Connection
         {
             get
             {
-                return new NpgsqlConnection(GetConnectionString());
+                return dbConnection;
             }
         }
 
         public IDbTransaction Transaction { get; set; }
 
-        private string GetConnectionString()
-        {
-            return tenantProvider.GetCurrent().ConnectionString;
-        }
-
         public void Dispose()
         {
-            Connection?.Dispose();
+            dbConnection?.Close();
+            dbConnection?.Dispose();
         }
     }
 }

@@ -8,4 +8,12 @@ namespace Chef.Common.Repositories
         void Commit();
         void Rollback();
     }
+
+    public interface IConsoleSimpleUnitOfWork : ISimpleUnitOfWork
+    {
+    }
+
+    public interface ITenantSimpleUnitOfWork : ISimpleUnitOfWork
+    {
+    }
 }

@@ -10,20 +10,22 @@ public class ConsoleConnectionFactory : IConsoleConnectionFactory, IDisposable
 {
     private readonly Guid _id;
     private readonly ITenantProvider tenantProvider;
+    private readonly IDbConnection dbConnection;
 
     public ConsoleConnectionFactory(ITenantProvider tenantProvider)
     {
         this.tenantProvider = tenantProvider;
 
         _id = Guid.NewGuid();
-        Connection.Open();
+        dbConnection = new NpgsqlConnection(tenantProvider.GetConsoleConnectionString());
+        dbConnection.Open();
     }
 
     public IDbConnection Connection
     {
         get
         {
-            return new NpgsqlConnection(tenantProvider.GetConsoleConnectionString());
+            return dbConnection;
         }
     }
 
@@ -31,7 +33,7 @@ public class ConsoleConnectionFactory : IConsoleConnectionFactory, IDisposable
 
     public void Dispose()
     {
-        Connection?.Close();
-        Connection?.Dispose();
+        dbConnection?.Close();
+        dbConnection?.Dispose();
     }
 }
