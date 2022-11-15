@@ -20,5 +20,8 @@ global using Chef.Common.Authentication.Repositories;
 global using Chef.Common.Core.Services;
 
 global using AutoMapper;
+global using Autofac;
+global using AutoMapper.Contrib.Autofac.DependencyInjection;
+
 
 
