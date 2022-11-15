@@ -7,6 +7,7 @@ public static class AutofacRegisterExtension
     {
         builder.RegisterType<AuthRepository>().As<IAuthRepository>().InstancePerLifetimeScope();
         builder.RegisterType<AuthService>().As<IAuthService>().InstancePerLifetimeScope();
+        builder.RegisterType<JwtUtils>().As<IJwtUtils>().InstancePerLifetimeScope();
 
         //Configure automapper
         builder.RegisterAutoMapper(typeof(MappingProfile).Assembly);
