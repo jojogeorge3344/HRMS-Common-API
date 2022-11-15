@@ -17,6 +17,7 @@ namespace Chef.Common.Core.Extensions
         public static void RegisterTenantDBComponents(this ContainerBuilder builder)
         {
             builder.RegisterType<TenantConnectionFactory>().As<ITenantConnectionFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<TenantConnectionFactory>().As<ITenantConnectionFactory>().InstancePerLifetimeScope();
             builder.RegisterType<TenantSimpleUnitOfWork>().As<ITenantSimpleUnitOfWork>().InstancePerLifetimeScope();
         }
 
