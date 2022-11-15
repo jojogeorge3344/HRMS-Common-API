@@ -138,6 +138,13 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
     protected QueryFactory QueryFactory { get; set; }
     protected IDbConnection Connection => connectionFactory.Connection;
 
+    //TODO: Depreciated. it will be removed eventually.
+    public IDatabaseSession DatabaseSession { get; set; }
+    public IMapper Mapper { get; set; }
+    public IQueryBuilderFactory QueryBuilderFactory { get; set; }
+    public ISqlQueryBuilder SqlQueryBuilder => QueryBuilderFactory.SqlQueryBuilder();
+    //
+
     public GRepository(
         IHttpContextAccessor httpContextAccessor,
         IConnectionFactory connectionFactory)
@@ -246,11 +253,14 @@ public abstract class ConsoleRepository<T> : GRepository<T> where T : Model
 
 public abstract class TenantRepository<T> : GRepository<T> where T : Model
 {
+    public int headerBranchId = 0;
+
     public TenantRepository(
         IHttpContextAccessor httpContextAccessor,
         ITenantConnectionFactory tenantConnectionFactory)
         :base(httpContextAccessor, tenantConnectionFactory)
     {
+        this.headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
     }
 }
 
