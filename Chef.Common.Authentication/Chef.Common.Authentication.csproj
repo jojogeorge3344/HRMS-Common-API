@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Api\Chef.Common.Api.csproj" />
+    <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Repositories\" />
