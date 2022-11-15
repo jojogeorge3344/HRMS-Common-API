@@ -71,7 +71,8 @@ public static class SqlKataExtensionMethods
     {
         obj.CreatedDate = DateTime.UtcNow;
         obj.IsArchived = false;
-        obj.CreatedBy = "System";
+        //TODO: system should be removed in production
+        obj.CreatedBy = HttpHelper.HttpContext.User.Identity.Name ?? "system"; 
 
         return q;
     }
@@ -82,7 +83,8 @@ public static class SqlKataExtensionMethods
         {
             obj.CreatedDate = DateTime.UtcNow;
             obj.IsArchived = false;
-            obj.CreatedBy = "System";
+            //TODO: system should be removed in production
+            obj.CreatedBy = HttpHelper.HttpContext.User.Identity.Name ?? "system"; //TODO: system should be removed in production
         });
 
         return q;

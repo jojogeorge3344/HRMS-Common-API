@@ -6,6 +6,8 @@ public interface IAuthRepository
     Task<IdentityResult> RegisterAdmin(RegisterDto registerModel);
     Task<AuthToken> Login(LoginDto loginModel);
     Task<IdentityResult> ChangePassword(ChangePasswordModel changePasswordModel);
+    Task<ApplicationUser> GetUser(string userName);
+
     Task<UserDto> GetCurrentUser();
     Task<ApplicationUser> GetAuthUser();
 }

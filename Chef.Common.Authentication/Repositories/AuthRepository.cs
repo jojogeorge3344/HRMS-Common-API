@@ -6,6 +6,7 @@ public class AuthRepository : IAuthRepository
 {
     private readonly IConfiguration configuration;
     private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly IJwtUtils jwtUtils;
     private readonly IMapper mapper;
 
     private readonly UserManager<ApplicationUser> userManager;
@@ -13,16 +14,19 @@ public class AuthRepository : IAuthRepository
 
     public AuthRepository(
         IConfiguration configuration,
-        UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager,
         IHttpContextAccessor httpContextAccessor,
-        IMapper mapper)
+        IJwtUtils jwtUtils,
+        IMapper mapper,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager)
     {
         this.configuration = configuration;
+        this.httpContextAccessor = httpContextAccessor;
+        this.jwtUtils = jwtUtils;
+        this.mapper = mapper;
+
         this.userManager = userManager;
         this.roleManager = roleManager;
-        this.httpContextAccessor = httpContextAccessor;
-        this.mapper = mapper;
     }
 
     public async Task<IdentityResult> RegisterAdmin(RegisterDto registerModel)
@@ -74,14 +78,7 @@ public class AuthRepository : IAuthRepository
                 throw new UnauthorizedAccessException("User do not have permission to login.");
             }
 
-            var signingCredentials = GetSigningCredentials();
-            var claims = await GetClaims(user);
-            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-
-            return new AuthToken()
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions)
-            };
+            return await jwtUtils.GenerateJwtToken(user);
         }
 
         throw new UserNotFoundException("Either the username or password is invalid.");
@@ -126,47 +123,15 @@ public class AuthRepository : IAuthRepository
         return mapper.Map<UserDto>(user);
     }
 
-    private async Task<List<Claim>> GetClaims(ApplicationUser? user)
-    {
-        var userRoles = await userManager.GetRolesAsync(user);
-
-        var authClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
-
-        foreach (var userRole in userRoles)
-        {
-            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-        }
-
-        return authClaims;
-    }
-
-    private SigningCredentials GetSigningCredentials()
-    {
-        var key = Encoding.UTF8.GetBytes(configuration["jwtConfig:Secret"]);
-        var secret = new SymmetricSecurityKey(key);
-        return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
-    }
-
-    private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
-    {
-        var jwtSettings = configuration.GetSection("JwtConfig");
-        var tokenOptions = new JwtSecurityToken
-        (
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expiresIn"])),
-            signingCredentials: signingCredentials
-        );
-        return tokenOptions;
-    }
-
     public async Task<ApplicationUser> GetAuthUser()
     {
         return await userManager.FindByEmailAsync("root@example.com");
         //return await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+    }
+
+    public async Task<ApplicationUser> GetUser(string userName)
+    {
+        return await userManager.FindByNameAsync(userName);
     }
 }
 

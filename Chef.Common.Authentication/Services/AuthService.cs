@@ -45,5 +45,10 @@ public class AuthService : IAuthService
     {
         return await authRepository.GetAuthUser();
     }
+
+    public async Task<ApplicationUser> GetUser(string userName)
+    {
+        return await authRepository.GetUser(userName);
+    }
 }
 

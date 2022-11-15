@@ -17,7 +17,7 @@ namespace Chef.Common.Repositories
         private readonly IDbTransaction transaction;
         public IUserToken UserToken { get; private set; }
 
-        public DatabaseSession(IConnectionFactory connectionFactory, IUserToken userToken)
+        public DatabaseSession(ITenantConnectionFactory connectionFactory, IUserToken userToken)
         {
             unitOfWork = new UnitOfWork(connectionFactory.Connection);
             connection = unitOfWork.Connection;
