@@ -9,14 +9,14 @@ namespace Chef.Common.Authentication;
 
 public class ChefAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    private IAuthenticationRepository authenticationRepository;
+    private IAuthRepository authenticationRepository;
 
     public ChefAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
         ISystemClock clock,
-        IAuthenticationRepository authenticationRepository)
+        IAuthRepository authenticationRepository)
         : base(options, logger, encoder, clock)
     {
         this.authenticationRepository = authenticationRepository;

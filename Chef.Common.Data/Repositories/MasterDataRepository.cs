@@ -39,13 +39,13 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .FirstOrDefaultAsync<BusinessPartner>();
     }
 
-    public async Task<IEnumerable<Country>> GetCountries()
+    public async Task<IEnumerable<CountryDto>> GetCountries()
     {
         return await QueryFactory
             .Query<Country>()
             .Select("id", "name", "code")
             .WhereNotArchived()
-            .GetAsync<Country>();
+            .GetAsync<CountryDto>();
     }
 
     public async Task<IEnumerable<Currency>> GetCurrencies()

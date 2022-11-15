@@ -53,8 +53,8 @@ public static class SqlKataExtensionMethods
         {
             createddate = DateTime.UtcNow,
             isarchived = false,
-            createdby = "System"
-        });
+            createdby = "system"
+        }); ;
     }
 
     public static Query UpdateDefaults(this Query q)

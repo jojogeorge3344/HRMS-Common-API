@@ -24,7 +24,7 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetBusinessPartner(id);
     }
 
-    public Task<IEnumerable<Country>> GetCountries()
+    public Task<IEnumerable<CountryDto>> GetCountries()
     {
         return masterDataRespository.GetCountries();
     }

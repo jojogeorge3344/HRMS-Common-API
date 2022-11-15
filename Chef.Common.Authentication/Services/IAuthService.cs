@@ -1,6 +1,8 @@
-﻿namespace Chef.Common.Authentication.Repositories;
+﻿
 
-public interface IAuthenticationRepository
+namespace Chef.Common.Authentication.Repositories;
+
+public interface IAuthService : IBaseService
 {
     Task<IdentityResult> RegisterUser(RegisterDto registerModel);
     Task<IdentityResult> RegisterAdmin(RegisterDto registerModel);

@@ -17,6 +17,7 @@ global using Chef.Common.Core;
 global using Chef.Common.Authentication.Models;
 global using Chef.Common.Exceptions;
 global using Chef.Common.Authentication.Repositories;
+global using Chef.Common.Core.Services;
 
 global using AutoMapper;
 

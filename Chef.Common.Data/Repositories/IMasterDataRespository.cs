@@ -2,7 +2,7 @@
 
 public interface IMasterDataRepository : IRepository
 {
-    Task<IEnumerable<Country>> GetCountries();
+    Task<IEnumerable<CountryDto>> GetCountries();
     Task<IEnumerable<State>> GetStates(int countryId);
 
     Task<IEnumerable<Employee>> GetActiveEmployees();

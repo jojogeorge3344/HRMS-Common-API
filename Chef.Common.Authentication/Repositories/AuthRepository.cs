@@ -2,7 +2,7 @@
 
 namespace Chef.Common.Authentication.Repositories;
 
-public class AuthenticationRepository : IAuthenticationRepository
+public class AuthRepository : IAuthRepository
 {
     private readonly IConfiguration configuration;
     private readonly IHttpContextAccessor httpContextAccessor;
@@ -11,7 +11,7 @@ public class AuthenticationRepository : IAuthenticationRepository
     private readonly UserManager<ApplicationUser> userManager;
     private readonly RoleManager<IdentityRole> roleManager;
 
-    public AuthenticationRepository(
+    public AuthRepository(
         IConfiguration configuration,
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,

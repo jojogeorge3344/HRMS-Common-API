@@ -4,41 +4,41 @@
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthenticationRepository authenticationRepository;
+    private readonly IAuthService authService;
 
-    public AuthController(IAuthenticationRepository authenticationRepository)
+    public AuthController(IAuthService authService)
     {
-        this.authenticationRepository = authenticationRepository;
+        this.authService = authService;
     }
 
     [HttpPost]
     public async Task<ActionResult<AuthToken>> Login([FromBody] LoginDto loginModel)
     {
-        return Ok(await authenticationRepository.Login(loginModel));
+        return Ok(await authService.Login(loginModel));
     }
 
     [HttpPost]
     public async Task<ActionResult> ChangePassword(ChangePasswordModel changePasswordModel)
     {
-        return Ok(await authenticationRepository.ChangePassword(changePasswordModel));
+        return Ok(await authService.ChangePassword(changePasswordModel));
     }
 
     [HttpPost]
     public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterDto registerModel)
     {
-        return Ok(await this.authenticationRepository.RegisterUser(registerModel));
+        return Ok(await this.authService.RegisterUser(registerModel));
     }
 
     [HttpPost]
     public async Task<ActionResult<IdentityResult>> RegisterAdmin([FromBody] RegisterDto registerModel)
     {
-        return Ok(await this.authenticationRepository.RegisterAdmin(registerModel));
+        return Ok(await this.authService.RegisterAdmin(registerModel));
     }
 
     [HttpGet]
     //[Authorize]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
-        return Ok(await this.authenticationRepository.GetCurrentUser());
+        return Ok(await this.authService.GetCurrentUser());
     }
 }

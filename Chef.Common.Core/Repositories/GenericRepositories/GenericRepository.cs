@@ -244,7 +244,7 @@ public abstract class ConsoleRepository<T> : GRepository<T> where T : Model
     }
 }
 
-public abstract class TenantRepository<T> : GenericRepository<T> where T : Model
+public abstract class TenantRepository<T> : GRepository<T> where T : Model
 {
     public TenantRepository(
         IHttpContextAccessor httpContextAccessor,

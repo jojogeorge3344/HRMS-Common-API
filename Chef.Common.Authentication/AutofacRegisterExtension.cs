@@ -7,7 +7,7 @@ public static class AutofacRegisterExtension
 {
     public static void RegisterAuthentication(this ContainerBuilder builder)
     {
-        builder.RegisterType<AuthenticationRepository>().As<IAuthenticationRepository>().InstancePerLifetimeScope();
+        builder.RegisterType<AuthRepository>().As<IAuthRepository>().InstancePerLifetimeScope();
 
         //Configure automapper
         builder.RegisterAutoMapper(typeof(MappingProfile).Assembly);
