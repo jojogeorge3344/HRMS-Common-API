@@ -12,4 +12,6 @@ public static class HttpHelper
     }
 
     public static HttpContext HttpContext => _accessor.HttpContext;
+
+    public static string Username => _accessor.HttpContext.User.Identity.Name;
 }
