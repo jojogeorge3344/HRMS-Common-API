@@ -211,6 +211,7 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
         return await QueryFactory
             .Query<T>()
             .UpdateDefaults<T>(ref obj)
+            .Where("id", obj.Id)
             .UpdateAsync(obj);
     }
 
