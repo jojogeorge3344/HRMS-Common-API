@@ -59,12 +59,14 @@ public class MasterDataController : ControllerBase
         return Ok(await masterDataService.GetEmployee(id));
     }
 
+    [HttpGet]
+    [Route("{baseCurrencyCode}/{transactionCurrency}/{transactionDate}")]
     public async Task<ActionResult<IEnumerable<CurrencyExchangeRate>>> GetExchangeRates(
         string baseCurrencyCode,
         string transactionCurrency,
         DateTime transactionDate)
     {
-        throw new NotImplementedException();
+        return Ok(await masterDataService.GetExchangeRates(baseCurrencyCode, transactionCurrency, transactionDate));
     }
 
     [HttpGet]

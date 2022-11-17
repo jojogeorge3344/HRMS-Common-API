@@ -24,7 +24,7 @@ public class CommonDataController : ControllerBase
 
         if (branches == null)
         {
-            throw new CompanyNotFoundException("The branches does not exist.");
+            throw new BranchNotFoundException("The branches does not exist.");
         }
 
         return Ok(branches);
@@ -37,7 +37,7 @@ public class CommonDataController : ControllerBase
 
         if (branches == null)
         {
-            throw new CompanyNotFoundException("The branches does not exist.");
+            throw new BranchNotFoundException("The branches does not exist.");
         }
 
         return Ok(branches);
