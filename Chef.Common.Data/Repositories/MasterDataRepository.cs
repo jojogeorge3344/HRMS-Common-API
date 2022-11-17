@@ -185,7 +185,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<TimeZone>()
-            .Select("id", "name", "code")
+            .Select("id", "timezoneid", "displayname", "baseutcoffset")
             .WhereNotArchived()
             .GetAsync<TimeZone>();
     }
