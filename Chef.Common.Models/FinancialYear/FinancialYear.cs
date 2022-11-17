@@ -29,6 +29,7 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public List<FinancialYearPeriod> Periods { get; set; }
     }
 }

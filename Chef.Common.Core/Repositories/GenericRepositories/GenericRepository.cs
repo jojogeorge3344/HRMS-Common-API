@@ -200,10 +200,10 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
 
     public async Task<int> BulkInsertAsync(List<T> objs)
     {
-        return await QueryFactory
-            .Query<T>()
-            .InsertDefaults<T>(ref objs)
-            .InsertAsync(objs);
+        //change this to sqlkata.
+        objs.ForEach(t => InsertDefaults(ref t));
+        var sql = new QueryBuilder<T>().GenerateInsertQuery();
+        return await Connection.ExecuteAsync(sql, objs.AsEnumerable());
     }
 
     public async Task<int> UpdateAsync(T obj)
@@ -217,10 +217,10 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
 
     public async Task<int> BulkUpdateAsync(List<T> objs)
     {
-        return await QueryFactory
-            .Query<T>()
-            .UpdateDefaults<T>(ref objs)
-            .UpdateAsync(objs);
+        //TODO : change this to sql kata.
+        objs.ForEach(t => UpdateDefaults(ref t));
+        var sql = new QueryBuilder<T>().GenerateUpdateQuery();
+        return await Connection.ExecuteAsync(sql, objs.AsEnumerable());
     }
 
     public Task<int> InsertAuditAsync(object obj, int parentID, int auditId = 0)
@@ -239,6 +239,16 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
     {
         obj.ModifiedDate = DateTime.UtcNow;
         obj.ModifiedBy = "System";
+    }
+
+    private IEnumerable<string> Columns
+    {
+        get
+        {
+            var columns = new List<string>();
+            typeof(T).GetProperties().ToList().ForEach(p => columns.Add(p.Name));
+            return columns.AsEnumerable();
+        }
     }
 }
 
