@@ -10,5 +10,6 @@ public class MappingProfile : Profile
 
         //Email and username will be same.
         CreateMap<RegisterDto, ApplicationUser>();
+        CreateMap<NewUserDto, ApplicationUser>();
     }
 }
