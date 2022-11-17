@@ -31,7 +31,8 @@ public class JwtUtils : IJwtUtils
 
         return new AuthToken()
         {
-            Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions)
+            Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions),
+            Username = user.UserName
         };
     }
 

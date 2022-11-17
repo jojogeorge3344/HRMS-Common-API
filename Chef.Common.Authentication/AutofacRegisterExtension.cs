@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Chef.Common.Authentication.Extensions;
 
 public static class AutofacRegisterExtension

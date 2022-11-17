@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.Data.Repositories;
+﻿using Chef.Common.Authentication.Models;
+
+namespace Chef.Common.Data.Repositories;
 
 public class CommonDataRepository : TenantRepository<Model>, ICommonDataRepository
 {
@@ -17,6 +19,24 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .Where("isactive", true)
             .WhereNotArchived()
             .GetAsync<Branch>();
+    }
+
+    public async Task<IEnumerable<UserBranchDto>> GetBranches(string userName)
+    {
+        return await QueryFactory
+            .Query<UserBranch>()
+            .Join<Branch, UserBranch>()
+            .Select(
+                "userbranch.username",
+                "userbranch.branchid",
+                "branch.name",
+                "branch.code")
+            .Where(new {
+                isactive = true,
+                username = userName
+            })
+            .WhereNotArchived()
+            .GetAsync<UserBranchDto>();
     }
 }
 
