@@ -13,7 +13,7 @@ namespace Chef.Common.Authentication
                 return;
 
             // authorization
-            var user = context.HttpContext.Items["User"];
+            var user = (ApplicationUser)context.HttpContext.Items["User"];
             if (user == null)
             {
                 // not logged in or role not authorized
