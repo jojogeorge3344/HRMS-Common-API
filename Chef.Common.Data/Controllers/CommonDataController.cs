@@ -1,5 +1,7 @@
 ﻿using Chef.Common.Authentication;
 using Chef.Common.Authentication.Models;
+using Chef.Common.Exceptions;
+using Chef.Common.Models;
 
 namespace Chef.Common.Data.Services;
 
@@ -18,13 +20,27 @@ public class CommonDataController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Branch>>> GetBranches()
     {
-        return Ok(await commonDataService.GetBranches());
+        var branches = await commonDataService.GetBranches();
+
+        if (branches == null)
+        {
+            throw new CompanyNotFoundException("The branches does not exist.");
+        }
+
+        return Ok(branches);
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserBranchDto>>> GetMyBranches()
     {
-        return Ok(await commonDataService.GetMyBranches());
+        var branches = await commonDataService.GetMyBranches();
+
+        if (branches == null)
+        {
+            throw new CompanyNotFoundException("The branches does not exist.");
+        }
+
+        return Ok(branches);
     }
 }
 
