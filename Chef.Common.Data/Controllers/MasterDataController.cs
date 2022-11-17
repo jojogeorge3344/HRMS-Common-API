@@ -100,7 +100,7 @@ public class MasterDataController : ControllerBase
     [Route("{segmentId:int}")]
     public async Task<ActionResult<IEnumerable<ItemFamily>>> GetItemFamilies(int segmentId)
     {
-        return Ok(masterDataService.GetItemFamilies(segmentId));
+        return Ok(await masterDataService.GetItemFamilies(segmentId));
     }
 
     [HttpGet]
