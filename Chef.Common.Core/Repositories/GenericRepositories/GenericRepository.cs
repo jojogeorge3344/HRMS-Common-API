@@ -195,7 +195,7 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
         return await QueryFactory
             .Query<T>()
             .InsertDefaults<T>(ref obj)
-            .InsertAsync(obj);
+            .InsertGetIdAsync<int>(obj);
     }
 
     public async Task<int> BulkInsertAsync(List<T> objs)
