@@ -79,7 +79,7 @@ public static class SqlKataExtensionMethods
 
     public static Query InsertDefaults<T>(this Query q, ref List<T> objs) where T : Model
     {
-        objs.ForEach(obj =>
+        objs.ToList().ForEach(obj =>
         {
             obj.CreatedDate = DateTime.UtcNow;
             obj.IsArchived = false;
@@ -93,7 +93,6 @@ public static class SqlKataExtensionMethods
     public static Query UpdateDefaults<T>(this Query q, ref T obj) where T : Model
     {
         obj.ModifiedDate = DateTime.UtcNow;
-        obj.IsArchived = false;
         obj.ModifiedBy = "System";
 
         return q;
@@ -101,10 +100,9 @@ public static class SqlKataExtensionMethods
 
     public static Query UpdateDefaults<T>(this Query q, ref List<T> objs) where T : Model
     {
-        objs.ForEach(obj =>
+        objs.ToList().ForEach(obj =>
         {
             obj.ModifiedDate = DateTime.UtcNow;
-            obj.IsArchived = false;
             obj.ModifiedBy = "System";
         });
 

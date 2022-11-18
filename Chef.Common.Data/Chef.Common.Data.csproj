@@ -10,17 +10,18 @@
     <None Remove="Repositories\" />
     <None Remove="Services\" />
     <None Remove="Services\IMasterDataService.css" />
-    <None Remove="Contollers\" />
+    <None Remove="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
     <Folder Include="Services\" />
-    <Folder Include="Contollers\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
     <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
     <ProjectReference Include="..\Chef.Common.Dtos\Chef.Common.Dtos.csproj" />
+    <ProjectReference Include="..\Chef.Common.Authentication\Chef.Common.Authentication.csproj" />
+    <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
   </ItemGroup>
 </Project>

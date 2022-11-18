@@ -9,6 +9,7 @@ global using Chef.Common.Data.Repositories;
 global using SqlKata.Execution;
 
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
 
 global using TimeZone = Chef.Common.Models.TimeZone;
 

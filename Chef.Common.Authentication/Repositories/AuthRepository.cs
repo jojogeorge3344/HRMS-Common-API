@@ -119,14 +119,14 @@ public class AuthRepository : IAuthRepository
 
     public async Task<UserDto> GetCurrentUser()
     {
-        var user = await userManager.FindByEmailAsync("root@example.com");
+        var userName = httpContextAccessor.HttpContext.User.ToString();
+        var user = await userManager.FindByEmailAsync(userName);
         return mapper.Map<UserDto>(user);
     }
 
     public async Task<ApplicationUser> GetAuthUser()
     {
-        return await userManager.FindByEmailAsync("root@example.com");
-        //return await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+        return await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
     }
 
     public async Task<ApplicationUser> GetUser(string userName)

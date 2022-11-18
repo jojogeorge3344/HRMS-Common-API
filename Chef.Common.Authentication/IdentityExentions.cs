@@ -17,17 +17,24 @@ public static class IdenityExentions
         services.ConfigurePasswordPolicies();
     }
 
-    public static void AddTenantIdentity(this IServiceCollection services)
+    public static void AddTenantIdentity(this IServiceCollection services, IConfiguration configuration)
     {
         //Add services to the container.
-        services.AddDbContext<TenantIdentityDbContext>();
+        services.AddDbContext<TenantIdentityDbContext>(ServiceLifetime.Transient);
 
         //Add Identity and JWT
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<TenantIdentityDbContext>()
             .AddDefaultTokenProviders();
 
+        services.ConfigureJWT(configuration);
         services.ConfigurePasswordPolicies();
+    }
+
+    private static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<JwtConfigOptions>(configuration.GetSection(JwtConfigOptions.JwtConfig));
+        services.AddJWTAuthentication(configuration["JwtConfig:Secret"]);
     }
 
     private static void ConfigurePasswordPolicies(this IServiceCollection services)

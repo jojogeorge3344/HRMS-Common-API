@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core;
+using SqlKata;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,6 +30,7 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public List<FinancialYearPeriod> Periods { get; set; }
     }
 }
