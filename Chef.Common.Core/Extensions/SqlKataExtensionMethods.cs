@@ -41,6 +41,11 @@ public static class SqlKataExtensionMethods
         return q.Where("isarchived", false);
     }
 
+    public static Query WhereForBranch(this Query q)
+    {
+        return q.Where("branchid", HttpHelper.BranchId);
+    }
+
     public static Query Where<T>(this Query q, string field, object val)
     {
         var schema = typeof(T).Namespace.Split('.')[1].ToLower();
@@ -53,7 +58,7 @@ public static class SqlKataExtensionMethods
         {
             createddate = DateTime.UtcNow,
             isarchived = false,
-            createdby = "system"
+            createdby = HttpHelper.Username
         }); ;
     }
 
@@ -62,7 +67,7 @@ public static class SqlKataExtensionMethods
         return q.AsUpdate(new
         {
             modifieddate = DateTime.UtcNow,
-            modifiedby = "System"
+            modifiedby = HttpHelper.Username
         });
     }
 
@@ -71,8 +76,7 @@ public static class SqlKataExtensionMethods
     {
         obj.CreatedDate = DateTime.UtcNow;
         obj.IsArchived = false;
-        //TODO: system should be removed in production
-        obj.CreatedBy = HttpHelper.HttpContext.User.Identity.Name ?? "system"; 
+        obj.CreatedBy = HttpHelper.Username; 
 
         return q;
     }
@@ -83,8 +87,7 @@ public static class SqlKataExtensionMethods
         {
             obj.CreatedDate = DateTime.UtcNow;
             obj.IsArchived = false;
-            //TODO: system should be removed in production
-            obj.CreatedBy = HttpHelper.HttpContext.User.Identity.Name ?? "system"; //TODO: system should be removed in production
+            obj.CreatedBy = HttpHelper.Username;
         });
 
         return q;
@@ -93,7 +96,7 @@ public static class SqlKataExtensionMethods
     public static Query UpdateDefaults<T>(this Query q, ref T obj) where T : Model
     {
         obj.ModifiedDate = DateTime.UtcNow;
-        obj.ModifiedBy = "System";
+        obj.ModifiedBy = HttpHelper.Username;
 
         return q;
     }
@@ -103,7 +106,7 @@ public static class SqlKataExtensionMethods
         objs.ToList().ForEach(obj =>
         {
             obj.ModifiedDate = DateTime.UtcNow;
-            obj.ModifiedBy = "System";
+            obj.ModifiedBy = HttpHelper.Username;
         });
 
         return q;
