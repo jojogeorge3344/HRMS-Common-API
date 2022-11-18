@@ -9,4 +9,5 @@ public class UserDto
     public string TimeZone { get; set; }
     public string Email { get; set; }
     public int BranchId { get; set; }
+    public bool IsActive { get; set; }
 }

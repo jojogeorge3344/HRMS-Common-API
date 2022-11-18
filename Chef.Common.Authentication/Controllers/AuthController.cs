@@ -12,7 +12,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AuthToken>> Login([FromBody] LoginDto loginModel)
+    public async Task<ActionResult<AuthToken>> Login([FromBody]LoginDto loginModel)
     {
         return Ok(await authService.Login(loginModel));
     }
@@ -24,13 +24,13 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterDto registerModel)
+    public async Task<ActionResult<IdentityResult>> Register([FromBody]RegisterDto registerModel)
     {
         return Ok(await this.authService.RegisterUser(registerModel));
     }
 
     [HttpPost]
-    public async Task<ActionResult<IdentityResult>> RegisterAdmin([FromBody] RegisterDto registerModel)
+    public async Task<ActionResult<IdentityResult>> RegisterAdmin([FromBody]RegisterDto registerModel)
     {
         return Ok(await this.authService.RegisterAdmin(registerModel));
     }
