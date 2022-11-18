@@ -8,4 +8,5 @@ public class UserDto
     public string LastName { get; set; }
     public string TimeZone { get; set; }
     public string Email { get; set; }
+    public bool isActive { get; set; }
 }
