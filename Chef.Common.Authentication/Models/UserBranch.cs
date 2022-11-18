@@ -5,5 +5,4 @@ public class UserBranch : Model
     public string UserName { get; set; }
     public int BranchId { get; set; }
     public bool IsDefault { get; set; }
-  
 }

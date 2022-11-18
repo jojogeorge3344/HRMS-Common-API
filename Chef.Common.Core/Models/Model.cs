@@ -1,5 +1,6 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using Dapper.Contrib.Extensions;
+using KeyAttribute = Dapper.Contrib.Extensions.KeyAttribute;
 
 namespace Chef.Common.Core
 {
@@ -29,8 +30,6 @@ namespace Chef.Common.Core
         public int FinancialYearId { get; set; }
 
         ///TODO: CODE REVIEW: Why we need a TEMP Date. What is the business Reason?
-        [Write(false)]
-        [Skip(true)]
         private DateTime TempDate;
 
         public DateTime TransactionDate
