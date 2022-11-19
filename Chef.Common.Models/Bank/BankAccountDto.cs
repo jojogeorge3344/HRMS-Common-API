@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
 {
-    public abstract class BankAccount : Model
+    public abstract class BankAccountDto : Model
     {
         [Required]
         [StringLength(32)]
