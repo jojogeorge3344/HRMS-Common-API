@@ -84,13 +84,15 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<CurrencyExchangeRate>()
-            .Select("id", "name", "code")
-            .Where(new {
+            .Select("BaseCurrencyId", "BaseCurrencyCode", "TransactionCurrencyId", "TransactionCurrencyCode", "ExchangeDate", "ExchangeRate")
+            .Where(new
+            {
                 baseCurrencyCode = baseCurrencyCode,
-                transactionCurrency = transactionCurrency,
-                transactionDate = transactionDate
+                transactionCurrencyCode = transactionCurrency
             })
-            .WhereNotArchived()
+            .Where(q =>
+    q.Where("exchangeDate", transactionDate).OrWhere("exchangeDate", "<", transactionDate))
+            .WhereNotArchived().OrderByDesc("exchangeDate").Limit(1)
             .GetAsync<CurrencyExchangeRate>();
     }
 
