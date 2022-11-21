@@ -46,7 +46,7 @@ public class MasterDataService : IMasterDataService
 
     public Task<IEnumerable<CurrencyExchangeRate>> GetExchangeRates(string baseCurrencyCode, string transactionCurrency, DateTime transactionDate)
     {
-        throw new NotImplementedException();
+        return masterDataRespository.GetExchangeRates(baseCurrencyCode, transactionCurrency, transactionDate);
     }
 
     public Task<FinancialYear> GetFinancialYear(int id)
