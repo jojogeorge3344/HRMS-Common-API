@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.Authentication.Models;
+﻿using Chef.Common.Models;
+
+namespace Chef.Common.Authentication.Models;
 
 public class MappingProfile : Profile
 {
@@ -8,6 +10,7 @@ public class MappingProfile : Profile
 
         //Email and username will be same.
         CreateMap<RegisterDto, ApplicationUser>();
-       
+
+        CreateMap<Branch, UserBranchEditDto>();
     }
 }

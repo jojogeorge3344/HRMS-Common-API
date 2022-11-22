@@ -3,6 +3,6 @@
 public class UserModule : Model
 {
     public string Username { get; set; }
-    public ModuleType Module { get; set; }
+    public int ModuleId { get; set; }
 }
 
