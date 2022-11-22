@@ -8,7 +8,7 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
 
     private readonly IStorageService storageService;
     private readonly StorageOptions storageOptions;
-    private readonly ISimpleUnitOfWork simpleUnitOfWork;
+    private readonly ITenantSimpleUnitOfWork simpleUnitOfWork;
 
     public FileDetailService(
         IFileDetailRepository fileDetailRepository,
@@ -16,7 +16,7 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
         IFileVersionRepository fileVersionRepository,
         IStorageService fileStorageService,
         IOptions<StorageOptions> options,
-        ISimpleUnitOfWork simpleUnitOfWork)
+        ITenantSimpleUnitOfWork simpleUnitOfWork)
     {
         this.fileDetailRepository = fileDetailRepository;
         this.fileMetaDataRepository = fileMetaDataRepository;
