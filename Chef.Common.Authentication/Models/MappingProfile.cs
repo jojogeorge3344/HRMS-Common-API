@@ -12,5 +12,7 @@ public class MappingProfile : Profile
         CreateMap<RegisterDto, ApplicationUser>();
 
         CreateMap<Branch, UserBranchEditDto>();
+
+        CreateMap<IdentityRole, RoleDto>();
     }
 }
