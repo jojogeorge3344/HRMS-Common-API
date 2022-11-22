@@ -343,4 +343,12 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+
+    [Serializable]
+    public class BankAccountCannotBeDeletedException : Exception
+    {
+        public BankAccountCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
 }
