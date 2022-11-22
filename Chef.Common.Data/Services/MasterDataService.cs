@@ -89,6 +89,11 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetJournalBookTypes();
     }
 
+    public Task<CurrencyExchangeRate> GetLatestExchangeRate(string currencyCode)
+    {
+        return masterDataRespository.GetLatestExchangeRate(currencyCode);
+    }
+
     public Task<IEnumerable<State>> GetStates(int countryId)
     {
         return masterDataRespository.GetStates(countryId);

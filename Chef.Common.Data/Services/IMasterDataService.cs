@@ -15,11 +15,14 @@ public interface IMasterDataService : IBaseService
     Task<BusinessPartner> GetBusinessPartner(int id);
 
     Task<IEnumerable<Currency>> GetCurrencies();
-    Task<IEnumerable<CurrencyExchangeRate>> GetExchangeRates(
-        string baseCurrencyCode,
-        string transactionCurrency,
-        DateTime transactionDate);
     Task<Currency> GetCurrency(int id);
+
+    Task<IEnumerable<CurrencyExchangeRate>> GetExchangeRates(
+    string baseCurrencyCode,
+    string transactionCurrency,
+    DateTime transactionDate);
+    Task<CurrencyExchangeRate> GetLatestExchangeRate(string currencyCode);
+
 
     Task<IEnumerable<FinancialYear>> GetFinancialYears();
     Task<FinancialYear> GetFinancialYear(int id);

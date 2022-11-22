@@ -173,6 +173,17 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .GetAsync<JournalBookType>();
     }
 
+    public async Task<CurrencyExchangeRate> GetLatestExchangeRate(string currencyCode)
+    {
+        return await QueryFactory
+            .Query<CurrencyExchangeRate>()
+            .Where("transactioncurrencycode", "=", currencyCode)
+            .WhereNotArchived()
+            .OrderByDesc("exchangedate")
+            .Limit(1)
+            .FirstOrDefaultAsync<CurrencyExchangeRate>();
+    }
+
     public async Task<IEnumerable<State>> GetStates(int countryId)
     {
         return await QueryFactory
