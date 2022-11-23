@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.Data.Services;
+﻿using Chef.Common.Repositories;
+
+namespace Chef.Common.Data.Services;
 
 public interface IMasterDataService : IBaseService
 {
