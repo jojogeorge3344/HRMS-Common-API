@@ -23,10 +23,20 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<Employee>()
-            .Select("id", "name", "code")
+            .Select("id","displayname", "employeecode")
             .Where("isactive", true)
             .WhereNotArchived()
             .GetAsync<Employee>();
+    }
+
+    public async Task<Company> GetBaseCompany()
+    {
+        return await QueryFactory
+            .Query<Company>()
+            .Select("id", "name", "code","cityid", "cityname", "stateid", "statename", "countryid", "countryname", "zipcode", "currencyid", "currencycode", "phone", "email", "basecompanyid", "basecompanycode")
+            .Where("basecompanyid", 0)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<Company>();
     }
 
     public async Task<BusinessPartner> GetBusinessPartner(int id)
@@ -65,6 +75,16 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .Where("id", id)
             .WhereNotArchived()
             .FirstOrDefaultAsync<Currency>();
+    }
+
+    public async Task<Currency> GetCurrencyByCode(string code)
+    {
+        return await QueryFactory
+           .Query<Currency>()
+           .Select("id", "name", "code")
+           .Where("code", code)
+           .WhereNotArchived()
+           .FirstOrDefaultAsync<Currency>();
     }
 
     public async Task<Employee> GetEmployee(int id)

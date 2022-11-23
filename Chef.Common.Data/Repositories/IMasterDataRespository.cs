@@ -30,5 +30,9 @@ public interface IMasterDataRepository : IRepository
     Task<IEnumerable<ItemCommodity>> GetItemCommodities(int itemClassId);
 
     Task<IEnumerable<TimeZone>> GetTimeZones();
+
+    Task<Currency> GetCurrencyByCode(string code);
+
+    Task<Company> GetBaseCompany();
 }
 

@@ -19,6 +19,11 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetActiveEmployees();
     }
 
+    public  Task<Company> GetBaseCompany()
+    {
+        return masterDataRespository.GetBaseCompany();
+    }
+
     public Task<BusinessPartner> GetBusinessPartner(int id)
     {
         return masterDataRespository.GetBusinessPartner(id);
@@ -37,6 +42,11 @@ public class MasterDataService : IMasterDataService
     public Task<Currency> GetCurrency(int id)
     {
         return masterDataRespository.GetCurrency(id);
+    }
+
+    public  Task<Currency> GetCurrencyByCode(string code)
+    {
+        return  masterDataRespository.GetCurrencyByCode(code);
     }
 
     public Task<Employee> GetEmployee(int id)

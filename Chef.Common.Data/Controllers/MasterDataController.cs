@@ -46,6 +46,19 @@ public class MasterDataController : ControllerBase
     }
 
     [HttpGet]
+    [Route("{code}")]
+    public async Task<ActionResult<Currency>> GetCurrencyByCode(string code)
+    {
+        return Ok(await (masterDataService.GetCurrencyByCode(code)));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<Company>> GetBaseCompany()
+    {
+        return Ok(await (masterDataService.GetBaseCompany()));
+    }
+
+    [HttpGet]
     [Route("{id:int}")]
     public async Task<ActionResult<Currency>> GetCurrency(int id)
     {
