@@ -103,5 +103,15 @@ public class MasterDataService : IMasterDataService
     {
         return masterDataRespository.GetTimeZones();
     }
+
+    public Task<Company> GetBaseCompany() 
+    {
+        return masterDataRespository.GetBaseCompany();
+    }
+
+    public Task<Currency> GetByCurrency(string transactionCurrency)
+    {
+        return masterDataRespository.GetByCurrency(transactionCurrency);
+    }
 }
 

@@ -33,4 +33,6 @@ public interface IMasterDataService : IBaseService
     Task<IEnumerable<ItemCommodity>> GetItemCommodities(int itemClassId);
 
     Task<IEnumerable<TimeZone>> GetTimeZones();
+    public Task<Company> GetBaseCompany();
+    Task<Currency> GetByCurrency(string baseCurrency);
 }

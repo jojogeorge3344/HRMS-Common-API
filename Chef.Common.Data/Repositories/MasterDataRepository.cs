@@ -202,5 +202,23 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .GetAsync<TimeZone>();
     }
+
+    public async Task<Company> GetBaseCompany()
+    {
+        return await QueryFactory
+            .Query<Company>()
+            .Where("basecompanyid", 0)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<Company>();
+    }
+
+    public async Task<Currency> GetByCurrency(string baseCurrency)
+    {
+        return await QueryFactory
+            .Query<Currency>()
+            .Where("code", baseCurrency)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<Currency>();
+    }
 }
 
