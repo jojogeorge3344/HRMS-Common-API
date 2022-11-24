@@ -4,6 +4,6 @@ namespace Chef.Common.Data.Services;
 
 public interface ICommonDataService : IBaseService
 {
-    Task<IEnumerable<Branch>> GetBranches();
-    Task<IEnumerable<UserBranchDto>> GetMyBranches();
+    Task<IEnumerable<BranchViewModel>> GetBranches();
+    Task<IEnumerable<UserBranchDto>> GetMyBranches(); 
 }
