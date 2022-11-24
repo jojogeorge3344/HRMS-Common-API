@@ -4,7 +4,9 @@ namespace Chef.Common.Data.Repositories;
 
 public interface ICommonDataRepository : IRepository
 {
-    Task<IEnumerable<Branch>> GetBranches();
+    Task<IEnumerable<BranchViewModel>> GetBranches();
     Task<IEnumerable<UserBranchDto>> GetBranches(string userName);
+   
+    
 }
 

@@ -11,14 +11,14 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
     {
     }
 
-    public async Task<IEnumerable<Branch>> GetBranches()
+    public async Task<IEnumerable<BranchViewModel>> GetBranches()
     {
         return await QueryFactory
             .Query<Branch>()
-            .Select("id", "name", "code")
+            .Select("id as BranchId", "name as BranchName", "code as BranchCode")
             .Where("isactive", true)
             .WhereNotArchived()
-            .GetAsync<Branch>();
+            .GetAsync<BranchViewModel>();
     }
 
     public async Task<IEnumerable<UserBranchDto>> GetBranches(string userName)
@@ -27,11 +27,12 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .Query<UserBranch>()
             .Join<Branch, UserBranch>()
             .Select(
-                "userbranch.username",
-                "userbranch.branchid",
-                "branch.name",
-                "branch.code")
-            .Where(new {
+                "userbranch.UserName",
+                "userbranch.BranchId",
+                "branch.name as BranchName",
+                "branch.code as BranchCode")
+            .Where(new
+            {
                 isactive = true,
                 username = userName
             })
@@ -39,4 +40,3 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .GetAsync<UserBranchDto>();
     }
 }
-
