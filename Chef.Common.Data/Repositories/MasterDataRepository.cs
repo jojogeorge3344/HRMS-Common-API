@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.Data.Repositories;
+﻿using Chef.Common.Models;
+
+namespace Chef.Common.Data.Repositories;
 
 public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataRepository
 {
@@ -23,7 +25,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<Employee>()
-            .Select("id","displayname", "employeecode")
+            .Select("id", "displayname", "employeecode")
             .Where("isactive", true)
             .WhereNotArchived()
             .GetAsync<Employee>();
@@ -33,7 +35,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<Company>()
-            .Select("id", "name", "code","cityid", "cityname", "stateid", "statename", "countryid", "countryname", "zipcode", "currencyid", "currencycode", "phone", "email", "basecompanyid", "basecompanycode")
+            .Select("id", "name", "code", "cityid", "cityname", "stateid", "statename", "countryid", "countryname", "zipcode", "currencyid", "currencycode", "phone", "email", "basecompanyid", "basecompanycode")
             .Where("basecompanyid", 0)
             .WhereNotArchived()
             .FirstOrDefaultAsync<Company>();
@@ -222,5 +224,25 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .GetAsync<TimeZone>();
     }
+
+
+    public async Task<IEnumerable<Bank>> GetAllBank()
+    {
+		return await QueryFactory
+			.Query<Bank>()
+			.Select("id","code","name")
+			.WhereNotArchived()
+			.GetAsync<Bank>();
+	}
+
+    public async Task<IEnumerable<BankBranch>> GetBranchByBank(int id) 
+    {
+		return await QueryFactory
+				.Query<BankBranch>()
+				.Select("id", "name", "code")
+				.Where("bankid", id)
+				.WhereNotArchived()
+				.GetAsync<BankBranch>();
+	}
 }
 

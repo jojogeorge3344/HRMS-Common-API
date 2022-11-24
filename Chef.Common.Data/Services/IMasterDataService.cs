@@ -39,4 +39,7 @@ public interface IMasterDataService : IBaseService
     Task<Currency> GetCurrencyByCode(string code);
 
     Task<Company> GetBaseCompany();
+
+    Task<IEnumerable<Bank>> GetAllBank();
+    Task<IEnumerable<BankBranch>> GetBranchByBank(int id);
 }

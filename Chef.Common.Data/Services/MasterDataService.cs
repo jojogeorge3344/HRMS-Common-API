@@ -113,5 +113,16 @@ public class MasterDataService : IMasterDataService
     {
         return masterDataRespository.GetTimeZones();
     }
+
+    public Task<IEnumerable<Bank>> GetAllBank()
+    {
+		return masterDataRespository.GetAllBank();
+
+	}
+    public Task<IEnumerable<BankBranch>> GetBranchByBank(int id)
+    {
+		return masterDataRespository.GetBranchByBank(id);
+
+	}
 }
 
