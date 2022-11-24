@@ -19,7 +19,7 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetActiveEmployees();
     }
 
-    public  Task<Company> GetBaseCompany()
+    public Task<Company> GetBaseCompany()
     {
         return masterDataRespository.GetBaseCompany();
     }
@@ -44,9 +44,9 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetCurrency(id);
     }
 
-    public  Task<Currency> GetCurrencyByCode(string code)
+    public Task<Currency> GetCurrencyByCode(string code)
     {
-        return  masterDataRespository.GetCurrencyByCode(code);
+        return masterDataRespository.GetCurrencyByCode(code);
     }
 
     public Task<Employee> GetEmployee(int id)
@@ -113,16 +113,43 @@ public class MasterDataService : IMasterDataService
     {
         return masterDataRespository.GetTimeZones();
     }
-
     public Task<IEnumerable<Bank>> GetAllBank()
     {
-		return masterDataRespository.GetAllBank();
+        return masterDataRespository.GetAllBank();
 
-	}
+    }
     public Task<IEnumerable<BankBranch>> GetBranchByBank(int id)
     {
-		return masterDataRespository.GetBranchByBank(id);
+        return masterDataRespository.GetBranchByBank(id);
 
-	}
+    }
+    public Task<IEnumerable< Tax>> GetAllTaxSetupAsync()
+    {
+        return masterDataRespository.GetAllTaxSetupAsync();
+    }
+    public Task<IEnumerable<BusinessPartner>> getAllActiveBP()
+    {
+        return masterDataRespository.getAllActiveBP();
+    }
+    public Task<BankBranch> getBankBranchById(int id)
+    {
+        return masterDataRespository.getBankBranchById(id);
+    }
+    public Task<IEnumerable<BankBranch>> getAllBranches()
+    {
+        return masterDataRespository.getAllBranches();
+    }
+    public Task<Currency> GetByCurrency(string transactionCurrency)
+    {
+        return masterDataRespository.GetByCurrency(transactionCurrency);
+    }
+    public Task<IEnumerable<Company>> GetAllCompanies()
+    {
+        return masterDataRespository.GetAllCompanies();
+    }
+    public Task<IEnumerable<BankBranch>> GetAllBankBranchesByBank(int bankId)
+    {
+        return masterDataRespository.GetAllBankBranchesByBank(bankId);
+    }
 }
 

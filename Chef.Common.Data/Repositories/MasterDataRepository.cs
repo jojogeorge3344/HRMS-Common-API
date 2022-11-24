@@ -225,18 +225,17 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .GetAsync<TimeZone>();
     }
 
-
-    public async Task<IEnumerable<Bank>> GetAllBank()
-    {
+	public async Task<IEnumerable<Bank>> GetAllBank()
+	{
 		return await QueryFactory
 			.Query<Bank>()
-			.Select("id","code","name")
+			.Select("id", "code", "name")
 			.WhereNotArchived()
 			.GetAsync<Bank>();
 	}
 
-    public async Task<IEnumerable<BankBranch>> GetBranchByBank(int id) 
-    {
+	public async Task<IEnumerable<BankBranch>> GetBranchByBank(int id)
+	{
 		return await QueryFactory
 				.Query<BankBranch>()
 				.Select("id", "name", "code")
@@ -244,5 +243,59 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
 				.WhereNotArchived()
 				.GetAsync<BankBranch>();
 	}
+    public async Task<IEnumerable<Tax>> GetAllTaxSetupAsync()
+    {
+        return await QueryFactory
+                .Query<Tax>()
+                .WhereNotArchived()
+                .GetAsync<Tax>();
+    }
+    public async Task<IEnumerable<BusinessPartner>> getAllActiveBP()
+    {
+		return await QueryFactory
+				.Query<BusinessPartner>()
+				.WhereNotArchived()
+				.GetAsync<BusinessPartner>();
+	}
+    public async Task<BankBranch> getBankBranchById(int id)
+    {
+		
+		return await QueryFactory
+					.Query<BankBranch>()
+					.Select("id", "name", "code")
+					.Where("bankid", id)
+					.WhereNotArchived()
+					.FirstOrDefaultAsync<BankBranch>();
+	}
+    public async Task<IEnumerable<BankBranch>> getAllBranches()
+    {
+        return await QueryFactory
+                            .Query<BankBranch>()
+                            .WhereNotArchived()
+                            .GetAsync<BankBranch>();
+    }
+    public async Task<Currency>GetByCurrency(string transactionCurrency)
+    {
+		return await QueryFactory
+					.Query<Currency>()
+					.WhereNotArchived()
+					.FirstOrDefaultAsync<Currency>();
+	}
+    public async Task<IEnumerable<Company>> GetAllCompanies()
+    {
+		return await QueryFactory
+				.Query<Company>()
+				.WhereNotArchived()
+				.GetAsync<Company>();
+	}
+    public async Task<IEnumerable<BankBranch>> GetAllBankBranchesByBank(int bankId)
+    {
+		return await QueryFactory
+						.Query<BankBranch>()
+						.WhereNotArchived()
+				        .Where("bankid", bankId)
+						.GetAsync<BankBranch>();
+	}
+
 }
 

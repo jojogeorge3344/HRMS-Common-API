@@ -1,4 +1,6 @@
 ﻿using Chef.Common.Data.Services;
+using Chef.Common.Models;
+using Chef.Common.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chef.Common.Data.Controller;
@@ -147,12 +149,10 @@ public class MasterDataController : ControllerBase
     {
         return Ok(await masterDataService.GetTimeZones());
     }
-	#region bank
-
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<Bank>>> GetAllBank() 
+	public async Task<ActionResult<IEnumerable<Bank>>> GetAllBank()
 	{
-        var banks = await masterDataService.GetAllBank(); //.GetAll<Bank>("Bank/getAll");
+		var banks = await masterDataService.GetAllBank(); //.GetAll<Bank>("Bank/getAll"); 
 
 		if (banks == null)
 		{
@@ -164,7 +164,7 @@ public class MasterDataController : ControllerBase
 	[HttpGet("{id:int}")]
 	public async Task<ActionResult<IEnumerable<BankBranch>>> GetBranchByBank(int id)
 	{
-        var branches = await masterDataService.GetBranchByBank(id);    //.GetById<BankBranch>(id, "bankBranch/get/");
+		var branches = await masterDataService.GetBranchByBank(id);    //.GetById<BankBranch>(id, "bankBranch/get/");
 
 		if (branches == null)
 		{
@@ -173,5 +173,107 @@ public class MasterDataController : ControllerBase
 		return Ok(branches);
 	}
 	#endregion
+
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<Tax>>> GetAllTaxSetupAsync()
+	{
+        var tax = await masterDataService.GetAllTaxSetupAsync();
+		if (tax == null)
+		{
+			return NotFound("The branch does not exist.");
+		}
+		return Ok(tax);
+		return Ok(await masterDataService.GetAllTaxSetupAsync());  //GetAll<Tax>("TaxSetup/getAll"));
+	}
+
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<BusinessPartner>>> getAllActiveBP()
+	{
+		string top = Request.Query["$top"];
+		string fil = Request.Query["$filter"];
+		string skip = Request.Query["$skip"];
+		SqlSearch sqlSearch = new SqlSearch();
+		sqlSearch.Rules.Add(new SqlSearchRule());
+		sqlSearch.Rules[0].Field = "Name";
+		sqlSearch.Rules[0].Operator = SqlSearchOperator.Contains;
+		sqlSearch.Rules[0].Value = fil.Replace("code eq '", "").Replace("'", "");
+		sqlSearch.Rules.Add(new SqlSearchRule());
+		sqlSearch.Rules[1].Field = "Code";
+		sqlSearch.Rules[1].Operator = SqlSearchOperator.Contains;
+		sqlSearch.Rules[1].Value = fil.Replace("code eq '", "").Replace("'", "");
+		sqlSearch.Condition = SqlConditionOperator.OR;
+
+		sqlSearch.Limit = Convert.ToInt32(top);
+		if (skip != null)
+			sqlSearch.Offset = Convert.ToInt32(skip);
+        //  string 
+        var businessPartners = await masterDataService.getAllActiveBP();   //getByLimit<BusinessPartner>(sqlSearch, "businessPartner/getAllActiveBP");
+
+		if (businessPartners == null)
+		{
+			return NotFound("The business partner does not exist.");
+		}
+		return Ok(businessPartners);
+	}
+
+	[HttpGet("{id:int}")]
+	public async Task<ActionResult<BankBranch>> getBankBranchById(int id)
+	{
+        var bankBranch = await masterDataService.getBankBranchById(id);     //GetBankBranchById<BankBranch>(id, "bankBranch/get/");
+
+		if (bankBranch == null)
+		{
+			return NotFound("The Branch does not exist.");
+		}
+
+		return Ok(bankBranch);
+	}
+
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<BankBranch>>> getAllBranches()
+	{
+        var bankBranch = await masterDataService.getAllBranches();    //GetAll<BankBranch>("bankBranch/getAll");
+
+		if (bankBranch == null)
+		{
+			return NotFound("The Branch does not exist.");
+		}
+
+		return Ok(bankBranch);
+	}
+
+	[HttpGet("{transactionCurrency:string}")]
+	public async Task<ActionResult<Currency>> GetByCurrency(string transactionCurrency)
+	{
+        return Ok(await masterDataService.GetByCurrency(transactionCurrency));  //GetByCurrency<Currency>("Currency/GetByCurrency/transactionCurrency/", transactionCurrency));
+	}
+
+
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<Company>>> GetAllCompanies()
+	{
+        var companys = await masterDataService.GetAllCompanies();   //GetAll<Company>("Company/GetAll");
+
+		if (companys == null)
+		{
+			return NotFound("The company does not exist.");
+		}
+		return Ok(companys);
+	}
+
+
+
+	[HttpGet("{bankId:int}")]
+	public async Task<ActionResult<IEnumerable<BankBranch>>> GetAllBankBranchesByBank(int bankId)
+	{
+        var bankBranches = await masterDataService.GetAllBankBranchesByBank(bankId);   //GetById<BankBranch>(bankId, "bankBranch/getAllByBank");
+
+		if (bankBranches == null)
+		{
+			return NotFound("The bank branch does not exist.");
+		}
+		return Ok(bankBranches);
+	}
+
 }
 
