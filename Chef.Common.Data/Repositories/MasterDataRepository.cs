@@ -222,5 +222,25 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .GetAsync<TimeZone>();
     }
+
+	public async Task<IEnumerable<Bank>> GetAllBank()
+	{
+		return await QueryFactory
+			.Query<Bank>()
+			.Select("id", "code", "name")
+			.WhereNotArchived()
+			.GetAsync<Bank>();
+	}
+
+	public async Task<IEnumerable<BankBranch>> GetBranchByBank(int id)
+	{
+		return await QueryFactory
+				.Query<BankBranch>()
+				.Select("id", "name", "code")
+				.Where("bankid", id)
+				.WhereNotArchived()
+				.GetAsync<BankBranch>();
+	}
+
 }
 
