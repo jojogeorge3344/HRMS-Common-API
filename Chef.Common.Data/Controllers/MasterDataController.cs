@@ -147,5 +147,31 @@ public class MasterDataController : ControllerBase
     {
         return Ok(await masterDataService.GetTimeZones());
     }
+	#region bank
+
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<Bank>>> GetAllBank() 
+	{
+        var banks = await masterDataService.GetAllBank(); //.GetAll<Bank>("Bank/getAll");
+
+		if (banks == null)
+		{
+			return NotFound("The bank does not exist.");
+		}
+		return Ok(banks);
+	}
+
+	[HttpGet("{id:int}")]
+	public async Task<ActionResult<IEnumerable<BankBranch>>> GetBranchByBank(int id)
+	{
+        var branches = await masterDataService.GetBranchByBank(id);    //.GetById<BankBranch>(id, "bankBranch/get/");
+
+		if (branches == null)
+		{
+			return NotFound("The branch does not exist.");
+		}
+		return Ok(branches);
+	}
+	#endregion
 }
 
