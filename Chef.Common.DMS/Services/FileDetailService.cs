@@ -226,7 +226,7 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
         };
     }
 
-    private string GetFilePath(int companyId, int branchId, string module)
+    private string GetFilePath(int companyId, int branchId = 0, string module = "default")
     {
         string path = string.Format("{0}/{1}/{2}/{3}/{4}/{5}/",
             storageOptions.BasePath,
@@ -239,7 +239,7 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
         return path;
     }
 
-    private string GetArchivesFilePath(int companyId, int branchId, string module)
+    private string GetArchivesFilePath(int companyId, int branchId = 0, string module = "default")
     {
         string path = string.Format("{0}/archives/{1}/{2}/{3}/{4}/{5}/",
             storageOptions.BasePath,

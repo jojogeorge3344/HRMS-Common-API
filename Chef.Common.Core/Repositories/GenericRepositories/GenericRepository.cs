@@ -2,7 +2,9 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using Chef.Common.Core.Extensions;
+using Chef.Common.Core.Logging;
 using Chef.Common.Repositories;
 using Dapper;
 using Microsoft.AspNetCore.Http;
@@ -45,13 +47,15 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Mod
 
     public virtual async Task<int> DeleteAsync(int id)
     {
-        return await QueryFactory
+        var affected = await QueryFactory
             .Query<T>()
             .Where("id", id)
             .UpdateAsync(new
             {
                 isarchived = true
             });
+
+        return affected;
     }
 
     public virtual async Task<int> DeletePermanentAsync(int id)
@@ -134,6 +138,9 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
     protected QueryFactory QueryFactory { get; set; }
     protected IDbConnection Connection => connectionFactory.Connection;
 
+    protected string SchemaName => typeof(T).Namespace.Split('.')[1].ToLower();
+    protected string TableName => typeof(T).Name;
+
     //TODO: Depreciated. it will be removed eventually.
     public IDatabaseSession DatabaseSession { get; set; }
     public IMapper Mapper { get; set; }
@@ -152,13 +159,21 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
 
     public async Task<int> DeleteAsync(int id)
     {
-        return await QueryFactory
+        var affected = await QueryFactory
             .Query<T>()
             .Where("id", id)
+            .UpdateDefaults()
             .UpdateAsync(new
             {
                 isarchived = true
             });
+
+        if (typeof(T) is IAuditable)
+        {
+            InsertAuditLogAsync(new { isarchived = true }, AuditAction.Delete, id);
+        }
+
+        return affected;
     }
 
     public async Task<int> DeletePermanentAsync(int id)
@@ -188,15 +203,22 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
 
     public async Task<int> InsertAsync(T obj)
     {
-        return await QueryFactory
+        var id = await QueryFactory
             .Query<T>()
             .InsertDefaults<T>(ref obj)
             .InsertGetIdAsync<int>(obj);
+
+        if (obj is IAuditable)
+        {
+            InsertAuditLogAsync(obj, AuditAction.Insert, id);
+        }
+
+        return id;
     }
 
     public async Task<int> BulkInsertAsync(List<T> objs)
     {
-        //change this to sqlkata.
+        //TODO: change this to sqlkata.
         objs.ForEach(t => InsertDefaults(ref t));
         var sql = new QueryBuilder<T>().GenerateInsertQuery();
         return await Connection.ExecuteAsync(sql, objs.AsEnumerable());
@@ -204,11 +226,18 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
 
     public async Task<int> UpdateAsync(T obj)
     {
-        return await QueryFactory
+        var affected = await QueryFactory
             .Query<T>()
             .UpdateDefaults<T>(ref obj)
             .Where("id", obj.Id)
             .UpdateAsync(obj);
+
+        if (obj is IAuditable)
+        {
+            InsertAuditLogAsync(obj, AuditAction.Update, obj.Id);
+        }
+
+        return affected;
     }
 
     public async Task<int> BulkUpdateAsync(List<T> objs)
@@ -246,6 +275,22 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
             return columns.AsEnumerable();
         }
     }
+
+    private async void InsertAuditLogAsync(Object obj, string action, int tablePK)
+    {
+        await QueryFactory
+            .Query<AuditLog>()
+            .InsertAsync(new AuditLog()
+            {
+                Action = action,
+                CreatedDate = DateTime.UtcNow,
+                CreatedBy = HttpHelper.Username,
+                TablePK = tablePK,
+                Values = JsonSerializer.Serialize(obj),
+                SchemaName = SchemaName,
+                TableName = TableName
+            });
+    }
 }
 
 public abstract class ConsoleRepository<T> : GRepository<T> where T : Model
@@ -253,7 +298,7 @@ public abstract class ConsoleRepository<T> : GRepository<T> where T : Model
     public ConsoleRepository(
         IHttpContextAccessor httpContextAccessor,
         IConsoleConnectionFactory consoleConnectionFactory)
-        :base(httpContextAccessor, consoleConnectionFactory)
+        : base(httpContextAccessor, consoleConnectionFactory)
     {
     }
 }
@@ -265,7 +310,7 @@ public abstract class TenantRepository<T> : GRepository<T> where T : Model
     public TenantRepository(
         IHttpContextAccessor httpContextAccessor,
         ITenantConnectionFactory tenantConnectionFactory)
-        :base(httpContextAccessor, tenantConnectionFactory)
+        : base(httpContextAccessor, tenantConnectionFactory)
     {
         this.headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
     }
