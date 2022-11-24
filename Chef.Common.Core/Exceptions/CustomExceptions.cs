@@ -351,4 +351,12 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+
+    [Serializable]
+    public class BankChargeNotFoundException : ApplicationException
+    {
+        public BankChargeNotFoundException(string message) : base(message)
+        {
+        }
+    }
 }
