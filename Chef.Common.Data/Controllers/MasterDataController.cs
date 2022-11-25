@@ -172,7 +172,7 @@ public class MasterDataController : ControllerBase
 		}
 		return Ok(branches);
 	}
-	#endregion
+
 
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<Tax>>> GetAllTaxSetupAsync()
@@ -242,7 +242,7 @@ public class MasterDataController : ControllerBase
 		return Ok(bankBranch);
 	}
 
-	[HttpGet("{transactionCurrency:string}")]
+	[HttpGet("{transactionCurrency}")]
 	public async Task<ActionResult<Currency>> GetByCurrency(string transactionCurrency)
 	{
         return Ok(await masterDataService.GetByCurrency(transactionCurrency));  //GetByCurrency<Currency>("Currency/GetByCurrency/transactionCurrency/", transactionCurrency));
