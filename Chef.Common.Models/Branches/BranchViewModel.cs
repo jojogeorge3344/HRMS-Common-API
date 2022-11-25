@@ -2,12 +2,13 @@
 
 namespace Chef.Common.Models
 {
-    public class CompanyViewModel : Model
-    {
-        public int CompanyId { get; set; }
+	public class BranchViewModel : Model
+	{
 
-        public string CompanyName { get; set; }
+		public int BranchId { get; set; }
 
-        public string CompanyCode { get; set; }
-    }
+		public string BranchName { get; set; }
+
+		public string BranchCode { get; set; }
+	}
 }

@@ -44,4 +44,13 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .WhereFalse("userbranch.isArchived")
 			.GetAsync<UserBranchDto>();
     }
+
+
+    public async Task<CompanyDetails> GetMyCompany()
+    {
+		return await QueryFactory
+				 .Query<CompanyDetails>()
+				 .WhereNotArchived()
+				.FirstOrDefaultAsync<CompanyDetails>();
+	}
 }
