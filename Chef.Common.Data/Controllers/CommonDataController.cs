@@ -7,7 +7,7 @@ namespace Chef.Common.Data.Services;
 
 [Authorize]
 [ApiController]
-[Route("api/console/[controller]/[action]")]
+[Route("api/common/[controller]/[action]")]
 public class CommonDataController : ControllerBase
 {
     private readonly ICommonDataService commonDataService;

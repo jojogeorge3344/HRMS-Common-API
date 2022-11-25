@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Chef.Common.Data.Controller;
 
 [ApiController]
-[Route("api/console/[controller]/[action]")]
+[Route("api/common/[controller]/[action]")]
 public class MasterDataController : ControllerBase
 {
     private readonly IMasterDataService  masterDataService;
