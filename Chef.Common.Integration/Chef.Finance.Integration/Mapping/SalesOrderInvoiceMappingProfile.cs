@@ -3,12 +3,10 @@ using Chef.Finance.Integration.Models;
 
 namespace Chef.Finance.Integration.Mapping;
 
-internal class SalesOrderInvoiceMappingProfile : Profile
+public class SalesOrderInvoiceMappingProfile : Profile
 {
     public SalesOrderInvoiceMappingProfile()
     {
-
-
         CreateMap<SalesInvoicePaymentInstallDto, SalesInvoicePaymentTermInstallment>();
 
         CreateMap<SalesInvoicePaymentTermsDto, SalesInvoicePaymentTerm>()

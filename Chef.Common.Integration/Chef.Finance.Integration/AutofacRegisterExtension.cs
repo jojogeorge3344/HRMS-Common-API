@@ -1,4 +1,7 @@
-﻿namespace Chef.Finance.Integration;
+﻿using AutoMapper.Contrib.Autofac.DependencyInjection;
+using Chef.Finance.Integration.Mapping;
+
+namespace Chef.Finance.Integration;
 
 public static class AutofacRegisterExtension
 {
@@ -25,6 +28,9 @@ public static class AutofacRegisterExtension
             .EnableInterfaceInterceptors()
             .InterceptedBy(typeof(LoggingInterceptor))
             .PropertiesAutowired();
+
+        //Configure automapper
+        builder.RegisterAutoMapper(typeof(IntegrationMappingProfile).Assembly);
     }
 }
 
