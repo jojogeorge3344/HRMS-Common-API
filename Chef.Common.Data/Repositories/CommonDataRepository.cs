@@ -39,4 +39,12 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .WhereNotArchived()
             .GetAsync<UserBranchDto>();
     }
+    public async Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode()
+    {
+        return await QueryFactory
+            .Query<ReasonCodeMaster>()
+            .Select("reasoncodemaster.reasoncode", "reasoncodemaster.remarks")
+            .WhereNotArchived()
+            .GetAsync<ReasonCodeMaster>();
+    }
 }

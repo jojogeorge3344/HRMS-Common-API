@@ -42,6 +42,16 @@ public class CommonDataController : ControllerBase
 
         return Ok(branches);
     }
+    [HttpGet]
+    public async Task<ActionResult<ReasonCodeMaster>> GetAllReasonCode()
+    {
+        var reasonCodemaster = await commonDataService.GetAllReasonCode();
+        if (reasonCodemaster == null)
+        {
+            return NotFound("The reason code control does not exist.");
+        }
 
+        return Ok(reasonCodemaster);
+    }
 }
 
