@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.DMS.Repositories;
+﻿using Chef.DMS.Models;
+
+namespace Chef.Common.DMS.Repositories;
 
 public class FileDetailRepository : TenantRepository<FileDetail>, IFileDetailRepository
 {

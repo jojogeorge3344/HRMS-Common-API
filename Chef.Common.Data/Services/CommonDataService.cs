@@ -27,5 +27,9 @@ public class CommonDataService : ICommonDataService
     {
         return await commonDataRepository.GetBranches(HttpHelper.Username);
     }
+    public async Task<CompanyDetails> GetMyCompany()
+    {
+		return await commonDataRepository.GetMyCompany();
+	}
 }
 

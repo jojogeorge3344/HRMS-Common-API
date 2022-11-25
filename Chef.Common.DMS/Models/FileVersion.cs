@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.DMS.Models;
+﻿using SqlKata;
+
+namespace Chef.DMS.Models;
 
 public class FileVersion : Model
 {
@@ -19,5 +21,6 @@ public class FileVersion : Model
 
     [Skip(true)]
     [Write(false)]
+    [Ignore]
     public byte[] Content { get; set; }
 }

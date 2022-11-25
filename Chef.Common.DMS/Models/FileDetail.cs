@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SqlKata;
+using System.ComponentModel.DataAnnotations;
 
-namespace Chef.Common.DMS.Models;
+namespace Chef.DMS.Models;
 
 public class FileDetail : Model
 {
@@ -19,5 +20,6 @@ public class FileDetail : Model
 
     [Skip(true)]
     [Write(false)]
+    [Ignore]
     public byte[] Content { get; set; }
 }

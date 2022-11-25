@@ -4,7 +4,7 @@ global using System.IO;
 global using System.Threading.Tasks;
 global using Microsoft.Extensions.Options;
 
-global using Chef.Common.DMS.Models;
+global using Chef.DMS.Models;
 global using Chef.Common.DMS.Repositories;
 
 global using Chef.Common.Models;
