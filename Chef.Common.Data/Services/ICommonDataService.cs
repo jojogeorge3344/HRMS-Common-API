@@ -6,5 +6,5 @@ public interface ICommonDataService : IBaseService
 {
     Task<IEnumerable<BranchViewModel>> GetBranches();
     Task<IEnumerable<UserBranchDto>> GetMyBranches();
-    Task<CompanyDetails> GetMyCompany();
+    Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode();
 }

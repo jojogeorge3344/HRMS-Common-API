@@ -42,19 +42,16 @@ public class CommonDataController : ControllerBase
 
         return Ok(branches);
     }
+    [HttpGet]
+    public async Task<ActionResult<ReasonCodeMaster>> GetAllReasonCode()
+    {
+        var reasonCodemaster = await commonDataService.GetAllReasonCode();
+        if (reasonCodemaster == null)
+        {
+            return NotFound("The reason code control does not exist.");
+        }
 
-	[HttpGet]
-	public async Task<ActionResult<IEnumerable<CompanyDetails>>> GetMyCompany()
-	{
-		var companyDetails = await commonDataService.GetMyCompany();
-
-		if (companyDetails == null)
-		{
-			throw new CompanyNotFoundException("The company does not exist.");
-		}
-
-		return Ok(companyDetails);
-	}
-
+        return Ok(reasonCodemaster);
+    }
 }
 

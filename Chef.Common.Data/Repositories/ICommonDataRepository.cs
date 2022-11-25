@@ -6,7 +6,8 @@ public interface ICommonDataRepository : IRepository
 {
     Task<IEnumerable<BranchViewModel>> GetBranches();
     Task<IEnumerable<UserBranchDto>> GetBranches(string userName);
-	Task<CompanyDetails> GetMyCompany();
-
+    Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode();
+   
+    
 }
 

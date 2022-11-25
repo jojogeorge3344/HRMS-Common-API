@@ -13,6 +13,11 @@ public class CommonDataService : ICommonDataService
         this.commonDataRepository = commonDataRepository; 
     }
 
+    public Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode()
+    {
+        return commonDataRepository.GetAllReasonCode();
+    }
+
     public Task<IEnumerable<BranchViewModel>> GetBranches()
     {
         return commonDataRepository.GetBranches();
