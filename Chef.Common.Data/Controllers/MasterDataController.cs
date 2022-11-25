@@ -172,7 +172,6 @@ public class MasterDataController : ControllerBase
 		}
 		return Ok(branches);
 	}
-	#endregion
 
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<Tax>>> GetAllTaxSetupAsync()
@@ -182,8 +181,7 @@ public class MasterDataController : ControllerBase
 		{
 			return NotFound("The branch does not exist.");
 		}
-		return Ok(tax);
-		return Ok(await masterDataService.GetAllTaxSetupAsync());  //GetAll<Tax>("TaxSetup/getAll"));
+		return Ok(tax); //GetAll<Tax>("TaxSetup/getAll"));
 	}
 
 	[HttpGet]
