@@ -7,7 +7,7 @@ namespace Chef.Common.Data.Services;
 
 [Authorize]
 [ApiController]
-[Route("api/console/[controller]/[action]")]
+[Route("api/common/[controller]/[action]")]
 public class CommonDataController : ControllerBase
 {
     private readonly ICommonDataService commonDataService;
@@ -18,7 +18,7 @@ public class CommonDataController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Branch>>> GetBranches()
+    public async Task<ActionResult<IEnumerable<BranchViewModel>>> GetBranches()
     {
         var branches = await commonDataService.GetBranches();
 
@@ -42,5 +42,6 @@ public class CommonDataController : ControllerBase
 
         return Ok(branches);
     }
+
 }
 

@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
-    <ProjectReference Include="..\Chef.Common.Dtos\Chef.Common.Dtos.csproj" />
     <ProjectReference Include="..\Chef.Common.Authentication\Chef.Common.Authentication.csproj" />
     <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
   </ItemGroup>
