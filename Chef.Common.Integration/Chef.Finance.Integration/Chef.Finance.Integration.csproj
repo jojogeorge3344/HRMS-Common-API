@@ -16,14 +16,18 @@
     <None Remove="Autofac.Extras.DynamicProxy" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
-    <Folder Include="Repositories\Interfaces\" />
-    <Folder Include="Services\Interfaces\" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Autofac" Version="6.5.0" />
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\SalesOrderInvoice\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Repositories\Chef.Finance.Repositories.csproj" />
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Services\Chef.Finance.Services.csproj" />
+    <ProjectReference Include="..\..\Chef.Common.Core\Chef.Common.Core.csproj" />
+    <ProjectReference Include="..\..\Chef.Common.Data\Chef.Common.Data.csproj" />
+    <ProjectReference Include="..\..\Chef.Common.Models\Chef.Common.Models.csproj" />
   </ItemGroup>
 </Project>
