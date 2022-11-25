@@ -8,4 +8,11 @@ public class FileMetaDataRepository : TenantRepository<FileMetaData>, IFileMetaD
         : base(httpContextAccessor, connectionFactory)
     {
     }
+
+    public async Task<FileMetaData> GetByFileId(int fileId)
+    {
+        string sql = @"select * from dms.filemetadata where fileid=@fileId";
+        return await Connection.QueryFirstOrDefaultAsync<FileMetaData>(sql,new { fileId });
+
+    }
 }

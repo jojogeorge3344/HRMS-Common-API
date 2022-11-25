@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.DMS.Services;
+﻿using Chef.DMS.Models;
+
+namespace Chef.Common.DMS.Services;
 
 public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
 {
@@ -141,9 +143,38 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
         return true;
     }
 
-    public Task<bool> DeleteFile(int id)
+    public async Task<bool> DeleteFile(int id)
     {
-        throw new NotImplementedException();
+        var fileDetail = await fileDetailRepository.GetAsync(id);
+        var fileMetaData = await fileMetaDataRepository.GetByFileId(id);
+        var fileVersion = await fileVersionRepository.GetByFileId(id);
+        //move to archivedfolder
+        var archivePath = GetArchivedPath(fileMetaData.CompanyId,
+            fileMetaData.BranchId,
+            fileMetaData.Module);
+        //get the extension.
+        var fileName = fileDetail.Name.Split(".");
+        var archiveFileName = $"{fileName[0]}_{fileDetail.CurrentVersion}.{fileName[1]}";
+
+        string sourceFile = Path.Combine(fileDetail.Path, fileDetail.Name);
+        string archiveFile = Path.Combine(archivePath, archiveFileName);
+        try
+        {
+            //move to archive folder.
+            await storageService.Move(sourceFile, archivePath, archiveFileName);
+            await this.fileVersionRepository.DeleteAsync(fileVersion.Id);
+            await this.fileMetaDataRepository.DeleteAsync(fileMetaData.Id);
+            await this.fileDetailRepository.DeleteAsync(fileDetail.Id);
+            await this.storageService.Delete(fileDetail.Path, fileDetail.Name);
+        }
+        catch
+        {
+            //move back the file
+            await storageService.Move(archiveFile, fileDetail.Path, fileDetail.Name);
+            simpleUnitOfWork.Rollback();
+            throw;
+        }
+        return true;
     }
 
     public Task<bool> DeleteFiles(int[] ids)
@@ -163,7 +194,6 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
 
         try
         {
-            simpleUnitOfWork.BeginTransaction();
 
             fileId = await this.fileDetailRepository.InsertAsync(
                 new FileDetail()
@@ -195,14 +225,11 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
                     Size = 0,
                     Type = fileType
                 });
-
-            simpleUnitOfWork.Commit();
         }
         catch
         {
             //TODO revisit this on multiple file scenario.
             await storageService.Delete(filePath, documentFile.Name);
-            simpleUnitOfWork.Rollback();
             throw;
         }
 
@@ -229,6 +256,18 @@ public class FileDetailService : AsyncService<FileDetail>, IFileDetailService
     private string GetFilePath(int companyId, int branchId, string module)
     {
         string path = string.Format("{0}/{1}/{2}/{3}/{4}/{5}/",
+            storageOptions.BasePath,
+            companyId,
+            branchId,
+            module,
+            DateTime.UtcNow.Year,
+            DateTime.UtcNow.Month);
+
+        return path;
+    }
+    private string GetArchivedPath(int companyId, int branchId, string module)
+    {
+        string path = string.Format("{0}/Deleted/{1}/{2}/{3}/{4}/{5}/",
             storageOptions.BasePath,
             companyId,
             branchId,

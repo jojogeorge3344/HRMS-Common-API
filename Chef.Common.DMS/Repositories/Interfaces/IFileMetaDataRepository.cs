@@ -2,5 +2,6 @@
 
 public interface IFileMetaDataRepository : IGenericRepository<FileMetaData>
 {
+    Task<FileMetaData> GetByFileId(int fileId);
 }
 

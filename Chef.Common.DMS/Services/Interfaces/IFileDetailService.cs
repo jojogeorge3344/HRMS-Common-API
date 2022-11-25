@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.DMS.Services;
+﻿using Chef.DMS.Models;
+
+namespace Chef.Common.DMS.Services;
 
 public interface IFileDetailService : IAsyncService<FileDetail>
 {
