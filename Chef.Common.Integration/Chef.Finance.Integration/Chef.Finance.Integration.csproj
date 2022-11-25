@@ -14,12 +14,16 @@
     <None Remove="Autofac.Extensions.DependencyInjection" />
     <None Remove="Autofac" />
     <None Remove="Autofac.Extras.DynamicProxy" />
+    <None Remove="Models\" />
+    <None Remove="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
     <Folder Include="Services\" />
     <Folder Include="Repositories\Interfaces\" />
     <Folder Include="Services\Interfaces\" />
+    <Folder Include="Models\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
