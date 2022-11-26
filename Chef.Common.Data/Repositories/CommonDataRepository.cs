@@ -46,12 +46,12 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
     }
 
 
-    public async Task<CompanyDetails> GetMyCompany()
+    public async Task<Company> GetMyCompany()
     {
         return await QueryFactory
-                 .Query<CompanyDetails>()
+                 .Query<Company>()
                  .WhereNotArchived()
-                .FirstOrDefaultAsync<CompanyDetails>();
+                .FirstOrDefaultAsync<Company>();
     }
 
 

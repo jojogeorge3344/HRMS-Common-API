@@ -131,8 +131,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     public async Task<IEnumerable<FinancialYear>> GetFinancialYears()
     {
         return await QueryFactory
-            .Query<Country>()
-            .Select("id", "name", "code")
+            .Query<FinancialYear>()            
             .WhereNotArchived()
             .GetAsync<FinancialYear>();
     }

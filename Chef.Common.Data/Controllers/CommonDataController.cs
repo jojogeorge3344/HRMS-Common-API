@@ -53,5 +53,19 @@ public class CommonDataController : ControllerBase
 
         return Ok(reasonCodemaster);
     }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Company>>> GetMyCompany()
+    {
+        var Company = await commonDataService.GetMyCompany();
+
+        if (Company == null)
+        {
+            throw new BranchNotFoundException("The branches does not exist.");
+        }
+
+        return Ok(Company);
+    }
+
+
 }
 
