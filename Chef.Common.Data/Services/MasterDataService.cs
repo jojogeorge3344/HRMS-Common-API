@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.Data.Services;
+﻿using Chef.Common.Models;
+
+namespace Chef.Common.Data.Services;
 
 public class MasterDataService : IMasterDataService
 {
@@ -150,6 +152,11 @@ public class MasterDataService : IMasterDataService
     public Task<IEnumerable<BankBranch>> GetAllBankBranchesByBank(int bankId)
     {
         return masterDataRespository.GetAllBankBranchesByBank(bankId);
+    }
+
+    public Task<IEnumerable<FinancialYearPeriod>> GetFinancialYearPeriod(int finacialyearid)
+    {
+        return masterDataRespository.GetFinancialYearPeriod(finacialyearid);
     }
 }
 

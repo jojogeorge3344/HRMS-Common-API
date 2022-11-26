@@ -296,5 +296,13 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
 						.GetAsync<BankBranch>();
 	}
 
+    public async Task<IEnumerable<FinancialYearPeriod>> GetFinancialYearPeriod(int finacialyearid)
+    {
+        return await QueryFactory
+            .Query<FinancialYearPeriod>()
+            .Where("finacialyearid", finacialyearid)
+            .WhereNotArchived()
+            .GetAsync<FinancialYearPeriod>();
+    }
 }
 

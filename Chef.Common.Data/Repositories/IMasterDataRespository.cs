@@ -46,5 +46,6 @@ public interface IMasterDataRepository : IRepository
 	Task<Currency> GetByCurrency(string transactionCurrency);
 	Task<IEnumerable<Company>> GetAllCompanies();
 	Task<IEnumerable<BankBranch>> GetAllBankBranchesByBank(int bankId);
+    Task<IEnumerable<FinancialYearPeriod>> GetFinancialYearPeriod(int finacialyearid);
 }
 
