@@ -27,23 +27,34 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
 
     public async Task<IEnumerable<UserBranchDto>> GetBranches(string userName)
     {
-       return await QueryFactory
-             .Query<UserBranch>().Join("common.branch", "branch.id", "userbranch.branchid")
-             .Select(
-                 "userbranch.username",
-                 "userbranch.branchid",
-				 "userbranch.IsDefault",
-				 "branch.name as BranchName",
-                 "branch.code as BranchCode")
-             .Where(new
-             {
-                 username = userName,
+        return await QueryFactory
+              .Query<UserBranch>().Join("common.branch", "branch.id", "userbranch.branchid")
+              .Select(
+                  "userbranch.username",
+                  "userbranch.branchid",
+                  "userbranch.IsDefault",
+                  "branch.name as BranchName",
+                  "branch.code as BranchCode")
+              .Where(new
+              {
+                  username = userName,
 
-             })
-             .WhereFalse("branch.isArchived")
-            .WhereFalse("userbranch.isArchived")
-			.GetAsync<UserBranchDto>();
+              })
+              .WhereFalse("branch.isArchived")
+             .WhereFalse("userbranch.isArchived")
+             .GetAsync<UserBranchDto>();
     }
+
+
+    public async Task<CompanyDetails> GetMyCompany()
+    {
+        return await QueryFactory
+                 .Query<CompanyDetails>()
+                 .WhereNotArchived()
+                .FirstOrDefaultAsync<CompanyDetails>();
+    }
+
+
     public async Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode()
     {
         return await QueryFactory

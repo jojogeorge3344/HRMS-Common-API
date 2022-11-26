@@ -7,15 +7,10 @@ namespace Chef.Common.Data.Services;
 public class CommonDataService : ICommonDataService
 {
     private readonly ICommonDataRepository commonDataRepository;
- 
+
     public CommonDataService(ICommonDataRepository commonDataRepository)
     {
-        this.commonDataRepository = commonDataRepository; 
-    }
-
-    public Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode()
-    {
-        return commonDataRepository.GetAllReasonCode();
+        this.commonDataRepository = commonDataRepository;
     }
 
     public Task<IEnumerable<BranchViewModel>> GetBranches()
@@ -29,7 +24,12 @@ public class CommonDataService : ICommonDataService
     }
     public async Task<CompanyDetails> GetMyCompany()
     {
-		return await commonDataRepository.GetMyCompany();
-	}
+        return await commonDataRepository.GetMyCompany();
+    }
+
+    public Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode()
+    {
+        return commonDataRepository.GetAllReasonCode();
+    }
 }
 
