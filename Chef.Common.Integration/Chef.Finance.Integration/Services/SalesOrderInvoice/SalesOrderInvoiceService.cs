@@ -66,7 +66,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
     public async Task<string> InsertAsync(SalesInvoiceDto salesInvoiceDto)
     {
-        IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails("SalesOrder", "Invoice");
+        IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Invoice.ToString());
 
         if (journalBookConfig == null)
             throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
