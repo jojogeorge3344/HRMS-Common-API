@@ -19,8 +19,7 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
     {
         return await QueryFactory
             .Query<Branch>()
-            .Select("id as BranchId", "name as BranchName", "code as BranchCode")
-            .Where("isactive", true)
+            .Select("id as BranchId", "name as BranchName", "code as BranchCode", "companycode")      
             .WhereNotArchived()
             .GetAsync<BranchViewModel>();
     }

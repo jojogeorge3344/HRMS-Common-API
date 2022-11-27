@@ -300,7 +300,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<FinancialYearPeriod>()
-            .Where("finacialyearid", finacialyearid)
+            .Where("financialyearId", finacialyearid)
             .WhereNotArchived()
             .GetAsync<FinancialYearPeriod>();
     }

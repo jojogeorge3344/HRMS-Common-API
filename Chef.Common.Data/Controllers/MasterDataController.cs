@@ -274,7 +274,7 @@ public class MasterDataController : ControllerBase
 		return Ok(bankBranches);
 	}
 
-    [HttpGet("{Period:string}")]
+    [HttpGet("{finacialyearid}")]
     public async Task<ActionResult<IEnumerable<FinancialYearPeriod>>> GetFinancialYearPeriod(int finacialyearid)
     {
         return Ok(await masterDataService.GetFinancialYearPeriod(finacialyearid));
