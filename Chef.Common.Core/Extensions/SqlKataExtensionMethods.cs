@@ -112,7 +112,6 @@ public static class SqlKataExtensionMethods
         return q;
     }
 
-
     public static void AddArchiveFilter(this SqlSearch search)
     {
         search.Rules.Add(

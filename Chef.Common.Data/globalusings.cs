@@ -5,6 +5,8 @@ global using Chef.Common.Core.Repositories;
 global using Chef.Common.Models;
 
 global using Chef.Common.Data.Repositories;
+global using Chef.Common.Data.Services;
+global using Chef.Common.Repositories;
 
 global using SqlKata.Execution;
 

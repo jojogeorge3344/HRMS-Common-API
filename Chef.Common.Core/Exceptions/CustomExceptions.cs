@@ -359,4 +359,37 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+
+    [Serializable]
+    public class TaxJurisdictionNotFoundException : ApplicationException
+    {
+        public TaxJurisdictionNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class TaxJurisdictionZoneNotFoundException : ApplicationException
+    {
+        public TaxJurisdictionZoneNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class TaxRateNotFoundException : ApplicationException
+    {
+        public TaxRateNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
+    public class TaxClassTaxRateNotFoundException : ApplicationException
+    {
+        public TaxClassTaxRateNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
 }

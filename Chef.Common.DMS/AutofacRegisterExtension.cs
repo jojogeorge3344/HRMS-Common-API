@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Chef.Common.DMS;
+﻿namespace Chef.Common.DMS;
 
 public static class AutofacRegisterExtension
 {
