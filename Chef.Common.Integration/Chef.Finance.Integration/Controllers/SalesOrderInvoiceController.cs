@@ -1,5 +1,4 @@
 ﻿using Chef.Finance.Integration.Models;
-using Chef.Finance.Integration.Services;
 
 namespace Chef.Finance.Integration.Controllers;
 
