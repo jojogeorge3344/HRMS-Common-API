@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Chef.Common.DMS.Models;
+namespace Chef.DMS.Models;
 
 public class FileMetaData : Model
 {

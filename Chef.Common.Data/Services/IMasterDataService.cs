@@ -49,4 +49,5 @@ public interface IMasterDataService : IBaseService
     Task<Currency>GetByCurrency(string transactionCurrency);
     Task<IEnumerable<Company>> GetAllCompanies();
     Task<IEnumerable<BankBranch>> GetAllBankBranchesByBank(int bankId);
+    Task<IEnumerable<FinancialYearPeriod>> GetFinancialYearPeriod(int finacialyearid);
 }

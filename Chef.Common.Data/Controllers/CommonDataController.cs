@@ -7,7 +7,7 @@ namespace Chef.Common.Data.Services;
 
 [Authorize]
 [ApiController]
-[Route("api/console/[controller]/[action]")]
+[Route("api/common/[controller]/[action]")]
 public class CommonDataController : ControllerBase
 {
     private readonly ICommonDataService commonDataService;
@@ -42,6 +42,30 @@ public class CommonDataController : ControllerBase
 
         return Ok(branches);
     }
+    [HttpGet]
+    public async Task<ActionResult<ReasonCodeMaster>> GetAllReasonCode()
+    {
+        var reasonCodemaster = await commonDataService.GetAllReasonCode();
+        if (reasonCodemaster == null)
+        {
+            return NotFound("The reason code control does not exist.");
+        }
+
+        return Ok(reasonCodemaster);
+    }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Company>>> GetMyCompany()
+    {
+        var Company = await commonDataService.GetMyCompany();
+
+        if (Company == null)
+        {
+            throw new BranchNotFoundException("The branches does not exist.");
+        }
+
+        return Ok(Company);
+    }
+
 
 }
 

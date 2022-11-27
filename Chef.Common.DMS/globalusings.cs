@@ -8,7 +8,7 @@ global using System.ComponentModel.DataAnnotations;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 
-global using Chef.Common.DMS.Models;
+global using Chef.DMS.Models;
 global using Chef.Common.DMS.Repositories;
 
 global using Chef.Common.Models;

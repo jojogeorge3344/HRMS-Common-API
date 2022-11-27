@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Chef.Common.Data.Controller;
 
 [ApiController]
-[Route("api/console/[controller]/[action]")]
+[Route("api/common/[controller]/[action]")]
 public class MasterDataController : ControllerBase
 {
     private readonly IMasterDataService  masterDataService;
@@ -173,6 +173,7 @@ public class MasterDataController : ControllerBase
 		return Ok(branches);
 	}
 
+
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<Tax>>> GetAllTaxSetupAsync()
 	{
@@ -181,8 +182,7 @@ public class MasterDataController : ControllerBase
 		{
 			return NotFound("The branch does not exist.");
 		}
-
-		return Ok(tax);
+		return Ok(tax); //GetAll<Tax>("TaxSetup/getAll"));
 	}
 
 	[HttpGet]
@@ -241,7 +241,7 @@ public class MasterDataController : ControllerBase
 		return Ok(bankBranch);
 	}
 
-	[HttpGet("{transactionCurrency:string}")]
+	[HttpGet("{transactionCurrency}")]
 	public async Task<ActionResult<Currency>> GetByCurrency(string transactionCurrency)
 	{
         return Ok(await masterDataService.GetByCurrency(transactionCurrency));  //GetByCurrency<Currency>("Currency/GetByCurrency/transactionCurrency/", transactionCurrency));
@@ -260,6 +260,8 @@ public class MasterDataController : ControllerBase
 		return Ok(companys);
 	}
 
+
+
 	[HttpGet("{bankId:int}")]
 	public async Task<ActionResult<IEnumerable<BankBranch>>> GetAllBankBranchesByBank(int bankId)
 	{
@@ -271,5 +273,11 @@ public class MasterDataController : ControllerBase
 		}
 		return Ok(bankBranches);
 	}
+
+    [HttpGet("{finacialyearid}")]
+    public async Task<ActionResult<IEnumerable<FinancialYearPeriod>>> GetFinancialYearPeriod(int finacialyearid)
+    {
+        return Ok(await masterDataService.GetFinancialYearPeriod(finacialyearid));
+    }
 }
 

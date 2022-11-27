@@ -1,4 +1,4 @@
-﻿namespace Chef.Common.DMS.Models;
+﻿namespace Chef.DMS.Models;
 
 //TODO - Refactor for DB Storage.
 public class StorageOptions
