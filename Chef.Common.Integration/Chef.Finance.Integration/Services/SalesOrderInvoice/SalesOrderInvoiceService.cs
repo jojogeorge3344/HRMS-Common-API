@@ -83,6 +83,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         salesInvoice.JournalBookName = journalBookConfig.JournalBookName;
         salesInvoice.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
         salesInvoice.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+        salesInvoice.TransactionDate = DateTime.Now;
 
         salesInvoice.OtherDetail = new()
         {
@@ -104,7 +105,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             int transactionDetailNumber = 0;
 
             var businessPartnerControlAccount = await businessPartnerGroupService.GetCustomerControlAccountsByBusinessPartnerIdAsync(salesInvoice.BusinessPartnerId);
-            if (businessPartnerControlAccount == null)
+            if (businessPartnerControlAccount == null || businessPartnerControlAccount.Count() == 0)
                 throw new ResourceNotFoundException("Business partner control account not found for this business partner");
 
             var salesTaxAccount = await taxAccountSetupService.GetSalesTaxAccountAsync();

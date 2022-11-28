@@ -10,7 +10,7 @@ public class SalesOrderInvoiceMappingProfile : Profile
         CreateMap<SalesInvoicePaymentInstallDto, SalesInvoicePaymentTermInstallment>();
 
         CreateMap<SalesInvoicePaymentTermsDto, SalesInvoicePaymentTerm>()
-            .ForMember(d => d.Installments, opt => opt.MapFrom(x => x.salesInvoicePaymentInstallDto));
+            .ForMember(d => d.Installments, opt => opt.MapFrom(x => x.SalesInvoicePaymentInstallDto));
 
         CreateMap<SalesInvoiceItemDto, SalesInvoiceLineItem>()
             .ForMember(d => d.Description, opt => opt.MapFrom(x => x.ItemSpec))
