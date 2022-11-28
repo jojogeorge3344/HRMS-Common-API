@@ -23,6 +23,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly ICustomerTransactionRepository customerTransactionRepository;
     private readonly IGeneralLedgerPostingRepository generalLedgerPostingRepository;
     private readonly IPostDocumentViewModelRepository postDocumentViewModelRepository;
+    private readonly IGeneralLedgerPostingService generalLedgerPostingService;
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -34,7 +35,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         IIntegrationControlAccountRepository integrationControlAccountRepository,
         ICustomerTransactionRepository customerTransactionRepository,
         IGeneralLedgerPostingRepository generalLedgerPostingRepository,
-        IPostDocumentViewModelRepository postDocumentViewModelRepository
+        IPostDocumentViewModelRepository postDocumentViewModelRepository,
+        IGeneralLedgerPostingService generalLedgerPostingService
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
@@ -47,6 +49,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.customerTransactionRepository = customerTransactionRepository;
         this.generalLedgerPostingRepository = generalLedgerPostingRepository;
         this.postDocumentViewModelRepository = postDocumentViewModelRepository;
+        this.generalLedgerPostingService = generalLedgerPostingService;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -69,7 +72,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Invoice.ToString());
 
         if (journalBookConfig == null)
-            throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
+            throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
 
         SalesInvoice salesInvoice = Mapper.Map<SalesInvoice>(salesInvoiceDto);
 
@@ -214,7 +217,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         if (doc != null)
         {
             var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
-            var GLPostingGroup = GroupGLPostingByLedgerAccountId(GLPosting);
+            var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
 
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
         }
@@ -229,53 +232,5 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     Task<int> IAsyncService<SalesInvoiceDto>.InsertAsync(SalesInvoiceDto obj)
     {
         throw new NotImplementedException();
-    }
-
-    private IEnumerable<GeneralLedgerBeforePosting> GroupGLPostingByLedgerAccountId(IEnumerable<GeneralLedgerBeforePosting> GLPosting)
-    {
-        return GLPosting.GroupBy(g => g.LedgerAccountId).Select(x => new GeneralLedgerBeforePosting()
-        {
-            RefenceDocumentId = x.First().RefenceDocumentId,
-            RefenceDocumentDetailId = x.First().RefenceDocumentDetailId,
-            RefenceDocumentDate = x.First().RefenceDocumentDate,
-            LedgerAccountId = x.First().LedgerAccountId,
-            LedgerAccountCode = x.First().LedgerAccountCode,
-            LedgerAccountName = x.First().LedgerAccountName,
-            BusinessPartnerId = x.First().BusinessPartnerId,
-            BusinessPartnerCode = x.First().BusinessPartnerCode,
-            DocumentType = x.First().DocumentType,
-            DocumentTypeName = x.First().DocumentTypeName,
-            DocumentNumber = x.First().DocumentNumber,
-            DocumentDate = x.First().DocumentDate,
-            IsInterCompanyTransaction = x.First().IsInterCompanyTransaction,
-            IsInterBranchTransaction = x.First().IsInterBranchTransaction,
-            IsCostAllocationApplicable = x.First().IsCostAllocationApplicable,
-            CostAllocationCode = x.First().CostAllocationCode,
-            JournalBookTypeId = x.First().JournalBookTypeId,
-            JournalBookTypeCode = x.First().JournalBookTypeCode,
-            JournalBookId = x.First().JournalBookId,
-            JournalBookCode = x.First().JournalBookCode,
-            TransactionCurrencyCode = x.First().TransactionCurrencyCode,
-            ExchangeRateId = x.First().ExchangeRateId,
-            ExchangeRate = x.First().ExchangeRate,
-            ExchangeDate = x.First().ExchangeDate,
-            Narration = x.First().Narration,
-            Totalamount = x.Sum(y => y.Totalamount),
-            DebitAmount = x.Sum(y => y.DebitAmount),
-            CreditAmount = x.Sum(y => y.CreditAmount),
-            DebitAmountInBaseCurrency = x.Sum(y => y.DebitAmountInBaseCurrency),
-            CreditAmountInBaseCurrency = x.Sum(y => y.CreditAmountInBaseCurrency),
-            IsReconciled = x.First().IsReconciled,
-            ModelName = x.First().ModelName,
-            IsControlAccount = x.First().IsControlAccount,
-            ControlAccountType = x.First().ControlAccountType,
-            BankAccountNumber = x.First().BankAccountNumber,
-            BankAccountId = x.First().BankAccountId,
-            IsIntegration = x.First().IsIntegration,
-            IsDebit = x.First().IsDebit,
-            PeriodId = x.First().PeriodId,
-            BankId = x.First().BankId,
-            BankName = x.First().BankName
-        }).ToList();
     }
 }
