@@ -81,8 +81,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         salesInvoice.JournalBookCode = journalBookConfig.JournalBookCode;
         salesInvoice.JournalBookId = journalBookConfig.JournalBookId;
         salesInvoice.JournalBookName = journalBookConfig.JournalBookName;
-        //salesInvoice.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
-        //salesInvoice.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+        salesInvoice.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
+        salesInvoice.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+        salesInvoice.TransactionDate = DateTime.Now;
 
         salesInvoice.OtherDetail = new()
         {
