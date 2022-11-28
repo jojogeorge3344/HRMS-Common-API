@@ -50,8 +50,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         receiptRegister.JournalBookCode = journalBookConfig.JournalBookCode;
         receiptRegister.JournalBookId = journalBookConfig.JournalBookId;
         receiptRegister.JournalBookName = journalBookConfig.JournalBookName;
-        receiptRegister.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
-        receiptRegister.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+        //receiptRegister.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
+        //receiptRegister.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
         //TODO: Take paymentmethod detail from db
 
         //     "paymentMethodId": 9,

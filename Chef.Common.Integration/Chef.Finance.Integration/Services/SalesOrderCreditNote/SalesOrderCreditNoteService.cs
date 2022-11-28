@@ -62,8 +62,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         customerCreditNote.JournalBookCode = journalBookConfig.JournalBookCode;
         customerCreditNote.JournalBookId = journalBookConfig.JournalBookId;
         customerCreditNote.JournalBookName = journalBookConfig.JournalBookName;
-        customerCreditNote.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
-        customerCreditNote.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+        //customerCreditNote.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
+        //customerCreditNote.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
 
         CustomerCreditNoteDetail customerCreditNoteDetail = Mapper.Map<CustomerCreditNoteDetail>(salesReturnCreditDto);
         customerCreditNote.CreditNoteDetails = customerCreditNoteDetail;
