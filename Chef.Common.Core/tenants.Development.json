@@ -29,7 +29,7 @@
         },
         {
           "Name": "Trading",
-          "Host": "https://localhost:5006/api/trading"
+        "Host": "https://192.168.100.54:9053/api/trading/"
         },
         {
           "Name": "HRMS",
