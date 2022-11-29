@@ -91,7 +91,7 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetItemSegments();
     }
 
-    public Task<JournalBookType> GetJournalBookTypeByGroup(int groupNumber)
+    public Task<IEnumerable<JournalBookType>> GetJournalBookTypeByGroup(int groupNumber)
     {
         return masterDataRespository.GetJournalBookTypeByGroup(groupNumber);
     }

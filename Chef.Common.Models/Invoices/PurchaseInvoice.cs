@@ -107,10 +107,12 @@ namespace Chef.Finance.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public PurchaseInvoicePaymentTerm PaymentTerm { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public PurchaseInvoiceOtherDetail OtherDetail { get; set; }
 
         public string Remark { get; set; }
@@ -121,6 +123,7 @@ namespace Chef.Finance.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public string TaxRegistrationNumber { get; set; }
     }
 }
