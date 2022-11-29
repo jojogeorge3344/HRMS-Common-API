@@ -50,7 +50,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         this.customerTransactionRepository = customerTransactionRepository;
         this.generalLedgerPostingRepository = generalLedgerPostingRepository;
         this.postDocumentViewModelRepository = postDocumentViewModelRepository;
-    }
+        this.generalLedgerPostingService = generalLedgerPostingService;
+
+	}
     public  async Task<string> PostAsync(SalesReturnCreditDto salesReturnCreditDto)
     {
         IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Return.ToString());
