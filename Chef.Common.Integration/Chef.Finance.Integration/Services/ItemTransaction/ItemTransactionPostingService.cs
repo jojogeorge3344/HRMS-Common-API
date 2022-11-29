@@ -565,15 +565,15 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
             if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && itemDto.ProjectId != null)
             {
-                await InsertDimension(dimension.DimensionTypeLabel, itemDto.ProjectId, isDebit, integrationDetails);
+                await InsertDimension(dimension.DimensionTypeLabel, itemDto.ProjectCode, isDebit, integrationDetails);
             }
             else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && itemDto.EmployeeId != null)
             {
-                await InsertDimension(dimension.DimensionTypeLabel, itemDto.EmployeeId, isDebit, integrationDetails);
+                await InsertDimension(dimension.DimensionTypeLabel, itemDto.EmployeeCode, isDebit, integrationDetails);
             }
             else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && itemDto.CostCenterId != null)
             {
-                await InsertDimension(dimension.DimensionTypeLabel, itemDto.CostCenterId, isDebit, integrationDetails);
+                await InsertDimension(dimension.DimensionTypeLabel, itemDto.CostCenterCode, isDebit, integrationDetails);
             }
             else
             {

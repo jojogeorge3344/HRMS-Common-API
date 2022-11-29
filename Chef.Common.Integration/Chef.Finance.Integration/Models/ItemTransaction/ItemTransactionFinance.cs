@@ -37,9 +37,15 @@ public class ItemTransactionFinance : Model
         public decimal TransAmount { get; set; }
         public decimal HmAmount { get; set; }
         public int Status { get; set; } //0-pending,1-docnumgenerated
-        public string ProjectId { get; set; }
-        public string CostCenterId { get; set; }
-        public string EmployeeId { get; set; }
-    public string ReasonCode { get; set; }
+
+        public int ProjectId { get; set; }
+        public string ProjectCode { get; set; }
+
+        public int CostCenterId { get; set; }
+        public string CostCenterCode { get; set; }
+
+        public int EmployeeId { get; set; }
+        public string EmployeeCode { get; set; }
+        public string ReasonCode { get; set; }
 }
 
