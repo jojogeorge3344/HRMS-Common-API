@@ -8,7 +8,7 @@ namespace Chef.Finance.Integration.Models;
 public class ItemTransactionFinanceDTO : ItemTransactionFinance
     {
         public int ItemTransactionFinanceId { get; set; }
-        public List<ItemTransactionFinanceLineCost> itemTransactionFinanceLineCosts { get; set; }
+        public List<ItemTransactionFinanceLineCost>? itemTransactionFinanceLineCosts { get; set; }
 
     }
 
