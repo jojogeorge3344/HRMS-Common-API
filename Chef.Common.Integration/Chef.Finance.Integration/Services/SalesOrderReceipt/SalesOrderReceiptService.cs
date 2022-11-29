@@ -1,4 +1,8 @@
-﻿using Chef.Finance.BP.Services;
+﻿using Chef.Common.Core;
+using Chef.Common.Data.Repositories;
+using Chef.Common.Types;
+using Chef.Finance.Banking.Repositories;
+using Chef.Finance.BP.Services;
 using Chef.Finance.Configuration.Repositories;
 using Chef.Finance.Configuration.Services;
 using Chef.Finance.Customer.Repositories;
@@ -9,6 +13,9 @@ using Chef.Finance.Integration.Models;
 using Chef.Finance.Receipt.Services;
 using Chef.Finance.Repositories;
 using Chef.Finance.Services;
+using Chef.Finance.Types;
+using System.Collections.Generic;
+
 namespace Chef.Finance.Integration;
 
 
@@ -17,24 +24,29 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
     private readonly IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository;
     private readonly IReceiptRegisterService receiptRegisterService;
     private readonly ICompanyFinancialYearRepository companyFinancialYearRepository;
+    private readonly IPaymentMethodRepository paymentMethodRepository;
+    private readonly IBankAccountRepository bankAccountRepository;
+    private readonly IMasterDataRepository masterDataRepository;
 
 
     public SalesOrderReceiptService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
         IReceiptRegisterService receiptRegisterService,
-        ICompanyFinancialYearRepository companyFinancialYearRepository
+        ICompanyFinancialYearRepository companyFinancialYearRepository,
+        IPaymentMethodRepository paymentMethodRepository,
+        IBankAccountRepository bankAccountRepository,
+        IMasterDataRepository masterDataRepository
 
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
         this.receiptRegisterService = receiptRegisterService;
-        this.companyFinancialYearRepository = companyFinancialYearRepository;
-
-      
-      
-     
-      
+        this.companyFinancialYearRepository = companyFinancialYearRepository; 
+        this.paymentMethodRepository = paymentMethodRepository;
+        this.bankAccountRepository = bankAccountRepository;
+        this.masterDataRepository = masterDataRepository;
     }
+
     public async Task<string> PostAsync(SalesOrderReceiptDto salesOrderReceiptDto)
     {
 
@@ -42,6 +54,25 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
 
         if (journalBookConfig == null)
             throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
+        
+        PaymentMethod paymentMethod = await paymentMethodRepository.getPaymentMethodeDetails((PaymentMethodType)journalBookConfig.TransactionType, TransactionType.Receipt.ToString());        
+        if (paymentMethod == null)
+        {
+            throw new ResourceNotFoundException("Payment methode details not available"); 
+        }
+        
+        var bankaccountType = await bankAccountRepository.GetCashAccountDetails((BankAccountType)paymentMethod.PaymentType, TransactionType.Receipt.ToString());
+        if (paymentMethod == null)
+        {
+            throw new ResourceNotFoundException("Bank account details not available");
+        }
+
+        var exchangeRate = await masterDataRepository.GetExchangeRates(salesOrderReceiptDto.baseCurrencyCode, salesOrderReceiptDto.TransactionCurrencyCode,
+            salesOrderReceiptDto.transactionCurrencyDate);
+        if (exchangeRate == null)
+        {
+            throw new ResourceNotFoundException("Exchange rate details not available");
+        }
 
         ReceiptRegister receiptRegister = Mapper.Map<ReceiptRegister>(salesOrderReceiptDto);
 
@@ -52,10 +83,23 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         receiptRegister.JournalBookName = journalBookConfig.JournalBookName;
         receiptRegister.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
         receiptRegister.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+        receiptRegister.PaymentMethodCode = paymentMethod.Code;
+        receiptRegister.PaymentMethodName = paymentMethod.Name;
+        receiptRegister.BankAccountId=bankaccountType.Id;
+        receiptRegister.BankId=bankaccountType.BankId;
+        receiptRegister.BankAccountNumber = bankaccountType.AccountNumber;
+        receiptRegister.BankAccountName = bankaccountType.AccountName;
+        receiptRegister.BankCurrencyCode = salesOrderReceiptDto.TransactionCurrencyCode;
+        receiptRegister.AmountInBankCurrency = salesOrderReceiptDto.ExchangeRate;
+        receiptRegister.TransactionDate= salesOrderReceiptDto.ExchangeDate;
+        
+        //PaymentMethodType paymentMethodType = new PaymentMethodType();
+        //paymentMethodType = (PaymentMethodType)journalBookConfig.TransactionType;
+
         //TODO: Take paymentmethod detail from db
 
         //     "paymentMethodId": 9,
-        //   "paymentMethodCode": "RCSH",
+        //   "paymentMethodCode": "RCSH", 
         //  "paymentMethodName": "Receipt - CSH",
 
 
