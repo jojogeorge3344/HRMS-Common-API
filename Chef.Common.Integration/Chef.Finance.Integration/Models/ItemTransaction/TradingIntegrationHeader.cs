@@ -34,18 +34,22 @@ public class TradingIntegrationHeader : TransactionModel
 
         [Write(false)]
         [Skip(true)]
+        [Ignore]
         public decimal DiscountAmount { get; set; }
 
         [Write(false)]
         [Skip(true)]
-        public decimal TaxAmount { get; set; }
+        [Ignore]
+    public decimal TaxAmount { get; set; }
 
         [Write(false)]
         [Skip(true)]
-        public decimal GrandToatal { get; set; }
+    [Ignore]
+    public decimal GrandToatal { get; set; }
 
         [Write(false)]
         [Skip(true)]
-        public List<IntegrationDetails> integrationDetails { get; set; }
+        [Ignore]
+    public List<IntegrationDetails> integrationDetails { get; set; }
     }
 

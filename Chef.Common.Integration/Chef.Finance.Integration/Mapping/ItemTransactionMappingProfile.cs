@@ -7,6 +7,11 @@ public  class ItemTransactionMappingProfile:Profile
 {
     public ItemTransactionMappingProfile()
     {
+        CreateMap<IntegrationDetailDimension, ItemTransactionFinanceDetailsDimension>();
+
+        CreateMap<IntegrationDetailDimension, DetailDimension>().ForMember(d => d.allocatedAmount, opt => opt.MapFrom(x => x.CreditAmount != 0 && x.CreditAmount != null ? x.CreditAmount : x.DebitAmount));
+
+
         CreateMap<ItemTransactionFinanceDTO, ItemViewModel>().ForMember(d => d.ItemCategoryId, opt => opt.MapFrom(x => x.ItemCategory))
         .ForMember(d => d.ItemTypeId, opt => opt.MapFrom(x => x.ItemType));
 

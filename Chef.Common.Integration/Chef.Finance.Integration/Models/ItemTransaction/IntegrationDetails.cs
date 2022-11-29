@@ -17,14 +17,17 @@ public class IntegrationDetails : TransactionModel
 
     [Write(false)]
     [Skip(true)]
+    [Ignore]
     public int ItemTransactionFinanceId { get; set; }
 
     [Write(false)]
     [Skip(true)]
+    [Ignore]
     public int ItemTransactionFinanceLineCostId { get; set; }
 
     [Write(false)]
     [Skip(true)]
+    [Ignore]
 
     public string DocumentNumber { get; set; }
 }

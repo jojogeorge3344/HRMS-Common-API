@@ -128,9 +128,9 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             //loop ItemTransactionFinanceDetailsDto
             //in that loop insert  fetch corresponding dimensions using detailid and insert into ItemTransactionFinanceDetailsDto
 
-            IEnumerable<ItemTransactionFinanceDetailsDto> itemTransactionFinanceDetailsDtos = await tradingIntegrationRepository.GetItemtransactionFinanceDetails(intHeader.Id);
+            IEnumerable<ItemTransactionFinanceDetailsDto> itemTransactionFinanceDetailsDtos = await tradingIntegrationRepository.GetItemtransactionFinanceDetails(intHeaderId);
 
-            IEnumerable<IntegrationDetailDimension> itemTransactionFinanceDetailsDimensions = await integrationDetailDimensionRepository.GetDetailDimensionByHeaderId(intHeader.Id);
+            IEnumerable<IntegrationDetailDimension> itemTransactionFinanceDetailsDimensions = await integrationDetailDimensionRepository.GetDetailDimensionByHeaderId(intHeaderId);
 
             foreach (ItemTransactionFinanceDetailsDto itemTransactionFinanceDetailsDto in itemTransactionFinanceDetailsDtos)
             {
