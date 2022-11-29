@@ -43,6 +43,8 @@ public class SalesOrderReceiptDto
 
   
     public string TransactionCurrencyCode { get; set; }
+    public string baseCurrencyCode { get; set; }
+    public DateTime transactionCurrencyDate { get; set; }
 
     public int ExchangeRateId { get; set; }
 
