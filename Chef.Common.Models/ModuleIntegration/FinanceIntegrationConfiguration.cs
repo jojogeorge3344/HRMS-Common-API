@@ -1,4 +1,6 @@
-﻿using Chef.Common.Core;
+﻿
+using Chef.Common.Core;
+using SqlKata;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,6 +40,7 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
+        [Ignore]
         public List<IntegrationControlAccount> IntegrationControlAccounts { get; set; }
     }
 }
