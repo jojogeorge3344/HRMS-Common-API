@@ -1,5 +1,6 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Data.Repositories;
+using Chef.Common.Models;
 using Chef.Common.Types;
 using Chef.Finance.Banking.Repositories;
 using Chef.Finance.BP.Services;
@@ -55,13 +56,13 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         if (journalBookConfig == null)
             throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
         
-        PaymentMethod paymentMethod = await paymentMethodRepository.getPaymentMethodeDetails((PaymentMethodType)journalBookConfig.TransactionType, TransactionType.Receipt.ToString());        
+        PaymentMethod paymentMethod = await paymentMethodRepository.getPaymentMethodeDetails(Convert.ToInt32(PaymentMethodType.Cash), TransactionType.Receipt.ToString());        
         if (paymentMethod == null)
         {
-            throw new ResourceNotFoundException("Payment methode details not available"); 
+            throw new ResourceNotFoundException("Payment methode details not available");
         }
-        
-        var bankaccountType = await bankAccountRepository.GetCashAccountDetails((BankAccountType)paymentMethod.PaymentType, TransactionType.Receipt.ToString());
+
+        BankAccount bankaccountType = await bankAccountRepository.GetCashAccountDetails(6, "4558989");
         if (paymentMethod == null)
         {
             throw new ResourceNotFoundException("Bank account details not available");
