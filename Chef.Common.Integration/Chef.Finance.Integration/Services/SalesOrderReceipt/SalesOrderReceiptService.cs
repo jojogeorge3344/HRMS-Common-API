@@ -48,7 +48,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         this.masterDataRepository = masterDataRepository;
     }
 
-    public async Task<string> PostAsync(SalesOrderReceiptDto salesOrderReceiptDto)
+    public async Task<SalesOrderReceiptResponse> PostAsync(SalesOrderReceiptDto salesOrderReceiptDto)
     {
 
         IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Receipt.ToString());
@@ -123,6 +123,9 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         receiptRegister.ApproveStatus = ApproveStatus.Approved;
         List<ReceiptRegister> receiptRegisterList=new List<ReceiptRegister> { receiptRegister };
         await receiptRegisterService.ReceiptProcessing(receiptRegisterList);
-        return receiptRegister.ReceiptNumber;
+        return new()
+        {
+            DocumentNumber = receiptRegister.ReceiptNumber
+        };
     }
 }

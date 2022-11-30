@@ -53,7 +53,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         this.generalLedgerPostingService = generalLedgerPostingService;
 
 	}
-    public  async Task<string> PostAsync(SalesReturnCreditDto salesReturnCreditDto)
+    public  async Task<SalesReturnCreditResponse> PostAsync(SalesReturnCreditDto salesReturnCreditDto)
     {
         IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Return.ToString());
 
@@ -192,6 +192,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
         }
-        return customerCreditNoteResult.DocumentNumber;
+        return new()
+        {
+            DocumentNumber = customerCreditNoteResult.DocumentNumber
+        };
     }
 }
