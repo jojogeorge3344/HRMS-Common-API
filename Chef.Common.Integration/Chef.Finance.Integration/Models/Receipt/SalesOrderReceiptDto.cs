@@ -63,7 +63,10 @@ public class SalesOrderReceiptDto
 
     [Required]
     public string TransactionReference { get; set; }
-
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
+    public string CashAccountNumber { get; set; }
 
 
 }
