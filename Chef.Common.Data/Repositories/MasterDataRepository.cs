@@ -175,14 +175,14 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .GetAsync<ItemSegment>();
     }
 
-    public async Task<JournalBookType> GetJournalBookTypeByGroup(int groupNumber)
+    public async Task<IEnumerable<JournalBookType>> GetJournalBookTypeByGroup(int groupNumber)
     {
         return await QueryFactory
             .Query<JournalBookType>()
             .Select("id", "name", "code")
-            .Where("groupnumber", groupNumber)
+            .Where("groupnum", groupNumber)
             .WhereNotArchived()
-            .FirstOrDefaultAsync<JournalBookType>();
+            .GetAsync<JournalBookType>();
     }
 
     public async Task<IEnumerable<JournalBookType>> GetJournalBookTypes()
