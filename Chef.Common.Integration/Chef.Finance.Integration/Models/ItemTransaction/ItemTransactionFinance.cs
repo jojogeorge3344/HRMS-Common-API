@@ -20,7 +20,7 @@ public class ItemTransactionFinance : Model
         public DateTime TrasnDate { get; set; }
         public string Currency { get; set; }
         public decimal ExRate { get; set; }
-        public string TransRemark { get; set; }
+        public string? TransRemark { get; set; }
         public int ItemCategory { get; set; }
         public int ItemType { get; set; }
         public int ItemSegmentId { get; set; }        

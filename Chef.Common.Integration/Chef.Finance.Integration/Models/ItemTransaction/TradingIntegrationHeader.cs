@@ -24,7 +24,7 @@ public class TradingIntegrationHeader : TransactionModel
         public string currency { get; set; }
         public string exchangerate { get; set; }
         public decimal totalamount { get; set; } //TODO change type in db
-        public string remark { get; set; }
+        public string? remark { get; set; }
         public ApproveStatus ApproveStatus { get; set; }
         public string ApproveStatusName { get; set; }
         public string ApprovedBy { get; set; }
