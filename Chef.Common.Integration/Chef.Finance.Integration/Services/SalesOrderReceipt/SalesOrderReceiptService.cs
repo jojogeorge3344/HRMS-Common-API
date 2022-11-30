@@ -16,6 +16,7 @@ using Chef.Finance.Repositories;
 using Chef.Finance.Services;
 using Chef.Finance.Types;
 using System.Collections.Generic;
+using Chef.Finance.Models;
 
 namespace Chef.Finance.Integration;
 
