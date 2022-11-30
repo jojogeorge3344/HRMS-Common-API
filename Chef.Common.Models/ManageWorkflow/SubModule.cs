@@ -18,6 +18,7 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public int TotalDocumentCount { get; set; }
     }
 }
