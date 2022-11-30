@@ -9,7 +9,7 @@ public interface IMasterDataRepository : IRepository
     Task<Employee> GetEmployee(int id);
 
     Task<IEnumerable<JournalBookType>> GetJournalBookTypes();
-    Task<JournalBookType> GetJournalBookTypeByGroup(int groupNumber);
+    Task<IEnumerable<JournalBookType>> GetJournalBookTypeByGroup(int groupNumber);
 
     Task<IEnumerable<BusinessPartner>> GetActiveBusinessPartners();
     Task<BusinessPartner> GetBusinessPartner(int id);

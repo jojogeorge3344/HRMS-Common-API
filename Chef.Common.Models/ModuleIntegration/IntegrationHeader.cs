@@ -64,10 +64,12 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public List<IntegrationAccountSummary> IntegrationAccountSummaries { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public List<IntegrationPaymentTerm> IntegrationPaymentTerms { get; set; }
     }
 }

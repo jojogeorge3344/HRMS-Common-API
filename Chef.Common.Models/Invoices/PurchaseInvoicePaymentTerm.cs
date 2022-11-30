@@ -24,6 +24,7 @@ namespace Chef.Finance.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public List<PurchaseInvoicePaymentTermInstallment> Installments { get; set; }
     }
 }

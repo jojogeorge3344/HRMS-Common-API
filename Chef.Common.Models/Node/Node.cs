@@ -14,14 +14,17 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public string ModuleName { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public int TotalDocumentCount { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public string SubModuleName { get; set; }
     }
 }

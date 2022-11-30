@@ -126,7 +126,7 @@ public class MasterDataController : ControllerBase
 
     [HttpGet]
     [Route("{groupNumber:int}")]
-    public async Task<ActionResult<JournalBookType>> GetJournalBookTypeByGroup(int groupNumber)
+    public async Task<ActionResult<IEnumerable<JournalBookType>>> GetJournalBookTypeByGroup(int groupNumber)
     {
         return Ok(await masterDataService.GetJournalBookTypeByGroup(groupNumber));
     }

@@ -67,7 +67,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         throw new NotImplementedException();
     }
 
-    public async Task<string> InsertAsync(SalesInvoiceDto salesInvoiceDto)
+    public async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto)
     {
         IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Invoice.ToString());
 
@@ -222,7 +222,10 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
         }
-        return salesInvoiceResponse.DocumentNumber;
+        return new()
+        {
+            DocumentNumber = salesInvoiceResponse.DocumentNumber
+        };
     }
 
     public Task<int> UpdateAsync(SalesInvoiceDto obj)

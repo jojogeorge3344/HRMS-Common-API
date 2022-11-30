@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SqlKata;
 
 namespace Chef.Finance.Integration.Models;
 
@@ -43,6 +44,8 @@ public class SalesOrderReceiptDto
 
   
     public string TransactionCurrencyCode { get; set; }
+    public string baseCurrencyCode { get; set; }
+    public DateTime transactionCurrencyDate { get; set; }
 
     public int ExchangeRateId { get; set; }
 
@@ -61,7 +64,10 @@ public class SalesOrderReceiptDto
 
     [Required]
     public string TransactionReference { get; set; }
-
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
+    public string CashAccountNumber { get; set; }
 
 
 }

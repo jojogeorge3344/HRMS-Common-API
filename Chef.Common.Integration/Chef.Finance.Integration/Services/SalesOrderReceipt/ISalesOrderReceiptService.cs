@@ -4,5 +4,5 @@ namespace Chef.Finance.Integration;
 
 public interface ISalesOrderReceiptService : IAsyncService<SalesOrderReceiptDto>
 {
-    Task<string> PostAsync(SalesOrderReceiptDto salesReturnCreditDto);
+    Task<SalesOrderReceiptResponse> PostAsync(SalesOrderReceiptDto salesReturnCreditDto);
 }
