@@ -57,7 +57,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         if (journalBookConfig == null)
             throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
         
-        PaymentMethod paymentMethod = await paymentMethodRepository.getPaymentMethodeDetails(Convert.ToInt32(PaymentMethodType.Cash), TransactionType.Receipt.ToString());        
+        PaymentMethod paymentMethod = await paymentMethodRepository.getPaymentMethodeDetails(PaymentMethodType.Cash, TransactionType.Receipt.ToString());        
         if (paymentMethod == null)
         {
             throw new ResourceNotFoundException("Payment methode details not available");
