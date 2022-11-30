@@ -12,7 +12,6 @@
         InventoryAdjustmentExistingQty = 9,
         InventoryAdjustmentNewQty = 10,
         InventoryCyclecounting = 11,
-        MatchandApproval = 12,
-        GRN=13
+        MatchandApproval = 12
     }
 }

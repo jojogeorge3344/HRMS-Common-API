@@ -90,8 +90,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                     case (TransactionOrgin.Purchase, TransactionType.Return):
                         await GetPurchaseReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.GRN):
-                        await GetSalesOrderGRNTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    case (TransactionOrgin.SalesOrder, TransactionType.Return):
+                        await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
                     case (TransactionOrgin.SalesOrder, TransactionType.Delivery):
                         await GetSalesOrderDeliveryTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
@@ -304,7 +304,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         }
     }
 
-    private async Task GetSalesOrderGRNTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
+    private async Task GetSalesOrderReturnTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
     {
         itemDto = itemTransactionFinanceDTO;
 
@@ -468,7 +468,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         integrationDetails.DocumentNumber = documentNumber;
         integrationDetails.BranchId = branchId;
         // integrationDetailList.Add(integrationDetails);
-
+        integrationDetails.narration = itemDto.TransOrgin + itemDto.TransType + "-" + itemDto.TrasnOrderNum;
         int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
         integrationDetails.Id = integrationdetailid;
         if (ledgerAccountViewModel.isdimension1 == true)
@@ -523,6 +523,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             integrationDetails.FinancialYearId = financialYearId;
             integrationDetails.DocumentNumber = documentNumber;
             integrationDetails.BranchId = branchId;
+            integrationDetails.narration = itemDto.TransOrgin + itemDto.TransType + "-" + itemDto.TrasnOrderNum;
             //   integrationDetailList.Add(integrationDetails);
             int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
             integrationDetails.Id = integrationdetailid;
@@ -563,15 +564,15 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         {
             Dimension dimension = await dimensionRepository.GetByDimensionTypeName(Dimension);
 
-            if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && itemDto.ProjectId != null)
+            if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && itemDto.ProjectCode != null)
             {
                 await InsertDimension(dimension.DimensionTypeLabel, itemDto.ProjectCode, isDebit, integrationDetails);
             }
-            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && itemDto.EmployeeId != null)
+            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && itemDto.EmployeeCode != null)
             {
                 await InsertDimension(dimension.DimensionTypeLabel, itemDto.EmployeeCode, isDebit, integrationDetails);
             }
-            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && itemDto.CostCenterId != null)
+            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && itemDto.CostCenterCode != null)
             {
                 await InsertDimension(dimension.DimensionTypeLabel, itemDto.CostCenterCode, isDebit, integrationDetails);
             }

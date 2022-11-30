@@ -11,9 +11,9 @@ public class ItemTransactionFinance : Model
         public int BranchId { get; set; }
         public string BranchCode { get; set; }
         public string BranchName { get; set; }
-        public int BpId { get; set; }
-        public string BpCode { get; set; }
-        public string BpName { get; set; }
+        public int? BpId { get; set; }
+        public string? BpCode { get; set; }
+        public string? BpName { get; set; }
         public int TrasnTypeSlNo { get; set; }
         public int TransId { get; set; }
         public string TrasnOrderNum { get; set; }

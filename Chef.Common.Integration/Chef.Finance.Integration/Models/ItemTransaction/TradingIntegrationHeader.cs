@@ -16,9 +16,9 @@ public class TradingIntegrationHeader : TransactionModel
         public string transtype { get; set; }
         public int companyid { get; set; }
         public string company { get; set; }
-        public int businesspartnerid { get; set; }
-        public string businesspartnercode { get; set; }
-        public string businesspartnername { get; set; }
+        public int? businesspartnerid { get; set; }
+        public string? businesspartnercode { get; set; }
+        public string? businesspartnername { get; set; }
         public int transtypeslno { get; set; }
         public int transid { get; set; }
         public string currency { get; set; }
