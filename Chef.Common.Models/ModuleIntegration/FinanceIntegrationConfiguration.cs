@@ -14,27 +14,27 @@ namespace Chef.Common.Models
         [Required]
         public string ItemCategoryName { get; set; }
 
-        public int? ItemTypeId { get; set; }
+        public int? ItemTypeId { get; set; }=0;
 
         public string ItemTypeName { get; set; }
 
-        public int? CostPriceComponentId { get; set; }
+        public int? CostPriceComponentId { get; set; } = 0;
 
         public string CostPriceComponentName { get; set; }
 
-        public int? ItemSegmentId { get; set; }
+        public int? ItemSegmentId { get; set; } = 0;
 
         public string ItemSegmentName { get; set; }
 
-        public int? ItemClassId { get; set; }
+        public int? ItemClassId { get; set; } = 0;
 
         public string ItemClassName { get; set; }
 
-        public int? ItemFamilyId { get; set; }
+        public int? ItemFamilyId { get; set; } = 0;
 
         public string ItemFamilyName { get; set; }
 
-        public int? ItemCommondityId { get; set; }
+        public int? ItemCommondityId { get; set; } = 0;
 
         public string ItemCommondityName { get; set; }
 
