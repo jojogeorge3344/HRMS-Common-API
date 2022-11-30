@@ -70,6 +70,5 @@ public class SalesOrderReceiptDto
     public string CashAccountNumber { get; set; }
 
 
-
 }
 

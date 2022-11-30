@@ -62,7 +62,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             throw new ResourceNotFoundException("Payment methode details not available");
         }
 
-        BankAccount bankaccountType = await bankAccountRepository.GetCashAccountDetails(6, "4558989");
+        BankAccountReceipt bankaccountType = await bankAccountRepository.GetCashAccountDetails(6, "4558989");
         if (paymentMethod == null)
         {
             throw new ResourceNotFoundException("Bank account details not available");
