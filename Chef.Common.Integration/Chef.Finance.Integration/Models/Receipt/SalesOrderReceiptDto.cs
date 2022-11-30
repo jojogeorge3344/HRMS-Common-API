@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SqlKata;
 
 namespace Chef.Finance.Integration.Models;
 
