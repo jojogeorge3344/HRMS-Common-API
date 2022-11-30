@@ -10,7 +10,7 @@ namespace Chef.Finance.Integration.Models;
     {
         public int SalesReturnCreditId { get; set; }
         public int SalesReturnId { get; set; }
-        public string SalesCreditSeries { get; set; }
+        public string? SalesCreditSeries { get; set; }
         public DateTime SalesCreditDate { get; set; }    
         public string Company { get; set; }
         public int BranchId { get; set; }
@@ -29,8 +29,8 @@ namespace Chef.Finance.Integration.Models;
         public decimal NetAmount { get; set; }
         public int CostCenterId { get; set; }
         public int PoGroupId { get; set; }
-        public string CreditNoteNumber { get; set; }
-        public List<SalesReturnCreditItemDto> salesReturnCreditItemDtos { get; set; }
+        public string? CreditNoteNumber { get; set; }
+        public List<SalesReturnCreditItemDto>? salesReturnCreditItemDtos { get; set; }
 
     }
 
