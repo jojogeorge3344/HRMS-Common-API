@@ -25,7 +25,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<Employee>()
-            .Select("id", "displayname", "employeecode")
+            .Select("id", "displayname", "employeecode","firstname","lastname","middlename")
             .Where("isactive", true)
             .WhereNotArchived()
             .GetAsync<Employee>();
