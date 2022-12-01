@@ -18,7 +18,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                                    businesspartnername,
                                    currency,
                                    totalamount,
-                                   transactiondate, 
+                                   transactiondate 
                             FROM   finance.tradingintegrationheader
                             WHERE  transorginid = @transorginId
                             and    transtypeid =  @transtypeId
