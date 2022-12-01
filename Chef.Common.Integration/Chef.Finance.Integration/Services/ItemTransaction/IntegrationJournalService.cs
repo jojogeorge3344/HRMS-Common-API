@@ -17,6 +17,7 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
         {
            this.integrationJournalRepository = integrationJournalRepository;
         this.integrationJournalRepository=integrationJournalRepository;
+        this.integrationDetailDimensionRepository = integrationDetailDimensionRepository;
         this.tradingIntegrationRepository=tradingIntegrationRepository;
         this.generalLedgerRepository=generalLedgerRepository;
         }
