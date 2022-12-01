@@ -6,4 +6,6 @@ public interface ITradingIntegrationRepository : IGenericRepository<TradingInteg
     Task<IEnumerable<TradingIntegrationHeaderDetailsViewModel>> GetIntegrationHeaderDetails(int integerationHeaderId);
 
     Task<IEnumerable<ItemTransactionFinanceDetailsDto>> GetItemtransactionFinanceDetails(int headerId);
+
+    Task<int> UpdateStatus(int HeaderId);
 }

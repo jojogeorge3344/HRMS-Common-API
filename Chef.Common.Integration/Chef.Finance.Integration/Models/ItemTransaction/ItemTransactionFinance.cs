@@ -11,16 +11,16 @@ public class ItemTransactionFinance : Model
         public int BranchId { get; set; }
         public string BranchCode { get; set; }
         public string BranchName { get; set; }
-        public int BpId { get; set; }
-        public string BpCode { get; set; }
-        public string BpName { get; set; }
+        public int? BpId { get; set; }
+        public string? BpCode { get; set; }
+        public string? BpName { get; set; }
         public int TrasnTypeSlNo { get; set; }
         public int TransId { get; set; }
         public string TrasnOrderNum { get; set; }
         public DateTime TrasnDate { get; set; }
         public string Currency { get; set; }
         public decimal ExRate { get; set; }
-        public string TransRemark { get; set; }
+        public string? TransRemark { get; set; }
         public int ItemCategory { get; set; }
         public int ItemType { get; set; }
         public int ItemSegmentId { get; set; }        
