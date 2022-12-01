@@ -52,18 +52,18 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
     public async Task<SalesOrderReceiptResponse> PostAsync(SalesOrderReceiptDto salesOrderReceiptDto)
     {
 
-        IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Receipt.ToString());
-
+        //  IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Receipt.ToString());
+        NetBillIntegrationConfig journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookIntegration();
         if (journalBookConfig == null)
             throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
         
-        PaymentMethod paymentMethod = await paymentMethodRepository.getPaymentMethodeDetails(Convert.ToInt32(PaymentMethodType.Cash), TransactionType.Receipt.ToString());        
+        PaymentMethod paymentMethod = await paymentMethodRepository.getPaymentMethodeDetails(Convert.ToInt32(PaymentMethodType.Cash));        
         if (paymentMethod == null)
         {
             throw new ResourceNotFoundException("Payment methode details not available");
         }
 
-        BankAccountReceipt bankaccountType = await bankAccountRepository.GetCashAccountDetails(6, "4558989");
+        NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails();
         if (paymentMethod == null)
         {
             throw new ResourceNotFoundException("Bank account details not available");
@@ -80,11 +80,11 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
 
         receiptRegister.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
         receiptRegister.ApproveStatus = ApproveStatus.Draft;
-        receiptRegister.JournalBookCode = journalBookConfig.JournalBookCode;
-        receiptRegister.JournalBookId = journalBookConfig.JournalBookId;
-        receiptRegister.JournalBookName = journalBookConfig.JournalBookName;
-        receiptRegister.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
-        receiptRegister.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+        receiptRegister.JournalBookCode = journalBookConfig.jbcode;
+        receiptRegister.JournalBookId = journalBookConfig.jbid;
+        receiptRegister.JournalBookName = journalBookConfig.name;
+        receiptRegister.JournalBookTypeId = journalBookConfig.journalbooktypeid;
+        receiptRegister.JournalBookTypeCode = journalBookConfig.journalbooktypecode;
         receiptRegister.PaymentMethodCode = paymentMethod.Code;
         receiptRegister.PaymentMethodName = paymentMethod.Name;
         receiptRegister.BankAccountId=bankaccountType.Id;
