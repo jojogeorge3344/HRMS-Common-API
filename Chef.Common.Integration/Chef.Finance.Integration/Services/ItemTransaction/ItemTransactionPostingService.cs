@@ -56,7 +56,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         try
         {
 
-            IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrgin, itemTransactionFinanceDTO.First().TransType);
+            IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId);
             if (items == null)
                 //TODO:will change the exception type once latest changes got from SK
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
@@ -84,35 +84,37 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 TransactionType type = (TransactionType)details.TransTypeId;
                 switch (origin, type)
                 {
-                    case (TransactionOrgin.Purchase, TransactionType.Receipt):
+                    case (TransactionOrgin.Purchase, TransactionType.PurchaseReceipt):
                         await GetPurchaseReceiptTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Purchase, TransactionType.Return):
+                    case (TransactionOrgin.Purchase, TransactionType.PurchaseReturn):
                         await GetPurchaseReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.Return):
+                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn):
                         await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.Delivery):
+                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery):
                         await GetSalesOrderDeliveryTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.Transferorder):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferorder):
                         await GetWarehouseTransferOrderTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.Transfercommit):
-                        await GetWarehouseTransfercommitTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferconfirmation):
+                        await GetWarehouseTransferconfirmationTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryAdjustmentCost):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseDirectTransfer):
+                        await GetWarehouseDirectTransferIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                        break;
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentCost):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryAdjustmentExistingQty):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentExistingQty):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryAdjustmentNewQty):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentNewQty):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryCyclecounting):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryCyclecounting):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
 
@@ -340,7 +342,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         }
     }
 
-    private async Task GetWarehouseTransfercommitTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
+    private async Task GetWarehouseTransferconfirmationTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
     {
         try
         {
@@ -362,29 +364,60 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
     private async Task GetWarehouseTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
     {
-        itemDto = itemTransactionFinanceDTO;
-        if (itemTransactionFinanceDTO.TransQty > 0)
+        try
         {
+            itemDto = itemTransactionFinanceDTO;
+            if (itemTransactionFinanceDTO.TransQty > 0)
+            {
+                //Configuration -> Inv Control AC - debit
+                ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
+                LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+                await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+
+                //Configuration->reson code cont A / C - credit
+                LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
+                await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+            }
+            else
+            {
+                //Configuration -> Inv Control AC - credit
+                ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
+                LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+                await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+
+                //Configuration->reson code cont A / C - debit
+                LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
+                await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+            }
+        }
+        catch(Exception ex)
+        {
+            throw;
+        }
+    }
+
+    private async Task GetWarehouseDirectTransferIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
+    {
+        try
+        {
+            itemDto = itemTransactionFinanceDTO;
             //Configuration -> Inv Control AC - debit
             ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
             LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
             await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
-            //Configuration->reson code cont A / C - credit
-            LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
+
+            //Configuration->Inv Control AC - credit
+            ItemViewModel itemViewModel1 = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
+            LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel1, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
             await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
         }
-        else
+        catch(Exception ex)
         {
-            //Configuration -> Inv Control AC - credit
-            ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
-            LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
-            await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
-
-            //Configuration->reson code cont A / C - debit
-            LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
-            await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+            throw;
         }
+
+
     }
 
 
