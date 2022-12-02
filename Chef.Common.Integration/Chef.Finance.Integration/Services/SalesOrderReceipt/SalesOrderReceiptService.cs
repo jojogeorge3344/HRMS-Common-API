@@ -118,9 +118,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
 
         CustomerCashReceipt customerCashReceipt = Mapper.Map<CustomerCashReceipt>(salesOrderReceiptDto);
         receiptRegister.CustomerCashReceipt = customerCashReceipt;
-         int id=   await receiptRegisterService.InsertAsync(receiptRegister);
-        receiptRegister.Id = id;
-        await receiptRegisterService.UpdateStatus(id, ApproveStatus.Approved);
+        receiptRegister =   await receiptRegisterService.InsertAsync(receiptRegister);
+        await receiptRegisterService.UpdateStatus(receiptRegister.Id, ApproveStatus.Approved);
         receiptRegister.ApproveStatus = ApproveStatus.Approved;
         List<ReceiptRegister> receiptRegisterList=new List<ReceiptRegister> { receiptRegister };
         await receiptRegisterService.ReceiptProcessing(receiptRegisterList);
