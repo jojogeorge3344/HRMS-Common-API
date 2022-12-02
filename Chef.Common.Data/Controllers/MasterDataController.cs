@@ -188,27 +188,14 @@ public class MasterDataController : ControllerBase
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<BusinessPartner>>> getAllActiveBP()
 	{
-		string top = Request.Query["$top"];
+        //TODO:move this changes to service class
+	string top = Request.Query["$top"];
 		string fil = Request.Query["$filter"];
 		string skip = Request.Query["$skip"];
-		SqlSearch sqlSearch = new SqlSearch();
-		sqlSearch.Rules.Add(new SqlSearchRule());
-		sqlSearch.Rules[0].Field = "Name";
-		sqlSearch.Rules[0].Operator = SqlSearchOperator.Contains;
-		sqlSearch.Rules[0].Value = fil.Replace("code eq '", "").Replace("'", "");
-		sqlSearch.Rules.Add(new SqlSearchRule());
-		sqlSearch.Rules[1].Field = "Code";
-		sqlSearch.Rules[1].Operator = SqlSearchOperator.Contains;
-		sqlSearch.Rules[1].Value = fil.Replace("code eq '", "").Replace("'", "");
-		sqlSearch.Condition = SqlConditionOperator.OR;
 
-		sqlSearch.Limit = Convert.ToInt32(top);
-		if (skip != null)
-			sqlSearch.Offset = Convert.ToInt32(skip);
-        //  string 
-        var businessPartners = await masterDataService.getAllActiveBP();   //getByLimit<BusinessPartner>(sqlSearch, "businessPartner/getAllActiveBP");
+        var businessPartners = await masterDataService.GetAllActiveBP(top, fil, skip);   //getByLimit<BusinessPartner>(sqlSearch, "businessPartner/getAllActiveBP");
 
-		if (businessPartners == null)
+        if (businessPartners == null)
 		{
 			return NotFound("The business partner does not exist.");
 		}

@@ -129,9 +129,25 @@ public class MasterDataService : IMasterDataService
     {
         return masterDataRespository.GetAllTaxSetupAsync();
     }
-    public Task<IEnumerable<BusinessPartner>> getAllActiveBP()
+    public Task<IEnumerable<BusinessPartner>> GetAllActiveBP(string? top,string? fil, string? skip)
     {
-        return masterDataRespository.getAllActiveBP();
+
+        SqlSearch sqlSearch = new SqlSearch();
+        sqlSearch.Rules.Add(new SqlSearchRule());
+        sqlSearch.Rules[0].Field = "Name";
+        sqlSearch.Rules[0].Operator = SqlSearchOperator.Contains;
+        sqlSearch.Rules[0].Value = fil.Replace("code eq '", "").Replace("'", "");
+        sqlSearch.Rules.Add(new SqlSearchRule());
+        sqlSearch.Rules[1].Field = "Code";
+        sqlSearch.Rules[1].Operator = SqlSearchOperator.Contains;
+        sqlSearch.Rules[1].Value = fil.Replace("code eq '", "").Replace("'", "");
+        sqlSearch.Condition = SqlConditionOperator.OR;
+
+        sqlSearch.Limit = Convert.ToInt32(top);
+        if (skip != null)
+            sqlSearch.Offset = Convert.ToInt32(skip);
+        //  string 
+        return masterDataRespository.GetAllActiveBP(sqlSearch);
     }
     public Task<BankBranch> getBankBranchById(int id)
     {
