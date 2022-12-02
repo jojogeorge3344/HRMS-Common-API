@@ -14,7 +14,6 @@ namespace Chef.Common.Models
         public string BpType { get; set; }
 
         [StringLength(16)]
-        [Required]
         public string Code { get; set; }
 
         [StringLength(256)]

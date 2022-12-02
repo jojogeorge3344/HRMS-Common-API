@@ -27,7 +27,7 @@ namespace Chef.Finance.Integration;
             return Ok(await integrationJournalService.GetAllIntegrationDetailsDimensionById(integrationId));
         }
     [HttpPost("PostLedger")]
-    public async Task<ActionResult<int>> PostLedger(int[] headerId)
+    public async Task<ActionResult<int>> PostLedger([FromBody]int[] headerId)
     {
         int integrationDetails = await integrationJournalService.PostLedger(headerId);
         return Ok(integrationDetails);

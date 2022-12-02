@@ -278,18 +278,18 @@ public abstract class GRepository<T> : IGenericRepository<T> where T : Model
 
     private async void InsertAuditLogAsync(Object obj, string action, int tablePK)
     {
-        await QueryFactory
-            .Query<AuditLog>()
-            .InsertAsync(new AuditLog()
-            {
-                Action = action,
-                CreatedDate = DateTime.UtcNow,
-                CreatedBy = HttpHelper.Username,
-                TablePK = tablePK,
-                Values = JsonSerializer.Serialize(obj),
-                SchemaName = SchemaName,
-                TableName = TableName
-            });
+        //await QueryFactory
+        //    .Query<AuditLog>()
+        //    .InsertAsync(new AuditLog()
+        //    {
+        //        Action = action,
+        //        CreatedDate = DateTime.UtcNow,
+        //        CreatedBy = HttpHelper.Username,
+        //        TablePK = tablePK,
+        //        Values = JsonSerializer.Serialize(obj),
+        //        SchemaName = SchemaName,
+        //        TableName = TableName
+        //    });
     }
 }
 

@@ -45,8 +45,6 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
              IEnumerable<IntegrationDetalDimensionViewModel> integrationDetalDimensionViewModels = await integrationJournalRepository.GetAllIntegrationDetailsDimensionById(integrationId);
 
              IEnumerable<IntegrationDetailDimension> dimensionsDetails = await integrationDetailDimensionRepository.GetDimensionDetailsbyId(integrationId);
-            if(dimensionsDetails.Count()==0)
-             return integrationDetalDimensionViewModels;
         foreach (IntegrationDetalDimensionViewModel details in integrationDetalDimensionViewModels)
         {
             IEnumerable<IntegrationDetailDimension> dimensions = dimensionsDetails.Where(x => x.Integrationdetailid == details.Id).ToList();
