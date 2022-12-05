@@ -636,15 +636,15 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         try
         {
             Dimension dimension = await dimensionRepository.GetByDimensionTypeName(Dimension);
-            if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && itemDto.ProjectCode != null)
+            if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && itemDto.ProjectCode != "")
             {
                 await InsertDimension(dimension.DimensionTypeLabel, itemDto.ProjectCode, isDebit, integrationDetails);
             }
-            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && itemDto.EmployeeCode != null)
+            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && itemDto.EmployeeCode != "")
             {
                 await InsertDimension(dimension.DimensionTypeLabel, itemDto.EmployeeCode, isDebit, integrationDetails);
             }
-            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && itemDto.CostCenterCode != null)
+            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && itemDto.CostCenterCode != "")
             {
                 await InsertDimension(dimension.DimensionTypeLabel, itemDto.CostCenterCode, isDebit, integrationDetails);
             }
