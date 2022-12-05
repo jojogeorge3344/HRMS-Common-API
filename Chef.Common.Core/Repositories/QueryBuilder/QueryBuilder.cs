@@ -27,7 +27,7 @@ namespace Chef.Common.Repositories
             { "System.String[]", "text[]"},
             { "System.Int32[]", "int[]"},
             { "System.TimeSpan", "timestamp"},
-            //{ "Enum[]", "integer[]" },
+            { "System.Byte[]", "bytea" },
         };
 
         private readonly bool IsJunctionTable = typeof(T).GetCustomAttribute<TableTypeAttribute>() != null;
