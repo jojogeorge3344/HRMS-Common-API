@@ -20,6 +20,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     private readonly IDimensionMasterRepository dimensionMasterRepository;
     private readonly IIntegrationDetailDimensionRepository integrationDetailDimensionRepository;
     private readonly IReasonCodeControlAccountRepository reasonCodeControlAccountRepository;
+    private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
 
     public ItemTransactionPostingService(IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository, IIntegrationControlAccountRepository integrationControlAccountRepository, IPurchaseControlAccountRepository purchaseControlAccountRepository, IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository,
         ICompanyFinancialYearRepository companyFinancialYearRepository, ITradingIntegrationRepository tradingIntegrationRepository,
@@ -27,7 +28,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
        IDimensionRepository dimensionRepository,
         IDimensionMasterRepository dimensionMasterRepository,
        IIntegrationDetailDimensionRepository integrationDetailDimensionRepository,
-       IReasonCodeControlAccountRepository reasonCodeControlAccountRepository
+       IReasonCodeControlAccountRepository reasonCodeControlAccountRepository,
+        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
@@ -41,6 +43,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         this.dimensionMasterRepository = dimensionMasterRepository;
         this.integrationDetailDimensionRepository = integrationDetailDimensionRepository;
         this.reasonCodeControlAccountRepository = reasonCodeControlAccountRepository;
+        this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
     }
     private List<IntegrationDetails> integrationDetailList = new List<IntegrationDetails>();
     // private List<TradingIntegrationHeader> tradingIntegrationHeaders =new List<TradingIntegrationHeader>();
@@ -71,6 +74,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             intHeader.ApproveStatusName = ApproveStatus.Draft.ToString();
 
             // simpleUnitOfWork.BeginTransaction();
+            tenantSimpleUnitOfWork.BeginTransaction();
             intHeader.documentnumber = await journalBookNumberingSchemeRepository.GetJournalTransactionsDocNumber(intHeader.FinancialYearId, intHeader.BranchId, items.JournalBookCode);
             int intHeaderId = await tradingIntegrationRepository.InsertAsync(intHeader);
 
@@ -153,12 +157,12 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             //GeneralLedger generalLedger = new GeneralLedger();
             //await PostLedger(intHeader.Id);
             //generalLedgerlList = await generalLedgerRepository.BulkInsertAsync(generalLedgerlList);
-            //// simpleUnitOfWork.Commit();
+            tenantSimpleUnitOfWork.Commit();
             return itemTransactionFinanceDetailsDtos;
         }
         catch (Exception ex)
         {
-            //simpleUnitOfWork.Rollback();
+            tenantSimpleUnitOfWork.Rollback();
             throw;
         }
 
