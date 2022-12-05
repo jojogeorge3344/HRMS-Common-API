@@ -650,7 +650,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             }
             else
             {
-                throw new ResourceNotFoundException($"{dimension.DimensionTypeLabel} is Mandatory");
+                throw new ResourceNotFoundException($"{dimension.DimensionTypeLabel} Dimension is Mandatory for this account");
             }
         }
         catch (Exception ex)
