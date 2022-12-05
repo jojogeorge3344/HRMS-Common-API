@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Models;
+using SqlKata;
 
 namespace Chef.Common.Data.Repositories;
 
@@ -25,7 +26,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<Employee>()
-            .Select("id", "displayname", "employeecode")
+            .Select("id", "displayname", "employeecode","firstname","lastname","middlename")
             .Where("isactive", true)
             .WhereNotArchived()
             .GetAsync<Employee>();
@@ -175,14 +176,14 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .GetAsync<ItemSegment>();
     }
 
-    public async Task<JournalBookType> GetJournalBookTypeByGroup(int groupNumber)
+    public async Task<IEnumerable<JournalBookType>> GetJournalBookTypeByGroup(int groupNumber)
     {
         return await QueryFactory
             .Query<JournalBookType>()
             .Select("id", "name", "code")
-            .Where("groupnumber", groupNumber)
+            .Where("groupnum", groupNumber)
             .WhereNotArchived()
-            .FirstOrDefaultAsync<JournalBookType>();
+            .GetAsync<JournalBookType>();
     }
 
     public async Task<IEnumerable<JournalBookType>> GetJournalBookTypes()
@@ -249,19 +250,27 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
                 .WhereNotArchived()
                 .GetAsync<Tax>();
     }
-    public async Task<IEnumerable<BusinessPartner>> getAllActiveBP()
+    public async Task<IEnumerable<BusinessPartner>> GetAllActiveBP(SqlSearch search , CancellationToken cancellationToken = default)
     {
-		return await QueryFactory
-				.Query<BusinessPartner>()
-				.WhereNotArchived()
-				.GetAsync<BusinessPartner>();
-	}
+        //TODO - revisit Order by
+        Query query = QueryFactory.Query<BusinessPartner>().OrderByDesc("createddate");
+        Query query2 = query.Where(q => q.ApplySqlSearch(search));
+        search.Rules.Clear();
+        search.Condition = SqlConditionOperator.AND;
+        search.Rules.Add(new SqlSearchRule());
+        search.Rules[0].Field = "isactive";
+        search.Rules[0].Operator = SqlSearchOperator.Equal;
+        search.Rules[0].Value = true;
+        query2.ApplySqlSearch(search);
+
+        return await query2.GetAsync<BusinessPartner>();
+    }
     public async Task<BankBranch> getBankBranchById(int id)
     {
 		
 		return await QueryFactory
 					.Query<BankBranch>()
-					.Select("id", "name", "code")
+					//.Select("id", "name", "code")
 					.Where("bankid", id)
 					.WhereNotArchived()
 					.FirstOrDefaultAsync<BankBranch>();

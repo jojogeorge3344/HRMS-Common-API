@@ -10,27 +10,40 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         this.httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<IEnumerable<TradingIntegrationHeader>> GetAll(int transorginId,int transtypeId, DateTime fromDate,DateTime toDate)
+    public async Task<IEnumerable<TradingIntegrationHeader>> GetAll(int transorginId, int transtypeId, DateTime fromDate, DateTime toDate, int status)
     {
         string sql = @"SELECT id,
                                    documentnumber,
                                    businesspartnercode,
                                    businesspartnername,
                                    currency,
-                                   totalamount 
+                                   totalamount,
+                                   transactiondate 
                             FROM   finance.tradingintegrationheader
                             WHERE  transorginid = @transorginId
                             and    transtypeid =  @transtypeId
-                            and to_date(cast(createddate AS text), 'YYYY-MM-DD') BETWEEN @fromDate AND    @toDate";
-        return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId , fromDate, toDate });
-         
+                            and to_date(cast(createddate AS text), 'YYYY-MM-DD') BETWEEN @fromDate AND    @toDate AND approvestatus = @status";
+        return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId, fromDate, toDate, status });
+
     }
 
-    public async Task<IEnumerable<IntegrationDetails>> GetAllIntegrationDetailsById(int integrationId)
+    public async Task<IEnumerable<IntegrationDetalDimensionViewModel>> GetAllIntegrationDetailsDimensionById(int integrationId)
     {
-        SqlKata.Query query = SqlQueryBuilder.Query<IntegrationDetails>()
-            .Select<IntegrationDetails>()
-            .Where("integrationheaderid", integrationId);
-        return await DatabaseSession.QueryAsync<IntegrationDetails>(query, default);
+        string sql = @"SELECT ids.id,
+                                       ids.integrationheaderid,
+                                       ids.ledgeraccountid,
+                                       ids.ledgeraccountcode,
+                                       ids.ledgeraccountname,
+                                       ids.debitamount,
+                                       ids.debitamountinbasecurrency,
+                                       ids.creditamount,
+                                       ids.creditamountinbasecurrency
+                                FROM   finance.integrationdetails ids
+                                WHERE  ids.integrationheaderid = @integrationId";
+        return await DatabaseSession.QueryAsync<IntegrationDetalDimensionViewModel>(sql, new { integrationId });
+        //SqlKata.Query query = SqlQueryBuilder.Query<IntegrationDetails>()
+        //    .Select<IntegrationDetails>()
+        //    .Where("integrationheaderid", integrationId);
+        //return await DatabaseSession.QueryAsync<IntegrationDetails>(query, default);
     }
 }

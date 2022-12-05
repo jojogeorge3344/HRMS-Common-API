@@ -13,7 +13,7 @@ public class SalesOrderInvoiceController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<string>> Insert(SalesInvoiceDto salesInvoice)
+    public async Task<ActionResult<SalesInvoiceResponse>> Insert(SalesInvoiceDto salesInvoice)
     {
         return Ok(await salesOrderInvoiceService.InsertAsync(salesInvoice));
     }

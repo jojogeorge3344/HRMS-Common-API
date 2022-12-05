@@ -14,5 +14,7 @@ namespace Chef.Finance.Models
 
         [Required]
         public bool IsAttachments { get; set; }
+
+        public int BranchId { get; set; }
     }
 }

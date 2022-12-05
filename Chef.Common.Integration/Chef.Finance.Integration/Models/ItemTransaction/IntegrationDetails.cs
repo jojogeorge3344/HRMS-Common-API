@@ -14,10 +14,6 @@ public class IntegrationDetails : TransactionModel
     public decimal creditamountinbasecurrency { get; set; }
     public bool isdimensionallocation { get; set; }
     public string narration { get; set; }
-
-    [Write(false)]
-    [Skip(true)]
-    [Ignore]
     public int ItemTransactionFinanceId { get; set; }
 
     [Write(false)]

@@ -56,7 +56,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         try
         {
 
-            IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrgin, itemTransactionFinanceDTO.First().TransType);
+            IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId);
             if (items == null)
                 //TODO:will change the exception type once latest changes got from SK
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
@@ -84,39 +84,42 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 TransactionType type = (TransactionType)details.TransTypeId;
                 switch (origin, type)
                 {
-                    case (TransactionOrgin.Purchase, TransactionType.Receipt):
+                    case (TransactionOrgin.Purchase, TransactionType.PurchaseReceipt):
                         await GetPurchaseReceiptTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Purchase, TransactionType.Return):
+                    case (TransactionOrgin.Purchase, TransactionType.PurchaseReturn):
                         await GetPurchaseReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.GRN):
-                        await GetSalesOrderGRNTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn):
+                        await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.Delivery):
+                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery):
                         await GetSalesOrderDeliveryTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.Transferorder):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferorder):
                         await GetWarehouseTransferOrderTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.Transfercommit):
-                        await GetWarehouseTransfercommitTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferconfirmation):
+                        await GetWarehouseTransferconfirmationTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryAdjustmentCost):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseDirectTransfer):
+                        await GetWarehouseDirectTransferIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                        break;
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentCost):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryAdjustmentExistingQty):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentExistingQty):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryAdjustmentNewQty):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentNewQty):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.Warehouse, TransactionType.InventoryCyclecounting):
+                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryCyclecounting):
                         await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
 
                     default:
+                        throw new ResourceNotFoundException("TransactionOrgin and TransactionType does not exsit");
                         break;
 
                 }
@@ -178,6 +181,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
             // A/ C Config->invoice to be received credit
             LedgerAccountViewModel ledgerAccountViewModel1 = await GetInvoiceToBeRecevied();
+            if(ledgerAccountViewModel1 == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
 
@@ -203,6 +208,9 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
                     //Configuration->Inv Control AC debit
                     LedgerAccountViewModel ledgerAccountViewModel3 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+                    if (ledgerAccountViewModel3 == null)
+                        throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
+
 
                     await InsertIntegrationDetailList(ledgerAccountViewModel3, itemTransactionFinanceLineCost.TransAmount, itemTransactionFinanceLineCost.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
@@ -228,13 +236,16 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             itemDto = itemTransactionFinanceDTO;
             // A/ C Config->invoice to be received - debit               
             LedgerAccountViewModel ledgerAccountViewModel = await GetInvoiceToBeRecevied();
+            if (ledgerAccountViewModel == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
 
             //Configuration -> Inv Control AC - credit               
             ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
             LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
-
+            if (ledgerAccountViewModel1 == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
 
@@ -249,6 +260,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                     itemViewModel1.LandingCost = itemTransactionFinanceDTO.LandingCostId;
 
                     LedgerAccountViewModel ledgerAccountViewModel2 = await GetItemAndLandedCostLedgerDetails(itemViewModel1, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+                    if (ledgerAccountViewModel2 == null)
+                        throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
 
                     await InsertIntegrationDetailList(ledgerAccountViewModel2, itemTransactionFinanceLineCost, true, itemTransactionFinanceDTO.BranchId);
 
@@ -258,7 +271,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                     //Configuration->Inv Control AC -credit
 
                     LedgerAccountViewModel ledgerAccountViewModel3 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
-
+                    if (ledgerAccountViewModel3 == null)
+                        throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
                     await InsertIntegrationDetailList(ledgerAccountViewModel3, itemTransactionFinanceLineCost.TransAmount, itemTransactionFinanceLineCost.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
 
@@ -291,11 +305,15 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
             ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
             LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+            if (ledgerAccountViewModel == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
             //Configuration -> Cost of Sales a/c - debit
 
             LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.CostOfSalesAccountType));
+            if (ledgerAccountViewModel1 == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
         }
         catch (Exception ex)
@@ -304,17 +322,21 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         }
     }
 
-    private async Task GetSalesOrderGRNTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
+    private async Task GetSalesOrderReturnTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
     {
         itemDto = itemTransactionFinanceDTO;
 
         //Configuration -> Inv Control AC-debit
         ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
         LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+        if (ledgerAccountViewModel == null)
+            throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
         await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
         //Configuration -> Cost of Sales a/c - credit
         LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.CostOfSalesAccountType));
+        if (ledgerAccountViewModel1 == null)
+            throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
         await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
     }
@@ -327,11 +349,15 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             //Configuration -> 	Item in Transit Control a/c - debit
             ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
             LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.ItemInTransitControlAccountType));
+            if (ledgerAccountViewModel == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
             //Configuration -> Inv Control AC - credit
 
             LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+            if (ledgerAccountViewModel1 == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
         }
         catch (Exception ex)
@@ -340,7 +366,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         }
     }
 
-    private async Task GetWarehouseTransfercommitTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
+    private async Task GetWarehouseTransferconfirmationTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
     {
         try
         {
@@ -348,10 +374,14 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             //Configuration -> Inv Control AC- debit
             ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
             LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+            if (ledgerAccountViewModel == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
             //Configuration -> 	Item in Transit Control a/c - credit
             LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+            if (ledgerAccountViewModel1 == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
         }
         catch (Exception ex)
@@ -362,29 +392,72 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
     private async Task GetWarehouseTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
     {
-        itemDto = itemTransactionFinanceDTO;
-        if (itemTransactionFinanceDTO.TransQty > 0)
+        try
         {
+            itemDto = itemTransactionFinanceDTO;
+            if (itemTransactionFinanceDTO.TransQty > 0)
+            {
+                //Configuration -> Inv Control AC - debit
+                ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
+                LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+                if (ledgerAccountViewModel == null)
+                    throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
+                await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+
+                //Configuration->reson code cont A / C - credit
+                LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
+                if (ledgerAccountViewModel1 == null)
+                    throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
+                await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+            }
+            else
+            {
+                //Configuration -> Inv Control AC - credit
+                ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
+                LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+                if (ledgerAccountViewModel == null)
+                    throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
+                await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+
+                //Configuration->reson code cont A / C - debit
+                LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
+                if (ledgerAccountViewModel1 == null)
+                    throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
+                await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+            }
+        }
+        catch(Exception ex)
+        {
+            throw;
+        }
+    }
+
+    private async Task GetWarehouseDirectTransferIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
+    {
+        try
+        {
+            itemDto = itemTransactionFinanceDTO;
             //Configuration -> Inv Control AC - debit
             ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
             LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+            if (ledgerAccountViewModel == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
 
-            //Configuration->reson code cont A / C - credit
-            LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
+
+            //Configuration->Inv Control AC - credit
+            ItemViewModel itemViewModel1 = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
+            LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel1, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
+            if (ledgerAccountViewModel1 == null)
+                throw new ResourceNotFoundException("Ledger Account not configured for this control Account");
             await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
         }
-        else
+        catch(Exception ex)
         {
-            //Configuration -> Inv Control AC - credit
-            ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
-            LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
-            await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
-
-            //Configuration->reson code cont A / C - debit
-            LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
-            await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
+            throw;
         }
+
+
     }
 
 
@@ -468,7 +541,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         integrationDetails.DocumentNumber = documentNumber;
         integrationDetails.BranchId = branchId;
         // integrationDetailList.Add(integrationDetails);
-
+        integrationDetails.narration = itemDto.TransOrgin + itemDto.TransType + "-" + itemDto.TrasnOrderNum;
         int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
         integrationDetails.Id = integrationdetailid;
         if (ledgerAccountViewModel.isdimension1 == true)
@@ -523,6 +596,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             integrationDetails.FinancialYearId = financialYearId;
             integrationDetails.DocumentNumber = documentNumber;
             integrationDetails.BranchId = branchId;
+            integrationDetails.narration = itemDto.TransOrgin + itemDto.TransType + "-" + itemDto.TrasnOrderNum;
             //   integrationDetailList.Add(integrationDetails);
             int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
             integrationDetails.Id = integrationdetailid;
@@ -562,22 +636,21 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         try
         {
             Dimension dimension = await dimensionRepository.GetByDimensionTypeName(Dimension);
-
-            if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && itemDto.ProjectId != null)
+            if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && itemDto.ProjectCode != null)
             {
-                await InsertDimension(dimension.DimensionTypeLabel, itemDto.ProjectId, isDebit, integrationDetails);
+                await InsertDimension(dimension.DimensionTypeLabel, itemDto.ProjectCode, isDebit, integrationDetails);
             }
-            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && itemDto.EmployeeId != null)
+            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && itemDto.EmployeeCode != null)
             {
-                await InsertDimension(dimension.DimensionTypeLabel, itemDto.EmployeeId, isDebit, integrationDetails);
+                await InsertDimension(dimension.DimensionTypeLabel, itemDto.EmployeeCode, isDebit, integrationDetails);
             }
-            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && itemDto.CostCenterId != null)
+            else if (dimension.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && itemDto.CostCenterCode != null)
             {
-                await InsertDimension(dimension.DimensionTypeLabel, itemDto.CostCenterId, isDebit, integrationDetails);
+                await InsertDimension(dimension.DimensionTypeLabel, itemDto.CostCenterCode, isDebit, integrationDetails);
             }
             else
             {
-                //throw new ResourceNotFoundException($"{dimension.DimensionTypeLabel} is Mandatory");
+                throw new ResourceNotFoundException($"{dimension.DimensionTypeLabel} is Mandatory");
             }
         }
         catch (Exception ex)

@@ -14,16 +14,23 @@ namespace Chef.Finance.Integration;
             this.integrationJournalService = integrationJournalService;
         }
 
-        [HttpGet("GetAll/{transorginId}/{transtypeId}/{fromDate}/{toDate}")]
-        public async Task<ActionResult<IAsyncEnumerable<TradingIntegrationHeader>>> GetAll(int transorginId, int transtypeId, DateTime fromDate, DateTime toDate)
-        {
-            return Ok(await integrationJournalService.GetAll( transorginId,  transtypeId,  fromDate,  toDate));
-        }
-
-        [HttpGet("GetAllIntegrationDetailsById/{integrationId}")]
-        public async Task<ActionResult<IAsyncEnumerable<IntegrationDetails>>> GetAllIntegrationDetailsById(int integrationId)
-        {
-            return Ok(await integrationJournalService.GetAllIntegrationDetailsById(integrationId));
-        }
+    [HttpGet("GetAll/{transorginId}/{transtypeId}/{fromDate}/{toDate}/{status}")]
+    public async Task<ActionResult<IAsyncEnumerable<TradingIntegrationHeader>>> GetAll(int transorginId, int transtypeId, DateTime fromDate, DateTime toDate, int status)
+    {
+        IEnumerable<TradingIntegrationHeader> tradingIntegrationHeader = await integrationJournalService.GetAll(transorginId, transtypeId, fromDate, toDate, status);
+        return Ok(tradingIntegrationHeader);
     }
+
+    [HttpGet("GetAllIntegrationDetailsDimensionById/{integrationId}")]
+        public async Task<ActionResult<IAsyncEnumerable<IntegrationDetalDimensionViewModel>>> GetAllIntegrationDetailsDimensionById(int integrationId)
+        {
+            return Ok(await integrationJournalService.GetAllIntegrationDetailsDimensionById(integrationId));
+        }
+    [HttpPost("PostLedger")]
+    public async Task<ActionResult<int>> PostLedger([FromBody]int[] headerId)
+    {
+        int integrationDetails = await integrationJournalService.PostLedger(headerId);
+        return Ok(integrationDetails);
+    }
+}
 

@@ -13,7 +13,7 @@ public class SalesOrderCreditNoteController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<string>> Post(SalesReturnCreditDto salesReturnCreditDto)
+    public async Task<ActionResult<SalesReturnCreditResponse>> Post(SalesReturnCreditDto salesReturnCreditDto)
     {
         return Ok(await SalesOrderCreditNoteService.PostAsync(salesReturnCreditDto));
     }

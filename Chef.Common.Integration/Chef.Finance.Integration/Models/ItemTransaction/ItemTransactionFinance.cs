@@ -11,16 +11,16 @@ public class ItemTransactionFinance : Model
         public int BranchId { get; set; }
         public string BranchCode { get; set; }
         public string BranchName { get; set; }
-        public int BpId { get; set; }
-        public string BpCode { get; set; }
-        public string BpName { get; set; }
+        public int? BpId { get; set; }
+        public string? BpCode { get; set; }
+        public string? BpName { get; set; }
         public int TrasnTypeSlNo { get; set; }
         public int TransId { get; set; }
         public string TrasnOrderNum { get; set; }
         public DateTime TrasnDate { get; set; }
         public string Currency { get; set; }
         public decimal ExRate { get; set; }
-        public string TransRemark { get; set; }
+        public string? TransRemark { get; set; }
         public int ItemCategory { get; set; }
         public int ItemType { get; set; }
         public int ItemSegmentId { get; set; }        
@@ -37,9 +37,15 @@ public class ItemTransactionFinance : Model
         public decimal TransAmount { get; set; }
         public decimal HmAmount { get; set; }
         public int Status { get; set; } //0-pending,1-docnumgenerated
-        public string ProjectId { get; set; }
-        public string CostCenterId { get; set; }
-        public string EmployeeId { get; set; }
-    public string ReasonCode { get; set; }
+
+        public int ProjectId { get; set; }
+        public string ProjectCode { get; set; }
+
+        public int CostCenterId { get; set; }
+        public string CostCenterCode { get; set; }
+
+        public int EmployeeId { get; set; }
+        public string EmployeeCode { get; set; }
+        public string ReasonCode { get; set; }
 }
 

@@ -31,6 +31,6 @@ namespace Chef.Finance.Integration.Models;
         public decimal TotalTaxPer { get; set; }
         public decimal TotalTaxAmt { get; set; }
         public decimal NetAmount { get; set; }
-        public List<SalesReturnCreditItemTaxDto> salesReturnCreditItemTaxDtos { get; set; }
+        public List<SalesReturnCreditItemTaxDto>? salesReturnCreditItemTaxDtos { get; set; }
     }
 

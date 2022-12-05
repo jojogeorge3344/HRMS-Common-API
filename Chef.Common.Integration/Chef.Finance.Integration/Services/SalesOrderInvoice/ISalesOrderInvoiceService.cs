@@ -4,5 +4,5 @@ namespace Chef.Finance.Integration;
 
 public interface ISalesOrderInvoiceService : IAsyncService<SalesInvoiceDto>
 {
-   new Task<string> InsertAsync(SalesInvoiceDto salesInvoiceDto);
+   new Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto);
 }

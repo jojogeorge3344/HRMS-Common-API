@@ -22,22 +22,27 @@ namespace Chef.Common.Models
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public int Level { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public string LevelName { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public int RoleID { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public string RoleName { get; set; }
 
         [Write(false)]
         [Skip(true)]
+        [SqlKata.Ignore]
         public bool IsDefault { get; set; }
 
         public string Operators { get; set; }

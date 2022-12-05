@@ -3,7 +3,7 @@ using Chef.Common.Authentication.Models;
 using Chef.Common.Exceptions;
 using Chef.Common.Models;
 
-namespace Chef.Common.Data.Services;
+namespace Chef.Common.Data.Controller;
 
 [Authorize]
 [ApiController]

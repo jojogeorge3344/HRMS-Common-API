@@ -11,7 +11,7 @@ public interface IMasterDataService : IBaseService
     Task<Employee> GetEmployee(int id);
 
     Task<IEnumerable<JournalBookType>> GetJournalBookTypes();
-    Task<JournalBookType> GetJournalBookTypeByGroup(int groupNumber);
+    Task<IEnumerable<JournalBookType>> GetJournalBookTypeByGroup(int groupNumber);
 
     Task<IEnumerable<BusinessPartner>> GetActiveBusinessPartners();
     Task<BusinessPartner> GetBusinessPartner(int id);
@@ -43,7 +43,7 @@ public interface IMasterDataService : IBaseService
 	Task<IEnumerable<Bank>> GetAllBank();
 	Task<IEnumerable<BankBranch>> GetBranchByBank(int id);
     Task<IEnumerable<Tax>> GetAllTaxSetupAsync();
-    Task<IEnumerable<BusinessPartner>> getAllActiveBP();
+    Task<IEnumerable<BusinessPartner>> GetAllActiveBP(string? top, string? fil, string? skip);   
     Task<BankBranch> getBankBranchById(int id);
     Task<IEnumerable<BankBranch>> getAllBranches();
     Task<Currency>GetByCurrency(string transactionCurrency);

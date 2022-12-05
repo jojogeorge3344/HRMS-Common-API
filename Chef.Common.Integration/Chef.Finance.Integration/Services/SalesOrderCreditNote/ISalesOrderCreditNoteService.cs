@@ -5,5 +5,5 @@ namespace Chef.Finance.Integration;
 
 public interface ISalesOrderCreditNoteService : IAsyncService<SalesReturnCreditDto>
 {
-    Task<string> PostAsync(SalesReturnCreditDto salesReturnCreditDto);
+    Task<SalesReturnCreditResponse> PostAsync(SalesReturnCreditDto salesReturnCreditDto);
 }

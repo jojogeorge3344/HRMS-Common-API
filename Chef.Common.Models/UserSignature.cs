@@ -16,6 +16,7 @@ namespace Chef.Common.Models
 
         [Skip(true)]
         [Write(false)]
+        [SqlKata.Ignore]
         public string Sign { get; set; }
     }
 }

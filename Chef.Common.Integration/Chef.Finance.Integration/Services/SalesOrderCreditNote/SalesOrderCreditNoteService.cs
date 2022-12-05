@@ -50,10 +50,12 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         this.customerTransactionRepository = customerTransactionRepository;
         this.generalLedgerPostingRepository = generalLedgerPostingRepository;
         this.postDocumentViewModelRepository = postDocumentViewModelRepository;
-    }
-    public  async Task<string> PostAsync(SalesReturnCreditDto salesReturnCreditDto)
+        this.generalLedgerPostingService = generalLedgerPostingService;
+
+	}
+    public  async Task<SalesReturnCreditResponse> PostAsync(SalesReturnCreditDto salesReturnCreditDto)
     {
-        IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(TransactionOrgin.SalesOrder.ToString(), TransactionType.Return.ToString());
+        IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderReturn));
 
         if (journalBookConfig == null)
             throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
@@ -190,6 +192,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
         }
-        return customerCreditNoteResult.DocumentNumber;
+        return new()
+        {
+            DocumentNumber = customerCreditNoteResult.DocumentNumber
+        };
     }
 }

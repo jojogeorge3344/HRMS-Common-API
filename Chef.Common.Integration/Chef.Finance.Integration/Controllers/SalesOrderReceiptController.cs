@@ -14,7 +14,7 @@ public class SalesOrderReceiptController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<string>> Post(SalesOrderReceiptDto salesOrderReceiptDto)
+    public async Task<ActionResult<SalesOrderReceiptResponse>> Post(SalesOrderReceiptDto salesOrderReceiptDto)
     {
         return Ok(await salesOrderReceiptService.PostAsync(salesOrderReceiptDto));
     }
