@@ -210,7 +210,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<State>()
-            .Select("id", "name", "code")
+            .Select("id", "name")
             .Where("countryid", countryId)
             .WhereNotArchived()
             .GetAsync<State>();
