@@ -31,11 +31,12 @@ namespace Chef.Common.Core
         ///TODO: CODE REVIEW: Why we need a TEMP Date. What is the business Reason?
         private DateTime TempDate;
 
-        public DateTime TransactionDate
-        {
-            get => TempDate.Date;
+        //public DateTime TransactionDate
+        //{
+        //    get => TempDate.Date;
 
-            set => TempDate = value;
-        }
+        //    set => TempDate = value;
+        //}
+        public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
     }
 }
