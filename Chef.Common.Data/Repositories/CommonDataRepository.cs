@@ -62,4 +62,21 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .WhereNotArchived()
             .GetAsync<ReasonCodeMaster>();
     }
+    public async Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id)
+    {
+        string sql = @"SELECT 'P.O. Box:'
+                                   || COALESCE(zipcode, '')
+                                   ||chr(13)||chr(10)||'Email:'
+                                   || COALESCE(email, '')
+                                   || ' Tel. :'
+                                   || COALESCE(phone, '')
+                                   || ' Fax :'
+                                   || COALESCE(fax, '')
+                                    AS CompanyDetail,
+                                    name as CompanyName,
+                                    taxregistrationnumber as TRNNo
+                            FROM   common.company";
+
+        return await DatabaseSession.QueryFirstAsync<CompanyDetails>(sql, new { id });
+    }
 }
