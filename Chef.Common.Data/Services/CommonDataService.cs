@@ -31,5 +31,10 @@ public class CommonDataService : ICommonDataService
     {
         return commonDataRepository.GetAllReasonCode();
     }
+
+    public Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id)
+    {
+        return commonDataRepository.GetCompanyDetailsForSalesInvoicePrint(id);
+    }
 }
 
