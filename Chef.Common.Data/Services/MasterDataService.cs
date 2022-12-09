@@ -125,7 +125,7 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetBranchByBank(id);
 
     }
-    public Task<IEnumerable< Tax>> GetAllTaxSetupAsync()
+    public Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync()
     {
         return masterDataRespository.GetAllTaxSetupAsync();
     }

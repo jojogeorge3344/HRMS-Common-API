@@ -243,12 +243,12 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
 				.WhereNotArchived()
 				.GetAsync<BankBranch>();
 	}
-    public async Task<IEnumerable<Tax>> GetAllTaxSetupAsync()
+    public async Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync()
     {
         return await QueryFactory
-                .Query<Tax>()
+                .Query<TaxClass>()
                 .WhereNotArchived()
-                .GetAsync<Tax>();
+                .GetAsync<TaxClass>();
     }
     public async Task<IEnumerable<BusinessPartner>> GetAllActiveBP(SqlSearch search , CancellationToken cancellationToken = default)
     {
