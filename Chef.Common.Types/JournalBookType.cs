@@ -68,6 +68,7 @@
         SalesReturnIntegration = 618,
         MatchandApproval = 619,
 
-        CashCollectionAccount = 700
+        CashCollectionAccount = 700,
+        OnAccountRepaymentToCustomers = 702
     }
 }
