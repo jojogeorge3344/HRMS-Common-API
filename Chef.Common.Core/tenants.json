@@ -1,11 +1,11 @@
 ﻿{
-  "ConsoleConnection": "Server = 192.168.100.53; Port = 5432; Database = ConsoleDB; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
+  "ConsoleConnection": "Server = 192.168.100.53; Port = 5432; Database = ConsoleDB-QA; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
   "Tenants": [
     {
       "Name": "ThomsunInfoCare",
       "BaseCompany": "Thomsun",
-      "Host": "localhost",
-      "ConnectionString": "Server = 192.168.100.53; Port = 5432; Database = ChefDB; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
+      "Host": "192.168.100.54",
+      "ConnectionString": "Server = 192.168.100.53; Port = 5432; Database = ChefDB-QA; User Id = postgres; Password = root; Pooling = true;CommandTimeout=300;",
       "Modules": [
         {
           "Name": "Console",
