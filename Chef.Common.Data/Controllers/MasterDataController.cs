@@ -175,7 +175,7 @@ public class MasterDataController : ControllerBase
 
 
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<Tax>>> GetAllTaxSetupAsync()
+	public async Task<ActionResult<IEnumerable<TaxClass>>> GetAllTaxSetupAsync()
 	{
         var tax = await masterDataService.GetAllTaxSetupAsync();
 		if (tax == null)
