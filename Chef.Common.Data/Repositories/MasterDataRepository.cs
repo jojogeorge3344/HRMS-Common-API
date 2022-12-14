@@ -271,7 +271,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
 		return await QueryFactory
 					.Query<BankBranch>()
 					//.Select("id", "name", "code")
-					.Where("bankid", id)
+					.Where("id", id)
 					.WhereNotArchived()
 					.FirstOrDefaultAsync<BankBranch>();
 	}
