@@ -114,9 +114,9 @@ public class AuthRepository : IAuthRepository
             return await userManager.ResetPasswordAsync(user, token, changePasswordModel.NewPassword);
         }
 
-        throw new UserNotFoundException("Either the username or password is invalid");
+        throw new UserNotFoundException("Current password is Wrong. Try again");  
     }
-
+     
     public async Task<UserDto> GetCurrentUser()
     {
         var userName = httpContextAccessor.HttpContext.Items["User"].ToString();
