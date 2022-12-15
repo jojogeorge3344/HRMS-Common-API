@@ -1,6 +1,6 @@
 ﻿namespace Chef.Finance.Integration.Models;
 
-public class SalesInvoicePaymentInstallDto
+public class SalesInvoicePaymentTermLineDto
 {
     public int SalesInvoicePaymentInstallId { get; set; }
     public int SalesInvoicePaymentTermId { get; set; }
@@ -16,6 +16,7 @@ public class SalesInvoicePaymentInstallDto
     public DateTime FromDate { get; set; }
     public DateTime DueDate { get; set; }
     public decimal EarlyPaymentDiscountPercentage { get; set; }
-    public decimal LatePaymentPenaltyPercentage { get; set; }
+    public decimal LatePaymentPenalyPercentage { get; set; }
     public bool IsRetentionApplicable { get; set; }
+    public int SalesInvoicePaymentLineid { get; set; }
 }

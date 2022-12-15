@@ -24,6 +24,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly IGeneralLedgerPostingRepository generalLedgerPostingRepository;
     private readonly IPostDocumentViewModelRepository postDocumentViewModelRepository;
     private readonly IGeneralLedgerPostingService generalLedgerPostingService;
+    private readonly ISalesInvoiceRepository salesInvoiceRepository;
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -36,7 +37,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         ICustomerTransactionRepository customerTransactionRepository,
         IGeneralLedgerPostingRepository generalLedgerPostingRepository,
         IPostDocumentViewModelRepository postDocumentViewModelRepository,
-        IGeneralLedgerPostingService generalLedgerPostingService
+        IGeneralLedgerPostingService generalLedgerPostingService,
+        ISalesInvoiceRepository salesInvoiceRepository
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
@@ -50,6 +52,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.generalLedgerPostingRepository = generalLedgerPostingRepository;
         this.postDocumentViewModelRepository = postDocumentViewModelRepository;
         this.generalLedgerPostingService = generalLedgerPostingService;
+        this.salesInvoiceRepository = salesInvoiceRepository;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -221,6 +224,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
 
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
+            await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
+            await salesInvoiceRepository.UpdateStatus(salesInvoiceResponse.Id, ApproveStatus.Approved);
         }
         return new()
         {
