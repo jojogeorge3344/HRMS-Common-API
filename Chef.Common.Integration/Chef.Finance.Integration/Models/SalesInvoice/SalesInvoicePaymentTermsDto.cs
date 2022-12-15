@@ -15,5 +15,5 @@ public class SalesInvoicePaymentTermsDto
     public int CreditTermId { get; set; }
     public string? CreditTermName { get; set; }
     public int Paymenttermsid { get; set; }
-    public List<SalesInvoicePaymentInstallDto>? SalesInvoicePaymentInstallDto { get; set; }
+    public List<SalesInvoicePaymentTermLineDto>? salesInvoicePaymentTermLineDtos { get; set; }
 }
