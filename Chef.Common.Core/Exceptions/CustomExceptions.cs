@@ -391,5 +391,33 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+    [Serializable]
+    public class DepartmentCannotBeDeletedException : ApplicationException
+    {
+        public DepartmentCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
+    [Serializable]
+    public class DepartmentCodeCannotBeAddedException : ApplicationException
+    {
+        public DepartmentCodeCannotBeAddedException(string message) : base(message)
+        {
+        }
+    }
+    [Serializable]
+    public class DesignationCannotBeDeletedException : ApplicationException
+    {
+        public DesignationCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
+    [Serializable]
+    public class DesignationCodeCannotBeAddedException : ApplicationException
+    {
+        public DesignationCodeCannotBeAddedException(string message) : base(message)
+        {
+        }
+    }
 
 }
