@@ -5,10 +5,12 @@ namespace Chef.Common.Data.Services;
 public class MasterDataService : IMasterDataService
 {
     private readonly IMasterDataRepository masterDataRespository;
+    private readonly ICommonDataRepository commonDataRepository;
 
-    public MasterDataService(IMasterDataRepository masterDataRespository)
+    public MasterDataService(IMasterDataRepository masterDataRespository, ICommonDataRepository commonDataRepository)
     {
         this.masterDataRespository = masterDataRespository;
+        this.commonDataRepository = commonDataRepository;
     }
 
     public Task<IEnumerable<BusinessPartner>> GetActiveBusinessPartners()
@@ -19,6 +21,12 @@ public class MasterDataService : IMasterDataService
     public Task<IEnumerable<Employee>> GetActiveEmployees()
     {
         return masterDataRespository.GetActiveEmployees();
+    }
+
+    public async Task<IEnumerable<Employee>> GetCurrentCompanyActiveEmployees()
+    {
+        var company = await commonDataRepository.GetMyCompany();
+        return await masterDataRespository.GetCurrentCompanyActiveEmployees(company.CompanyId);
     }
 
     public Task<Company> GetBaseCompany()

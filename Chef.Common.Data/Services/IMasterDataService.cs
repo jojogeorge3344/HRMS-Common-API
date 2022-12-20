@@ -8,6 +8,7 @@ public interface IMasterDataService : IBaseService
     Task<IEnumerable<State>> GetStates(int countryId);
 
     Task<IEnumerable<Employee>> GetActiveEmployees();
+    Task<IEnumerable<Employee>> GetCurrentCompanyActiveEmployees();
     Task<Employee> GetEmployee(int id);
 
     Task<IEnumerable<JournalBookType>> GetJournalBookTypes();

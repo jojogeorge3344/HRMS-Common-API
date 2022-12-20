@@ -29,6 +29,12 @@ public class MasterDataController : ControllerBase
     }
 
     [HttpGet]
+    public async Task<ActionResult<IEnumerable<Employee>>> GetCurrentCompanyActiveEmployees()
+    {
+        return Ok(await masterDataService.GetCurrentCompanyActiveEmployees());
+    }
+
+    [HttpGet]
     [Route("{id:int}")]
     public async Task<ActionResult<BusinessPartner>> GetBusinessPartner(int id)
     {

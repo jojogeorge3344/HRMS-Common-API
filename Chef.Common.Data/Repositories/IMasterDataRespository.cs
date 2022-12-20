@@ -6,6 +6,7 @@ public interface IMasterDataRepository : IRepository
     Task<IEnumerable<State>> GetStates(int countryId);
 
     Task<IEnumerable<Employee>> GetActiveEmployees();
+    Task<IEnumerable<Employee>> GetCurrentCompanyActiveEmployees(int? companyId);
     Task<Employee> GetEmployee(int id);
 
     Task<IEnumerable<JournalBookType>> GetJournalBookTypes();
