@@ -74,5 +74,6 @@ namespace Chef.Common.Models
         public string Host { get; set; }
 
         public byte[] Logo { get; set; }
+        public int? CompanyId { get; set; }
     }
 }

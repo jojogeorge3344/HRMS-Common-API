@@ -32,6 +32,17 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .GetAsync<Employee>();
     }
 
+    public async Task<IEnumerable<Employee>> GetCurrentCompanyActiveEmployees(int? companyId)
+    {
+        return await QueryFactory
+            .Query<Employee>()
+            .Select("id", "displayname", "employeecode", "firstname", "lastname", "middlename")
+            .Where("isactive", true)
+            .Where("companyid", companyId)
+            .WhereNotArchived()
+            .GetAsync<Employee>();
+    }
+
     public async Task<Company> GetBaseCompany()
     {
         return await QueryFactory
