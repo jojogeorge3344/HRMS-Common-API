@@ -8,4 +8,5 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; }
     public string TimeZone { get; set; }
     public bool IsActive { get; set; }
+    public DateTime? ModifiedDate { get; set; } = DateTime.UtcNow;
 }
