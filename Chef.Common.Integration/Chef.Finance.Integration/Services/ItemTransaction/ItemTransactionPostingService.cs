@@ -97,7 +97,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                     case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn):
                         await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery):
+                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderDelivery):
                         await GetSalesOrderDeliveryTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
                     case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferorder):

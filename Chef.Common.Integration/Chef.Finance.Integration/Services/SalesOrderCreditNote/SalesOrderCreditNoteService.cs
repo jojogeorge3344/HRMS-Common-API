@@ -15,6 +15,7 @@ namespace Chef.Finance.Integration;
 public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, ISalesOrderCreditNoteService
 {
     private readonly IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository;
+    private readonly ICustomerCreditNoteRepository customerCreditNoteRepository;
     private readonly ICustomerCreditNoteService customerCreditNoteService;
     private readonly ICompanyFinancialYearRepository companyFinancialYearRepository;
     private readonly IBusinessPartnerGroupService businessPartnerGroupService;
@@ -27,6 +28,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
     private readonly IGeneralLedgerPostingService generalLedgerPostingService;
 
     public SalesOrderCreditNoteService(
+        ICustomerCreditNoteRepository customerCreditNoteRepository,
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
         ICustomerCreditNoteService customerCreditNoteService,
         ICompanyFinancialYearRepository companyFinancialYearRepository,
@@ -40,6 +42,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         IGeneralLedgerPostingService generalLedgerPostingService
         )
     {
+        this.customerCreditNoteRepository = customerCreditNoteRepository;
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
         this.customerCreditNoteService = customerCreditNoteService;
         this.companyFinancialYearRepository = companyFinancialYearRepository;
@@ -91,7 +94,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 throw new ResourceNotFoundException("Control account not configured for sales invoice discount");
 
             foreach (var item in salesReturnCreditDto.salesReturnCreditItemDtos)
-            {
+             {
                 if (item.NetAmount > 0)
                 {
                     customerCreditNote.CustomerTransactionDetails.Add(new()
@@ -191,6 +194,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
 
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
+            await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
+            await customerCreditNoteRepository.UpdateStatus(customerCreditNoteResult.Id, ApproveStatus.Approved);
         }
         return new()
         {
