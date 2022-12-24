@@ -6,6 +6,7 @@ using Chef.Finance.Customer.Services;
 using Chef.Finance.GL.Repositories;
 using Chef.Finance.GL.Services;
 using Chef.Finance.Integration.Models;
+using Chef.Finance.Models;
 using Chef.Finance.Repositories;
 using Chef.Finance.Services;
 
@@ -197,6 +198,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                         ItemCommodityId = itemDto.ItemCommodityId
                     };
                     var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
+                    if (ledgeraccount == null)
+                        throw new ResourceNotFoundException("Ledger Account not configured for this item");
 
                     salesInvoice.CustomerTransactionDetails.Add(new()
                     {

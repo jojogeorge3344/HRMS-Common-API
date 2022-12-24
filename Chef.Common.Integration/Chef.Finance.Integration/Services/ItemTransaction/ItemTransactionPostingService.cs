@@ -678,6 +678,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         {
             IntegrationDetailDimension integrationDetailDimension = new IntegrationDetailDimension();
             DimensionMaster dimensionMaster = await dimensionMasterRepository.GetDimensionMasterDetails(DimensionTypeLabel, Code);
+            if (dimensionMaster != null)
+                throw new ResourceNotFoundException("DimensionTypeLabel or DimensionCode doesn't exist");
             integrationDetailDimension.Integrationdetailid = integrationDetails.Id;
             integrationDetailDimension.HeaderId = integrationDetails.integrationheaderid;
             integrationDetailDimension.BranchName = itemDto.BranchName;
