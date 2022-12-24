@@ -406,12 +406,41 @@ namespace Chef.Common.Exceptions
         }
     }
     [Serializable]
+    public class TaxJurisdictionCodeCannotBeAddedException : ApplicationException
+    {
+        public TaxJurisdictionCodeCannotBeAddedException(string message) : base(message)
+        {
+        }
+    }
+    [Serializable]
+    public class TaxJurisdictionZoneCannotBeAddedException : ApplicationException
+    {
+        public TaxJurisdictionZoneCannotBeAddedException(string message) : base(message)
+        {
+        }
+    }
+    [Serializable]
     public class DesignationCannotBeDeletedException : ApplicationException
     {
         public DesignationCannotBeDeletedException(string message) : base(message)
         {
         }
     }
+    [Serializable]
+    public class TaxJurisdictionZoneCannotBeDeletedException : ApplicationException
+    {
+        public TaxJurisdictionZoneCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
+    [Serializable]
+    public class TaxRateCannotBeDeletedException : ApplicationException
+    {
+        public TaxRateCannotBeDeletedException(string message) : base(message)
+        {
+        }
+    }
+
     [Serializable]
     public class DesignationCodeCannotBeAddedException : ApplicationException
     {
