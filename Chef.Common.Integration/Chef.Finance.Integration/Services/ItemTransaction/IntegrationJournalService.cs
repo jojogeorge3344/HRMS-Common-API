@@ -4,6 +4,7 @@ using Chef.Finance.Integration.Models;
 using AutoMapper;
 using Chef.Common.Services;
 using Chef.Finance.GL.Repositories;
+using Chef.Finance.Configuration.Repositories;
 
 namespace Chef.Finance.Integration;
 
@@ -12,14 +13,16 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
         private readonly IIntegrationJournalRepository integrationJournalRepository;
          private readonly IIntegrationDetailDimensionRepository integrationDetailDimensionRepository;
     private readonly ITradingIntegrationRepository tradingIntegrationRepository;
+    private readonly ICompanyFinancialYearPeriodRepository financialYearPeriodRepository;
     private readonly IGeneralLedgerRepository generalLedgerRepository;
-    public IntegrationJournalService(IIntegrationJournalRepository integrationJournalRepository, IIntegrationDetailDimensionRepository integrationDetailDimensionRepository, ITradingIntegrationRepository tradingIntegrationRepository, IGeneralLedgerRepository generalLedgerRepository)
+    public IntegrationJournalService(IIntegrationJournalRepository integrationJournalRepository, IIntegrationDetailDimensionRepository integrationDetailDimensionRepository, ITradingIntegrationRepository tradingIntegrationRepository, IGeneralLedgerRepository generalLedgerRepository, ICompanyFinancialYearPeriodRepository financialYearPeriodRepository)
         {
            this.integrationJournalRepository = integrationJournalRepository;
         this.integrationJournalRepository=integrationJournalRepository;
         this.integrationDetailDimensionRepository = integrationDetailDimensionRepository;
         this.tradingIntegrationRepository=tradingIntegrationRepository;
         this.generalLedgerRepository=generalLedgerRepository;
+        this.financialYearPeriodRepository = financialYearPeriodRepository;
         }
 
     private List<GeneralLedger> generalLedgerlList = new List<GeneralLedger>();
@@ -107,6 +110,7 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
         foreach (TradingIntegrationHeaderDetailsViewModel tradingIntegration in tradingIntegrationHeadersDetails)
         {
             GeneralLedger generalLedger = Mapper.Map<GeneralLedger>(tradingIntegration);
+            generalLedger.PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegration.FinancialYearId, tradingIntegration.TransactionDate);
             generalLedger.ApproveStatus = Convert.ToInt32(ApproveStatus.Approved);
             generalLedgerlList.Add(generalLedger);
         }
