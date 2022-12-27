@@ -137,6 +137,13 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
             IEnumerable<ItemTransactionFinanceDetailsDto> itemTransactionFinanceDetailsDtos = await tradingIntegrationRepository.GetItemtransactionFinanceDetails(intHeaderId);
 
+            decimal debitAmount = itemTransactionFinanceDetailsDtos.Select(x => x.debitamount).Sum();
+            decimal creditAmount = itemTransactionFinanceDetailsDtos.Select(x =>x.creditamount).Sum();
+
+            if(creditAmount == debitAmount)
+                throw new ResourceNotFoundException("Debit and Credit Amount MisMatch");
+
+
             IEnumerable<IntegrationDetailDimension> itemTransactionFinanceDetailsDimensions = await integrationDetailDimensionRepository.GetDetailDimensionByHeaderId(intHeaderId);
 
             foreach (ItemTransactionFinanceDetailsDto itemTransactionFinanceDetailsDto in itemTransactionFinanceDetailsDtos)
