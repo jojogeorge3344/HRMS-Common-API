@@ -324,5 +324,14 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .GetAsync<FinancialYearPeriod>();
     }
+
+    public async Task<BusinessPartner> GetCustomerDetails(int CustomerID)
+    {
+        return await QueryFactory
+            .Query<BusinessPartner>()
+            .Where("id", CustomerID)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<BusinessPartner>();
+    }
 }
 

@@ -182,5 +182,10 @@ public class MasterDataService : IMasterDataService
     {
         return masterDataRespository.GetFinancialYearPeriod(finacialyearid);
     }
+
+    public Task<BusinessPartner> GetCustomerDetails(int CustomerID)
+    {
+        return masterDataRespository.GetCustomerDetails(CustomerID);
+    }
 }
 
