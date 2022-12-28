@@ -140,7 +140,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             decimal debitAmount = itemTransactionFinanceDetailsDtos.Select(x => x.debitamount).Sum();
             decimal creditAmount = itemTransactionFinanceDetailsDtos.Select(x =>x.creditamount).Sum();
 
-            if(creditAmount == debitAmount)
+            if(creditAmount != debitAmount)
                 throw new ResourceNotFoundException("Debit and Credit Amount MisMatch");
 
 
@@ -685,7 +685,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         {
             IntegrationDetailDimension integrationDetailDimension = new IntegrationDetailDimension();
             DimensionMaster dimensionMaster = await dimensionMasterRepository.GetDimensionMasterDetails(DimensionTypeLabel, Code);
-            if (dimensionMaster != null)
+            if (dimensionMaster == null)
                 throw new ResourceNotFoundException("DimensionTypeLabel or DimensionCode doesn't exist");
             integrationDetailDimension.Integrationdetailid = integrationDetails.Id;
             integrationDetailDimension.HeaderId = integrationDetails.integrationheaderid;
