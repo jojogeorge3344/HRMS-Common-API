@@ -297,6 +297,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
 		return await QueryFactory
 					.Query<Currency>()
+                    .Where("code", transactionCurrency)
 					.WhereNotArchived()
 					.FirstOrDefaultAsync<Currency>();
 	}
