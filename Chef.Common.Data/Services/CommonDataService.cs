@@ -24,7 +24,15 @@ public class CommonDataService : ICommonDataService
     }
     public async Task<Company> GetMyCompany()
     {
-        return await commonDataRepository.GetMyCompany();
+        var company = await commonDataRepository.GetMyCompany();
+
+        if (company != null && company.Logo != null)
+        {
+            company.LogoEncoded = System.Text.Encoding.UTF8.GetString(company.Logo);
+            company.Logo = null;
+        }
+
+        return company;
     }
 
     public Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode()
@@ -35,6 +43,13 @@ public class CommonDataService : ICommonDataService
     public Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id)
     {
         return commonDataRepository.GetCompanyDetailsForSalesInvoicePrint(id);
+    }
+    public async Task<int> UpdateCompanyLogo(Company company)
+    {
+        if (company.LogoEncoded != null)
+            company.Logo = System.Text.Encoding.UTF8.GetBytes(company.LogoEncoded);
+
+        return await commonDataRepository.UpdateCompanyLogo(company);
     }
 }
 

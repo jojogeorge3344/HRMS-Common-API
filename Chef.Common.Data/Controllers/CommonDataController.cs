@@ -66,6 +66,11 @@ public class CommonDataController : ControllerBase
         return Ok(Company);
     }
 
+    [HttpPut]
+    public async Task<ActionResult<int>> UpdateCompanyLogo(Company company)
+    {
+        return Ok(await commonDataService.UpdateCompanyLogo(company));
+    }
 
 }
 
