@@ -272,5 +272,11 @@ public class MasterDataController : ControllerBase
     {
         return Ok(await masterDataService.GetFinancialYearPeriod(finacialyearid));
     }
+
+    [HttpGet("{stateid}")]
+    public async Task<ActionResult<IEnumerable<City>>> GetCityByStateId(int stateId)
+    {
+        return Ok(await masterDataService.GetCityByStateId(stateId));
+    }
 }
 

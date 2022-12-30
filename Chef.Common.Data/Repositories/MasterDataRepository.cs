@@ -355,5 +355,15 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .FirstOrDefaultAsync<BusinessPartner>();
     }
+
+    public async Task<IEnumerable<City>> GetCityByStateId(int stateId)
+    {
+        return await QueryFactory
+            .Query<City>()
+            .Select("id", "name", "stateid")
+            .Where("stateid", stateId)
+            .WhereNotArchived()
+            .GetAsync<City>();
+    }
 }
 

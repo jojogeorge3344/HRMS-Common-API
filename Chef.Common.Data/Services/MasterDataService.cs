@@ -204,5 +204,10 @@ public class MasterDataService : IMasterDataService
     {
         return masterDataRespository.GetCustomerDetails(CustomerID);
     }
+
+    public Task<IEnumerable<City>> GetCityByStateId(int stateId)
+    {
+        return masterDataRespository.GetCityByStateId(stateId);
+    }
 }
 
