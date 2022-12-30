@@ -299,6 +299,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
 		return await QueryFactory
 					.Query<Currency>()
+                    .Where("code", transactionCurrency)
 					.WhereNotArchived()
 					.FirstOrDefaultAsync<Currency>();
 	}
@@ -325,6 +326,15 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .Where("financialyearId", finacialyearid)
             .WhereNotArchived()
             .GetAsync<FinancialYearPeriod>();
+    }
+
+    public async Task<BusinessPartner> GetCustomerDetails(int CustomerID)
+    {
+        return await QueryFactory
+            .Query<BusinessPartner>()
+            .Where("id", CustomerID)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<BusinessPartner>();
     }
 }
 
