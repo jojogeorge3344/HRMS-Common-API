@@ -69,6 +69,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .Query<Country>()
             .Select("id", "name", "code")
             .WhereNotArchived()
+            .OrderBy("name")
             .GetAsync<CountryDto>();
     }
 
@@ -243,6 +244,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .Select("id", "name")
             .Where("countryid", countryId)
             .WhereNotArchived()
+            .OrderBy("name")
             .GetAsync<State>();
     }
 
