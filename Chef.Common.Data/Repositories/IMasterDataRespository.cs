@@ -16,6 +16,7 @@ public interface IMasterDataRepository : IRepository
     Task<BusinessPartner> GetBusinessPartner(int id);
 
     Task<IEnumerable<Currency>> GetCurrencies();
+    Task<IEnumerable<Currency>> GetCurrenciesHavingExRate();
     Task<Currency> GetCurrency(int id);
 
     Task<IEnumerable<CurrencyExchangeRate>> GetExchangeRates(

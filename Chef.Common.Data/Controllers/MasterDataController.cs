@@ -50,7 +50,7 @@ public class MasterDataController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Currency>>> GetCurrencies()
     {
-        return Ok(await(masterDataService.GetCurrencies()));
+        return Ok(await masterDataService.GetCurrencies());
     }
 
     [HttpGet]
