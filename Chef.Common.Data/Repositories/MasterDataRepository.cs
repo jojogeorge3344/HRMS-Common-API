@@ -81,6 +81,25 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .GetAsync<Currency>();
     }
 
+    public async Task<IEnumerable<Currency>> GetCurrenciesHavingExRate()
+    {
+        var baseCompanyCurrency = QueryFactory
+                                    .Query("common.currency as cr")
+                                    .Select("cr.{ id, name, code, exchangevariationup, exchangevariationdown }")
+                                    .Join("common.company as cmp", "cmp.currencycode", "cr.code")
+                                    .Where("cmp.basecompanyid", 0)
+                                    .WhereFalse("cmp.isarchived")
+                                    .WhereFalse("cr.isarchived");
+        var currenciesContainsExRate = QueryFactory
+                                    .Query<Currency>()
+                                    .Select("common.currency.{ id, name, code, exchangevariationup, exchangevariationdown }")
+                                    .Join("common.currencyexchangerate", "common.currencyexchangerate.transactioncurrencycode", "common.currency.code")
+                                    .WhereFalse("common.currency.isarchived")
+                                    .WhereFalse("common.currencyexchangerate.isarchived");
+
+        return await baseCompanyCurrency.Union(currenciesContainsExRate).GetAsync<Currency>();
+    }
+
     public async Task<Currency> GetCurrency(int id)
     {
         return await QueryFactory

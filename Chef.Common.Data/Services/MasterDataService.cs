@@ -44,9 +44,9 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetCountries();
     }
 
-    public Task<IEnumerable<Currency>> GetCurrencies()
+    public async Task<IEnumerable<Currency>> GetCurrencies()
     {
-        return masterDataRespository.GetCurrencies();
+        return await masterDataRespository.GetCurrenciesHavingExRate();
     }
 
     public Task<Currency> GetCurrency(int id)
@@ -64,9 +64,26 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetEmployee(id);
     }
 
-    public Task<IEnumerable<CurrencyExchangeRate>> GetExchangeRates(string baseCurrencyCode, string transactionCurrency, DateTime transactionDate)
+    public async Task<IEnumerable<CurrencyExchangeRate>> GetExchangeRates(string baseCurrencyCode, string transactionCurrency, DateTime transactionDate)
     {
-        return masterDataRespository.GetExchangeRates(baseCurrencyCode, transactionCurrency, transactionDate);
+        if (baseCurrencyCode == transactionCurrency)
+        {
+            return await Task.FromResult(new List<CurrencyExchangeRate>()
+            {
+                new()
+                {
+                    BaseCurrencyCode = baseCurrencyCode,
+                    TransactionCurrencyCode = transactionCurrency,
+                    ExchangeDate = DateTime.UtcNow,
+                    CreatedDate = DateTime.UtcNow,
+                    ModifiedDate = DateTime.UtcNow,
+                    ExchangeRate = 1,
+                    CreatedBy = HttpHelper.Username,
+                    ModifiedBy = HttpHelper.Username
+                }
+            });
+        }
+        return await masterDataRespository.GetExchangeRates(baseCurrencyCode, transactionCurrency, transactionDate);
     }
 
     public Task<FinancialYear> GetFinancialYear(int id)
