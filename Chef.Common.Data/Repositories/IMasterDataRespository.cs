@@ -50,5 +50,6 @@ public interface IMasterDataRepository : IRepository
 	Task<IEnumerable<BankBranch>> GetAllBankBranchesByBank(int bankId);
     Task<IEnumerable<FinancialYearPeriod>> GetFinancialYearPeriod(int finacialyearid);
     Task<BusinessPartner> GetCustomerDetails(int CustomerID);
+    Task<IEnumerable<City>> GetCityByStateId(int stateId);
 }
 
