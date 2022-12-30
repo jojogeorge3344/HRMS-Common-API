@@ -20,12 +20,9 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                                    totalamount,
                                    transactiondate 
                             FROM   finance.tradingintegrationheader
-                            WHERE  to_date(cast(createddate AS text), 'YYYY-MM-DD') BETWEEN @fromDate AND    @toDate AND approvestatus = @status";
-        if(transorginId !=0 || transtypeId !=0)
-        {
-            sql += " and  transorginid = @transorginId  and  transtypeid =  @transtypeId";
-        }
-
+                            WHERE  transorginid = @transorginId
+                            and    transtypeid =  @transtypeId
+                            and to_date(cast(createddate AS text), 'YYYY-MM-DD') BETWEEN @fromDate AND    @toDate AND approvestatus = @status";
         return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId, fromDate, toDate, status });
 
     }
