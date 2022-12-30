@@ -9,5 +9,6 @@ public interface ICommonDataRepository : IRepository
     Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode();
     Task<Company> GetMyCompany();
     Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id);
+    Task<int> UpdateCompanyLogo(Company company);
 }
 

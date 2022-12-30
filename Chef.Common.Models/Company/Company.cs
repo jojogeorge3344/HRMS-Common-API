@@ -75,5 +75,7 @@ namespace Chef.Common.Models
 
         public byte[] Logo { get; set; }
         public int? CompanyId { get; set; }
+        [SqlKata.Ignore]
+        public string LogoEncoded { get; set; }
     }
 }

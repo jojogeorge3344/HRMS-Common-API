@@ -74,9 +74,21 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                                    || COALESCE(fax, '')
                                     AS CompanyDetail,
                                     name as CompanyName,
-                                    taxregistrationnumber as TRNNo
+                                    taxregistrationnumber as TRNNo,
+                                    encode(logo::bytea, 'escape') as logo
                             FROM   common.company";
 
         return await DatabaseSession.QueryFirstAsync<CompanyDetails>(sql, new { id });
+    }
+
+    public async Task<int> UpdateCompanyLogo(Company company)
+    {
+        return await QueryFactory
+                 .Query<Company>()
+                 .Where("id", company.Id)
+                 .UpdateAsync(new
+                 {
+                     logo = company.Logo
+                 });
     }
 }
