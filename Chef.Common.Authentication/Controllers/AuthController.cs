@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet]
-    //[Authorize]
+    [Authorize]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
         return Ok(await this.authService.GetCurrentUser());
