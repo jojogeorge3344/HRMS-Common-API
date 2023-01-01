@@ -38,7 +38,7 @@ public  class ItemTransactionMappingProfile:Profile
             .ForMember(d => d.referencenumber, opt => opt.MapFrom(x => x.First().TrasnOrderNum))
             .ForMember(d => d.transtypeslno, opt => opt.MapFrom(x => x.First().TrasnTypeSlNo))
             .ForMember(d => d.remark, opt => opt.MapFrom(x => x.First().TransRemark))
-            .ForMember(d => d.totalamount, opt => opt.MapFrom(x => x.Select(j => j.TransAmount).Sum() + x.Select(j => j.HmAmount).Sum()));
+            .ForMember(d => d.totalamount, opt => opt.MapFrom(x => x.Select(j => j.TransAmount).Sum()));
 
 
 
