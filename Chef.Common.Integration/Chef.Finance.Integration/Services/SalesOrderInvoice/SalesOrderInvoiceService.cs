@@ -26,6 +26,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly IPostDocumentViewModelRepository postDocumentViewModelRepository;
     private readonly IGeneralLedgerPostingService generalLedgerPostingService;
     private readonly ISalesInvoiceRepository salesInvoiceRepository;
+    private readonly IJournalBookRepository journalBookRepository;
+    private readonly IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository;
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -39,7 +41,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         IGeneralLedgerPostingRepository generalLedgerPostingRepository,
         IPostDocumentViewModelRepository postDocumentViewModelRepository,
         IGeneralLedgerPostingService generalLedgerPostingService,
-        ISalesInvoiceRepository salesInvoiceRepository
+        ISalesInvoiceRepository salesInvoiceRepository,
+        IJournalBookRepository journalBookRepository,
+        IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
@@ -54,6 +58,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.postDocumentViewModelRepository = postDocumentViewModelRepository;
         this.generalLedgerPostingService = generalLedgerPostingService;
         this.salesInvoiceRepository = salesInvoiceRepository;
+        this.journalBookRepository = journalBookRepository;
+        this.journalBookNumberingSchemeRepository = journalBookNumberingSchemeRepository;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -71,12 +77,36 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         throw new NotImplementedException();
     }
 
+    private IntegrationJournalBookConfiguration journalBookConfig = new IntegrationJournalBookConfiguration();
     public async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto)
     {
-        IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderInvoice));
+        if (salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            string code = salesInvoiceDto.SalesInvoiceNo.Substring(0,5);
 
-        if (journalBookConfig == null)
-            throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+            int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate);
+
+            int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesInvoiceDto.BranchId, code);
+
+            if(journalBookNumberingScheme == 0)
+                throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
+
+            journalBookConfig = await journalBookRepository.getJournalBookdetailsByVanSalesCode(code);
+            if (journalBookConfig == null)
+                throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
+
+            int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
+
+        }
+        else
+        {
+             journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderInvoice));
+            if (journalBookConfig == null)
+                throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+        }
+
+
+       
 
         SalesInvoice salesInvoice = Mapper.Map<SalesInvoice>(salesInvoiceDto);
 
@@ -218,6 +248,11 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             }
         }
 
+        if(salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            salesInvoice.DocumentNumber = salesInvoiceDto.SalesInvoiceNo;
+        }
+
         var salesInvoiceResponse = await salesInvoiceService.InsertAsync(salesInvoice);
 
         CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceResponse.Id);
@@ -229,6 +264,13 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
             await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
             await salesInvoiceRepository.UpdateStatus(salesInvoiceResponse.Id, ApproveStatus.Approved);
+        }
+        if(salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            return new()
+            {
+                DocumentNumber = salesInvoiceResponse.DocumentNumber
+            };
         }
         return new()
         {
