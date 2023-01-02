@@ -37,6 +37,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                                        ids.integrationheaderid,
                                        ids.ledgeraccountid,
                                        ids.ledgeraccountcode,
+                                       ids.narration,
                                        ids.ledgeraccountname,
                                        ids.debitamount,
                                        ids.debitamountinbasecurrency,
