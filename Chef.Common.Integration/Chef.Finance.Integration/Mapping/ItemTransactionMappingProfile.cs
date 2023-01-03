@@ -53,7 +53,7 @@ public  class ItemTransactionMappingProfile:Profile
                     .ForMember(d => d.JournalBookId, opt => opt.MapFrom(x => x.journalbookid))
                     .ForMember(d => d.TransactionCurrencyCode, opt => opt.MapFrom(x => x.currency))
                     .ForMember(d => d.ExchangeRate, opt => opt.MapFrom(x => x.exchangerate))
-                    .ForMember(d => d.Narration, opt => opt.MapFrom(x => x.remark))
+                    .ForMember(d => d.Narration, opt => opt.MapFrom(x => x.narration))
                     .ForMember(d => d.DebitAmountInBaseCurrency, opt => opt.MapFrom(x => x.debitamountinbasecurrency))
                     .ForMember(d => d.CreditAmountInBaseCurrency, opt => opt.MapFrom(x => x.creditamountinbasecurrency))
                     .ForMember(d => d.BranchId, opt => opt.MapFrom(x => x.BranchId))
