@@ -11,9 +11,9 @@ namespace Chef.Common.Types
         Engineering = 1,
 
         [Description("Human Resource")]
-        HumanResource,
+        HumanResource = 2,
 
-        [Description("Human Resource")]
-        Marketing,
+        [Description("Marketing")]
+        Marketing = 3,
     }
 }

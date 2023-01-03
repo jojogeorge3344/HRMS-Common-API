@@ -6,7 +6,7 @@
     public enum PeriodType
     {
         Days = 1,
-        Weeks,
-        Months,
+        Weeks = 2,
+        Months = 3,
     }
 }
