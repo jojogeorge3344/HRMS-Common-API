@@ -38,6 +38,8 @@ public class SalesInvoiceDto : Model
     public int CostCenterId { get; set; }
     public int PoGroupId { get; set; }
 
+    public int? SalesOrderOrigin { get; set; }
+
     public List<SalesInvoiceItemDto> SalesInvoiceItemDto { get; set; }
     public List<SalesInvoicePaymentTermsDto> SalesInvoicePaymentTermsDto { get; set; }
 }

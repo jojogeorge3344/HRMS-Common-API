@@ -9,8 +9,8 @@ public class ItemTransactionFinance : Model
         public string TransType { get; set; }
         public string Company { get; set; }
         public int BranchId { get; set; }
-        public string BranchCode { get; set; }
-        public string BranchName { get; set; }
+        public string? BranchCode { get; set; }
+        public string? BranchName { get; set; }
         public int? BpId { get; set; }
         public string? BpCode { get; set; }
         public string? BpName { get; set; }

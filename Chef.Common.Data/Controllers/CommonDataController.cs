@@ -5,7 +5,7 @@ using Chef.Common.Models;
 
 namespace Chef.Common.Data.Controller;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("api/common/[controller]/[action]")]
 public class CommonDataController : ControllerBase

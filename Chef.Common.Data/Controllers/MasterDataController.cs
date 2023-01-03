@@ -50,7 +50,7 @@ public class MasterDataController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Currency>>> GetCurrencies()
     {
-        return Ok(await(masterDataService.GetCurrencies()));
+        return Ok(await masterDataService.GetCurrencies());
     }
 
     [HttpGet]
@@ -267,10 +267,16 @@ public class MasterDataController : ControllerBase
 		return Ok(bankBranches);
 	}
 
-    [HttpGet("{finacialyearid}")]
+    [HttpGet("{finacialyearid:int}")]
     public async Task<ActionResult<IEnumerable<FinancialYearPeriod>>> GetFinancialYearPeriod(int finacialyearid)
     {
         return Ok(await masterDataService.GetFinancialYearPeriod(finacialyearid));
+    }
+
+    [HttpGet("{stateId:int}")]
+    public async Task<ActionResult<IEnumerable<City>>> GetCityByStateId(int stateId)
+    {
+        return Ok(await masterDataService.GetCityByStateId(stateId));
     }
 }
 

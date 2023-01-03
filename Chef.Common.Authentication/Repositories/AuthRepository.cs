@@ -119,9 +119,13 @@ public class AuthRepository : IAuthRepository
      
     public async Task<UserDto> GetCurrentUser()
     {
-        var userName = httpContextAccessor.HttpContext.Items["User"].ToString();
-        var user = await userManager.FindByNameAsync(userName);
-        return mapper.Map<UserDto>(user);
+        if (httpContextAccessor.HttpContext.Items["User"] != null)
+        {
+            var userName = httpContextAccessor.HttpContext.Items["User"].ToString();
+            var user = await userManager.FindByNameAsync(userName);
+            return mapper.Map<UserDto>(user);
+        }else
+        { throw new UnauthorizedAccessException("Unauthorized."); }
     }
 
     public async Task<ApplicationUser> GetAuthUser()
