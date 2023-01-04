@@ -18,9 +18,6 @@ public  class IntegrationDetalDimensionViewModel
         public decimal debitamountinbasecurrency { get; set; }
         public decimal creditamount { get; set; }
         public decimal creditamountinbasecurrency { get; set; }
-
-    public string narration { get; set; }
-
     public List<DetailDimension> detailDimensions { get; set; }
 
        

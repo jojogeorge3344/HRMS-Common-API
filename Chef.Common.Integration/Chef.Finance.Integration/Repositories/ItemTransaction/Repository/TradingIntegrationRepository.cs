@@ -119,7 +119,7 @@ public class TradingIntegrationRepository : TenantRepository<TradingIntegrationH
     }
     public async Task<int> UpdateStatus(int HeaderId)
     {
-        string sql = @"UPDATE finance.tradingintegrationheader set approvestatus=2 where id=@headerId";
+        string sql = @"UPDATE finance.tradingintegrationheader set approvestatus=2,approvestatusname='Approved' where id=@HeaderId";
         await Connection.ExecuteAsync(sql, new { HeaderId });
         return 1;
 

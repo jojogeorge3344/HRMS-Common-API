@@ -24,7 +24,7 @@ public  class ItemTransactionMappingProfile:Profile
 
         CreateMap<List<ItemTransactionFinanceDTO>, TradingIntegrationHeader>().ForMember(d => d.businesspartnerid, opt => opt.MapFrom(x => x.First().BpId))
             .ForMember(d => d.businesspartnername, opt => opt.MapFrom(x => x.First().BpName))
-            .ForMember(d => d.businesspartnercode, opt => opt.MapFrom(x => x.First().BpName))
+            .ForMember(d => d.businesspartnercode, opt => opt.MapFrom(x => x.First().BpCode))
             .ForMember(d => d.BranchId, opt=>opt.MapFrom(x => x.First().BranchId))
             .ForMember(d => d.exchangerate, opt=>opt.MapFrom(x =>x.First().ExRate))
             .ForMember(d => d.transorginid, opt=>opt.MapFrom(x=>x.First().TransOrginId))
