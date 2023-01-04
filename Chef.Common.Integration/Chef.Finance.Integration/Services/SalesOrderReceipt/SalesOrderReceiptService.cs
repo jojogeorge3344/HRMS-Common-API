@@ -115,7 +115,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             receiptRegister.PaymentMethodCode = paymentMethod.Code;
             receiptRegister.PaymentMethodName = paymentMethod.Name;
             receiptRegister.PaymentMethodType = paymentMethod.PaymentMethodType;
-            receiptRegister.BankAccountId = bankaccountType.Id;
+            receiptRegister.BankAccountId = bankaccountType.AccountId;
             receiptRegister.BankId = bankaccountType.BankId;
             receiptRegister.BankAccountNumber = bankaccountType.AccountNumber;
             receiptRegister.BankAccountName = bankaccountType.AccountName;
