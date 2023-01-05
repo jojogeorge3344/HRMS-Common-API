@@ -234,7 +234,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             if (businessPartners.Count() < 0)
                 throw new ResourceNotFoundException($"Bank Account Does not exist for this {salesOrderReceiptDto.BusinessPartnerName} BusinessPartner");
 
-            BusinessPartnerPaymentDetail bankDetails = businessPartners.Where(x => x.IsSupplier == true).FirstOrDefault();
+            BusinessPartnerPaymentDetail bankDetails = businessPartners.Where(x => x.IsSupplier == false).FirstOrDefault();
             if (bankDetails == null)
                 throw new ResourceNotFoundException($"Supplier Bank Account Does not exist for this {salesOrderReceiptDto.BusinessPartnerName} BusinessPartner");
 
