@@ -36,7 +36,7 @@ public class TradingIntegrationHeader : TransactionModel
     [Skip(true)]
     [Ignore]
 
-    public string narration { get; set; }
+    public string Narration { get; set; }
 
     [Write(false)]
         [Skip(true)]
