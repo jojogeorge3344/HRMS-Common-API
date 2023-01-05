@@ -269,7 +269,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         {
             detail = await customerAllocationDetailRepository.GetAllCustomerInvoiceByDocumentNumber(details.SalesInvoiceNo);
             if (detail == null)
-                throw new ResourceNotFoundException("");
+                throw new ResourceNotFoundException($"Insufficient Balance for this SalesInvoiceNo :{details.SalesInvoiceNo}");
 
             detail.CustomerAllocationId = customerCreditNoteResult.Id;
             detail.IsFullAllocation = false;
