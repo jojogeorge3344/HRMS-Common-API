@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using Chef.Common.Core;
 using Npgsql;
 
 namespace Chef.Common.Core.Repositories
@@ -10,6 +9,7 @@ namespace Chef.Common.Core.Repositories
         private readonly Guid _id;
         private readonly ITenantProvider tenantProvider;
         private readonly IDbConnection dbConnection;
+        private bool disposed = false;
 
         public TenantConnectionFactory(ITenantProvider tenantProvider)
         {
@@ -32,8 +32,22 @@ namespace Chef.Common.Core.Repositories
 
         public void Dispose()
         {
-            dbConnection?.Close();
-            dbConnection?.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    dbConnection?.Close();
+                    dbConnection?.Dispose();
+                }
+
+                disposed = true;
+            }
         }
     }
 }
