@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace Chef.Common.Repositories
 {
-    public abstract class SimpleUnitOfWork : ISimpleUnitOfWork
+    public abstract class SimpleUnitOfWork : ISimpleUnitOfWork, IDisposable
     {
         private readonly IConnectionFactory connectionFactory;
         private bool disposed = false;
