@@ -84,7 +84,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         {
             string code = salesInvoiceDto.SalesInvoiceNo.Substring(0,5);
 
-            int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate);
+            int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
 
             int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesInvoiceDto.BranchId, code);
 
@@ -110,6 +110,15 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
         SalesInvoice salesInvoice = Mapper.Map<SalesInvoice>(salesInvoiceDto);
 
+        if (salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            salesInvoice.Narration = TransactionType.VanSalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
+        }
+        else 
+        {
+            salesInvoice.Narration = TransactionType.SalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
+        }
+       
         salesInvoice.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
         salesInvoice.ApproveStatus = ApproveStatus.Draft;
         salesInvoice.JournalBookCode = journalBookConfig.JournalBookCode;
@@ -270,6 +279,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             return new()
             {
                 DocumentNumber = salesInvoiceResponse.DocumentNumber
+
             };
         }
         return new()
