@@ -18,10 +18,10 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\chef.console1\Chef.Console.Modules\Chef.Console.TaxEngine\Chef.Console.TaxEngine.csproj" />
     <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
     <ProjectReference Include="..\Chef.Common.Authentication\Chef.Common.Authentication.csproj" />
     <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
-    <ProjectReference Include="..\..\chef.console\Chef.Console.Modules\Chef.Console.TaxEngine\Chef.Console.TaxEngine.csproj" />
   </ItemGroup>
 </Project>

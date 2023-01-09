@@ -125,7 +125,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
             .Query<Employee>()
-            .Select("id", "name", "code")
+            .Select("id", "displayname", "employeecode", "firstname", "lastname", "middlename")
             .Where("id", id)
             .WhereNotArchived()
             .FirstOrDefaultAsync<Employee>();
