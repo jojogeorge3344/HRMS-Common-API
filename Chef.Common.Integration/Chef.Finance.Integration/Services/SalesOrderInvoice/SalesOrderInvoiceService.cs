@@ -79,7 +79,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
     private IntegrationJournalBookConfiguration journalBookConfig = new IntegrationJournalBookConfiguration();
     public async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto)
-    {
+        {
         if (salesInvoiceDto.SalesOrderOrigin == 4)
         {
             string code = salesInvoiceDto.SalesInvoiceNo.Substring(0,5);
@@ -126,11 +126,10 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         salesInvoice.JournalBookName = journalBookConfig.JournalBookName;
         salesInvoice.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
         salesInvoice.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
-        //salesInvoice.TransactionDate = DateTime.Now;
 
         salesInvoice.OtherDetail = new()
         {
-            Narration = salesInvoiceDto.Narration,
+            Narration = salesInvoice.Narration,
             BranchId = salesInvoice.BranchId,
             FinancialYearId = salesInvoice.FinancialYearId
         };
@@ -251,7 +250,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                         CostAllocationCode = "NA",
                         CostAllocationDescription = "No Cost Allocation",
                         BranchId = salesInvoice.BranchId,
-                        FinancialYearId = salesInvoice.FinancialYearId
+                        FinancialYearId = salesInvoice.FinancialYearId,
+                        Narration = salesInvoice.Narration
+                        
                     });
                 }
             }

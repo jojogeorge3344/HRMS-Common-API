@@ -107,6 +107,15 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
         CustomerCreditNote customerCreditNote = Mapper.Map<CustomerCreditNote>(salesReturnCreditDto);
 
+        if(salesReturnCreditDto.isVanSales == true)
+        {
+            customerCreditNote.Narration = TransactionType.SalesOrderReturn + "-" + salesReturnCreditDto.CreditNoteNumber;
+        }
+        else
+        {
+            customerCreditNote.Narration = TransactionType.SalesOrderReturn + "-" + salesReturnCreditDto.CreditNoteNumber;
+        }
+
         customerCreditNote.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
         customerCreditNote.ApproveStatus = ApproveStatus.Draft;
         customerCreditNote.JournalBookCode = journalBookConfig.JournalBookCode;
@@ -116,6 +125,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         //customerCreditNote.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
 
         CustomerCreditNoteDetail customerCreditNoteDetail = Mapper.Map<CustomerCreditNoteDetail>(salesReturnCreditDto);
+        customerCreditNoteDetail.FinancialYearId = customerCreditNote.FinancialYearId;
         customerCreditNote.CreditNoteDetails = customerCreditNoteDetail;
         customerCreditNote.CustomerTransactionDetails = new();
 
@@ -221,7 +231,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                         CostAllocationCode = "NA",
                         CostAllocationDescription = "No Cost Allocation",
                         BranchId = customerCreditNote.BranchId,
-                        FinancialYearId = customerCreditNote.FinancialYearId
+                        FinancialYearId = customerCreditNote.FinancialYearId,
+                        Narration = customerCreditNote.Narration
                     });
                 }
             }
@@ -278,6 +289,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             detail.AmountAllocatedInBaseCurrency = details.NetAmountInBaseCurrency;
             detail.AllocationType = 0;
             detail.IsFullSettlement = false;
+            detail.FinancialYearId = customerCreditNoteResult.FinancialYearId;
+            detail.TransactionDate = customerCreditNoteResult.TransactionDate;
             customerAllocationDetailList.Add(detail);
         }
 
