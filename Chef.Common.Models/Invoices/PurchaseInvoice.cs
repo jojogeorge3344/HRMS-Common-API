@@ -59,9 +59,9 @@ namespace Chef.Finance.Models
 
         public DateTime? DeliveryNoteDate { get; set; }
 
-        public string GRNNumber { get; set; }
+        public string GRNNumberForLandedCost { get; set; }
 
-        public DateTime? GRNDate { get; set; }
+        public DateTime? GRNDateForLandedCost { get; set; }
 
         public bool IsSupplier { get; set; }
 
