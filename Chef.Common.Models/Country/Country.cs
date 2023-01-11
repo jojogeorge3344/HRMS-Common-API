@@ -14,5 +14,6 @@ namespace Chef.Common.Models
         public string Code { get; set; }
 
         public string DialCode { get; set; }
+        public int CountryMasterId { get; set; }
     }
 }
