@@ -18,6 +18,7 @@ using Chef.Finance.Types;
 using System.Collections.Generic;
 using Chef.Finance.Models;
 using Chef.Finance.Supplier.Repositories;
+using Chef.Common.Data.Services;
 
 namespace Chef.Finance.Integration;
 
@@ -30,6 +31,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
     private readonly IPaymentMethodRepository paymentMethodRepository;
     private readonly IBankAccountRepository bankAccountRepository;
     private readonly IMasterDataRepository masterDataRepository;
+    private readonly IMasterDataService masterDataService;
     private readonly ISupplierPaymentAdviceRepository supplierPaymentAdviceRepository;
     private readonly IPaymentAdviceProcessingRepository paymentAdviceProcessingRepository;
     private readonly IBusinessPartnerPaymentDetailRepository businessPartnerConfigRepository;
@@ -45,7 +47,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         ISupplierPaymentAdviceRepository supplierPaymentAdviceRepository,
         IPaymentAdviceProcessingRepository paymentAdviceProcessingRepository,
         IBusinessPartnerPaymentDetailRepository businessPartnerConfigRepository,
-         ITenantSimpleUnitOfWork tenantSimpleUnitOfWork
+         ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
+          IMasterDataService masterDataService
 
         )
     {
@@ -59,6 +62,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         this.paymentAdviceProcessingRepository = paymentAdviceProcessingRepository;
         this.businessPartnerConfigRepository = businessPartnerConfigRepository;
         this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
+        this.masterDataService = masterDataService;
     }
 
 
@@ -122,7 +126,18 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
 
 
             receiptRegister.BankCurrencyCode = bankaccountType.CurrencyCode;
-            receiptRegister.AmountInBankCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
+
+            if(receiptRegister.BankCurrencyCode == salesOrderReceiptDto.TransactionCurrencyCode)
+            {
+                receiptRegister.AmountInBankCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
+            }
+            else
+            {
+                IEnumerable<CurrencyExchangeRate> exchangeRate  = await masterDataService.GetExchangeRates(salesOrderReceiptDto.baseCurrencyCode, receiptRegister.BankCurrencyCode,receiptRegister.TransactionDate.Date);
+                decimal rate = exchangeRate.FirstOrDefault().ExchangeRate;
+                receiptRegister.AmountInBankCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency/rate;
+            }
+
             receiptRegister.TransactionDate = salesOrderReceiptDto.ReceiptDate;
             //PaymentMethodType paymentMethodType = new PaymentMethodType();
             //paymentMethodType = (PaymentMethodType)journalBookConfig.TransactionType;
@@ -239,12 +254,24 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             //    throw new ResourceNotFoundException($"Supplier Bank Account Does not exist for this {salesOrderReceiptDto.BusinessPartnerName} BusinessPartner");
 
             supplierPaymentAdvice.AccountNumber = bankaccountType.AccountNumber;
-            supplierPaymentAdvice.AmountInBankCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
+            supplierPaymentAdvice.BankCurrencyCode = bankaccountType.CurrencyCode;
+
+            if (supplierPaymentAdvice.BankCurrencyCode == salesOrderReceiptDto.TransactionCurrencyCode)
+            {
+
+                supplierPaymentAdvice.AmountInBankCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
+            }
+            else
+            {
+                IEnumerable<CurrencyExchangeRate> exchangeRate = await masterDataService.GetExchangeRates(salesOrderReceiptDto.baseCurrencyCode, supplierPaymentAdvice.BankCurrencyCode, supplierPaymentAdvice.TransactionDate.Date);
+                decimal rate = exchangeRate.FirstOrDefault().ExchangeRate;
+                supplierPaymentAdvice.AmountInBankCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency/rate;
+            }
+
             supplierPaymentAdvice.BankAccountBalance = bankBalance;
             supplierPaymentAdvice.BankAccountId = bankaccountType.AccountId;
             supplierPaymentAdvice.BankAccountName = bankaccountType.AccountName;
             supplierPaymentAdvice.BankAccountNumber = bankDetails.AccountNumber;
-            supplierPaymentAdvice.BankCurrencyCode = bankaccountType.CurrencyCode;
             //supplierPaymentAdvice.BankCurrencyExchangeRate =
             supplierPaymentAdvice.BankId = bankaccountType.BankId;
             supplierPaymentAdvice.BankLedgerAccountCode = bankaccountType.BankControlAccountCode;
