@@ -26,6 +26,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly IPostDocumentViewModelRepository postDocumentViewModelRepository;
     private readonly IGeneralLedgerPostingService generalLedgerPostingService;
     private readonly ISalesInvoiceRepository salesInvoiceRepository;
+    private readonly IJournalBookRepository journalBookRepository;
+    private readonly IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository;
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -39,7 +41,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         IGeneralLedgerPostingRepository generalLedgerPostingRepository,
         IPostDocumentViewModelRepository postDocumentViewModelRepository,
         IGeneralLedgerPostingService generalLedgerPostingService,
-        ISalesInvoiceRepository salesInvoiceRepository
+        ISalesInvoiceRepository salesInvoiceRepository,
+        IJournalBookRepository journalBookRepository,
+        IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
@@ -54,6 +58,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.postDocumentViewModelRepository = postDocumentViewModelRepository;
         this.generalLedgerPostingService = generalLedgerPostingService;
         this.salesInvoiceRepository = salesInvoiceRepository;
+        this.journalBookRepository = journalBookRepository;
+        this.journalBookNumberingSchemeRepository = journalBookNumberingSchemeRepository;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -71,15 +77,52 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         throw new NotImplementedException();
     }
 
+    private IntegrationJournalBookConfiguration journalBookConfig = new IntegrationJournalBookConfiguration();
     public async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto)
-    {
-        IntegrationJournalBookConfiguration journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderInvoice));
+        {
+        if (salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            string code = salesInvoiceDto.SalesInvoiceNo.Substring(0,5);
 
-        if (journalBookConfig == null)
-            throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+            int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
+
+            int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesInvoiceDto.BranchId, code);
+
+            if(journalBookNumberingScheme == 0)
+                throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
+
+            journalBookConfig = await journalBookRepository.getJournalBookdetailsByVanSalesCode(code);
+            if (journalBookConfig == 
+                null)
+                throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
+
+            if (!salesInvoiceDto.SalesInvoiceNo.Contains(".") || !salesInvoiceDto.SalesInvoiceNo.Contains("_"))
+            {
+                int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
+            }
+
+        }
+        else
+        {
+             journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderInvoice));
+            if (journalBookConfig == null)
+                throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+        }
+
+
+       
 
         SalesInvoice salesInvoice = Mapper.Map<SalesInvoice>(salesInvoiceDto);
 
+        if (salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            salesInvoice.Narration = TransactionType.VanSalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
+        }
+        else 
+        {
+            salesInvoice.Narration = TransactionType.SalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
+        }
+       
         salesInvoice.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
         salesInvoice.ApproveStatus = ApproveStatus.Draft;
         salesInvoice.JournalBookCode = journalBookConfig.JournalBookCode;
@@ -87,11 +130,10 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         salesInvoice.JournalBookName = journalBookConfig.JournalBookName;
         salesInvoice.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
         salesInvoice.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
-        salesInvoice.TransactionDate = DateTime.Now;
 
         salesInvoice.OtherDetail = new()
         {
-            Narration = salesInvoiceDto.Narration,
+            Narration = salesInvoice.Narration,
             BranchId = salesInvoice.BranchId,
             FinancialYearId = salesInvoice.FinancialYearId
         };
@@ -212,10 +254,17 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                         CostAllocationCode = "NA",
                         CostAllocationDescription = "No Cost Allocation",
                         BranchId = salesInvoice.BranchId,
-                        FinancialYearId = salesInvoice.FinancialYearId
+                        FinancialYearId = salesInvoice.FinancialYearId,
+                        Narration = salesInvoice.Narration
+                        
                     });
                 }
             }
+        }
+
+        if(salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            salesInvoice.DocumentNumber = salesInvoiceDto.SalesInvoiceNo;
         }
 
         var salesInvoiceResponse = await salesInvoiceService.InsertAsync(salesInvoice);
@@ -229,6 +278,14 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
             await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
             await salesInvoiceRepository.UpdateStatus(salesInvoiceResponse.Id, ApproveStatus.Approved);
+        }
+        if(salesInvoiceDto.SalesOrderOrigin == 4)
+        {
+            return new()
+            {
+                DocumentNumber = salesInvoiceResponse.DocumentNumber
+
+            };
         }
         return new()
         {

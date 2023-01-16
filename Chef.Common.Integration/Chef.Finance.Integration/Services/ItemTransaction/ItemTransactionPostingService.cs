@@ -58,6 +58,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     {
         try
         {
+            
 
             IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId);
             if (items == null)
@@ -66,6 +67,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
             //header detailsss maping insert
             TradingIntegrationHeader intHeader = Mapper.Map<TradingIntegrationHeader>(itemTransactionFinanceDTO);
+            if(intHeader.totalamount == 0)
+                throw new ResourceNotFoundException("Amount is Zero Please check");
             intHeader.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
             intHeader.journalbookid = items.JournalBookId;
             intHeader.journalbookcode = items.JournalBookCode;
@@ -94,7 +97,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                     case (TransactionOrgin.Purchase, TransactionType.PurchaseReturn):
                         await GetPurchaseReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn):
+                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderReturn):
                         await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                         break;
                     case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderDelivery):
@@ -441,7 +444,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 //Configuration->reson code cont A / C - debit
                 LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
                 if (ledgerAccountViewModel1 == null)
-                    throw new ResourceNotFoundException("Ledger Account not configured for this item");
+                    throw new ResourceNotFoundException($"Reason Code  not configured {itemTransactionFinanceDTO.ReasonCode}");
                 await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
             }
         }

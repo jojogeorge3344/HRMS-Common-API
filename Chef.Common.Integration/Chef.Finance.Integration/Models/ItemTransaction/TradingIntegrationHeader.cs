@@ -32,7 +32,13 @@ public class TradingIntegrationHeader : TransactionModel
         public DateTime ApprovedDate { get; set; }
         public DateTime RejectedDate { get; set; }
 
-        [Write(false)]
+    [Write(false)]
+    [Skip(true)]
+    [Ignore]
+
+    public string Narration { get; set; }
+
+    [Write(false)]
         [Skip(true)]
         [Ignore]
         public decimal DiscountAmount { get; set; }

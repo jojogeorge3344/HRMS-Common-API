@@ -110,6 +110,8 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
         foreach (TradingIntegrationHeaderDetailsViewModel tradingIntegration in tradingIntegrationHeadersDetails)
         {
             GeneralLedger generalLedger = Mapper.Map<GeneralLedger>(tradingIntegration);
+            generalLedger.ExchangeDate = DateTime.Now;
+            generalLedger.PostedDate = DateTime.Now;
             generalLedger.PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegration.FinancialYearId, tradingIntegration.TransactionDate);
             generalLedger.ApproveStatus = Convert.ToInt32(ApproveStatus.Approved);
             generalLedgerlList.Add(generalLedger);

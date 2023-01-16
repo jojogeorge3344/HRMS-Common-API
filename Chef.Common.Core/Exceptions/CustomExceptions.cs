@@ -413,6 +413,13 @@ namespace Chef.Common.Exceptions
         }
     }
     [Serializable]
+    public class TaxRateCodeCannotBeAddedException : ApplicationException
+    {
+        public TaxRateCodeCannotBeAddedException(string message) : base(message)
+        {
+        }
+    }
+    [Serializable]
     public class TaxJurisdictionZoneCannotBeAddedException : ApplicationException
     {
         public TaxJurisdictionZoneCannotBeAddedException(string message) : base(message)

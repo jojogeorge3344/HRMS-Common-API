@@ -1,8 +1,12 @@
-﻿namespace Chef.Common.Repositories
+﻿using System;
+using System.Data.Common;
+
+namespace Chef.Common.Repositories
 {
-    public abstract class SimpleUnitOfWork : ISimpleUnitOfWork
+    public abstract class SimpleUnitOfWork : ISimpleUnitOfWork, IDisposable
     {
         private readonly IConnectionFactory connectionFactory;
+        private bool disposed = false;
 
         public SimpleUnitOfWork(IConnectionFactory connectionFactory)
         {
@@ -28,7 +32,21 @@
 
         public void Dispose()
         {
-            connectionFactory.Transaction?.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    connectionFactory.Transaction?.Dispose();
+                }
+
+                disposed = true;
+            }
         }
     }
 

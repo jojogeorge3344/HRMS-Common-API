@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core;
+using Chef.Common.Types;
 using System;
 
 namespace Chef.Common.Models
