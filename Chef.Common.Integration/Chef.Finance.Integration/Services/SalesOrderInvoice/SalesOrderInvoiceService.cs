@@ -92,10 +92,14 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
 
             journalBookConfig = await journalBookRepository.getJournalBookdetailsByVanSalesCode(code);
-            if (journalBookConfig == null)
+            if (journalBookConfig == 
+                null)
                 throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
 
-            int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
+            if (!salesInvoiceDto.SalesInvoiceNo.Contains(".") || !salesInvoiceDto.SalesInvoiceNo.Contains("_"))
+            {
+                int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
+            }
 
         }
         else
