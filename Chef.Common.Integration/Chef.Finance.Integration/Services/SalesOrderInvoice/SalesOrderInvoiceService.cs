@@ -96,7 +96,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 null)
                 throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
 
-            if (!salesInvoiceDto.SalesInvoiceNo.Contains(".") || !salesInvoiceDto.SalesInvoiceNo.Contains("_"))
+            if (!salesInvoiceDto.SalesInvoiceNo.Contains(".") && !salesInvoiceDto.SalesInvoiceNo.Contains("_"))
             {
                 int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
             }
