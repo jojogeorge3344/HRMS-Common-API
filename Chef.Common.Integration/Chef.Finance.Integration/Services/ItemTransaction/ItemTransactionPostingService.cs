@@ -429,7 +429,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 //Configuration->reson code cont A / C - credit
                 LedgerAccountViewModel ledgerAccountViewModel1 = await GetReasonCode(itemTransactionFinanceDTO.ReasonCode);
                 if (ledgerAccountViewModel1 == null)
-                    throw new ResourceNotFoundException("Ledger Account not configured for this item");
+                    throw new ResourceNotFoundException($"Reason Code  not configured {itemTransactionFinanceDTO.ReasonCode}");
                 await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId);
             }
             else
