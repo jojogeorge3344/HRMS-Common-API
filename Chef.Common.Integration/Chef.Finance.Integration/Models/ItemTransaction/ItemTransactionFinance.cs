@@ -48,6 +48,6 @@ public class ItemTransactionFinance : Model
         public string EmployeeCode { get; set; }
         public string ReasonCode { get; set; }
 
-        public string GroupCode { get; set; }
+        public int GroupId { get; set; }
 }
 
