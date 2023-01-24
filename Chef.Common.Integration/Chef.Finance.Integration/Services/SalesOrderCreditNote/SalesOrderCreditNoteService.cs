@@ -206,12 +206,15 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                     });
                 }
 
-               
+                int transactionOrgin = (int)salesReturnCreditDto.TransactionOriginName;
+                int transactionType = (int)salesReturnCreditDto.TransOriginType;
                 if (item.TotalItemAmount > 0)
                 {
                     ItemViewModel viewModel = new()
                     {
                         ItemCategoryId = item.ItemCategory,
+                        TransOrginId = transactionOrgin,
+                        TransTypeId = transactionType,
                         ItemTypeId = item.ItemType,
                         ItemSegmentId = item.ItemSegmentId,
                         ItemFamilyId = item.ItemFamilyId,

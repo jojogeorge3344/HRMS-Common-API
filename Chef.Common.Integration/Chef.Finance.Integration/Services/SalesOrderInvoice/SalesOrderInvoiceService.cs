@@ -228,11 +228,15 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 }
 
                 var itemDto = salesInvoiceDto.SalesInvoiceItemDto[itemLineNumber - 1];
+                int transactionOrgin = (int)salesInvoiceDto.TransactionOriginName;
+                int transactionType =  (int)salesInvoiceDto.TransOriginType;
                 if (item.Amount > 0)
                 {
                     ItemViewModel viewModel = new()
                     {
                         ItemCategoryId = itemDto.ItemCategory,
+                        TransOrginId = transactionOrgin,
+                        TransTypeId = transactionType,
                         ItemTypeId = itemDto.ItemType,
                         ItemSegmentId = itemDto.ItemSegmentId,
                         ItemFamilyId = itemDto.ItemFamilyId,
