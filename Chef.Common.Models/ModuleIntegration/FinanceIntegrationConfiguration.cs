@@ -1,5 +1,6 @@
 ﻿
 using Chef.Common.Core;
+using Chef.Common.Types;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -36,6 +37,22 @@ namespace Chef.Common.Models
         public int? ItemCommondityId { get; set; } = 0;
 
         public string ItemCommondityName { get; set; }
+
+        [Required]
+        public int TransactionOriginId { get; set; }
+
+        [Required]
+        public string TransactionOriginName { get; set; }
+
+        [Required]
+        public int TransactionTypeId { get; set; }
+
+        [Required]
+        public string TransactionTypeName { get; set; }
+
+        public int PurchaseOrderGroupId { get; set; }
+
+        public string PurchaseOrderGroupName { get; set; }
 
         [Write(false)]
         [Skip(true)]

@@ -47,5 +47,7 @@ public class ItemTransactionFinance : Model
         public int EmployeeId { get; set; }
         public string EmployeeCode { get; set; }
         public string ReasonCode { get; set; }
+
+        public int GroupId { get; set; }
 }
 
