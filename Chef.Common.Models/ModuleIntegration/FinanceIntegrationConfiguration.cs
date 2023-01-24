@@ -50,7 +50,7 @@ namespace Chef.Common.Models
         [Required]
         public string TransactionTypeName { get; set; }
 
-        public int PurchaseOrderGroupId { get; set; }
+        public int? PurchaseOrderGroupId { get; set; }
 
         public string PurchaseOrderGroupName { get; set; }
 
