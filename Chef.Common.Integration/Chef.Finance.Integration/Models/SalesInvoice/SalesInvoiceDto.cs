@@ -42,7 +42,7 @@ public class SalesInvoiceDto : Model
 
     public TransactionOrgin TransactionOriginName { get; set; }
 
-    public TransactionType TransactionTypeName { get; set; }
+    public string TransactionTypeName { get; set; }
 
     public TransactionType TransOriginType { get; set; }
 
