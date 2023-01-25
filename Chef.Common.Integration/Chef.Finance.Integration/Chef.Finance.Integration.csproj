@@ -30,10 +30,14 @@
     <Folder Include="Models\Creditnote\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\chef.finance3\Chef.Finance.Repositories\Chef.Finance.Repositories.csproj" />
-    <ProjectReference Include="..\..\..\chef.finance3\Chef.Finance.Services\Chef.Finance.Services.csproj" />
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Repositories\Chef.Finance.Repositories.csproj" />
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Services\Chef.Finance.Services.csproj" />
     <ProjectReference Include="..\..\Chef.Common.Core\Chef.Common.Core.csproj" />
     <ProjectReference Include="..\..\Chef.Common.Data\Chef.Common.Data.csproj" />
     <ProjectReference Include="..\..\Chef.Common.Models\Chef.Common.Models.csproj" />
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Types\Chef.Finance.Types.csproj" />
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Modules\Chef.Finance.BusinessPartner\Chef.Finance.BP.csproj" />
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Modules\Chef.Finance.Configuration\Chef.Finance.Configuration.csproj" />
+    <ProjectReference Include="..\..\..\chef.finance\Chef.Finance.Modules\Chef.Finance.GL\Chef.Finance.GL.csproj" />
   </ItemGroup>
 </Project>
