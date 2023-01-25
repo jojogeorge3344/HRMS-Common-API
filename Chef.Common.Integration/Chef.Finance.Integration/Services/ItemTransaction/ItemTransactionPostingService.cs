@@ -58,8 +58,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     {
         try
         {
-            
 
+            tenantSimpleUnitOfWork.BeginTransaction();
             IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId);
             if (items == null)
                 //TODO:will change the exception type once latest changes got from SK
@@ -67,8 +67,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
             //header detailsss maping insert
             TradingIntegrationHeader intHeader = Mapper.Map<TradingIntegrationHeader>(itemTransactionFinanceDTO);
-            if(intHeader.totalamount == 0)
-                throw new ResourceNotFoundException("Amount is Zero Please check");
+            //if(intHeader.totalamount == 0)
+            //    throw new ResourceNotFoundException("Amount is Zero Please check");
             intHeader.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
             intHeader.journalbookid = items.JournalBookId;
             intHeader.journalbookcode = items.JournalBookCode;
@@ -77,7 +77,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             intHeader.ApproveStatusName = ApproveStatus.Draft.ToString();
 
             // simpleUnitOfWork.BeginTransaction();
-            tenantSimpleUnitOfWork.BeginTransaction();
+           
             intHeader.documentnumber = await journalBookNumberingSchemeRepository.GetJournalTransactionsDocNumber(intHeader.FinancialYearId, intHeader.BranchId, items.JournalBookCode);
             int intHeaderId = await tradingIntegrationRepository.InsertAsync(intHeader);
 

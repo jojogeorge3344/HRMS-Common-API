@@ -38,6 +38,12 @@ public class SalesReturnCreditDto
     public decimal taxAmountInBaseCurrency { get; set; }
 
     public decimal netAmountInBaseCurrency { get; set; }
+
+    public TransactionOrgin TransactionOriginName { get; set; }
+
+    public TransactionType TransactionTypeName { get; set; }
+
+    public TransactionType TransOriginType { get; set; }
     public List<SalesReturnCreditItemDto>? salesReturnCreditItemDtos { get; set; }
 
 }

@@ -40,6 +40,12 @@ public class SalesInvoiceDto : Model
 
     public int? SalesOrderOrigin { get; set; }
 
+    public TransactionOrgin TransactionOriginName { get; set; }
+
+    public TransactionType TransactionTypeName { get; set; }
+
+    public TransactionType TransOriginType { get; set; }
+
     public List<SalesInvoiceItemDto> SalesInvoiceItemDto { get; set; }
     public List<SalesInvoicePaymentTermsDto> SalesInvoicePaymentTermsDto { get; set; }
 }
