@@ -1,6 +1,8 @@
 ﻿using Chef.Common.Core;
+using Chef.Common.Models;
 using Chef.Common.Types;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Finance.Models
@@ -57,9 +59,9 @@ namespace Chef.Finance.Models
 
         public DateTime? DeliveryNoteDate { get; set; }
 
-        public string GRNNumber { get; set; }
+        public string GRNNumberForLandedCost { get; set; }
 
-        public DateTime? GRNDate { get; set; }
+        public DateTime? GRNDateForLandedCost { get; set; }
 
         public bool IsSupplier { get; set; }
 
@@ -125,5 +127,10 @@ namespace Chef.Finance.Models
         [Skip(true)]
         [SqlKata.Ignore]
         public string TaxRegistrationNumber { get; set; }
+        public bool GRNIsExchangeRateFixed { get; set; }
+        [Write(false)]
+        [Skip(true)]
+        [SqlKata.Ignore]
+        public List<PurchaseInvoiceGRNDetails> GRNDetails { get; set; }
     }
 }
