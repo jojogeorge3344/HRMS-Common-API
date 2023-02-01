@@ -1,12 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Chef.Common.Core;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Chef.Common.Core;
-using SqlKata.Extensions;
-
-namespace Chef.Common.Models
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace Chef.Common.Dtos.ResponseDto.BusinessPartner
 {
-    public class BusinessPartner : Model
+    internal class BusinessPartnerImportDto
     {
+
         [StringLength(126)]
         [Required]
         public string Name { get; set; }
@@ -23,32 +27,18 @@ namespace Chef.Common.Models
         [StringLength(256)]
         public string AddressLine2 { get; set; }
 
-        [Required]
-        public int CityId { get; set; }
-
         [StringLength(126)]
         [Required]
         public string CityName { get; set; }
 
-        [ForeignKey("Common.State")]
-        [Required]
-        public int StateId { get; set; }
-
         [Required]
         public string StateName { get; set; }
-
-        [ForeignKey("Common.Country")]
-        [Required]
-        public int CountryId { get; set; }
 
         [Required]
         public string CountryName { get; set; }
 
         [Required]
         public string ZipCode { get; set; }
-
-        [ForeignKey("Common.Currency")]
-        public int CurrencyId { get; set; }
 
         [StringLength(3)]
         public string CurrencyCode { get; set; }
@@ -62,18 +52,8 @@ namespace Chef.Common.Models
         public string Email { get; set; }
 
         public string Website { get; set; }
-
-        public int SerialNumber { get; set; }
-
-        public bool IsActive { get; set; } = false;
-
-        [Unique(true)]
-        public int TaxJurisdictionId { get; set; }
-
-        [Write(false)]
-        [Skip(true)]
-        [SqlKata.Ignore]
-        public string TaxJurisdictionName { get; set; }
+        
+        public int TaxJurisdictionName { get; set; }
 
         public string TaxName { get; set; }
 
@@ -82,3 +62,4 @@ namespace Chef.Common.Models
         public string TaxRegistrationNumber { get; set; }
     }
 }
+
