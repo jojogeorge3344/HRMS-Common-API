@@ -216,6 +216,9 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 {
                     ItemViewModel itemViewModel1 = Mapper.Map<ItemViewModel>(itemTransactionFinanceLineCost);
                     itemViewModel.LandingCost = itemTransactionFinanceDTO.LandingCostId;
+                    itemViewModel1.TransOrginId = itemTransactionFinanceDTO.TransOrginId;
+                    itemViewModel1.TransTypeId = itemTransactionFinanceDTO.TransTypeId;
+                    itemViewModel1.GroupId = itemTransactionFinanceDTO.GroupId;
 
                     LedgerAccountViewModel ledgerAccountViewModel2 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
                     if (ledgerAccountViewModel2 == null)
@@ -280,6 +283,9 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 {
                     ItemViewModel itemViewModel1 = Mapper.Map<ItemViewModel>(itemTransactionFinanceLineCost);
                     itemViewModel.LandingCost = itemTransactionFinanceDTO.LandingCostId;
+                    itemViewModel1.TransOrginId = itemTransactionFinanceDTO.TransOrginId;
+                    itemViewModel1.TransTypeId = itemTransactionFinanceDTO.TransTypeId;
+                    itemViewModel1.GroupId = itemTransactionFinanceDTO.GroupId;
 
                     LedgerAccountViewModel ledgerAccountViewModel2 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
                     if (ledgerAccountViewModel2 == null)
