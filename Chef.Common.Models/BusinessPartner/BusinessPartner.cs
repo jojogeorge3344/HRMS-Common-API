@@ -65,7 +65,7 @@ namespace Chef.Common.Models
 
         public int SerialNumber { get; set; }
 
-        public bool IsActive { get; set; } = false;
+        public bool IsActive { get; set; } = true;
 
         [Unique(true)]
         public int TaxJurisdictionId { get; set; }
