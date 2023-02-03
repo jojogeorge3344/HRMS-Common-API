@@ -61,7 +61,6 @@ public  class ItemTransactionMappingProfile:Profile
                     .ForMember(d => d.LedgerAccountCode, opt => opt.MapFrom(x => x.ledgeraccountcode))
                     .ForMember(d => d.BusinessPartnerCode, opt => opt.MapFrom(x => x.businesspartnercode))
                     .ForMember(d => d.LedgerAccountName, opt => opt.MapFrom(x => x.ledgeraccountname))
-                    .ForMember(d => d.BusinessPartnerCode, opt => opt.MapFrom(x => x.businesspartnercode))
                     .ForMember(d => d.CreditAmount, opt => opt.MapFrom(x => x.creditamount))
                     .ForMember(d => d.DebitAmount, opt => opt.MapFrom(x => x.debitamount))
                     .ForMember(d => d.RefenceDocumentDetailId, opt => opt.MapFrom(x => x.integrationheaderid))

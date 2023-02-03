@@ -1,6 +1,8 @@
 ﻿
+using Chef.Common.Models;
 using Chef.Finance.Configuration.Repositories;
 using Chef.Finance.Integration.Models;
+
 namespace Chef.Finance.Integration;
 public class TradingIntegrationRepository : TenantRepository<TradingIntegrationHeader>, ITradingIntegrationRepository
 {
