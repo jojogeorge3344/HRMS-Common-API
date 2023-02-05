@@ -22,7 +22,7 @@ public  class TradingIntegrationHeaderDetailsViewModel
         public int transtypeslno { get; set; }
         public int transid { get; set; }
         public string currency { get; set; }
-        public string exchangerate { get; set; }
+        public decimal exchangerate { get; set; }
         public decimal totalamount { get; set; } //TODO change type in db
         public string remark { get; set; }
         public ApproveStatus ApproveStatus { get; set; }

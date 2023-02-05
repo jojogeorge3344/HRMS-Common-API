@@ -106,16 +106,47 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
     private async Task PostingLedger(int integerationHeaderId)
     {
         int HeaderId = await tradingIntegrationRepository.UpdateStatus(integerationHeaderId);
+
         IEnumerable<TradingIntegrationHeaderDetailsViewModel> tradingIntegrationHeadersDetails = await tradingIntegrationRepository.GetIntegrationHeaderDetails(integerationHeaderId);
-        foreach (TradingIntegrationHeaderDetailsViewModel tradingIntegration in tradingIntegrationHeadersDetails)
+
+        int PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegrationHeadersDetails.First().FinancialYearId, tradingIntegrationHeadersDetails.First().TransactionDate);
+
+        generalLedgerlList =  tradingIntegrationHeadersDetails.GroupBy(g => g.ledgeraccountid).Select(x => new GeneralLedger()
         {
-            GeneralLedger generalLedger = Mapper.Map<GeneralLedger>(tradingIntegration);
-            generalLedger.ExchangeDate = DateTime.Now;
-            generalLedger.PostedDate = DateTime.Now;
-            generalLedger.PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegration.FinancialYearId, tradingIntegration.TransactionDate);
-            generalLedger.ApproveStatus = Convert.ToInt32(ApproveStatus.Approved);
-            generalLedgerlList.Add(generalLedger);
-        }
+            BusinessPartnerId = x.First().businesspartnerid,
+            DocumentType = x.First().documentType,
+            DocumentNumber = x.First().documentnumber,
+            DocumentDate = x.First().TransactionDate,
+            TransactionDate = x.First().TransactionDate,
+            JournalBookCode = x.First().journalbookcode,
+            JournalBookId = x.First().journalbookid,
+            TransactionCurrencyCode = x.First().currency,
+            ExchangeRate = x.First().exchangerate,
+            Narration = x.First().narration,
+            DebitAmountInBaseCurrency = x.Sum(y=>y.debitamountinbasecurrency),
+            CreditAmountInBaseCurrency = x.Sum(y=>y.creditamountinbasecurrency),
+            BranchId = x.First().BranchId,
+            LedgerAccountId = x.First().ledgeraccountid,
+            LedgerAccountCode = x.First().ledgeraccountcode,
+            BusinessPartnerCode = x.First().businesspartnercode,
+            LedgerAccountName = x.First().ledgeraccountname,
+            CreditAmount = x.Sum(y=>y.creditamount),
+            DebitAmount =x.Sum(y=>y.debitamount),
+            RefenceDocumentDetailId = x.First().integrationheaderid,
+            FinancialYearId = x.First().FinancialYearId,
+            ExchangeDate = DateTime.UtcNow,
+            PostedDate = DateTime.UtcNow,
+            PeriodId = PeriodId,
+        }).ToList();
+        //foreach (TradingIntegrationHeaderDetailsViewModel tradingIntegration in tradingIntegrationHeadersDetails)
+        //{
+        //    GeneralLedger generalLedger = Mapper.Map<GeneralLedger>(tradingIntegration);
+        //    generalLedger.ExchangeDate = DateTime.Now;
+        //    generalLedger.PostedDate = DateTime.Now;
+        //    generalLedger.PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegration.FinancialYearId, tradingIntegration.TransactionDate);
+        //    generalLedger.ApproveStatus = Convert.ToInt32(ApproveStatus.Approved);
+        //    generalLedgerlList.Add(generalLedger);
+        //}
     }
 
 }
