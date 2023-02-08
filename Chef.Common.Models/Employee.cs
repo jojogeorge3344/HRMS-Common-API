@@ -7,6 +7,9 @@ namespace Chef.Common.Models
 {
     public class Employee : Model
     {
+        [Required]
+        [MaxLength(10, ErrorMessage = "Employee code should be maximum length of 10 characters")]
+        [RegularExpression("^(?!0*$)[A-Za-z0-9\\-\\/]+$", ErrorMessage = "Employee code should be alphanumeric only")]
         public string EmployeeCode { get; set; }
 
         [Required]
