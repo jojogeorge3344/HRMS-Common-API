@@ -46,6 +46,8 @@ public class SalesInvoiceDto : Model
 
     public TransactionType TransOriginType { get; set; }
 
+    public DateTime ExchangeDate { get; set; }
+
     public List<SalesInvoiceItemDto> SalesInvoiceItemDto { get; set; }
     public List<SalesInvoicePaymentTermsDto> SalesInvoicePaymentTermsDto { get; set; }
 }
