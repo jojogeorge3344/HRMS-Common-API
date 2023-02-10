@@ -150,10 +150,10 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetBranchByBank(id);
 
     }
-    //public Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync()
-    //{
-    //    return masterDataRespository.GetAllTaxSetupAsync();
-    //}
+    public Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync()
+    {
+        return masterDataRespository.GetAllTaxSetupAsync();
+    }
     public Task<IEnumerable<BusinessPartner>> GetAllActiveBP(string? top,string? fil, string? skip)
     {
 
@@ -208,6 +208,11 @@ public class MasterDataService : IMasterDataService
     public Task<IEnumerable<City>> GetCityByStateId(int stateId)
     {
         return masterDataRespository.GetCityByStateId(stateId);
+    }
+
+    public async Task<IEnumerable<TaxJurisdiction>> GetAllTaxJurisdiction()
+    {
+        return await masterDataRespository.GetAllTaxJurisdiction();
     }
 }
 
