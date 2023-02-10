@@ -41,7 +41,7 @@ public interface IMasterDataRepository : IRepository
 
 	Task<IEnumerable<Bank>> GetAllBank();
 	Task<IEnumerable<BankBranch>> GetBranchByBank(int id);
-    Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync();
+    //Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync();
     Task<IEnumerable<BusinessPartner>> GetAllActiveBP(SqlSearch search , CancellationToken cancellationToken = default);
 
     Task<BankBranch> getBankBranchById(int id);
