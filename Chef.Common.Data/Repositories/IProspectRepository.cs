@@ -15,7 +15,7 @@ public interface IProspectRepository : IGenericRepository<Prospect>
     //Task<IEnumerable<ProspectDto>> GetAll();
     new Task<IEnumerable<ProspectDto>> GetAsync(int id);
 
-    //Task<IEnumerable<ProspectDto>> GetList();
+    Task<IEnumerable<ProspectDto>> GetAll();
     //Task<IEnumerable<Prospect>> GetAllProspect();
 
     Task<int> GetExistingProspectAsync(Prospect obj);

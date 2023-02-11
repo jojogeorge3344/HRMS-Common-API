@@ -56,10 +56,10 @@ public class ProspectService : AsyncService<Prospect>, IProspectService
     //        return result;
     //}
 
-    //public async Task<IEnumerable<ProspectDto>> GetList()
-    //{
-    //    return await prospectRepository.GetList();
-    //}
+    public async Task<IEnumerable<ProspectDto>> GetAll()
+    {
+        return await prospectRepository.GetAll();
+    }
 
     public async Task<int> GetExistingProspectAsync(Prospect obj)
          => await prospectRepository.GetExistingProspectAsync(obj);

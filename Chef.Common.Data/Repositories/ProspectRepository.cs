@@ -67,18 +67,18 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
         return result;
     }
 
-    //public async Task<IEnumerable<ProspectDto>> GetList()
-    //{
-    //    var sqlQuery = @"SELECT pt.id, pt.prospectcode, pt.prospectname, pt.addressline1, pt.contactperson, pt.contactnumber, pt.email, pt.isassigned, 
-    //                                pt.businesspartnerid,pt.isarchived, pt.isactive, pt.taxjurisdictionid, pt.currency, pt.bptype, pt.addressline2, 
-    //                                pt.cityid, pt.cityname, pt.stateid, pt.statename, pt.countryid, pt.countryname, pt.zipcode, pt.faxno,
-    //                                tj.taxjurisdictioncode,tj.taxname,bp.name,pt.createddate
-    //                                FROM trading.prospect pt left join common.taxjurisdiction tj on pt.taxjurisdictionid=tj.id
-    //                                left join trading.businesspartnerconfiguration bp on  pt.businesspartnerid=bp.id where pt.isarchived=false
-    //                                ORDER BY pt.createddate DESC";
-    //    var result = await DatabaseSession.QueryAsync<ProspectDto>(sqlQuery);
-    //    return result;
-    //}
+    public async Task<IEnumerable<ProspectDto>> GetAll()
+    {
+        var sqlQuery = @"SELECT pt.id, pt.prospectcode, pt.prospectname, pt.addressline1, pt.contactperson, pt.contactnumber, pt.email, pt.isassigned, 
+                                    pt.businesspartnerid,pt.isarchived, pt.isactive, pt.taxjurisdictionid, pt.currency, pt.bptype, pt.addressline2, 
+                                    pt.cityid, pt.cityname, pt.stateid, pt.statename, pt.countryid, pt.countryname, pt.zipcode, pt.faxno,
+                                    tj.taxjurisdictioncode,tj.taxname,bp.name,pt.createddate
+                                    FROM common.prospect pt left join common.taxjurisdiction tj on pt.taxjurisdictionid=tj.id
+                                    left join finance.businesspartnerconfiguration bp on  pt.businesspartnerid=bp.id where pt.isarchived=false
+                                    ORDER BY pt.createddate DESC";
+        var result = await DatabaseSession.QueryAsync<ProspectDto>(sqlQuery);
+        return result;
+    }
     //public async Task<IEnumerable<Prospect>> GetAllProspect()
     //{
 

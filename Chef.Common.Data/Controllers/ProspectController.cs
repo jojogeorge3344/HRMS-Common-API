@@ -108,13 +108,13 @@ namespace Chef.Trading.Web.Controllers
         ////}
 
 
-        //[HttpGet("GetList")]
-        //public async Task<ActionResult<IEnumerable<ProspectDto>>> GetList()
-        //{
-        //    var prospects = await prospectService.GetList();
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<IEnumerable<ProspectDto>>> GetAll()
+        {
+            var prospects = await prospectService.GetAll();
 
-        //    return Ok(prospects);
-        //}
+            return Ok(prospects);
+        }
     }
 }
 

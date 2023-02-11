@@ -17,7 +17,7 @@ public interface IProspectService : IAsyncService<Prospect>
     //Task<IEnumerable<TaxJurisdictionDto>> GetAllTaxJurisdiction();
     new Task<IEnumerable<ProspectDto>> GetAsync(int id);
 
-    //Task<IEnumerable<ProspectDto>> GetList();
+    Task<IEnumerable<ProspectDto>> GetAll();
 
     Task<int> GetExistingProspectAsync(Prospect obj);
 
