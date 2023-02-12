@@ -150,10 +150,10 @@ public class MasterDataService : IMasterDataService
         return masterDataRespository.GetBranchByBank(id);
 
     }
-    public Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync()
-    {
-        return masterDataRespository.GetAllTaxSetupAsync();
-    }
+    //public Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync()
+    //{
+    //    return masterDataRespository.GetAllTaxSetupAsync();
+    //}
     public Task<IEnumerable<BusinessPartner>> GetAllActiveBP(string? top,string? fil, string? skip)
     {
 

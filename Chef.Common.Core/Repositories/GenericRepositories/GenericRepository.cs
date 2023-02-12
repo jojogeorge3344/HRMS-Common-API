@@ -312,7 +312,12 @@ public abstract class TenantRepository<T> : GRepository<T> where T : Model
         ITenantConnectionFactory tenantConnectionFactory)
         : base(httpContextAccessor, tenantConnectionFactory)
     {
-        this.headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
+        if (httpContextAccessor is null || httpContextAccessor.HttpContext is null)
+            this.headerBranchId = 0;
+        else
+        {
+            this.headerBranchId = Convert.ToInt32(httpContextAccessor.HttpContext.Request.Headers["BranchId"]);
+        }
     }
 }
 
