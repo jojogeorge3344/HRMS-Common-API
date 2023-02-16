@@ -25,7 +25,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                         FROM   finance.tradingintegrationheader th
                                RIGHT JOIN finance.integrationdetails it
                                        ON th.id = it.integrationheaderid
-                        WHERE  To_date(Cast(th.createddate AS TEXT), 'YYYY-MM-DD') BETWEEN
+                        WHERE  To_date(Cast(th.transactiondate AS TEXT), 'YYYY-MM-DD') BETWEEN
                                       @fromDate AND @toDate";
         if (status == 1)
         {
@@ -39,7 +39,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         {
             sql += " and   th.transorginid = @transorginId  and   th.transtypeid =  @transtypeId";
         }
-        sql += " GROUP  BY th.id order by  th.createddate";
+        sql += " GROUP  BY th.id order by  th.transactiondate";
         return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId, fromDate, toDate, status });
 
     }

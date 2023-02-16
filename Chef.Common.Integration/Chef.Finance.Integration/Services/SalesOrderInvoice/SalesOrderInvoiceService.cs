@@ -241,7 +241,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                         ItemSegmentId = itemDto.ItemSegmentId,
                         ItemFamilyId = itemDto.ItemFamilyId,
                         ItemClassId = itemDto.ItemClassId,
-                        ItemCommodityId = itemDto.ItemCommodityId
+                        ItemCommodityId = itemDto.ItemCommodityId,
+                        GroupId = salesInvoiceDto.PoGroupId,
+                        LandingCost = salesInvoiceDto.CostCenterId
                     };
                     var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
                     if (ledgeraccount == null)
