@@ -50,6 +50,6 @@ public class ItemTransactionFinance : Model
 
         public int GroupId { get; set; }
 
-    public DateTime ExchangeDate { get; set; }
+    public DateTime? ExchangeDate { get; set; }
 }
 
