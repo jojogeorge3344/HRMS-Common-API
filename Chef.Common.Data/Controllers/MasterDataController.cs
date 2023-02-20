@@ -180,16 +180,16 @@ public class MasterDataController : ControllerBase
     }
 
 
-    //[HttpGet]
-    //public async Task<ActionResult<IEnumerable<TaxClass>>> GetAllTaxSetupAsync()
-    //{
-    //       var tax = await masterDataService.GetAllTaxSetupAsync();
-    //	if (tax == null)
-    //	{
-    //		return NotFound("The branch does not exist.");
-    //	}
-    //	return Ok(tax); //GetAll<Tax>("TaxSetup/getAll"));
-    //}
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TaxClass>>> GetAllTaxSetupAsync()
+    {
+        var tax = await masterDataService.GetAllTaxSetupAsync();
+        if (tax == null)
+        {
+            return NotFound("The branch does not exist.");
+        }
+        return Ok(tax); //GetAll<Tax>("TaxSetup/getAll"));
+    }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BusinessPartner>>> getAllActiveBP()
@@ -277,6 +277,17 @@ public class MasterDataController : ControllerBase
     public async Task<ActionResult<IEnumerable<City>>> GetCityByStateId(int stateId)
     {
         return Ok(await masterDataService.GetCityByStateId(stateId));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TaxJurisdiction>>> GetAllTaxJurisdiction()
+    {
+        var taxJurisdiction = await masterDataService.GetAllTaxJurisdiction();
+        if (taxJurisdiction == null)
+        {
+            return NotFound("The tax jurisdiction does not exist.");
+        }
+        return Ok(taxJurisdiction);
     }
 }
 
