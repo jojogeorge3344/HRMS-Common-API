@@ -132,9 +132,9 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
             LedgerAccountName = x.First().ledgeraccountname,
             CreditAmount = x.Sum(y=>y.creditamount),
             DebitAmount =x.Sum(y=>y.debitamount),
-            RefenceDocumentDetailId = x.First().integrationheaderid,
+            RefenceDocumentId = x.First().integrationheaderid,
             FinancialYearId = x.First().FinancialYearId,
-            ExchangeDate = DateTime.UtcNow,
+            ExchangeDate = x.First().ExchangeDate,
             PostedDate = DateTime.UtcNow,
             PeriodId = PeriodId,
         }).ToList();

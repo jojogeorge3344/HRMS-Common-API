@@ -29,6 +29,7 @@ public class SalesOrderInvoiceMappingProfile : Profile
             .ForMember(d => d.BusinessPartnerName, opt => opt.MapFrom(x => x.CustomerName))
             .ForMember(d => d.TransactionCurrencyCode, opt => opt.MapFrom(x => x.SalesInvoiceCurrency))
             .ForMember(d => d.ExchangeRate, opt => opt.MapFrom(x => x.ExRate))
+            .ForMember(d => d.ExchangeDate, opt => opt.MapFrom(x => x.ExchangeDate))
             .ForMember(d => d.DiscountAmount, opt => opt.MapFrom(x => x.TotalDiscount))
             .ForMember(d => d.PaymentTerm, opt => opt.MapFrom(x => x.SalesInvoicePaymentTermsDto.FirstOrDefault()))
             .ForMember(d => d.LineItems, opt => opt.MapFrom(x => x.SalesInvoiceItemDto))

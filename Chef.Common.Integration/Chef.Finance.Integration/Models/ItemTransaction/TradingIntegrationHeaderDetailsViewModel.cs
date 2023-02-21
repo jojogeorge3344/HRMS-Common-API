@@ -49,7 +49,10 @@ public  class TradingIntegrationHeaderDetailsViewModel
         public bool isdimensionallocation { get; set; }
         public string narration { get; set; }
 
-        [Write(false)]
+    public DateTime ExchangeDate { get; set; }
+
+
+    [Write(false)]
         [Skip(true)]
         public int ItemTransactionFinanceId { get; set; }
 
