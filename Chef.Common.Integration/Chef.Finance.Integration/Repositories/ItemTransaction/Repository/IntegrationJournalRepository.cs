@@ -13,6 +13,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
 
     public async Task<IEnumerable<TradingIntegrationHeader>> GetAll(int transorginId, int transtypeId, DateTime fromDate, DateTime toDate, int status)
     {
+        int headerBrandId = this.headerBranchId;
         string sql = @"SELECT th.id,
                                th.documentnumber,
                                th.businesspartnercode,
@@ -26,7 +27,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                                RIGHT JOIN finance.integrationdetails it
                                        ON th.id = it.integrationheaderid
                         WHERE  To_date(Cast(th.transactiondate AS TEXT), 'YYYY-MM-DD') BETWEEN
-                                      @fromDate AND @toDate";
+                                      @fromDate AND @toDate AND th.branchid=@headerBrandId";
         if (status == 1)
         {
             sql += " AND th.approvestatus = 1";
@@ -40,7 +41,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
             sql += " and   th.transorginid = @transorginId  and   th.transtypeid =  @transtypeId";
         }
         sql += " GROUP  BY th.id order by  th.transactiondate";
-        return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId, fromDate, toDate, status });
+        return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId, fromDate, toDate, status, headerBrandId });
 
     }
 
