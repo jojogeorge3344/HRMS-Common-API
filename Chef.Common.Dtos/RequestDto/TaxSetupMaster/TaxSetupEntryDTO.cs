@@ -2,7 +2,7 @@
 
 namespace Chef.Common.Dtos
 {
-    public class TaxSetupEntryDTO : Tax
+    public class TaxSetupEntryDTO : TaxOld
     {
         public string TaxJurisdiction { get; set; }
         public string ItemSegmentName { get; set; }

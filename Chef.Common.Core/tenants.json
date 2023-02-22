@@ -4,6 +4,22 @@
     {
       "Name": "ThomsunInfoCare",
       "BaseCompany": "Thomsun",
+      "Host": "default",
+      "ConnectionString": "Server = 192.168.100.53; Port = 5432; Database = TICVansales_Test; User Id = postgres; Password = zV8t%629; Pooling = false;CommandTimeout=300;",
+      "Modules": [
+        {
+          "Name": "Trading",
+          "Host": "https://192.168.100.54:9065/api/trading/"
+        },
+        {
+          "Name": "VanSales",
+          "Host": "http://localhost:17887/"
+        }
+      ]
+    },
+    {
+      "Name": "ThomsunInfoCare",
+      "BaseCompany": "Thomsun",
       "Host": "localhost",
       "ConnectionString": "Server = 192.168.100.53; Port = 5432; Database = ChefDB; User Id = postgres; Password = zV8t%629; Pooling = false;CommandTimeout=300;",
       "Modules": [

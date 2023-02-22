@@ -44,6 +44,8 @@ public class SalesReturnCreditDto
     public string TransactionTypeName { get; set; }
 
     public TransactionType TransOriginType { get; set; }
+
+    public DateTime? ExchangeDate { get; set; }
     public List<SalesReturnCreditItemDto>? salesReturnCreditItemDtos { get; set; }
 
 }

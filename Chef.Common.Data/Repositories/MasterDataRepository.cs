@@ -365,5 +365,13 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .GetAsync<City>();
     }
+
+    public async Task<IEnumerable<TaxJurisdiction>> GetAllTaxJurisdiction()
+    {
+        return await QueryFactory
+                .Query<TaxJurisdiction>()
+                .WhereNotArchived()
+                .GetAsync<TaxJurisdiction>();
+    }
 }
 

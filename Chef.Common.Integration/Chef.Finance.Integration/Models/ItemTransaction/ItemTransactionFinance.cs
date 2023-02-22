@@ -49,5 +49,7 @@ public class ItemTransactionFinance : Model
         public string ReasonCode { get; set; }
 
         public int GroupId { get; set; }
+
+    public DateTime? ExchangeDate { get; set; }
 }
 

@@ -209,5 +209,10 @@ public class MasterDataService : IMasterDataService
     {
         return masterDataRespository.GetCityByStateId(stateId);
     }
+
+    public async Task<IEnumerable<TaxJurisdiction>> GetAllTaxJurisdiction()
+    {
+        return await masterDataRespository.GetAllTaxJurisdiction();
+    }
 }
 
