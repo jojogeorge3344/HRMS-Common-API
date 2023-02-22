@@ -220,8 +220,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                         ItemFamilyId = item.ItemFamilyId,
                         ItemClassId = item.ItemClassId,
                         ItemCommodityId = item.ItemCommodityId,
-                        GroupId = salesReturnCreditDto.PoGroupId,
-                        LandingCost = salesReturnCreditDto.CostCenterId
+                        GroupId = salesReturnCreditDto.PoGroupId
                     };
                     var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
 
