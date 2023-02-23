@@ -5,7 +5,7 @@ using Chef.Common.Models.Types;
 
 namespace Chef.Common.Models
 {
-    public class Tax : Model
+    public class TaxOld : Model
     {
         [Required]
         [Unique(true)]
@@ -22,11 +22,11 @@ namespace Chef.Common.Models
         [Required]
         public float TaxPercent { get; set; }
 
-        [ForeignKeyId(typeof(TaxJurisdiction))]
+        [ForeignKeyId(typeof(TaxJurisdictionOld))]
         [Required]
         public int TaxJurisdictionId { get; set; }
 
-        [ForeignKeyCode(typeof(TaxJurisdiction)), Code]
+        [ForeignKeyCode(typeof(TaxJurisdictionOld)), Code]
         [Required]
         public string TaxJurisdictionCode { get; set; }
 

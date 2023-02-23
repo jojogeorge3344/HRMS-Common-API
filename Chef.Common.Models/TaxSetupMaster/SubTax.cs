@@ -6,7 +6,7 @@ namespace Chef.Common.Models
 {
     public class SubTax : Model
     {
-        [ForeignKeyId(typeof(Tax))]
+        [ForeignKeyId(typeof(TaxOld))]
         [Required]
         [Unique(true), Composite(Index = 1, GroupNumber = 2)]
         public int? TaxId { get; set; } = 0;

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Chef.Common.Models
 {
-    public class TaxJurisdiction : Model
+    public class TaxJurisdictionOld : Model
     {
         [Required]
         [Unique(true)]
