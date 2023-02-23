@@ -1,4 +1,5 @@
-﻿using Chef.Common.Data.Services;
+﻿using Chef.Common.Authentication;
+using Chef.Common.Data.Services;
 using Chef.Common.Models;
 using Chef.Common.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ namespace Chef.Common.Data.Controller;
 
 [ApiController]
 [Route("api/common/[controller]/[action]")]
+[AllowAnonymous]
 public class MasterDataController : ControllerBase
 {
     private readonly IMasterDataService masterDataService;
