@@ -6,5 +6,5 @@ public interface IItemTransactionPostingService: IAsyncService<TradingIntegratio
 {
     Task<IEnumerable<ItemTransactionFinanceDetailsDto>> PostItems(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO);
 
-    Task<int> DeletedByDocumentNumber(string documentNumber);
+    Task<IntegrationResponseDto> DeletedByDocumentNumber(FinanceDocNumberDto financeDocNumberDto);
 }

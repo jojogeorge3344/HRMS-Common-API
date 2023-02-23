@@ -760,18 +760,20 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeletedByDocumentNumber(string documentNumber)
+    public async Task<IntegrationResponseDto> DeletedByDocumentNumber(FinanceDocNumberDto financeDocNumberDto)
     {
         try
         {
+            IntegrationResponseDto integrationResponseDto = new IntegrationResponseDto();
             tenantSimpleUnitOfWork.BeginTransaction();
-            int tradingintegrationheaderId = await integrationJournalRepository.GetintegrationheaderId(documentNumber);
+            int tradingintegrationheaderId = await integrationJournalRepository.GetintegrationheaderId(financeDocNumberDto.ItemFinanceDocNumber);
             if (tradingintegrationheaderId != 0)
             {
                int deletedId =  await integrationJournalRepository.Deleteintegrationheader(tradingintegrationheaderId);
             }
             tenantSimpleUnitOfWork.Commit();
-            return 1;
+            integrationResponseDto.Response = 1;
+            return integrationResponseDto;
         }
         catch(Exception ex)
         {

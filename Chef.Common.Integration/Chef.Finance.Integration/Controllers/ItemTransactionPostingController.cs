@@ -22,9 +22,9 @@ namespace Chef.Finance.Integration;
             return Ok(details);
         }
         [HttpPost("DeletedByDocumentNumber")]
-        public async Task<ActionResult> DeletedByDocumentNumber(string documentNumber)
+        public async Task<ActionResult> DeletedByDocumentNumber(FinanceDocNumberDto financeDocNumberDto)
         {
-            int status = await itemTransactionPostingService.DeletedByDocumentNumber(documentNumber);
+            IntegrationResponseDto status = await itemTransactionPostingService.DeletedByDocumentNumber(financeDocNumberDto);
             return Ok(status);
         }
 
