@@ -45,6 +45,8 @@ namespace Chef.Common.Models
         public string CountryName { get; set; }
 
         [Required]
+        [RegularExpression("[0-9]+", ErrorMessage = "Invalid zip code")]
+        [StringLength(8, ErrorMessage = "Zip code should be maximum length of 8 characters")]
         public string ZipCode { get; set; }
 
         [ForeignKey("Common.Currency")]
@@ -54,13 +56,22 @@ namespace Chef.Common.Models
         public string CurrencyCode { get; set; }
 
         [Required]
+        [StringLength(maximumLength: 18, MinimumLength = 10, ErrorMessage = "Phone number should be minimum of 10 and maximum of 18 characters")]
+        [RegularExpression("^([+]?[0-9- ]{1,18})+$", ErrorMessage = "Invalid phone number")]
         public string Phone { get; set; }
 
+        [Required]
+        [StringLength(maximumLength: 18, MinimumLength = 10, ErrorMessage = "Fax should be minimum of 10 and maximum of 18 characters")]
+        [RegularExpression("^([+]?[0-9- ]{1,18})+$", ErrorMessage = "Invalid fax")]
         public string Fax { get; set; }
 
         [Required]
+        [RegularExpression("^\\S+@\\S+\\.\\S+$", ErrorMessage = "Invalid email")]
+        [StringLength(320, ErrorMessage = "Email should be maximum length of 320 characters")]
         public string Email { get; set; }
 
+        [RegularExpression("/^(http[s]?:\\/\\/){0,1}(www\\.){0,1}[a-zA-Z0-9\\.\\-]+\\.[a-zA-Z]{2,5}[\\.]{0,1}/", ErrorMessage = "Invalid website")]
+        [StringLength(50, ErrorMessage = "Website should be maximum length of 50 characters")]
         public string Website { get; set; }
 
         public int SerialNumber { get; set; }
@@ -77,8 +88,13 @@ namespace Chef.Common.Models
 
         public string TaxName { get; set; }
 
+        [Required]
+        [RegularExpression("[0-9a-zA-Z]*", ErrorMessage = "Trade license should be alphanumeric only")]
+        [StringLength(50, ErrorMessage = "Trade license should be maximum length of 50 characters")]
         public string TradeLicense { get; set; }
 
+        [Required]
+        [StringLength(50, ErrorMessage = "Tax registration number should be maximum length of 50 characters")]
         public string TaxRegistrationNumber { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace Chef.Common.Data.Controller;
 //[Authorize]
 [ApiController]
 [Route("api/common/[controller]/[action]")]
+[AllowAnonymous]
 public class CommonDataController : ControllerBase
 {
     private readonly ICommonDataService commonDataService;
