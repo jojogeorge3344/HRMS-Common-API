@@ -43,7 +43,7 @@ public interface IMasterDataService : IBaseService
 
 	Task<IEnumerable<Bank>> GetAllBank();
 	Task<IEnumerable<BankBranch>> GetBranchByBank(int id);
-    //Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync();
+    Task<IEnumerable<TaxClass>> GetAllTaxSetupAsync();
     Task<IEnumerable<BusinessPartner>> GetAllActiveBP(string? top, string? fil, string? skip);   
     Task<BankBranch> getBankBranchById(int id);
     Task<IEnumerable<BankBranch>> getAllBranches();
@@ -53,4 +53,5 @@ public interface IMasterDataService : IBaseService
     Task<IEnumerable<FinancialYearPeriod>> GetFinancialYearPeriod(int finacialyearid);
     Task<BusinessPartner> GetCustomerDetails(int CustomerID);
     Task<IEnumerable<City>> GetCityByStateId(int stateId);
+    Task<IEnumerable<TaxJurisdiction>> GetAllTaxJurisdiction();
 }
