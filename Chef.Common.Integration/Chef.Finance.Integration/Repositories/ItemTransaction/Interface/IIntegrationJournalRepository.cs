@@ -6,4 +6,8 @@ public  interface IIntegrationJournalRepository : IGenericRepository<TradingInte
     Task<IEnumerable<TradingIntegrationHeader>> GetAll(int transorginId, int transtypeId, DateTime fromDate, DateTime toDate, int status);
 
     Task<IEnumerable<IntegrationDetalDimensionViewModel>> GetAllIntegrationDetailsDimensionById(int integrationId);
+
+    Task<int> GetintegrationheaderId(string documentNumber);
+
+    Task<int> Deleteintegrationheader(int tradingintegrationheaderId);
 }

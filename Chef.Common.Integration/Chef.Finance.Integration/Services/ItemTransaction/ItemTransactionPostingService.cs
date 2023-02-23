@@ -15,7 +15,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     private readonly ICompanyFinancialYearRepository companyFinancialYearRepository;
     private readonly ITradingIntegrationRepository tradingIntegrationRepository;
     private readonly IIntegrationDetailsRepository integrationDetailsRepository;
-  
+    private readonly IIntegrationJournalRepository integrationJournalRepository;
+
     private readonly IDimensionRepository dimensionRepository;
     private readonly IDimensionMasterRepository dimensionMasterRepository;
     private readonly IIntegrationDetailDimensionRepository integrationDetailDimensionRepository;
@@ -29,7 +30,8 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         IDimensionMasterRepository dimensionMasterRepository,
        IIntegrationDetailDimensionRepository integrationDetailDimensionRepository,
        IReasonCodeControlAccountRepository reasonCodeControlAccountRepository,
-        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork
+        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
+        IIntegrationJournalRepository integrationJournalRepository
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
@@ -44,6 +46,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         this.integrationDetailDimensionRepository = integrationDetailDimensionRepository;
         this.reasonCodeControlAccountRepository = reasonCodeControlAccountRepository;
         this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
+        this.integrationJournalRepository = integrationJournalRepository;
     }
     private List<IntegrationDetails> integrationDetailList = new List<IntegrationDetails>();
     // private List<TradingIntegrationHeader> tradingIntegrationHeaders =new List<TradingIntegrationHeader>();
@@ -53,6 +56,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     private int financialYearId = 0;
     private string documentNumber = "";
     private ItemTransactionFinanceDTO? itemDto =null;
+    private List<int> integrationDetailDimensionIdList = new List<int>();
 
     public async Task<IEnumerable<ItemTransactionFinanceDetailsDto>> PostItems(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO)
     {
@@ -754,5 +758,26 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     Task<int> IAsyncService<TradingIntegrationHeader>.InsertAsync(TradingIntegrationHeader obj)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<int> DeletedByDocumentNumber(string documentNumber)
+    {
+        try
+        {
+            tenantSimpleUnitOfWork.BeginTransaction();
+            int tradingintegrationheaderId = await integrationJournalRepository.GetintegrationheaderId(documentNumber);
+            if (tradingintegrationheaderId != 0)
+            {
+               int deletedId =  await integrationJournalRepository.Deleteintegrationheader(tradingintegrationheaderId);
+            }
+            tenantSimpleUnitOfWork.Commit();
+            return 1;
+        }
+        catch(Exception ex)
+        {
+            tenantSimpleUnitOfWork.Rollback();
+            throw;
+        }
+
     }
 }

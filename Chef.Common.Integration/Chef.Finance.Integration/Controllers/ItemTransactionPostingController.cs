@@ -21,6 +21,13 @@ namespace Chef.Finance.Integration;
             var details = await itemTransactionPostingService.PostItems(itemTransactionFinanceDTO);
             return Ok(details);
         }
+        [HttpPost("DeletedByDocumentNumber")]
+        public async Task<ActionResult> DeletedByDocumentNumber(string documentNumber)
+        {
+            int status = await itemTransactionPostingService.DeletedByDocumentNumber(documentNumber);
+            return Ok(status);
+        }
+
 
         //public async Task<ActionResult> InsertAsync(List<ItemTransactionFinance>  itemTransactionFinance)
         //{
