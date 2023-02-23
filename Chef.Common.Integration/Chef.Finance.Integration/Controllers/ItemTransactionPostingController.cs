@@ -9,11 +9,7 @@ namespace Chef.Finance.Integration;
 [AllowAnonymous]
 public class ItemTransactionPostingController : ControllerBase
 {
-    private readonly IItemTransactionPostingService itemTransactionPostingService;
-    // private readonly ITradingIntegrationService tradingIntegrationService;
 
-    public ItemTransactionPostingController(IItemTransactionPostingService itemTransactionPostingService)
-    {
         private readonly IItemTransactionPostingService itemTransactionPostingService;
        // private readonly ITradingIntegrationService tradingIntegrationService;
 
@@ -41,28 +37,5 @@ public class ItemTransactionPostingController : ControllerBase
         //    TradingIntegrationHeader integrationHeader = await tradingIntegrationService.InsertAsync(itemTransactionFinance);
         //    return Ok(integrationHeader);
         //}
-
-    }
-
-    [HttpPost("PostItems")]
-    public async Task<ActionResult> PostItems(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO)
-    {
-        var details = await itemTransactionPostingService.PostItems(itemTransactionFinanceDTO);
-        return Ok(details);
-    }
-    [HttpPost("DeletedByDocumentNumber")]
-    public async Task<ActionResult> DeletedByDocumentNumber(string documentNumber)
-    {
-        int status = await itemTransactionPostingService.DeletedByDocumentNumber(documentNumber);
-        return Ok(status);
-    }
-
-
-    //public async Task<ActionResult> InsertAsync(List<ItemTransactionFinance>  itemTransactionFinance)
-    //{
-    //    TradingIntegrationHeader integrationHeader = await tradingIntegrationService.InsertAsync(itemTransactionFinance);
-    //    return Ok(integrationHeader);
-    //}
-
 }
 
