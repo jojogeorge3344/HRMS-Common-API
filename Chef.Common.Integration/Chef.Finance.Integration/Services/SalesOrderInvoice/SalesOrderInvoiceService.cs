@@ -246,7 +246,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                     };
                     var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
                     if (ledgeraccount == null)
-                        throw new ResourceNotFoundException("Ledger Account not configured for this item");
+                        throw new ResourceNotFoundException($"Ledger Account not configured for this item:{salesInvoiceDto.SalesInvoiceItemDto.First().ItemName}-{salesInvoiceDto.SalesInvoiceItemDto.First().ItemCode}");
 
                     salesInvoice.CustomerTransactionDetails.Add(new()
                     {
