@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Models;
+using Chef.Common.Repositories;
 using SqlKata;
 
 namespace Chef.Common.Data.Repositories;
@@ -372,6 +373,53 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
                 .Query<TaxJurisdiction>()
                 .WhereNotArchived()
                 .GetAsync<TaxJurisdiction>();
+    }
+
+    public async Task<IEnumerable<ItemSegment>> GetAllItemSegment(SqlSearch sqlSearch = null)
+    {
+
+        return await QueryFactory
+            .Query<ItemSegment>()
+            .ApplySqlSearch(sqlSearch)
+            .WhereNotArchived()
+            .GetAsync<ItemSegment>();
+
+    }
+
+    public async Task<IEnumerable<ItemFamily>> GetAllItemFamily(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+           .Query<ItemFamily>()
+           .ApplySqlSearch(sqlSearch)
+           .WhereNotArchived()
+           .GetAsync<ItemFamily>();
+    }
+
+    public async Task<IEnumerable<ItemCommodity>> GetAllItemCommodity(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+          .Query<ItemCommodity>()
+          .ApplySqlSearch(sqlSearch)
+          .WhereNotArchived()
+          .GetAsync<ItemCommodity>();
+    }
+
+    public async Task<IEnumerable<ItemClass>> GetAllItemClass(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+         .Query<ItemClass>()
+         .ApplySqlSearch(sqlSearch)
+         .WhereNotArchived()
+         .GetAsync<ItemClass>();
+    }
+
+    public async Task<IEnumerable<Item>> GetAllItem(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+         .Query<Item>()
+         .ApplySqlSearch(sqlSearch)
+         .WhereNotArchived()
+         .GetAsync<Item>();
     }
 }
 

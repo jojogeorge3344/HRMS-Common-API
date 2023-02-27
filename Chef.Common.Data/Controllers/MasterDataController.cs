@@ -291,5 +291,35 @@ public class MasterDataController : ControllerBase
         }
         return Ok(taxJurisdiction);
     }
+    [HttpPost("GetAll")]
+    public async Task<IActionResult> GetAllItemSegmentAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemSegment(search);
+        return Ok(result);
+    }
+    [HttpPost("GetAll")]
+    public async Task<IActionResult> GetAllItemFamilyAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemFamily(search);
+        return Ok(result);
+    }
+    [HttpPost("GetAll")]
+    public async Task<IActionResult> GetAllItemCommodityAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemCommodity(search);
+        return Ok(result);
+    }
+    [HttpPost("GetAll")]
+    public async Task<IActionResult> GetAllItemClassAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemClass(search);
+        return Ok(result);
+    }
+    [HttpPost("GetAll")]
+    public async Task<IActionResult> GetAllItemAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItem(search);
+        return Ok(result);
+    }
 }
 
