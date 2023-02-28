@@ -11,6 +11,8 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         this.httpContextAccessor = httpContextAccessor;
     }
 
+   
+
     public async Task<IEnumerable<TradingIntegrationHeader>> GetAll(int transorginId, int transtypeId, DateTime fromDate, DateTime toDate, int status)
     {
         int headerBrandId = this.headerBranchId;
@@ -64,5 +66,33 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         //    .Select<IntegrationDetails>()
         //    .Where("integrationheaderid", integrationId);
         //return await DatabaseSession.QueryAsync<IntegrationDetails>(query, default);
+    }
+
+    public async Task<int> GetintegrationheaderId(string documentNumber)
+    {
+        string sql = @"SELECT id
+                            FROM   finance.tradingintegrationheader
+                            WHERE  documentnumber = @documentNumber
+                                   AND isarchived = false";
+        return await Connection.QueryFirstOrDefaultAsync<int>(sql, new { documentNumber });
+
+    }
+    public async Task<int> Deleteintegrationheader(int tradingintegrationheaderId)
+    {
+        int approveStatus = Convert.ToInt32(ApproveStatus.Deleted);
+        string sql = @"UPDATE finance.tradingintegrationheader
+                        SET    isarchived = true,
+                               approvestatus = @approveStatus
+                        WHERE  id = @tradingintegrationheaderId;
+
+                        UPDATE finance.integrationdetails
+                        SET    isarchived = true
+                        WHERE  integrationheaderid = @tradingintegrationheaderId;
+
+                        UPDATE finance.integrationdetaildimension
+                        SET    isarchived = true
+                        WHERE  headerid = @tradingintegrationheaderId ";
+        return await Connection.ExecuteAsync(sql,new { tradingintegrationheaderId, approveStatus });
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Chef.Common.Data.Services;
+﻿using Chef.Common.Authentication;
+using Chef.Common.Data.Services;
 using Chef.Common.Models;
 using Chef.Common.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ namespace Chef.Common.Data.Controller;
 
 [ApiController]
 [Route("api/common/[controller]/[action]")]
+[AllowAnonymous]
 public class MasterDataController : ControllerBase
 {
     private readonly IMasterDataService masterDataService;
@@ -186,7 +188,7 @@ public class MasterDataController : ControllerBase
         var tax = await masterDataService.GetAllTaxSetupAsync();
         if (tax == null)
         {
-            return NotFound("The branch does not exist.");
+            return NotFound("The tax does not exist.");
         }
         return Ok(tax); //GetAll<Tax>("TaxSetup/getAll"));
     }
@@ -288,6 +290,36 @@ public class MasterDataController : ControllerBase
             return NotFound("The tax jurisdiction does not exist.");
         }
         return Ok(taxJurisdiction);
+    }
+    [HttpPost("ItemSegment/GetAll")]
+    public async Task<IActionResult> GetAllItemSegmentAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemSegment(search);
+        return Ok(result);
+    }
+    [HttpPost("ItemFamily/GetAll")]
+    public async Task<IActionResult> GetAllItemFamilyAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemFamily(search);
+        return Ok(result);
+    }
+    [HttpPost("ItemCommodity/GetAll")]
+    public async Task<IActionResult> GetAllItemCommodityAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemCommodity(search);
+        return Ok(result);
+    }
+    [HttpPost("ItemClass/GetAll")]
+    public async Task<IActionResult> GetAllItemClassAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItemClass(search);
+        return Ok(result);
+    }
+    [HttpPost("Item/GetAll")]
+    public async Task<IActionResult> GetAllItemAsync(SqlSearch search)
+    {
+        var result = await masterDataService.GetAllItem(search);
+        return Ok(result);
     }
 }
 

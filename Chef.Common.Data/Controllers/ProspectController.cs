@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Chef.Common.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace Chef.Trading.Web.Controllers
 {
     [Route("api/common/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class ProspectController : ControllerBase
     {
         private readonly IProspectService prospectService;

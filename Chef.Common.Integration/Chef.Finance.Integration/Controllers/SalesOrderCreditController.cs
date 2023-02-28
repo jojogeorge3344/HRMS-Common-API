@@ -1,9 +1,11 @@
-﻿using Chef.Finance.Integration.Models;
+﻿using Chef.Common.Authentication;
+using Chef.Finance.Integration.Models;
 
 namespace Chef.Finance.Integration.Controllers;
 
 [Route("api/finance/[controller]/[action]")]
 [ApiController]
+[AllowAnonymous]
 public class SalesOrderCreditNoteController : ControllerBase
 {
     private readonly ISalesOrderCreditNoteService SalesOrderCreditNoteService;

@@ -220,12 +220,13 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                         ItemFamilyId = item.ItemFamilyId,
                         ItemClassId = item.ItemClassId,
                         ItemCommodityId = item.ItemCommodityId,
-                        GroupId = salesReturnCreditDto.PoGroupId,
-                        LandingCost = salesReturnCreditDto.CostCenterId
+                        GroupId = salesReturnCreditDto.PoGroupId
                     };
                     var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
+                    if (ledgeraccount == null)
+                        throw new ResourceNotFoundException($"Ledger Account not configured for this item:{salesReturnCreditDto.salesReturnCreditItemDtos.First().ItemName}-{salesReturnCreditDto.salesReturnCreditItemDtos.First().ItemCode}");
 
-                    customerCreditNote.CustomerTransactionDetails.Add(new()
+                        customerCreditNote.CustomerTransactionDetails.Add(new()
                     {
                         LineNumber = ++transactionDetailNumber,
                         LedgerAccountId = ledgeraccount.chartofaccountid,

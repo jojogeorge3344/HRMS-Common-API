@@ -242,12 +242,11 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                         ItemFamilyId = itemDto.ItemFamilyId,
                         ItemClassId = itemDto.ItemClassId,
                         ItemCommodityId = itemDto.ItemCommodityId,
-                        GroupId = salesInvoiceDto.PoGroupId,
-                        LandingCost = salesInvoiceDto.CostCenterId
+                        GroupId = salesInvoiceDto.PoGroupId
                     };
                     var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
                     if (ledgeraccount == null)
-                        throw new ResourceNotFoundException("Ledger Account not configured for this item");
+                        throw new ResourceNotFoundException($"Ledger Account not configured for this item:{salesInvoiceDto.SalesInvoiceItemDto.First().ItemName}-{salesInvoiceDto.SalesInvoiceItemDto.First().ItemCode}");
 
                     salesInvoice.CustomerTransactionDetails.Add(new()
                     {

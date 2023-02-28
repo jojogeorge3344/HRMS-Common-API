@@ -32,6 +32,8 @@ public class TradingIntegrationHeader : TransactionModel
         public DateTime ApprovedDate { get; set; }
         public DateTime RejectedDate { get; set; }
 
+    public DateTime ExchangeDate { get; set; }
+
     [Write(false)]
     [Skip(true)]
     [Ignore]

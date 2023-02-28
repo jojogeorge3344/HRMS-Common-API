@@ -13,6 +13,8 @@ public class SalesReturnCreditItemDto
     public int SalesReturnCreditId { get; set; }
     public int SalesInvoiceItemId { get; set; }
     public int ItemId { get; set; }
+    public string ItemCode { get; set; }
+    public string ItemName { get; set; }
     public string ItemSpec { get; set; }
     public int ItemCategory { get; set; }
     public int ItemType { get; set; }

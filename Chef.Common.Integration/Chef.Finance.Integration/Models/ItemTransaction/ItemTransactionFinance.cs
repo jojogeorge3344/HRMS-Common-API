@@ -28,6 +28,8 @@ public class ItemTransactionFinance : Model
         public int ItemClassId { get; set; }
         public int ItemCommodityId { get; set; }
         public int ItemId { get; set; }
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
         public int ItemLineNo { get; set; }
         public int ItemTransType { get; set; }
         public int LandingCostId { get; set; }
