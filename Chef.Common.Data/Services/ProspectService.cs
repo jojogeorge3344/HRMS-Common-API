@@ -28,7 +28,6 @@ public class ProspectService : AsyncService<Prospect>, IProspectService
 
     public async new Task<int> InsertAsync(Prospect prospect)
     {
-        prospect.BpType = 1;
         return await prospectRepository.InsertAsync(prospect);
 
     }
