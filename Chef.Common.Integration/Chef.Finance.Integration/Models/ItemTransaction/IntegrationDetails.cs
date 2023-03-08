@@ -27,9 +27,4 @@ public class IntegrationDetails : TransactionModel
 
     public string DocumentNumber { get; set; }
 
-
-    [Write(false)]
-    [Skip(true)]
-    [Ignore]
-    public DateTime TransactionDate { get; set; }
 }
