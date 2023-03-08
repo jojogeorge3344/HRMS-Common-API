@@ -285,19 +285,20 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         foreach (var details in salesReturnCreditItemDtosList)
         {
             detail = await customerAllocationDetailRepository.GetAllCustomerInvoiceByDocumentNumber(details.SalesInvoiceNo);
-            if (detail == null)
-                throw new ResourceNotFoundException($"Insufficient Balance for this SalesInvoiceNo :{details.SalesInvoiceNo}");
+            if (detail != null)
+            {
 
-            detail.CustomerAllocationId = customerCreditNoteResult.Id;
-            detail.IsFullAllocation = false;
-            detail.Amount = salesReturnCreditDto.NetAmount;
-            detail.AmountAllocated = details.NetAmount;
-            detail.AmountAllocatedInBaseCurrency = details.NetAmountInBaseCurrency;
-            detail.AllocationType = 0;
-            detail.IsFullSettlement = false;
-            detail.FinancialYearId = customerCreditNoteResult.FinancialYearId;
-            detail.TransactionDate = customerCreditNoteResult.TransactionDate;
-            customerAllocationDetailList.Add(detail);
+                detail.CustomerAllocationId = customerCreditNoteResult.Id;
+                detail.IsFullAllocation = false;
+                detail.Amount = salesReturnCreditDto.NetAmount;
+                detail.AmountAllocated = details.NetAmount;
+                detail.AmountAllocatedInBaseCurrency = details.NetAmountInBaseCurrency;
+                detail.AllocationType = 0;
+                detail.IsFullSettlement = false;
+                detail.FinancialYearId = customerCreditNoteResult.FinancialYearId;
+                detail.TransactionDate = customerCreditNoteResult.TransactionDate;
+                customerAllocationDetailList.Add(detail);
+            }
         }
 
         customerAllocations.CustomerAllocationDetails = customerAllocationDetailList;
@@ -322,8 +323,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
         customerAllocations.CustomerAllocationOpenDocuments = customerAllocationOpenDocumentsList;
 
-        
-        await customerAllocationTransactionService.InsertAsync(customerAllocations);
+        if(customerAllocations.CustomerAllocationDetails.Count() > 0)
+            await customerAllocationTransactionService.InsertAsync(customerAllocations);
 
         CustomerTransaction doc = await customerTransactionRepository.GetByCreditNoteIdAsync(customerCreditNoteResult.Id);
         if (doc != null)
