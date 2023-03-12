@@ -91,13 +91,15 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
                                     .Join("common.company as cmp", "cmp.currencycode", "cr.code")
                                     .Where("cmp.basecompanyid", 0)
                                     .WhereFalse("cmp.isarchived")
-                                    .WhereFalse("cr.isarchived");
+                                    .WhereFalse("cr.isarchived")
+                                    .WhereTrue("cr.isactive");
         var currenciesContainsExRate = QueryFactory
                                     .Query<Currency>()
                                     .Select("common.currency.{ id, name, code, exchangevariationup, exchangevariationdown }")
                                     .Join("common.currencyexchangerate", "common.currencyexchangerate.transactioncurrencycode", "common.currency.code")
                                     .WhereFalse("common.currency.isarchived")
-                                    .WhereFalse("common.currencyexchangerate.isarchived");
+                                    .WhereFalse("common.currencyexchangerate.isarchived")
+                                    .WhereTrue("common.currency.isactive");
 
         return await baseCompanyCurrency.Union(currenciesContainsExRate).GetAsync<Currency>();
     }
