@@ -24,6 +24,12 @@ public class ItemTransactionPostingController : ControllerBase
             var details = await itemTransactionPostingService.PostItems(itemTransactionFinanceDTO);
             return Ok(details);
         }
+        [HttpPost("ViewReportData")]
+        public async Task<ActionResult> ViewReportData(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO)
+        {
+            var details = await itemTransactionPostingService.ViewReportData(itemTransactionFinanceDTO);
+            return Ok(details);
+        }
         [HttpPost("DeletedByDocumentNumber")]
         public async Task<ActionResult> DeletedByDocumentNumber(FinanceDocNumberDto financeDocNumberDto)
         {

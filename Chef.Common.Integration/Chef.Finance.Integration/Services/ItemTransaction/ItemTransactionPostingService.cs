@@ -4,6 +4,8 @@ using Chef.Finance.Integration.Models;
 using Chef.Finance.Repositories;
 using Newtonsoft.Json;
 using System.Collections;
+using System.IdentityModel.Tokens.Jwt;
+
 namespace Chef.Finance.Integration;
 
 public class ItemTransactionPostingService : AsyncService<TradingIntegrationHeader>, IItemTransactionPostingService
@@ -48,7 +50,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
         this.integrationJournalRepository = integrationJournalRepository;
     }
-    private List<IntegrationDetails> integrationDetailList = new List<IntegrationDetails>();
+  
     // private List<TradingIntegrationHeader> tradingIntegrationHeaders =new List<TradingIntegrationHeader>();
     private List<GeneralLedger> generalLedgerlList = new List<GeneralLedger>();
     private int lineNumber = 0;
@@ -56,98 +58,131 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     private int financialYearId = 0;
     private string documentNumber = "";
     private ItemTransactionFinanceDTO? itemDto =null;
-    private List<int> integrationDetailDimensionIdList = new List<int>();
+   
 
     public async Task<IEnumerable<ItemTransactionFinanceDetailsDto>> PostItems(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO)
     {
         try
-        {
-
+        {         
             tenantSimpleUnitOfWork.BeginTransaction();
-            IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId);
-            if (items == null)
-                //TODO:will change the exception type once latest changes got from SK
-                throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
+            IEnumerable<ItemTransactionFinanceDetailsDto> itemTransactionFinanceDetailsDtos = await Post(itemTransactionFinanceDTO);
+             tenantSimpleUnitOfWork.Commit();
+            return itemTransactionFinanceDetailsDtos;
+        }
+        catch (Exception ex)
+        {
+            tenantSimpleUnitOfWork.Rollback();
+            throw;
+        }
+    }
 
-            //header detailsss maping insert
-            TradingIntegrationHeader intHeader = Mapper.Map<TradingIntegrationHeader>(itemTransactionFinanceDTO);
-            //if(intHeader.totalamount == 0)
-            //    throw new ResourceNotFoundException("Amount is Zero Please check");
-            intHeader.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
-            intHeader.journalbookid = items.JournalBookId;
-            intHeader.journalbookcode = items.JournalBookCode;
-            intHeader.ApproveStatus = ApproveStatus.Draft;
-            intHeader.documentType = DocumentType.IntegrationHeader;
-            intHeader.ApproveStatusName = ApproveStatus.Draft.ToString();
 
-            // simpleUnitOfWork.BeginTransaction();
-           
+    public async Task<IEnumerable<ItemTransactionFinanceDetailsDto>> ViewReportData(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO)
+    {
+        try
+        {           
+            IEnumerable<ItemTransactionFinanceDetailsDto> itemTransactionFinanceDetailsDtos = await Post(itemTransactionFinanceDTO,false);
+            return itemTransactionFinanceDetailsDtos;
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+    }
+
+    TradingIntegrationHeader intHeader = null;
+    bool posting = true;
+
+    private async Task<IEnumerable<ItemTransactionFinanceDetailsDto>> Post(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO,Boolean Isposting=true)
+    {
+        posting = Isposting;
+        IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId);
+        if (items == null)
+            //TODO:will change the exception type once latest changes got from SK
+            throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");
+
+        //header detailsss maping insert
+        intHeader = Mapper.Map<TradingIntegrationHeader>(itemTransactionFinanceDTO);
+        //if(intHeader.totalamount == 0)
+        //    throw new ResourceNotFoundException("Amount is Zero Please check");
+        intHeader.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
+        intHeader.journalbookid = items.JournalBookId;
+        intHeader.journalbookcode = items.JournalBookCode;
+        intHeader.ApproveStatus = ApproveStatus.Draft;
+        intHeader.documentType = DocumentType.IntegrationHeader;
+        intHeader.ApproveStatusName = ApproveStatus.Draft.ToString();
+        // simpleUnitOfWork.BeginTransaction();
+        int intHeaderId = 0;
+        if (posting == true)
+        {
             intHeader.documentnumber = await journalBookNumberingSchemeRepository.GetJournalTransactionsDocNumber(intHeader.FinancialYearId, intHeader.BranchId, items.JournalBookCode);
-            int intHeaderId = await tradingIntegrationRepository.InsertAsync(intHeader);
-
-            IntegrationHeaderId = intHeaderId;
-            financialYearId = intHeader.FinancialYearId;
-            documentNumber = intHeader.documentnumber;
-
-            foreach (ItemTransactionFinanceDTO details in itemTransactionFinanceDTO)
+             intHeaderId = await tradingIntegrationRepository.InsertAsync(intHeader);            
+        }
+        IntegrationHeaderId = intHeaderId;
+        financialYearId = intHeader.FinancialYearId;
+        documentNumber = intHeader.documentnumber;
+        foreach (ItemTransactionFinanceDTO details in itemTransactionFinanceDTO)
+        {
+            TransactionOrgin origin = (TransactionOrgin)details.TransOrginId;
+            TransactionType type = (TransactionType)details.TransTypeId;
+            switch (origin, type)
             {
-                TransactionOrgin origin = (TransactionOrgin)details.TransOrginId;
-                TransactionType type = (TransactionType)details.TransTypeId;
-                switch (origin, type)
-                {
-                    case (TransactionOrgin.Purchase, TransactionType.PurchaseReceipt):
-                        await GetPurchaseReceiptTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Purchase, TransactionType.PurchaseReturn):
-                        await GetPurchaseReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderReturn):
-                        await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderDelivery):
-                        await GetSalesOrderDeliveryTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferorder):
-                        await GetWarehouseTransferOrderTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferconfirmation):
-                        await GetWarehouseTransferconfirmationTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseDirectTransfer):
-                        await GetWarehouseDirectTransferIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentCost):
-                        await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentExistingQty):
-                        await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentNewQty):
-                        await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
-                    case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryCyclecounting):
-                        await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
-                        break;
+                case (TransactionOrgin.Purchase, TransactionType.PurchaseReceipt):
+                    await GetPurchaseReceiptTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Purchase, TransactionType.PurchaseReturn):
+                    await GetPurchaseReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderReturn):
+                    await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderDelivery):
+                    await GetSalesOrderDeliveryTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferorder):
+                    await GetWarehouseTransferOrderTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferconfirmation):
+                    await GetWarehouseTransferconfirmationTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Warehouse, TransactionType.WarehouseDirectTransfer):
+                    await GetWarehouseDirectTransferIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentCost):
+                    await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentExistingQty):
+                    await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryAdjustmentNewQty):
+                    await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
+                case (TransactionOrgin.Warehouse, TransactionType.WarehouseInventoryCyclecounting):
+                    await GetWarehouseTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
+                    break;
 
-                    default:
-                        throw new ResourceNotFoundException("TransactionOrgin and TransactionType does not exsit");
-                        break;
+                default:
+                    throw new ResourceNotFoundException("TransactionOrgin and TransactionType does not exsit");
+                    break;
 
-                }
             }
-            ///////   integrationDetailList = await integrationDetailsRepository.BulkInsertAsync(integrationDetailList);
+        }
+        ///////   integrationDetailList = await integrationDetailsRepository.BulkInsertAsync(integrationDetailList);
 
 
-            // fetch integration list and map to ItemTransactionFinanceDetailsDto
-            //loop ItemTransactionFinanceDetailsDto
-            //in that loop insert  fetch corresponding dimensions using detailid and insert into ItemTransactionFinanceDetailsDto
+        // fetch integration list and map to ItemTransactionFinanceDetailsDto
+        //loop ItemTransactionFinanceDetailsDto
+        //in that loop insert  fetch corresponding dimensions using detailid and insert into ItemTransactionFinanceDetailsDto
 
-            IEnumerable<ItemTransactionFinanceDetailsDto> itemTransactionFinanceDetailsDtos = await tradingIntegrationRepository.GetItemtransactionFinanceDetails(intHeaderId);
-
+        IEnumerable<ItemTransactionFinanceDetailsDto> itemTransactionFinanceDetailsDtos = null;
+        if (posting == true)
+        {
+             itemTransactionFinanceDetailsDtos = await tradingIntegrationRepository.GetItemtransactionFinanceDetails(intHeaderId);
             decimal debitAmount = itemTransactionFinanceDetailsDtos.Select(x => x.debitamount).Sum();
-            decimal creditAmount = itemTransactionFinanceDetailsDtos.Select(x =>x.creditamount).Sum();
+            decimal creditAmount = itemTransactionFinanceDetailsDtos.Select(x => x.creditamount).Sum();
 
-            if(creditAmount != debitAmount)
+            if (creditAmount != debitAmount)
                 throw new ResourceNotFoundException("Debit and Credit Amount MisMatch");
 
 
@@ -164,24 +199,16 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 }
 
             }
-
-            string jsonTransaction = JsonConvert.SerializeObject(integrationDetailList);
-            JsonConvert.DeserializeObject<IEnumerable<IntegrationDetails>>(jsonTransaction);
-
-            //GeneralLedger generalLedger = new GeneralLedger();
-            //await PostLedger(intHeader.Id);
-            //generalLedgerlList = await generalLedgerRepository.BulkInsertAsync(generalLedgerlList);
-            tenantSimpleUnitOfWork.Commit();
-            return itemTransactionFinanceDetailsDtos;
         }
-        catch (Exception ex)
+        else
         {
-            tenantSimpleUnitOfWork.Rollback();
-            throw;
+             
         }
-
-
+        string jsonTransaction = JsonConvert.SerializeObject(intHeader);
+        return itemTransactionFinanceDetailsDtos;
     }
+
+
     private async Task GetPurchaseReceiptTransactionIntegrationDetails(ItemTransactionFinanceDTO itemTransactionFinanceDTO, int IntegrationHeaderId, int FinancialYearId, string DocumentNumber)
     {
         try
@@ -574,8 +601,19 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         integrationDetails.BranchId = branchId;
         // integrationDetailList.Add(integrationDetails);
         integrationDetails.narration = itemDto.TransOrgin + itemDto.TransType + "-" + itemDto.TrasnOrderNum;
-        int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
-        integrationDetails.Id = integrationdetailid;
+        if (posting == true)
+        {
+            int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
+            integrationDetails.Id = integrationdetailid;
+        }
+        else
+        {
+            if (intHeader.integrationDetails == null)
+                intHeader.integrationDetails = new();
+
+            intHeader.integrationDetails.Add(integrationDetails);
+        }
+
         if (ledgerAccountViewModel.isdimension1 == true)
         {
             await IsDimensionCheck(EnumExtensions.GetDisplayName(DimensionType.Dimension1), isDebit, integrationDetails);
@@ -630,8 +668,18 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             integrationDetails.BranchId = branchId;
             integrationDetails.narration = itemDto.TransOrgin + itemDto.TransType + "-" + itemDto.TrasnOrderNum;
             //   integrationDetailList.Add(integrationDetails);
-            int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
-            integrationDetails.Id = integrationdetailid;
+            if (posting == true)
+            {
+                int integrationdetailid = await integrationDetailsRepository.InsertAsync(integrationDetails);
+                integrationDetails.Id = integrationdetailid;
+            }
+            else
+            {
+                if (intHeader.integrationDetails == null)
+                    intHeader.integrationDetails = new();
+
+                intHeader.integrationDetails.Add(integrationDetails);
+            }
             if (ledgerAccountViewModel.isdimension1 == true)
             {
                 await IsDimensionCheck(EnumExtensions.GetDisplayName(DimensionType.Dimension1), isDebit, integrationDetails);
@@ -721,7 +769,21 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             integrationDetailDimension.BranchId = integrationDetails.BranchId;
             integrationDetailDimension.FinancialYearId = integrationDetails.FinancialYearId;
             integrationDetailDimension.TransactionDate = integrationDetails.TransactionDate;
-            await integrationDetailDimensionRepository.InsertAsync(integrationDetailDimension);
+            if (posting == true)
+            {
+                await integrationDetailDimensionRepository.InsertAsync(integrationDetailDimension);
+            }
+            else
+            {
+                int intgrationDetailCount = intHeader.integrationDetails.Count;
+
+                if (intHeader.integrationDetails.Last().integrationDetailDimensions == null)
+                    intHeader.integrationDetails.Last().integrationDetailDimensions = new();
+
+                intHeader.integrationDetails.Last().integrationDetailDimensions.Add(integrationDetailDimension);
+
+
+            }
         }
         catch (Exception ex)
         {
