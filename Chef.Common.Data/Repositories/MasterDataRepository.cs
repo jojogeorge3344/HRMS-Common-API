@@ -116,7 +116,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
            .Query<Currency>()
-           .Select("id", "name", "code")
+           .Select("id", "name", "code", "exchangevariationup", "exchangevariationdown")
            .Where("code", code)
            .WhereNotArchived()
            .FirstOrDefaultAsync<Currency>();
