@@ -214,5 +214,30 @@ public class MasterDataService : IMasterDataService
     {
         return await masterDataRespository.GetAllTaxJurisdiction();
     }
+
+    public async Task<IEnumerable<ItemSegment>> GetAllItemSegment(SqlSearch sqlSearch = null)
+    {
+       return await masterDataRespository.GetAllItemSegment(sqlSearch);
+    }
+
+    public async Task<IEnumerable<ItemFamily>> GetAllItemFamily(SqlSearch sqlSearch = null)
+    {
+        return await masterDataRespository.GetAllItemFamily(sqlSearch);
+    }
+
+    public async Task<IEnumerable<ItemCommodity>> GetAllItemCommodity(SqlSearch sqlSearch = null)
+    {
+        return await masterDataRespository.GetAllItemCommodity(sqlSearch);
+    }
+
+    public async Task<IEnumerable<ItemClass>> GetAllItemClass(SqlSearch sqlSearch = null)
+    {
+        return await masterDataRespository.GetAllItemClass(sqlSearch);
+    }
+
+    public async Task<IEnumerable<Item>> GetAllItem(SqlSearch sqlSearch = null)
+    {
+        return await masterDataRespository.GetAllItem(sqlSearch);
+    }
 }
 

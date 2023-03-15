@@ -26,4 +26,5 @@ public class IntegrationDetails : TransactionModel
     [Ignore]
 
     public string DocumentNumber { get; set; }
+
 }

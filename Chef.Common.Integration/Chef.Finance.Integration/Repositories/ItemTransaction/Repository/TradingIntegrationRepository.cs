@@ -64,14 +64,24 @@ public class TradingIntegrationRepository : TenantRepository<TradingIntegrationH
         //                              ids.ledgeraccountname, 
         //                              ids.financialyearid
         //                            ";
-        string sql = @"SELECT tih.id AS tradingintegrationheaderid,
+        string sql = @"SELECT     tih.id AS tradingintegrationheaderid,
                                    tih.*,
                                    ids.id AS integrationdetailid,
-                                   ids.*
-                            FROM   finance.tradingintegrationheader tih
-                                   INNER JOIN finance.integrationdetails ids
-                                           ON tih.id = ids.integrationheaderid
-                            WHERE  tih.id = @integerationHeaderId";
+                                   ids.linenumber,
+                                   ids.ledgeraccountid,
+                                   ids.ledgeraccountcode,
+                                   ids.ledgeraccountname,
+                                   ids.debitamount,
+                                   ids.debitamountinbasecurrency,
+                                   ids.creditamount,
+                                   ids.creditamountinbasecurrency,
+                                   ids.isdimensionallocation,
+                                   ids.narration,
+                                   ids.itemtransactionfinanceid
+                                   FROM   finance.tradingintegrationheader tih
+                        INNER join finance.integrationdetails ids
+                        ON         tih.id = ids.integrationheaderid
+                        WHERE      tih.id = @integerationHeaderId";
         return await Connection.QueryAsync<TradingIntegrationHeaderDetailsViewModel>(sql, new { integerationHeaderId });
 
     }

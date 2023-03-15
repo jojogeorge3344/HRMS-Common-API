@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Models;
+using Chef.Common.Repositories;
 using SqlKata;
 
 namespace Chef.Common.Data.Repositories;
@@ -90,13 +91,15 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
                                     .Join("common.company as cmp", "cmp.currencycode", "cr.code")
                                     .Where("cmp.basecompanyid", 0)
                                     .WhereFalse("cmp.isarchived")
-                                    .WhereFalse("cr.isarchived");
+                                    .WhereFalse("cr.isarchived")
+                                    .WhereTrue("cr.isactive");
         var currenciesContainsExRate = QueryFactory
                                     .Query<Currency>()
                                     .Select("common.currency.{ id, name, code, exchangevariationup, exchangevariationdown }")
                                     .Join("common.currencyexchangerate", "common.currencyexchangerate.transactioncurrencycode", "common.currency.code")
                                     .WhereFalse("common.currency.isarchived")
-                                    .WhereFalse("common.currencyexchangerate.isarchived");
+                                    .WhereFalse("common.currencyexchangerate.isarchived")
+                                    .WhereTrue("common.currency.isactive");
 
         return await baseCompanyCurrency.Union(currenciesContainsExRate).GetAsync<Currency>();
     }
@@ -115,7 +118,7 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
     {
         return await QueryFactory
            .Query<Currency>()
-           .Select("id", "name", "code")
+           .Select("id", "name", "code", "exchangevariationup", "exchangevariationdown")
            .Where("code", code)
            .WhereNotArchived()
            .FirstOrDefaultAsync<Currency>();
@@ -372,6 +375,53 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
                 .Query<TaxJurisdiction>()
                 .WhereNotArchived()
                 .GetAsync<TaxJurisdiction>();
+    }
+
+    public async Task<IEnumerable<ItemSegment>> GetAllItemSegment(SqlSearch sqlSearch = null)
+    {
+
+        return await QueryFactory
+            .Query<ItemSegment>()
+            .ApplySqlSearch(sqlSearch)
+            .WhereNotArchived()
+            .GetAsync<ItemSegment>();
+
+    }
+
+    public async Task<IEnumerable<ItemFamily>> GetAllItemFamily(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+           .Query<ItemFamily>()
+           .ApplySqlSearch(sqlSearch)
+           .WhereNotArchived()
+           .GetAsync<ItemFamily>();
+    }
+
+    public async Task<IEnumerable<ItemCommodity>> GetAllItemCommodity(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+          .Query<ItemCommodity>()
+          .ApplySqlSearch(sqlSearch)
+          .WhereNotArchived()
+          .GetAsync<ItemCommodity>();
+    }
+
+    public async Task<IEnumerable<ItemClass>> GetAllItemClass(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+         .Query<ItemClass>()
+         .ApplySqlSearch(sqlSearch)
+         .WhereNotArchived()
+         .GetAsync<ItemClass>();
+    }
+
+    public async Task<IEnumerable<Item>> GetAllItem(SqlSearch sqlSearch = null)
+    {
+        return await QueryFactory
+         .Query<Item>()
+         .ApplySqlSearch(sqlSearch)
+         .WhereNotArchived()
+         .GetAsync<Item>();
     }
 }
 

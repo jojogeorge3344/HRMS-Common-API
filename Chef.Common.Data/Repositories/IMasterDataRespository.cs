@@ -53,5 +53,14 @@ public interface IMasterDataRepository : IRepository
     Task<BusinessPartner> GetCustomerDetails(int CustomerID);
     Task<IEnumerable<City>> GetCityByStateId(int stateId);
     Task<IEnumerable<TaxJurisdiction>> GetAllTaxJurisdiction();
-}
 
+    Task<IEnumerable<ItemSegment>> GetAllItemSegment(SqlSearch sqlSearch = null);
+
+    Task<IEnumerable<ItemFamily>> GetAllItemFamily(SqlSearch sqlSearch = null);
+
+    Task<IEnumerable<ItemCommodity>> GetAllItemCommodity(SqlSearch sqlSearch = null);
+
+    Task<IEnumerable<ItemClass>> GetAllItemClass(SqlSearch sqlSearch = null);
+
+    Task<IEnumerable<Item>> GetAllItem(SqlSearch sqlSearch = null);
+}
