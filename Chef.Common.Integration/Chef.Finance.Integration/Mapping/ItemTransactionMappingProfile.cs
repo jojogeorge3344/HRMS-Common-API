@@ -67,15 +67,7 @@ public  class ItemTransactionMappingProfile:Profile
                     .ForMember(d => d.RefenceDocumentDetailId, opt => opt.MapFrom(x => x.integrationheaderid))
                     .ForMember(d => d.FinancialYearId, opt => opt.MapFrom(x => x.FinancialYearId));
 
-        CreateMap<IntegrationDetails, ItemTransactionFinanceDetailsDto>().ForMember(d => d.ItemTransactionFinanceId, opt => opt.MapFrom(x => x.ItemTransactionFinanceId))
-            .ForMember(d => d.debitamountinbasecurrency, opt => opt.MapFrom(x => x.debitamountinbasecurrency))
-            .ForMember(d => d.creditamountinbasecurrency, opt => opt.MapFrom(x => x.creditamountinbasecurrency))
-            .ForMember(d => d.branchid, opt => opt.MapFrom(x => x.BranchId))
-            .ForMember(d => d.ledgeraccountid, opt => opt.MapFrom(x => x.ledgeraccountid))
-            .ForMember(d => d.ledgeraccountcode, opt => opt.MapFrom(x => x.ledgeraccountcode))
-            .ForMember(d => d.ledgeraccountname, opt => opt.MapFrom(x => x.ledgeraccountname))
-            .ForMember(d => d.debitamount, opt => opt.MapFrom(x => x.debitamount))
-            .ForMember(d => d.creditamount, opt => opt.MapFrom(x => x.creditamount))
+        CreateMap<IntegrationDetails, ItemTransactionFinanceDetailsDto>()
             .ForMember(d => d.financialyearid, opt => opt.MapFrom(x => x.FinancialYearId));
     }
 }
