@@ -67,6 +67,7 @@ public  class ItemTransactionMappingProfile:Profile
                     .ForMember(d => d.RefenceDocumentDetailId, opt => opt.MapFrom(x => x.integrationheaderid))
                     .ForMember(d => d.FinancialYearId, opt => opt.MapFrom(x => x.FinancialYearId));
 
-
+        CreateMap<IntegrationDetails, ItemTransactionFinanceDetailsDto>()
+            .ForMember(d => d.financialyearid, opt => opt.MapFrom(x => x.FinancialYearId));
     }
 }

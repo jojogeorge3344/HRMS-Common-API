@@ -6,5 +6,7 @@ public interface IItemTransactionPostingService: IAsyncService<TradingIntegratio
 {
     Task<IEnumerable<ItemTransactionFinanceDetailsDto>> PostItems(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO);
 
+     Task<IEnumerable<ItemTransactionFinanceDetailsDto>> ViewReportData(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO);
+
     Task<IntegrationResponseDto> DeletedByDocumentNumber(FinanceDocNumberDto financeDocNumberDto);
 }
