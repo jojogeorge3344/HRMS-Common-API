@@ -9,6 +9,7 @@ using Chef.Finance.Integration.Models;
 using Chef.Finance.Models;
 using Chef.Finance.Repositories;
 using Chef.Finance.Services;
+using Newtonsoft.Json;
 
 namespace Chef.Finance.Integration;
 
@@ -82,11 +83,43 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     }
 
     private IntegrationJournalBookConfiguration journalBookConfig = new IntegrationJournalBookConfiguration();
-    public async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto)
+
+
+    public async Task<SalesInvoiceResponse> Insert(SalesInvoiceDto salesInvoiceDto)
     {
         try
         {
             tenantSimpleUnitOfWork.BeginTransaction();
+            SalesInvoiceResponse salesInvoiceResponses = await InsertAsync(salesInvoiceDto);
+            tenantSimpleUnitOfWork.Commit();
+            return salesInvoiceResponses;
+        }
+        catch(Exception ex)
+        {
+            tenantSimpleUnitOfWork.Rollback();
+            throw;
+        }
+    }
+
+
+    public async Task<SalesInvoiceResponse> ViewSalesInvoice(SalesInvoiceDto salesInvoiceDto)
+    {
+        try
+        {
+            SalesInvoiceResponse details = await InsertAsync(salesInvoiceDto,false);
+            return details;
+        }
+        catch(Exception ex)
+        {
+            throw;
+        }
+    }
+    bool posting = true;
+
+
+    private async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto,bool IsPosting = true)
+    {
+            
             if (salesInvoiceDto.SalesOrderOrigin == 4)
             {
                 string code = salesInvoiceDto.SalesInvoiceNo.Substring(0, 5);
@@ -190,7 +223,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             IsControlAccount = true,
                             ControlAccountType = ControlAccountType.Customer,
                             BranchId = salesInvoice.BranchId,
-                            FinancialYearId = salesInvoice.FinancialYearId
+                            FinancialYearId = salesInvoice.FinancialYearId,
+                            ItemId = item.ItemId
                         });
                     }
 
@@ -210,7 +244,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             IsControlAccount = true,
                             ControlAccountType = ControlAccountType.Tax,
                             BranchId = salesInvoice.BranchId,
-                            FinancialYearId = salesInvoice.FinancialYearId
+                            FinancialYearId = salesInvoice.FinancialYearId,
+                            ItemId = item.ItemId
                         });
                     }
 
@@ -230,7 +265,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             IsControlAccount = true,
                             ControlAccountType = ControlAccountType.Discount,
                             BranchId = salesInvoice.BranchId,
-                            FinancialYearId = salesInvoice.FinancialYearId
+                            FinancialYearId = salesInvoice.FinancialYearId,
+                            ItemId = item.ItemId
                         });
                     }
 
@@ -267,7 +303,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             CostAllocationDescription = "No Cost Allocation",
                             BranchId = salesInvoice.BranchId,
                             FinancialYearId = salesInvoice.FinancialYearId,
-                            Narration = salesInvoice.Narration
+                            Narration = salesInvoice.Narration,
+                            ItemId = item.ItemId
 
                         });
                     }
@@ -279,7 +316,12 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 salesInvoice.DocumentNumber = salesInvoiceDto.SalesInvoiceNo;
             }
 
+        if (IsPosting == true)
+        {
+            string json = JsonConvert.SerializeObject(salesInvoice);
             var salesInvoiceResponse = await salesInvoiceService.InsertInvoice(salesInvoice);
+
+            //string json = JsonConvert.SerializeObject(salesInvoiceResponse);
 
             CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceResponse.Id);
             if (doc != null)
@@ -291,7 +333,6 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
                 await salesInvoiceRepository.UpdateStatus(salesInvoiceResponse.Id, ApproveStatus.Approved);
             }
-            tenantSimpleUnitOfWork.Commit();
             if (salesInvoiceDto.SalesOrderOrigin == 4)
             {
                 return new()
@@ -305,12 +346,17 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 DocumentNumber = salesInvoiceResponse.DocumentNumber
             };
         }
-        catch (Exception ex)
+        else
         {
-            tenantSimpleUnitOfWork.Rollback();
-            throw;
+            SalesInvoiceResponse salesInvoiceResponse = new SalesInvoiceResponse();
+            List<CustomerTransactionDetail> customerTransactionDetai = salesInvoice.CustomerTransactionDetails.ToList();
+            List<SalesInvoiceViewDto> salesInvoiceViewDto = Mapper.Map<List<SalesInvoiceViewDto>>(customerTransactionDetai);
+            salesInvoiceResponse.salesInvoices = salesInvoiceViewDto;
+            return salesInvoiceResponse;
         }
     }
+
+
 
     public Task<int> UpdateAsync(SalesInvoiceDto obj)
     {
