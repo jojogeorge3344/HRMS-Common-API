@@ -30,5 +30,7 @@ public class SalesReturnCreditMappingProfile : Profile
                         .ForMember(d => d.TotalBalanceAmountInBasecurrency, opt => opt.MapFrom(x => x.NetAmount * x.ExRate))
                         .ForMember(d => d.BranchId, opt => opt.MapFrom(x => x.BranchId));
 
+        CreateMap<CustomerTransactionDetail, SalesReturnCreditViewDto>();
+
     }
 }
