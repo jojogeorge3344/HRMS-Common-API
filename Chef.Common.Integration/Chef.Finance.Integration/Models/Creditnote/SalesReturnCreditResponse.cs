@@ -2,4 +2,5 @@
 
 public class SalesReturnCreditResponse : SalesResponseDto
 {
+    public List<SalesReturnCreditViewDto> salesReturnCreditViewDtos { get; set; }
 }
