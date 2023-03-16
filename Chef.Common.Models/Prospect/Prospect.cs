@@ -64,5 +64,6 @@ public class Prospect : Model
     [Required]
     public int TaxJurisdictionId { get; set; }
     public int TaxNumber { get; set; }
+    public string TRNNo { get; set; }
 }
 
