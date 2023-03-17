@@ -99,7 +99,8 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
                                     .Join("common.currencyexchangerate", "common.currencyexchangerate.transactioncurrencycode", "common.currency.code")
                                     .WhereFalse("common.currency.isarchived")
                                     .WhereFalse("common.currencyexchangerate.isarchived")
-                                    .WhereTrue("common.currency.isactive");
+                                    .WhereTrue("common.currency.isactive")
+                                    .OrderBy("code");
 
         return await baseCompanyCurrency.Union(currenciesContainsExRate).GetAsync<Currency>();
     }
