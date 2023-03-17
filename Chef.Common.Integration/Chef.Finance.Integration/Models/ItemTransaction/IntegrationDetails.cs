@@ -33,4 +33,9 @@ public class IntegrationDetails : TransactionModel
     
     public List<IntegrationDetailDimension> integrationDetailDimensions { get; set; }
 
+    [Write(false)]
+    [Skip(true)]
+    [Ignore]
+    public int ItemId { get; set; }
+
 }

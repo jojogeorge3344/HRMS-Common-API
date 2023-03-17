@@ -29,5 +29,6 @@ public  class ItemTransactionFinanceDetails
         public int ReferenceDocumentdetailid { get; set; } // detailid
      //   public bool iscontrolaccount { get; set; }
         public int financialyearid { get; set; }
-    }
+        public int ItemId { get; set; }
+}
 
