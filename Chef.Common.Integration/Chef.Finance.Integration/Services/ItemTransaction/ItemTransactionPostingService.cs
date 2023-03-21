@@ -119,7 +119,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             intHeader.documentnumber = await journalBookNumberingSchemeRepository.GetJournalTransactionsDocNumber(intHeader.FinancialYearId, intHeader.BranchId, items.JournalBookCode);
              intHeaderId = await tradingIntegrationRepository.InsertAsync(intHeader);            
         }
-        IntegrationHeaderId = intHeaderId == 0 ? 1: intHeaderId;
+        IntegrationHeaderId = intHeaderId;
         financialYearId = intHeader.FinancialYearId;
         documentNumber = intHeader.documentnumber;
         foreach (ItemTransactionFinanceDTO details in itemTransactionFinanceDTO)
@@ -225,7 +225,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
                 if (details.integrationDetailDimensions != null)
                 {
-                    IEnumerable<IntegrationDetailDimension> detailDimensions = details.integrationDetailDimensions.Where(x => x.HeaderId == details.integrationheaderid).ToList();
+                    IEnumerable<IntegrationDetailDimension> detailDimensions = details.integrationDetailDimensions;
                     List<ItemTransactionFinanceDetailsDimension> dimensionList = Mapper.Map<List<ItemTransactionFinanceDetailsDimension>>(detailDimensions);
 
                     financeDetails.itemTransactionFinanceDetailsDimensions = dimensionList;
