@@ -251,7 +251,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 // Configuration->Inv Control AC Control --dbit
                 ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
                 LedgerAccountViewModel ledgerAccountViewModel = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
-                if (ledgerAccountViewModel == null)
+                if (ledgerAccountViewModel == null & itemTransactionFinanceDTO.ItemTransType == 1)
                     //TODO:will change the exception type once latest changes got from SK
                     throw new ResourceNotFoundException($"Ledger Account not configured for this item :{itemTransactionFinanceDTO.ItemName}-  {itemTransactionFinanceDTO.ItemCode}");
 
@@ -260,7 +260,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
 
                 // A/ C Config->invoice to be received credit
                 LedgerAccountViewModel ledgerAccountViewModel1 = await GetInvoiceToBeRecevied();
-                if (ledgerAccountViewModel1 == null)
+                if (ledgerAccountViewModel1 == null & itemTransactionFinanceDTO.ItemTransType == 1)
                     throw new ResourceNotFoundException($"Ledger Account not configured for this item :{itemTransactionFinanceDTO.ItemName}-  {itemTransactionFinanceDTO.ItemCode}");
 
                 if (itemTransactionFinanceDTO.ItemTransType == 1)
@@ -320,7 +320,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             itemDto = itemTransactionFinanceDTO;
             // A/ C Config->invoice to be received - debit               
             LedgerAccountViewModel ledgerAccountViewModel = await GetInvoiceToBeRecevied();
-            if (ledgerAccountViewModel == null)
+            if (ledgerAccountViewModel == null & itemTransactionFinanceDTO.ItemTransType == 1)
                 throw new ResourceNotFoundException($"Ledger Account not configured for this item :{itemTransactionFinanceDTO.ItemName}-  {itemTransactionFinanceDTO.ItemCode}");
             if (itemTransactionFinanceDTO.ItemTransType == 1)
                 await InsertIntegrationDetailList(ledgerAccountViewModel, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, true, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId, itemTransactionFinanceDTO.ItemId);
@@ -329,7 +329,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
             //Configuration -> Inv Control AC - credit               
             ItemViewModel itemViewModel = Mapper.Map<ItemViewModel>(itemTransactionFinanceDTO);
             LedgerAccountViewModel ledgerAccountViewModel1 = await GetItemAndLandedCostLedgerDetails(itemViewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.InversionControlAccounttype));
-            if (ledgerAccountViewModel1 == null)
+            if (ledgerAccountViewModel1 == null & itemTransactionFinanceDTO.ItemTransType == 1)
                 throw new ResourceNotFoundException($"Ledger Account not configured for this item :{itemTransactionFinanceDTO.ItemName}-  {itemTransactionFinanceDTO.ItemCode}");
             if (itemTransactionFinanceDTO.ItemTransType == 1)
                 await InsertIntegrationDetailList(ledgerAccountViewModel1, itemTransactionFinanceDTO.TransAmount, itemTransactionFinanceDTO.HmAmount, false, itemTransactionFinanceDTO.BranchId, itemTransactionFinanceDTO.ItemTransactionFinanceId, itemTransactionFinanceDTO.ItemId);
