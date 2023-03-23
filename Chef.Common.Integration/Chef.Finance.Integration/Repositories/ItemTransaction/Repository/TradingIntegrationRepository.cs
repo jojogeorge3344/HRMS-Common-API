@@ -131,8 +131,13 @@ public class TradingIntegrationRepository : TenantRepository<TradingIntegrationH
     }
     public async Task<int> UpdateStatus(int HeaderId)
     {
-        string sql = @"UPDATE finance.tradingintegrationheader set approvestatus=2,approvestatusname='Approved' where id=@HeaderId";
-        await Connection.ExecuteAsync(sql, new { HeaderId });
+        int approveStatus = (int)ApproveStatus.Approved;
+        string sql = @"UPDATE finance.tradingintegrationheader
+                                    SET    approvestatus = @approveStatus,
+                                           approvestatusname = 'Approved',
+                                           approveddate = CURRENT_DATE
+                                    WHERE  id = @HeaderId ";
+        await Connection.ExecuteAsync(sql, new { HeaderId, approveStatus });
         return 1;
 
     }
