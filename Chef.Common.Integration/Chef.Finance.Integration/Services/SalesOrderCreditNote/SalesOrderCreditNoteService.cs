@@ -77,11 +77,43 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
     private CustomerAllocationDetail detail = new CustomerAllocationDetail();
 
     private IntegrationJournalBookConfiguration journalBookConfig = new IntegrationJournalBookConfiguration();
-    public  async Task<SalesReturnCreditResponse> PostAsync(SalesReturnCreditDto salesReturnCreditDto)
+
+
+    public async Task<SalesReturnCreditResponse> ViewSalesCreditReturn(SalesReturnCreditDto salesReturnCreditDto)
+    {
+        try
+        {
+            SalesReturnCreditResponse salesReturnCreditResponse = await PostAsync(salesReturnCreditDto,false);
+            return salesReturnCreditResponse;
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    public async Task<SalesReturnCreditResponse> Post(SalesReturnCreditDto salesReturnCreditDto)
     {
         try
         {
             tenantSimpleUnitOfWork.BeginTransaction();
+            SalesReturnCreditResponse salesReturnCreditResponse = await PostAsync(salesReturnCreditDto);
+            tenantSimpleUnitOfWork.Commit();
+            return salesReturnCreditResponse;
+        }
+        catch (Exception ex)
+        {
+            tenantSimpleUnitOfWork.Rollback();
+            throw;
+        }
+    }
+
+    bool posting = true;
+
+
+    private  async Task<SalesReturnCreditResponse> PostAsync(SalesReturnCreditDto salesReturnCreditDto,bool IsPosting = true)
+    {
+       
             if (salesReturnCreditDto.isVanSales == true)
             {
                 string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
@@ -168,7 +200,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                             IsControlAccount = true,
                             ControlAccountType = ControlAccountType.Customer,
                             BranchId = customerCreditNote.BranchId,
-                            FinancialYearId = customerCreditNote.FinancialYearId
+                            FinancialYearId = customerCreditNote.FinancialYearId,
+                            ItemId = item.ItemId
                         });
                     }
 
@@ -188,7 +221,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                             IsControlAccount = true,
                             ControlAccountType = ControlAccountType.Tax,
                             BranchId = customerCreditNote.BranchId,
-                            FinancialYearId = customerCreditNote.FinancialYearId
+                            FinancialYearId = customerCreditNote.FinancialYearId,
+                            ItemId = item.ItemId
                         });
                     }
 
@@ -208,7 +242,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                             IsControlAccount = true,
                             ControlAccountType = ControlAccountType.Discount,
                             BranchId = customerCreditNote.BranchId,
-                            FinancialYearId = customerCreditNote.FinancialYearId
+                            FinancialYearId = customerCreditNote.FinancialYearId,
+                            ItemId = item.ItemId
                         });
                     }
 
@@ -244,7 +279,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                             CostAllocationDescription = "No Cost Allocation",
                             BranchId = customerCreditNote.BranchId,
                             FinancialYearId = customerCreditNote.FinancialYearId,
-                            Narration = customerCreditNote.Narration
+                            Narration = customerCreditNote.Narration,
+                            ItemId = item.ItemId
                         });
                     }
                 }
@@ -254,6 +290,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             {
                 customerCreditNote.DocumentNumber = salesReturnCreditDto.CreditNoteNumber;
             }
+
+        if (IsPosting == true)
+        {
 
             var customerCreditNoteResult = await customerCreditNoteService.InsertCustomerCreditNote(customerCreditNote);
 
@@ -342,7 +381,6 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
                 await customerCreditNoteRepository.UpdateStatus(customerCreditNoteResult.Id, ApproveStatus.Approved);
             }
-            tenantSimpleUnitOfWork.Commit();
             if (salesReturnCreditDto.isVanSales == true)
             {
                 return new()
@@ -354,12 +392,15 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             {
                 DocumentNumber = customerCreditNoteResult.DocumentNumber
             };
-            
         }
-        catch(Exception ex)
+        else
         {
-            tenantSimpleUnitOfWork.Rollback();
-            throw;
+            SalesReturnCreditResponse salesReturnCreditResponse = new SalesReturnCreditResponse();
+            List<CustomerTransactionDetail> customerTransactionDetails = customerCreditNote.CustomerTransactionDetails.ToList();
+            List<SalesReturnCreditViewDto> salesReturnCreditViewDtos = Mapper.Map<List<SalesReturnCreditViewDto>>(customerTransactionDetails);
+            salesReturnCreditResponse.salesReturnCreditViewDtos = salesReturnCreditViewDtos;
+            return salesReturnCreditResponse;
+
         }
     }
 }
