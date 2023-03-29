@@ -11,7 +11,6 @@ public class Prospect : Model
     [Required]
     public string ProspectName { get; set; }
 
-    [Required]
     public string AddressLine1 { get; set; }
 
     public string AddressLine2 { get; set; }
@@ -22,10 +21,8 @@ public class Prospect : Model
     [Required]
     public int BpType { get; set; }
 
-    [Required]
     public int CityId { get; set; }
 
-    [Required]
     public string CityName { get; set; }
 
     [Required]
@@ -38,20 +35,15 @@ public class Prospect : Model
     [Required]
     public string CountryName { get; set; }
 
-    [Required]
     public string ZipCode { get; set; }
 
-    [Required]
     public string Faxno { get; set; }
 
-    [Required]
     public string ContactNumber { get; set; }
 
-    [Required]
     public string ContactPerson { get; set; }
 
 
-    [Required]
     public string Email { get; set; }
 
     [Required]
