@@ -62,7 +62,7 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .WhereNotArchived()
             .GetAsync<ReasonCodeMaster>();
     }
-    public async Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id)
+    public async Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint()
     {
         string sql = @"SELECT 'P.O. Box:'
                                    || COALESCE(zipcode, '')
@@ -78,7 +78,7 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                                     encode(logo::bytea, 'escape') as logo
                             FROM   common.company";
 
-        return await DatabaseSession.QueryFirstAsync<CompanyDetails>(sql, new { id });
+        return await DatabaseSession.QueryFirstAsync<CompanyDetails>(sql);
     }
 
     public async Task<int> UpdateCompanyLogo(Company company)
