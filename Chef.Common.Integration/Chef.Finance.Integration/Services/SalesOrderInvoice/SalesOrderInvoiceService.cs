@@ -119,7 +119,10 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
     private async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto,bool IsPosting = true)
     {
-            
+        SalesInvoice details = new SalesInvoice();
+        int salesInvoiceId = 0;
+
+
             if (salesInvoiceDto.SalesOrderOrigin == 4)
             {
                 string code = salesInvoiceDto.SalesInvoiceNo.Substring(0, 5);
@@ -141,6 +144,12 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                     int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
                 }
 
+            }
+            if(salesInvoiceDto.TransactionTypeName == TransactionType.RetailSalesOrderInvoiceCredit.ToString())
+            {
+                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.RetailSalesOrder), Convert.ToInt32(TransactionType.RetailSalesOrderInvoiceCredit));
+                if (journalBookConfig == null)
+                    throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
             }
             else
             {
@@ -319,11 +328,34 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         if (IsPosting == true)
         {
             string json = JsonConvert.SerializeObject(salesInvoice);
-            var salesInvoiceResponse = await salesInvoiceService.InsertInvoice(salesInvoice);
+
+            if (salesInvoiceDto.TransactionTypeName == TransactionType.RetailSalesOrderInvoiceCredit.ToString() && salesInvoiceDto.IsProcess == true)
+            {
+                int id = await salesInvoiceService.GetSalesInvoiceIdByDocumentNumber(salesInvoiceDto.SalesInvoiceNo);
+                salesInvoice.Id = id;
+                salesInvoiceId = salesInvoice.Id;
+                int updatedid = await salesInvoiceService.UpdateAsync(salesInvoice);
+            }
+            else 
+            {
+                details = await salesInvoiceService.InsertInvoice(salesInvoice);
+                salesInvoiceId = details.Id;
+            }
+
+            if (salesInvoiceDto.TransactionTypeName == TransactionType.RetailSalesOrderInvoiceCredit.ToString() && salesInvoiceDto.IsProcess == false)
+            {
+                return new()
+                {
+                    DocumentNumber = details.DocumentNumber
+
+                };
+            }
+
+
 
             //string json = JsonConvert.SerializeObject(salesInvoiceResponse);
 
-            CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceResponse.Id);
+            CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceId);
             if (doc != null)
             {
                 var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
@@ -331,19 +363,19 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
                 await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
                 await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
-                await salesInvoiceRepository.UpdateStatus(salesInvoiceResponse.Id, ApproveStatus.Approved);
+                await salesInvoiceRepository.UpdateStatus(salesInvoiceId, ApproveStatus.Approved);
             }
             if (salesInvoiceDto.SalesOrderOrigin == 4)
             {
                 return new()
                 {
-                    DocumentNumber = salesInvoiceResponse.DocumentNumber
+                    DocumentNumber = details.DocumentNumber
 
                 };
             }
             return new()
             {
-                DocumentNumber = salesInvoiceResponse.DocumentNumber
+                DocumentNumber = details.DocumentNumber
             };
         }
         else
