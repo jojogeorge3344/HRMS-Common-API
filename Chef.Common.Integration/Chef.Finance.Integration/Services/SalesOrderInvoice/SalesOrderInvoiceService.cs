@@ -145,7 +145,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 }
 
             }
-            if(salesInvoiceDto.TransactionTypeName == TransactionType.RetailSalesOrderInvoiceCredit.ToString())
+            if(salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
             {
                 journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.RetailSalesOrder), Convert.ToInt32(TransactionType.RetailSalesOrderInvoiceCredit));
                 if (journalBookConfig == null)
@@ -167,9 +167,13 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             {
                 salesInvoice.Narration = TransactionType.VanSalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
             }
+            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
+            {
+                salesInvoice.Narration = TransactionType.RetailSalesOrderInvoiceCredit + "-" + salesInvoiceDto.SalesInvoiceNo;
+            }
             else
             {
-                salesInvoice.Narration = TransactionType.SalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
+              salesInvoice.Narration = TransactionType.SalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
             }
 
             salesInvoice.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
@@ -329,7 +333,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         {
             string json = JsonConvert.SerializeObject(salesInvoice);
 
-            if (salesInvoiceDto.TransactionTypeName == TransactionType.RetailSalesOrderInvoiceCredit.ToString() && salesInvoiceDto.IsProcess == true)
+            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit && salesInvoiceDto.IsProcess == true)
             {
                 int id = await salesInvoiceService.GetSalesInvoiceIdByDocumentNumber(salesInvoiceDto.SalesInvoiceNo);
                 salesInvoice.Id = id;
@@ -342,7 +346,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 salesInvoiceId = details.Id;
             }
 
-            if (salesInvoiceDto.TransactionTypeName == TransactionType.RetailSalesOrderInvoiceCredit.ToString() && salesInvoiceDto.IsProcess == false)
+            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit && salesInvoiceDto.IsProcess == false)
             {
                 return new()
                 {
