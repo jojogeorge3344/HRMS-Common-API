@@ -30,6 +30,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly IJournalBookRepository journalBookRepository;
     private readonly IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository;
     private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
+    private readonly ICustomerTransactionDetailService customerTransactionDetailService;
+    private readonly ISalesInvoiceLineItemService salesInvoiceLineItemService;
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -46,7 +48,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         ISalesInvoiceRepository salesInvoiceRepository,
         IJournalBookRepository journalBookRepository,
         IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository,
-        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork
+        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
+        ICustomerTransactionDetailService customerTransactionDetailService,
+        ISalesInvoiceLineItemService salesInvoiceLineItemService
 
         )
     {
@@ -65,6 +69,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.journalBookRepository = journalBookRepository;
         this.journalBookNumberingSchemeRepository = journalBookNumberingSchemeRepository;
         this.tenantSimpleUnitOfWork =  tenantSimpleUnitOfWork;
+        this.customerTransactionDetailService = customerTransactionDetailService;
+        this.salesInvoiceLineItemService = salesInvoiceLineItemService;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -333,54 +339,45 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         {
             string json = JsonConvert.SerializeObject(salesInvoice);
 
-            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit && salesInvoiceDto.IsProcess == true)
+            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit && salesInvoiceDto.SalesInvoiceNo != "")
             {
-                int id = await salesInvoiceService.GetSalesInvoiceIdByDocumentNumber(salesInvoiceDto.SalesInvoiceNo);
-                salesInvoice.Id = id;
+                SalesInvoice invoice = await salesInvoiceService.GetSalesInvoiceIdByDocumentNumber(salesInvoiceDto.SalesInvoiceNo);
+                salesInvoice.Id = invoice.Id;
+                salesInvoice.CustomerTransactionId = invoice.CustomerTransactionId;
                 salesInvoiceId = salesInvoice.Id;
-                int updatedid = await salesInvoiceService.UpdateAsync(salesInvoice);
+                salesInvoice.DocumentNumber = salesInvoiceDto.SalesInvoiceNo;
+                salesInvoice.CustomerTransactionDetails.ForEach(x => x.CustomerTransactionId = invoice.CustomerTransactionId);
+                salesInvoice.LineItems.ForEach(x => x.SalesInvoiceId = salesInvoiceId);
+                int deleteCustomerTranDetail = await customerTransactionDetailService.DeleteDetailByCustomerTransactionId(invoice.CustomerTransactionId);
+                int deleteLineItems = await salesInvoiceLineItemService.DeleteLineItemByInvoiceId(salesInvoiceId);
+                int updatedid = await salesInvoiceService.UpdateInvoice(salesInvoice);
+                details.DocumentNumber = salesInvoice.DocumentNumber;
             }
             else 
             {
                 details = await salesInvoiceService.InsertInvoice(salesInvoice);
                 salesInvoiceId = details.Id;
+                
             }
-
-            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit && salesInvoiceDto.IsProcess == false)
-            {
-                return new()
-                {
-                    DocumentNumber = details.DocumentNumber
-
-                };
-            }
-
-
-
             //string json = JsonConvert.SerializeObject(salesInvoiceResponse);
-
-            CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceId);
-            if (doc != null)
+            if (salesInvoiceDto.IsProcess == true)
             {
-                var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
-                var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
-
-                await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
-                await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
-                await salesInvoiceRepository.UpdateStatus(salesInvoiceId, ApproveStatus.Approved);
-            }
-            if (salesInvoiceDto.SalesOrderOrigin == 4)
-            {
-                return new()
+                CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceId);
+                if (doc != null)
                 {
-                    DocumentNumber = details.DocumentNumber
+                    var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
+                    var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
 
-                };
+                    await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
+                    await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
+                    await salesInvoiceRepository.UpdateStatus(salesInvoiceId, ApproveStatus.Approved);
+                }
             }
             return new()
             {
                 DocumentNumber = details.DocumentNumber
             };
+            
         }
         else
         {
