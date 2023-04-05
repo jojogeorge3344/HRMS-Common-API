@@ -48,6 +48,8 @@ public class SalesInvoiceDto : Model
 
     public DateTime? ExchangeDate { get; set; }
 
+    public bool IsCashSales { get; set; }
+
     public int InvoiceType { get; set; }
     public bool IsProcess { get; set; }
     public bool IsCustomer { get; set; }

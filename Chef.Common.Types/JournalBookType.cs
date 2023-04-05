@@ -70,6 +70,7 @@
         MatchandApproval = 619,
 
         CashCollectionAccount = 700,
-        OnAccountRepaymentToCustomers = 702
+        OnAccountRepaymentToCustomers = 702,
+        CashSaleInvoice = 800
     }
 }
