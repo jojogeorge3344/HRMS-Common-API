@@ -33,6 +33,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
     private readonly IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository;
     private readonly IJournalBookRepository journalBookRepository;
     private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
+    private readonly ICustomerTransactionService customerTransactionService;
+    private readonly ICustomerTransactionDetailService customerTransactionDetailService;
+    private readonly ICustomerAllocationTransactionRepository customerAllocationTransactionRepository;
 
     public SalesOrderCreditNoteService(
         ICustomerCreditNoteRepository customerCreditNoteRepository,
@@ -51,7 +54,10 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         ICustomerAllocationTransactionService customerAllocationTransactionService,
         IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository,
         IJournalBookRepository journalBookRepository,
-        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork
+        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
+        ICustomerTransactionService customerTransactionService,
+        ICustomerTransactionDetailService customerTransactionDetailService,
+        ICustomerAllocationTransactionRepository customerAllocationTransactionRepository
         )
     {
         this.customerCreditNoteRepository = customerCreditNoteRepository;
@@ -71,6 +77,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         this.journalBookNumberingSchemeRepository = journalBookNumberingSchemeRepository;
         this.journalBookRepository = journalBookRepository;
         this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
+        this.customerTransactionService = customerTransactionService;
+        this.customerTransactionDetailService = customerTransactionDetailService;
+        this.customerAllocationTransactionRepository = customerAllocationTransactionRepository;
 
 
     }
@@ -113,7 +122,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
     private  async Task<SalesReturnCreditResponse> PostAsync(SalesReturnCreditDto salesReturnCreditDto,bool IsPosting = true)
     {
-       
+        CustomerCreditNote customerCreditNoteResult = new CustomerCreditNote();
+
+
             if (salesReturnCreditDto.isVanSales == true)
             {
                 string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
@@ -134,6 +145,13 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
 
             }
+            if(salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
+            {
+                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.RetailSalesOrder), Convert.ToInt32(TransactionType.RetailSalesOrderReturnCredit));
+
+                if (journalBookConfig == null)
+                    throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+            }
             else
             {
                 journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderReturn));
@@ -148,6 +166,10 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             if (salesReturnCreditDto.isVanSales == true)
             {
                 customerCreditNote.Narration = TransactionType.SalesOrderReturn + "-" + salesReturnCreditDto.CreditNoteNumber;
+            }
+            if(salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
+            {
+                customerCreditNote.Narration = TransactionType.RetailSalesOrderReturnCredit + "-" + salesReturnCreditDto.CreditNoteNumber;
             }
             else
             {
@@ -293,10 +315,33 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
         if (IsPosting == true)
         {
+            if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit && salesReturnCreditDto.CreditNoteNumber != "")
+            {
+                CustomerCreditNoteViewModel viewModel = new CustomerCreditNoteViewModel();
+                viewModel.CustomerCreditNote = customerCreditNote;
+                int count = await customerCreditNoteService.IsDocumentExist(salesReturnCreditDto.CreditNoteNumber);
+                if(count == 0)
+                    throw new ResourceNotFoundException($"DocumentNo Does Not Exist:-{salesReturnCreditDto.CreditNoteNumber}");
+                int customerId = await customerCreditNoteService.GetCustomerCreditNoteIdByDocumentNumber(salesReturnCreditDto.CreditNoteNumber);
+                int customertransactionId = await customerTransactionService.GetCustomerTransactionId(customerId, (int)DocumentType.CustomerCreditNote);
 
-            var customerCreditNoteResult = await customerCreditNoteService.InsertCustomerCreditNote(customerCreditNote);
+                customerCreditNote.Id = customerId;
+                customerCreditNote.CustomerTransactionId = customertransactionId;
+                customerCreditNote.DocumentNumber = salesReturnCreditDto.CreditNoteNumber;
+                customerCreditNote.CustomerTransactionDetails.ForEach(x => x.CustomerTransactionId = customertransactionId);
+                int deletedId = await customerTransactionDetailService.DeleteDetailByCustomerTransactionId(customertransactionId);
+                int updatedId = await customerCreditNoteService.UpdateCustomerCredit(viewModel);
+                customerCreditNoteResult = customerCreditNote;
+            }
+            else
+            {
+                customerCreditNoteResult = await customerCreditNoteService.InsertCustomerCreditNote(customerCreditNote);
+            }
 
-
+            if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit && salesReturnCreditDto.CreditNoteNumber != "")
+            {
+                int deletedAlloction = await customerAllocationTransactionRepository.DeleteCustomerAllocationByCreditNoteIdAsync(customerCreditNote.Id);
+            }
 
             CustomerAllocation customerAllocations = new CustomerAllocation();
             List<CustomerAllocationDetail> customerAllocationDetailList = new List<CustomerAllocationDetail>();
@@ -368,18 +413,30 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
             customerAllocations.CustomerAllocationOpenDocuments = customerAllocationOpenDocumentsList;
 
-            if (customerAllocations.CustomerAllocationDetails.Count() > 0)
-                await customerAllocationTransactionService.InsertCustomerAllocation(customerAllocations);
+            //if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit && salesReturnCreditDto.CreditNoteNumber != "")
+            //{
+            //    if (customerAllocations.CustomerAllocationDetails.Count() > 0)
+            //    {
+            //        await customerAllocationTransactionService.InsertCustomerAllocation(customerAllocations);
+            //    }
+            //}
+   
+                if (customerAllocations.CustomerAllocationDetails.Count() > 0)
+                    await customerAllocationTransactionService.InsertCustomerAllocation(customerAllocations);
 
-            CustomerTransaction doc = await customerTransactionRepository.GetByCreditNoteIdAsync(customerCreditNoteResult.Id);
-            if (doc != null)
+
+            if (salesReturnCreditDto.IsProcess == true)
             {
-                var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
-                var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
+                CustomerTransaction doc = await customerTransactionRepository.GetByCreditNoteIdAsync(customerCreditNoteResult.Id);
+                if (doc != null)
+                {
+                    var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
+                    var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
 
-                await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
-                await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
-                await customerCreditNoteRepository.UpdateStatus(customerCreditNoteResult.Id, ApproveStatus.Approved);
+                    await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
+                    await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
+                    await customerCreditNoteRepository.UpdateStatus(customerCreditNoteResult.Id, ApproveStatus.Approved);
+                }
             }
             if (salesReturnCreditDto.isVanSales == true)
             {

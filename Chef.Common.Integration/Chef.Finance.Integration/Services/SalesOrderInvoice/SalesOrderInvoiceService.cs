@@ -341,6 +341,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
             if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit && salesInvoiceDto.SalesInvoiceNo != "")
             {
+                int count = await salesInvoiceService.IsDocumentNoExist(salesInvoiceDto.SalesInvoiceNo);
+                if (count == 0)
+                    throw new ResourceNotFoundException($"DocumentNo Does Not Exist:-{salesInvoiceDto.SalesInvoiceNo}");
                 SalesInvoice invoice = await salesInvoiceService.GetSalesInvoiceIdByDocumentNumber(salesInvoiceDto.SalesInvoiceNo);
                 salesInvoice.Id = invoice.Id;
                 salesInvoice.CustomerTransactionId = invoice.CustomerTransactionId;
