@@ -165,7 +165,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 orgin = (int)TransactionOrgin.RetailSalesOrder;
                 type = (int)TransactionType.RetailSalesOrderInvoiceCredit;
             }
-            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCash)
+            else if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCash)
             {
                 orgin = (int)TransactionOrgin.RetailSalesOrder;
                 type = (int)TransactionType.RetailSalesOrderInvoiceCash;
