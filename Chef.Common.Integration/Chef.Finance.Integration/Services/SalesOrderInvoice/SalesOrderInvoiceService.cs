@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Services;
+using Chef.Common.Types;
 using Chef.Finance.Configuration.Repositories;
 using Chef.Finance.Configuration.Services;
 using Chef.Finance.Customer.Repositories;
@@ -10,6 +11,7 @@ using Chef.Finance.Models;
 using Chef.Finance.Repositories;
 using Chef.Finance.Services;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace Chef.Finance.Integration;
 
@@ -32,6 +34,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
     private readonly ICustomerTransactionDetailService customerTransactionDetailService;
     private readonly ISalesInvoiceLineItemService salesInvoiceLineItemService;
+    private readonly IPurchaseControlAccountService purchaseControlAccountService;
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -50,7 +53,8 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository,
         ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
         ICustomerTransactionDetailService customerTransactionDetailService,
-        ISalesInvoiceLineItemService salesInvoiceLineItemService
+        ISalesInvoiceLineItemService salesInvoiceLineItemService,
+        IPurchaseControlAccountService purchaseControlAccountService
 
         )
     {
@@ -71,6 +75,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.tenantSimpleUnitOfWork =  tenantSimpleUnitOfWork;
         this.customerTransactionDetailService = customerTransactionDetailService;
         this.salesInvoiceLineItemService = salesInvoiceLineItemService;
+        this.purchaseControlAccountService = purchaseControlAccountService;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -126,7 +131,11 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto,bool IsPosting = true)
     {
         SalesInvoice details = new SalesInvoice();
+        IEnumerable<BusinessPartnerControlAccountViewModel> businessPartnerControlAccount = new List<BusinessPartnerControlAccountViewModel>();
+        PurchaseControlAccount purchaseControlAccount = new PurchaseControlAccount();
         int salesInvoiceId = 0;
+        int orgin = 0;
+        int type = 0;
 
 
             if (salesInvoiceDto.SalesOrderOrigin == 4)
@@ -151,21 +160,25 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 }
 
             }
-            if(salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
+            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
             {
-                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.RetailSalesOrder), Convert.ToInt32(TransactionType.RetailSalesOrderInvoiceCredit));
-                if (journalBookConfig == null)
-                    throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+                orgin = (int)TransactionOrgin.RetailSalesOrder;
+                type = (int)TransactionType.RetailSalesOrderInvoiceCredit;
+            }
+            else if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCash)
+            {
+                orgin = (int)TransactionOrgin.RetailSalesOrder;
+                type = (int)TransactionType.RetailSalesOrderInvoiceCash;
             }
             else
             {
-                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderInvoice));
-                if (journalBookConfig == null)
-                    throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+                orgin = (int)TransactionOrgin.SalesOrder;
+                type = (int)TransactionType.SalesOrderInvoice;
             }
+            journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
 
-
-
+            if (journalBookConfig == null)
+                throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
 
             SalesInvoice salesInvoice = Mapper.Map<SalesInvoice>(salesInvoiceDto);
 
@@ -173,9 +186,13 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             {
                 salesInvoice.Narration = TransactionType.VanSalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
             }
-            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
+            else if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
             {
                 salesInvoice.Narration = TransactionType.RetailSalesOrderInvoiceCredit + "-" + salesInvoiceDto.SalesInvoiceNo;
+            }
+            else if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCash)
+            {
+                salesInvoice.Narration = TransactionType.RetailSalesOrderInvoiceCash + "-" + salesInvoiceDto.SalesInvoiceNo;
             }
             else
             {
@@ -209,9 +226,18 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 int itemLineNumber = 0;
                 int transactionDetailNumber = 0;
 
-                var businessPartnerControlAccount = await businessPartnerGroupService.GetCustomerControlAccountsByBusinessPartnerIdAsync(salesInvoice.BusinessPartnerId);
-                if (businessPartnerControlAccount == null || businessPartnerControlAccount.Count() == 0)
-                    throw new ResourceNotFoundException("Business partner control account not found for this business partner");
+                if (salesInvoiceDto.IsCashSales != true)
+                {
+                        businessPartnerControlAccount = await businessPartnerGroupService.GetCustomerControlAccountsByBusinessPartnerIdAsync(salesInvoice.BusinessPartnerId);
+                    if (businessPartnerControlAccount == null || businessPartnerControlAccount.Count() == 0)
+                        throw new ResourceNotFoundException("Business partner control account not found for this business partner");
+                }
+                else
+                {
+                   purchaseControlAccount = await purchaseControlAccountService.GetCashSuspenseAccount();
+                   if (purchaseControlAccount == null)
+                        throw new ResourceNotFoundException("Cash Suspense control account not Configured");
+                }
 
                 var salesTaxAccount = await taxAccountSetupService.GetSalesTaxAccountAsync();
                 if (salesTaxAccount == null)
@@ -229,22 +255,44 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
 
                     if (item.TotalAmount > 0)
                     {
-                        salesInvoice.CustomerTransactionDetails.Add(new()
+                        if (salesInvoiceDto.IsCashSales != true)
                         {
-                            LineNumber = ++transactionDetailNumber,
-                            LedgerAccountId = businessPartnerControlAccount.First().AccountId,
-                            LedgerAccountCode = businessPartnerControlAccount.First().AccountCode,
-                            LedgerAccountName = businessPartnerControlAccount.First().AccountDescription,
-                            DebitAmount = item.TotalAmount,
-                            DebitAmountInBaseCurrency = item.TotalAmount * salesInvoice.ExchangeRate,
-                            CostAllocationCode = "NA",
-                            CostAllocationDescription = "No Cost Allocation",
-                            IsControlAccount = true,
-                            ControlAccountType = ControlAccountType.Customer,
-                            BranchId = salesInvoice.BranchId,
-                            FinancialYearId = salesInvoice.FinancialYearId,
-                            ItemId = item.ItemId
-                        });
+                            salesInvoice.CustomerTransactionDetails.Add(new()
+                            {
+                                LineNumber = ++transactionDetailNumber,
+                                LedgerAccountId = businessPartnerControlAccount.First().AccountId,
+                                LedgerAccountCode = businessPartnerControlAccount.First().AccountCode,
+                                LedgerAccountName = businessPartnerControlAccount.First().AccountDescription,
+                                DebitAmount = item.TotalAmount,
+                                DebitAmountInBaseCurrency = item.TotalAmount * salesInvoice.ExchangeRate,
+                                CostAllocationCode = "NA",
+                                CostAllocationDescription = "No Cost Allocation",
+                                IsControlAccount = true,
+                                ControlAccountType = ControlAccountType.Customer,
+                                BranchId = salesInvoice.BranchId,
+                                FinancialYearId = salesInvoice.FinancialYearId,
+                                ItemId = item.ItemId
+                            });
+                        }
+                        else 
+                        {
+                            salesInvoice.CustomerTransactionDetails.Add(new()
+                            {
+                                LineNumber = ++transactionDetailNumber,
+                                LedgerAccountId = purchaseControlAccount.CashSuspenseAccountId,
+                                LedgerAccountCode = purchaseControlAccount.CashSuspenseAccountCode,
+                                LedgerAccountName = purchaseControlAccount.CashSuspenseAccountName,
+                                DebitAmount = item.TotalAmount,
+                                DebitAmountInBaseCurrency = item.TotalAmount * salesInvoice.ExchangeRate,
+                                CostAllocationCode = "NA",
+                                CostAllocationDescription = "No Cost Allocation",
+                                IsControlAccount = true,
+                                ControlAccountType = ControlAccountType.Integration,
+                                BranchId = salesInvoice.BranchId,
+                                FinancialYearId = salesInvoice.FinancialYearId,
+                                ItemId = item.ItemId
+                            });
+                        }
                     }
 
                     if (item.TaxAmount > 0)
@@ -339,7 +387,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         {
             string json = JsonConvert.SerializeObject(salesInvoice);
 
-            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit && salesInvoiceDto.SalesInvoiceNo != "")
+            if (salesInvoiceDto.SalesInvoiceNo != "")
             {
                 int count = await salesInvoiceService.IsDocumentNoExist(salesInvoiceDto.SalesInvoiceNo);
                 if (count == 0)
