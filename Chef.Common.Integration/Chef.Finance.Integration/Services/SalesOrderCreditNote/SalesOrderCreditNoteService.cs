@@ -36,6 +36,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
     private readonly ICustomerTransactionService customerTransactionService;
     private readonly ICustomerTransactionDetailService customerTransactionDetailService;
     private readonly ICustomerAllocationTransactionRepository customerAllocationTransactionRepository;
+    private readonly IPurchaseControlAccountService purchaseControlAccountService;
 
     public SalesOrderCreditNoteService(
         ICustomerCreditNoteRepository customerCreditNoteRepository,
@@ -57,7 +58,8 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
         ICustomerTransactionService customerTransactionService,
         ICustomerTransactionDetailService customerTransactionDetailService,
-        ICustomerAllocationTransactionRepository customerAllocationTransactionRepository
+        ICustomerAllocationTransactionRepository customerAllocationTransactionRepository,
+        IPurchaseControlAccountService purchaseControlAccountService
         )
     {
         this.customerCreditNoteRepository = customerCreditNoteRepository;
@@ -80,6 +82,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         this.customerTransactionService = customerTransactionService;
         this.customerTransactionDetailService = customerTransactionDetailService;
         this.customerAllocationTransactionRepository = customerAllocationTransactionRepository;
+        this.purchaseControlAccountService = purchaseControlAccountService;
 
 
     }
@@ -123,43 +126,49 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
     private  async Task<SalesReturnCreditResponse> PostAsync(SalesReturnCreditDto salesReturnCreditDto,bool IsPosting = true)
     {
         CustomerCreditNote customerCreditNoteResult = new CustomerCreditNote();
+        IEnumerable<BusinessPartnerControlAccountViewModel> businessPartnerControlAccount = new List<BusinessPartnerControlAccountViewModel>();
+        PurchaseControlAccount purchaseControlAccount = new PurchaseControlAccount();
+        int orgin = 0;
+        int type = 0;
 
 
             if (salesReturnCreditDto.isVanSales == true)
             {
-                string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
+                    string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
 
-                int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
+                    int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
 
-                int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesReturnCreditDto.BranchId, code);
+                    int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesReturnCreditDto.BranchId, code);
 
-                if (journalBookNumberingScheme == 0)
-                    throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
+                    if (journalBookNumberingScheme == 0)
+                        throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
 
-                journalBookConfig = await journalBookRepository.getJournalBookdetailsByVanSalesCode(code);
-                if (journalBookConfig == null)
-                    throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
-
-
-                int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesReturnCreditDto.BranchId, financialYearId, salesReturnCreditDto.CreditNoteNumber);
+                    journalBookConfig = await journalBookRepository.getJournalBookdetailsByVanSalesCode(code);
+                    if (journalBookConfig == null)
+                        throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
 
 
+                    int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesReturnCreditDto.BranchId, financialYearId, salesReturnCreditDto.CreditNoteNumber);
             }
-            if(salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
+            if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
             {
-                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.RetailSalesOrder), Convert.ToInt32(TransactionType.RetailSalesOrderReturnCredit));
-
-                if (journalBookConfig == null)
-                    throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+               orgin = (int)TransactionOrgin.RetailSalesOrder;
+               type = (int)TransactionType.RetailSalesOrderReturnCredit;
+            }
+            else if(salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCash)
+            {
+                orgin = (int)TransactionOrgin.RetailSalesOrder;
+                type = (int)TransactionType.RetailSalesOrderReturnCash;
             }
             else
             {
-                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderReturn));
-
-                if (journalBookConfig == null)
-                    throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+                orgin = (int)TransactionOrgin.SalesOrder;
+                type = (int)TransactionType.SalesOrderReturn;
             }
+            journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
 
+            if (journalBookConfig == null)
+                throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
 
             CustomerCreditNote customerCreditNote = Mapper.Map<CustomerCreditNote>(salesReturnCreditDto);
 
@@ -167,9 +176,13 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             {
                 customerCreditNote.Narration = TransactionType.SalesOrderReturn + "-" + salesReturnCreditDto.CreditNoteNumber;
             }
-            if(salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
+            else if(salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
             {
                 customerCreditNote.Narration = TransactionType.RetailSalesOrderReturnCredit + "-" + salesReturnCreditDto.CreditNoteNumber;
+            }
+            else if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCash)
+            {
+                customerCreditNote.Narration = TransactionType.RetailSalesOrderReturnCash + "-" + salesReturnCreditDto.CreditNoteNumber;
             }
             else
             {
@@ -193,9 +206,18 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             {
                 int transactionDetailNumber = 0;
 
-                var businessPartnerControlAccount = await businessPartnerGroupService.GetCustomerControlAccountsByBusinessPartnerIdAsync(customerCreditNote.BusinessPartnerId);
-                if (businessPartnerControlAccount.Count() == 0)
-                    throw new ResourceNotFoundException("Business partner control account not found for this business partner");
+                if (salesReturnCreditDto.IsCashSales != true) 
+                {
+                    businessPartnerControlAccount = await businessPartnerGroupService.GetCustomerControlAccountsByBusinessPartnerIdAsync(customerCreditNote.BusinessPartnerId);
+                    if (businessPartnerControlAccount.Count() == 0)
+                        throw new ResourceNotFoundException("Business partner control account not found for this business partner");
+                }
+                else
+                {
+                   purchaseControlAccount =  await purchaseControlAccountService.GetCashSuspenseAccount();
+                   if (purchaseControlAccount == null)
+                       throw new ResourceNotFoundException("Cash Suspense control account not Configured");
+                }
 
                 var salesTaxAccount = await taxAccountSetupService.GetSalesTaxAccountAsync();
                 if (salesTaxAccount == null)
@@ -209,22 +231,44 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 {
                     if (item.NetAmount > 0)
                     {
-                        customerCreditNote.CustomerTransactionDetails.Add(new()
+                        if (salesReturnCreditDto.IsCashSales != true)
                         {
-                            LineNumber = ++transactionDetailNumber,
-                            LedgerAccountId = businessPartnerControlAccount.First().AccountId,
-                            LedgerAccountCode = businessPartnerControlAccount.First().AccountCode,
-                            LedgerAccountName = businessPartnerControlAccount.First().AccountDescription,
-                            CreditAmount = item.NetAmount,
-                            CreditAmountInBaseCurrency = item.NetAmount * customerCreditNote.ExchangeRate,
-                            CostAllocationCode = "NA",
-                            CostAllocationDescription = "No Cost Allocation",
-                            IsControlAccount = true,
-                            ControlAccountType = ControlAccountType.Customer,
-                            BranchId = customerCreditNote.BranchId,
-                            FinancialYearId = customerCreditNote.FinancialYearId,
-                            ItemId = item.ItemId
-                        });
+                            customerCreditNote.CustomerTransactionDetails.Add(new()
+                            {
+                                LineNumber = ++transactionDetailNumber,
+                                LedgerAccountId = businessPartnerControlAccount.First().AccountId,
+                                LedgerAccountCode = businessPartnerControlAccount.First().AccountCode,
+                                LedgerAccountName = businessPartnerControlAccount.First().AccountDescription,
+                                CreditAmount = item.NetAmount,
+                                CreditAmountInBaseCurrency = item.NetAmount * customerCreditNote.ExchangeRate,
+                                CostAllocationCode = "NA",
+                                CostAllocationDescription = "No Cost Allocation",
+                                IsControlAccount = true,
+                                ControlAccountType = ControlAccountType.Customer,
+                                BranchId = customerCreditNote.BranchId,
+                                FinancialYearId = customerCreditNote.FinancialYearId,
+                                ItemId = item.ItemId
+                            });
+                        }
+                        else
+                        {
+                            customerCreditNote.CustomerTransactionDetails.Add(new()
+                            {
+                                LineNumber = ++transactionDetailNumber,
+                                LedgerAccountId = purchaseControlAccount.CashSuspenseAccountId,
+                                LedgerAccountCode = purchaseControlAccount.CashSuspenseAccountCode,
+                                LedgerAccountName = purchaseControlAccount.CashSuspenseAccountName,
+                                CreditAmount = item.NetAmount,
+                                CreditAmountInBaseCurrency = item.NetAmount * customerCreditNote.ExchangeRate,
+                                CostAllocationCode = "NA",
+                                CostAllocationDescription = "No Cost Allocation",
+                                IsControlAccount = true,
+                                ControlAccountType = ControlAccountType.Integration,
+                                BranchId = customerCreditNote.BranchId,
+                                FinancialYearId = customerCreditNote.FinancialYearId,
+                                ItemId = item.ItemId
+                            });
+                        }
                     }
 
                     if (item.TotalTaxAmt > 0)
@@ -315,7 +359,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
         if (IsPosting == true)
         {
-            if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit && salesReturnCreditDto.CreditNoteNumber != "")
+            if (salesReturnCreditDto.CreditNoteNumber != "")
             {
                 CustomerCreditNoteViewModel viewModel = new CustomerCreditNoteViewModel();
                 viewModel.CustomerCreditNote = customerCreditNote;
@@ -338,7 +382,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 customerCreditNoteResult = await customerCreditNoteService.InsertCustomerCreditNote(customerCreditNote);
             }
 
-            if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit && salesReturnCreditDto.CreditNoteNumber != "")
+            if (salesReturnCreditDto.CreditNoteNumber != "")
             {
                 int deletedAlloction = await customerAllocationTransactionRepository.DeleteCustomerAllocationByCreditNoteIdAsync(customerCreditNote.Id);
             }
