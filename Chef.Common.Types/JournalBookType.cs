@@ -71,6 +71,7 @@
 
         CashCollectionAccount = 700,
         OnAccountRepaymentToCustomers = 702,
-        CashSaleInvoice = 800
+        CashSaleInvoice = 800,
+        CashSaleReturn = 801
     }
 }
