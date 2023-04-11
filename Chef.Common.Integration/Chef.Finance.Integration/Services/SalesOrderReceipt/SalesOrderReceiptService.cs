@@ -109,12 +109,12 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             receiptRegister.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
 
             receiptRegister.ApproveStatus = ApproveStatus.Draft;
-            receiptRegister.JournalBookCode = bankaccountType.jbcode;
-            receiptRegister.JournalBookId = bankaccountType.jbid;
-            receiptRegister.JournalBookCode = bankaccountType.jbcode;
-            receiptRegister.JournalBookName = bankaccountType.name;
-            receiptRegister.JournalBookTypeId = bankaccountType.journalbooktypeid;
-            receiptRegister.JournalBookTypeCode = bankaccountType.journalbooktypecode;
+            receiptRegister.JournalBookCode = bankaccountType.JBCode;
+            receiptRegister.JournalBookId = bankaccountType.JBId;
+            receiptRegister.JournalBookCode = bankaccountType.JBCode;
+            receiptRegister.JournalBookName = bankaccountType.Name;
+            receiptRegister.JournalBookTypeId = bankaccountType.JournalBookTypeId;
+            receiptRegister.JournalBookTypeCode = bankaccountType.JournalBookTypeCode;
             receiptRegister.PaymentMethodId = paymentMethod.Id;
             receiptRegister.PaymentMethodCode = paymentMethod.Code;
             receiptRegister.PaymentMethodName = paymentMethod.Name;

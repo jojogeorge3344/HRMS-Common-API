@@ -18,6 +18,8 @@ public static class HttpHelper
     {
         get
         {
+            if (_accessor is null)
+                return "System";
             return _accessor.HttpContext.Items["User"] != null ? ((Microsoft.AspNetCore.Identity.IdentityUser<string>)_accessor.HttpContext.Items["User"]).UserName : "System";
         }
     }

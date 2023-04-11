@@ -20,7 +20,8 @@ public class SalesOrderInvoiceMappingProfile : Profile
             .ForMember(d => d.NetAmount, opt => opt.MapFrom(x => x.GrossAmt))
             .ForMember(d => d.TaxPercentage, opt => opt.MapFrom(x => x.TotalTaxPer))
             .ForMember(d => d.TaxAmount, opt => opt.MapFrom(x => x.TotalTaxAmt))
-            .ForMember(d => d.TotalAmount, opt => opt.MapFrom(x => x.NetAmount));
+            .ForMember(d => d.TotalAmount, opt => opt.MapFrom(x => x.NetAmount))
+            .ForMember(d => d.ItemId, opt => opt.MapFrom(x => x.ItemId));
 
         CreateMap<SalesInvoiceDto, SalesInvoice>()
             .ForMember(d => d.InvoiceDate, opt => opt.MapFrom(x => x.SalesInvoiceDate))
@@ -29,9 +30,14 @@ public class SalesOrderInvoiceMappingProfile : Profile
             .ForMember(d => d.BusinessPartnerName, opt => opt.MapFrom(x => x.CustomerName))
             .ForMember(d => d.TransactionCurrencyCode, opt => opt.MapFrom(x => x.SalesInvoiceCurrency))
             .ForMember(d => d.ExchangeRate, opt => opt.MapFrom(x => x.ExRate))
+            .ForMember(d => d.ExchangeDate, opt => opt.MapFrom(x => x.ExchangeDate))
             .ForMember(d => d.DiscountAmount, opt => opt.MapFrom(x => x.TotalDiscount))
             .ForMember(d => d.PaymentTerm, opt => opt.MapFrom(x => x.SalesInvoicePaymentTermsDto.FirstOrDefault()))
             .ForMember(d => d.LineItems, opt => opt.MapFrom(x => x.SalesInvoiceItemDto))
             .ForMember(d => d.TransactionDate, opt => opt.MapFrom(x => x.SalesInvoiceDate));
+
+        CreateMap<CustomerTransactionDetail, SalesInvoiceViewDto>();
+
+
     }
 }

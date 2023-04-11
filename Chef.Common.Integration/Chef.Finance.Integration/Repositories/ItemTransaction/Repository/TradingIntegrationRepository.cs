@@ -1,6 +1,8 @@
 ﻿
+using Chef.Common.Models;
 using Chef.Finance.Configuration.Repositories;
 using Chef.Finance.Integration.Models;
+
 namespace Chef.Finance.Integration;
 public class TradingIntegrationRepository : TenantRepository<TradingIntegrationHeader>, ITradingIntegrationRepository
 {
@@ -62,14 +64,24 @@ public class TradingIntegrationRepository : TenantRepository<TradingIntegrationH
         //                              ids.ledgeraccountname, 
         //                              ids.financialyearid
         //                            ";
-        string sql = @"SELECT tih.id AS tradingintegrationheaderid,
+        string sql = @"SELECT     tih.id AS tradingintegrationheaderid,
                                    tih.*,
                                    ids.id AS integrationdetailid,
-                                   ids.*
-                            FROM   finance.tradingintegrationheader tih
-                                   INNER JOIN finance.integrationdetails ids
-                                           ON tih.id = ids.integrationheaderid
-                            WHERE  tih.id = @integerationHeaderId";
+                                   ids.linenumber,
+                                   ids.ledgeraccountid,
+                                   ids.ledgeraccountcode,
+                                   ids.ledgeraccountname,
+                                   ids.debitamount,
+                                   ids.debitamountinbasecurrency,
+                                   ids.creditamount,
+                                   ids.creditamountinbasecurrency,
+                                   ids.isdimensionallocation,
+                                   ids.narration,
+                                   ids.itemtransactionfinanceid
+                                   FROM   finance.tradingintegrationheader tih
+                        INNER join finance.integrationdetails ids
+                        ON         tih.id = ids.integrationheaderid
+                        WHERE      tih.id = @integerationHeaderId";
         return await Connection.QueryAsync<TradingIntegrationHeaderDetailsViewModel>(sql, new { integerationHeaderId });
 
     }
@@ -119,8 +131,13 @@ public class TradingIntegrationRepository : TenantRepository<TradingIntegrationH
     }
     public async Task<int> UpdateStatus(int HeaderId)
     {
-        string sql = @"UPDATE finance.tradingintegrationheader set approvestatus=2,approvestatusname='Approved' where id=@HeaderId";
-        await Connection.ExecuteAsync(sql, new { HeaderId });
+        int approveStatus = (int)ApproveStatus.Approved;
+        string sql = @"UPDATE finance.tradingintegrationheader
+                                    SET    approvestatus = @approveStatus,
+                                           approvestatusname = 'Approved',
+                                           approveddate = CURRENT_DATE
+                                    WHERE  id = @HeaderId ";
+        await Connection.ExecuteAsync(sql, new { HeaderId, approveStatus });
         return 1;
 
     }

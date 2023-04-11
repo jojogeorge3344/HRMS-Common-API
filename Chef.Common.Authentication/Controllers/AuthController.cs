@@ -11,6 +11,7 @@ public class AuthController : ControllerBase
         this.authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<AuthToken>> Login([FromBody]LoginDto loginModel)
     {
@@ -23,6 +24,7 @@ public class AuthController : ControllerBase
         return Ok(await authService.ChangePassword(changePasswordModel));
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<IdentityResult>> Register([FromBody]RegisterDto registerModel)
     {

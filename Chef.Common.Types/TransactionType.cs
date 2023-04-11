@@ -18,9 +18,12 @@
         VanSalesOrderDelivery=14,
         VanSalesOrderInvoice=15,
         VanSalesOrderReturn=16,
-        RetailSalesOrderDelivery=17,
-        RetailSalesOrderInvoice=18,
-        RetailSalesOrderReturn=19,
-        MatchandApproval = 22
+        RetailSalesOrderDeliveryCredit=17,
+        RetailSalesOrderInvoiceCredit = 18,
+        RetailSalesOrderReturnCredit=19,
+        RetailSalesOrderDeliveryCash=20,
+        RetailSalesOrderInvoiceCash=21,
+        RetailSalesOrderReturnCash=22,
+        MatchandApproval = 23
     }
 }

@@ -40,9 +40,9 @@ public class CommonDataService : ICommonDataService
         return commonDataRepository.GetAllReasonCode();
     }
 
-    public Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id)
+    public Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint()
     {
-        return commonDataRepository.GetCompanyDetailsForSalesInvoicePrint(id);
+        return commonDataRepository.GetCompanyDetailsForSalesInvoicePrint();
     }
     public async Task<int> UpdateCompanyLogo(Company company)
     {

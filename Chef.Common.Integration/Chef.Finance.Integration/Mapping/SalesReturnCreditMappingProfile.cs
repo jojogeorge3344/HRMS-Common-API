@@ -15,6 +15,7 @@ public class SalesReturnCreditMappingProfile : Profile
                         .ForMember(d => d.BusinessPartnerName, opt => opt.MapFrom(x => x.CustomerName))
                         .ForMember(d => d.TransactionCurrencyCode, opt => opt.MapFrom(x => x.SalesCreditCurrency))
                         .ForMember(d => d.ExchangeRate, opt => opt.MapFrom(x => x.ExRate))
+                        .ForMember(d => d.ExchangeDate, opt => opt.MapFrom(x => x.ExchangeDate))
                         .ForMember(d => d.TotalAmount, opt => opt.MapFrom(x => x.NetAmount))
                         .ForMember(d => d.TotalBalanceAmount, opt => opt.MapFrom(x => x.NetAmount))
                         .ForMember(d => d.BranchId, opt => opt.MapFrom(x => x.BranchId))
@@ -28,6 +29,8 @@ public class SalesReturnCreditMappingProfile : Profile
                         .ForMember(d => d.TotalAmount, opt => opt.MapFrom(x => x.NetAmount))
                         .ForMember(d => d.TotalBalanceAmountInBasecurrency, opt => opt.MapFrom(x => x.NetAmount * x.ExRate))
                         .ForMember(d => d.BranchId, opt => opt.MapFrom(x => x.BranchId));
+
+        CreateMap<CustomerTransactionDetail, SalesReturnCreditViewDto>();
 
     }
 }

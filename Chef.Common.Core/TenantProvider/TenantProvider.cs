@@ -26,6 +26,7 @@ namespace Chef.Common.Core
             this.configuration = builder.Build();
         }
 
+
         public string GetConsoleConnectionString()
         {
             return configuration.GetSection("ConsoleConnection").Value;

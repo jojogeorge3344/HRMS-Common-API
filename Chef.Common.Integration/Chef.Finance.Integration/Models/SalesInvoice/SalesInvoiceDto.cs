@@ -40,6 +40,23 @@ public class SalesInvoiceDto : Model
 
     public int? SalesOrderOrigin { get; set; }
 
+    public TransactionOrgin TransactionOriginName { get; set; }
+
+    public string TransactionTypeName { get; set; }
+
+    public TransactionType TransOriginType { get; set; }
+
+    public DateTime? ExchangeDate { get; set; }
+
+    public bool IsCashSales { get; set; }
+
+    public int InvoiceType { get; set; }
+    public bool IsProcess { get; set; }
+    public bool IsCustomer { get; set; }
+    public int ProspectId { get; set; }
+
+    public int BaseQuantity { get; set; }
+
     public List<SalesInvoiceItemDto> SalesInvoiceItemDto { get; set; }
     public List<SalesInvoicePaymentTermsDto> SalesInvoicePaymentTermsDto { get; set; }
 }

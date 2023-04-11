@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Services;
+using Chef.Common.Types;
 using Chef.Finance.Configuration.Repositories;
 using Chef.Finance.Configuration.Services;
 using Chef.Finance.Customer.Repositories;
@@ -9,6 +10,8 @@ using Chef.Finance.Integration.Models;
 using Chef.Finance.Models;
 using Chef.Finance.Repositories;
 using Chef.Finance.Services;
+using Newtonsoft.Json;
+using System.Collections;
 
 namespace Chef.Finance.Integration;
 
@@ -28,6 +31,10 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly ISalesInvoiceRepository salesInvoiceRepository;
     private readonly IJournalBookRepository journalBookRepository;
     private readonly IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository;
+    private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
+    private readonly ICustomerTransactionDetailService customerTransactionDetailService;
+    private readonly ISalesInvoiceLineItemService salesInvoiceLineItemService;
+    private readonly IPurchaseControlAccountService purchaseControlAccountService;
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -43,7 +50,12 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         IGeneralLedgerPostingService generalLedgerPostingService,
         ISalesInvoiceRepository salesInvoiceRepository,
         IJournalBookRepository journalBookRepository,
-        IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository
+        IJournalBookNumberingSchemeRepository journalBookNumberingSchemeRepository,
+        ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
+        ICustomerTransactionDetailService customerTransactionDetailService,
+        ISalesInvoiceLineItemService salesInvoiceLineItemService,
+        IPurchaseControlAccountService purchaseControlAccountService
+
         )
     {
         this.integrationJournalBookConfigurationRepository = integrationJournalBookConfigurationRepository;
@@ -60,6 +72,10 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.journalBookRepository = journalBookRepository;
         this.journalBookNumberingSchemeRepository = journalBookNumberingSchemeRepository;
+        this.tenantSimpleUnitOfWork =  tenantSimpleUnitOfWork;
+        this.customerTransactionDetailService = customerTransactionDetailService;
+        this.salesInvoiceLineItemService = salesInvoiceLineItemService;
+        this.purchaseControlAccountService = purchaseControlAccountService;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -78,220 +94,353 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     }
 
     private IntegrationJournalBookConfiguration journalBookConfig = new IntegrationJournalBookConfiguration();
-    public async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto)
+
+
+    public async Task<SalesInvoiceResponse> Insert(SalesInvoiceDto salesInvoiceDto)
+    {
+        try
         {
-        if (salesInvoiceDto.SalesOrderOrigin == 4)
+            tenantSimpleUnitOfWork.BeginTransaction();
+            SalesInvoiceResponse salesInvoiceResponses = await InsertAsync(salesInvoiceDto);
+            tenantSimpleUnitOfWork.Commit();
+            return salesInvoiceResponses;
+        }
+        catch(Exception ex)
         {
-            string code = salesInvoiceDto.SalesInvoiceNo.Substring(0,5);
+            tenantSimpleUnitOfWork.Rollback();
+            throw;
+        }
+    }
 
-            int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
 
-            int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesInvoiceDto.BranchId, code);
+    public async Task<SalesInvoiceResponse> ViewSalesInvoice(SalesInvoiceDto salesInvoiceDto)
+    {
+        try
+        {
+            SalesInvoiceResponse details = await InsertAsync(salesInvoiceDto,false);
+            return details;
+        }
+        catch(Exception ex)
+        {
+            throw;
+        }
+    }
+    bool posting = true;
 
-            if(journalBookNumberingScheme == 0)
-                throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
 
-            journalBookConfig = await journalBookRepository.getJournalBookdetailsByVanSalesCode(code);
-            if (journalBookConfig == 
-                null)
-                throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
+    private async Task<SalesInvoiceResponse> InsertAsync(SalesInvoiceDto salesInvoiceDto,bool IsPosting = true)
+    {
+        SalesInvoice details = new SalesInvoice();
+        IEnumerable<BusinessPartnerControlAccountViewModel> businessPartnerControlAccount = new List<BusinessPartnerControlAccountViewModel>();
+        PurchaseControlAccount purchaseControlAccount = new PurchaseControlAccount();
+        int salesInvoiceId = 0;
+        int orgin = 0;
+        int type = 0;
 
-            if (!salesInvoiceDto.SalesInvoiceNo.Contains(".") && !salesInvoiceDto.SalesInvoiceNo.Contains("_"))
+
+            if (salesInvoiceDto.SalesOrderOrigin == 4)
             {
-                int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
+                string code = salesInvoiceDto.SalesInvoiceNo.Substring(0, 5);
+
+                int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
+
+                int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesInvoiceDto.BranchId, code);
+
+                if (journalBookNumberingScheme == 0)
+                    throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
+
+                journalBookConfig = await journalBookRepository.getJournalBookdetailsByVanSalesCode(code);
+                if (journalBookConfig ==
+                    null)
+                    throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesInvoiceDto.SalesInvoiceNo}");
+
+                if (!salesInvoiceDto.SalesInvoiceNo.Contains(".") && !salesInvoiceDto.SalesInvoiceNo.Contains("_"))
+                {
+                    int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesInvoiceDto.BranchId, financialYearId, salesInvoiceDto.SalesInvoiceNo);
+                }
+
+            }
+            if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
+            {
+                orgin = (int)TransactionOrgin.RetailSalesOrder;
+                type = (int)TransactionType.RetailSalesOrderInvoiceCredit;
+            }
+            else if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCash)
+            {
+                orgin = (int)TransactionOrgin.RetailSalesOrder;
+                type = (int)TransactionType.RetailSalesOrderInvoiceCash;
+            }
+            else
+            {
+                orgin = (int)TransactionOrgin.SalesOrder;
+                type = (int)TransactionType.SalesOrderInvoice;
+            }
+            journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
+
+            if (journalBookConfig == null)
+                throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+
+            SalesInvoice salesInvoice = Mapper.Map<SalesInvoice>(salesInvoiceDto);
+
+            if (salesInvoiceDto.SalesOrderOrigin == 4)
+            {
+                salesInvoice.Narration = TransactionType.VanSalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
+            }
+            else if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCredit)
+            {
+                salesInvoice.Narration = TransactionType.RetailSalesOrderInvoiceCredit + "-" + salesInvoiceDto.SalesInvoiceNo;
+            }
+            else if (salesInvoiceDto.TransOriginType == TransactionType.RetailSalesOrderInvoiceCash)
+            {
+                salesInvoice.Narration = TransactionType.RetailSalesOrderInvoiceCash + "-" + salesInvoiceDto.SalesInvoiceNo;
+            }
+            else
+            {
+              salesInvoice.Narration = TransactionType.SalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
             }
 
+            salesInvoice.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
+            salesInvoice.ApproveStatus = ApproveStatus.Draft;
+            salesInvoice.JournalBookCode = journalBookConfig.JournalBookCode;
+            salesInvoice.JournalBookId = journalBookConfig.JournalBookId;
+            salesInvoice.JournalBookName = journalBookConfig.JournalBookName;
+            salesInvoice.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
+            salesInvoice.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
+
+            salesInvoice.OtherDetail = new()
+            {
+                Narration = salesInvoice.Narration,
+                BranchId = salesInvoice.BranchId,
+                FinancialYearId = salesInvoice.FinancialYearId
+            };
+
+            if (salesInvoice.PaymentTerm != null)
+            {
+                salesInvoice.PaymentTerm.BranchId = salesInvoice.BranchId;
+                salesInvoice.PaymentTerm.FinancialYearId = salesInvoice.FinancialYearId;
+            }
+            salesInvoice.CustomerTransactionDetails = new();
+
+            if (salesInvoice.LineItems != null)
+            {
+                int itemLineNumber = 0;
+                int transactionDetailNumber = 0;
+
+                if (salesInvoiceDto.IsCashSales != true)
+                {
+                        businessPartnerControlAccount = await businessPartnerGroupService.GetCustomerControlAccountsByBusinessPartnerIdAsync(salesInvoice.BusinessPartnerId);
+                    if (businessPartnerControlAccount == null || businessPartnerControlAccount.Count() == 0)
+                        throw new ResourceNotFoundException("Business partner control account not found for this business partner");
+                }
+                else
+                {
+                   purchaseControlAccount = await purchaseControlAccountService.GetCashSuspenseAccount();
+                   if (purchaseControlAccount == null)
+                        throw new ResourceNotFoundException("Cash Suspense control account not Configured");
+                }
+
+                var salesTaxAccount = await taxAccountSetupService.GetSalesTaxAccountAsync();
+                if (salesTaxAccount == null)
+                    throw new ResourceNotFoundException("Sales tax account not found");
+
+                var chartOfAccount = await glControlAccountService.GetSalesInvoiceDiscountGLControlAccountsAsync();
+                if (chartOfAccount == null)
+                    throw new ResourceNotFoundException("Control account not configured for sales invoice discount");
+
+                foreach (var item in salesInvoice.LineItems)
+                {
+                    item.LineNumber = ++itemLineNumber;
+                    item.BranchId = salesInvoice.BranchId;
+                    item.FinancialYearId = salesInvoice.FinancialYearId;
+
+                    if (item.TotalAmount > 0)
+                    {
+                        if (salesInvoiceDto.IsCashSales != true)
+                        {
+                            salesInvoice.CustomerTransactionDetails.Add(new()
+                            {
+                                LineNumber = ++transactionDetailNumber,
+                                LedgerAccountId = businessPartnerControlAccount.First().AccountId,
+                                LedgerAccountCode = businessPartnerControlAccount.First().AccountCode,
+                                LedgerAccountName = businessPartnerControlAccount.First().AccountDescription,
+                                DebitAmount = item.TotalAmount,
+                                DebitAmountInBaseCurrency = item.TotalAmount * salesInvoice.ExchangeRate,
+                                CostAllocationCode = "NA",
+                                CostAllocationDescription = "No Cost Allocation",
+                                IsControlAccount = true,
+                                ControlAccountType = ControlAccountType.Customer,
+                                BranchId = salesInvoice.BranchId,
+                                FinancialYearId = salesInvoice.FinancialYearId,
+                                ItemId = item.ItemId
+                            });
+                        }
+                        else 
+                        {
+                            salesInvoice.CustomerTransactionDetails.Add(new()
+                            {
+                                LineNumber = ++transactionDetailNumber,
+                                LedgerAccountId = purchaseControlAccount.CashSuspenseAccountId,
+                                LedgerAccountCode = purchaseControlAccount.CashSuspenseAccountCode,
+                                LedgerAccountName = purchaseControlAccount.CashSuspenseAccountName,
+                                DebitAmount = item.TotalAmount,
+                                DebitAmountInBaseCurrency = item.TotalAmount * salesInvoice.ExchangeRate,
+                                CostAllocationCode = "NA",
+                                CostAllocationDescription = "No Cost Allocation",
+                                IsControlAccount = true,
+                                ControlAccountType = ControlAccountType.Integration,
+                                BranchId = salesInvoice.BranchId,
+                                FinancialYearId = salesInvoice.FinancialYearId,
+                                ItemId = item.ItemId
+                            });
+                        }
+                    }
+
+                    if (item.TaxAmount > 0)
+                    {
+                        salesInvoice.CustomerTransactionDetails.Add(new()
+                        {
+                            LineNumber = ++transactionDetailNumber,
+                            LedgerAccountId = salesTaxAccount.Id,
+                            LedgerAccountCode = salesTaxAccount.Code,
+                            LedgerAccountName = salesTaxAccount.Description,
+                            CreditAmount = item.TaxAmount,
+                            CreditAmountInBaseCurrency = item.TaxAmount * salesInvoice.ExchangeRate,
+                            TotalAmount = item.TaxAmount,
+                            CostAllocationCode = "NA",
+                            CostAllocationDescription = "No Cost Allocation",
+                            IsControlAccount = true,
+                            ControlAccountType = ControlAccountType.Tax,
+                            BranchId = salesInvoice.BranchId,
+                            FinancialYearId = salesInvoice.FinancialYearId,
+                            ItemId = item.ItemId
+                        });
+                    }
+
+                    if (item.DiscountAmount > 0)
+                    {
+                        salesInvoice.CustomerTransactionDetails.Add(new()
+                        {
+                            LineNumber = ++transactionDetailNumber,
+                            LedgerAccountId = chartOfAccount.Id,
+                            LedgerAccountCode = chartOfAccount.Code,
+                            LedgerAccountName = chartOfAccount.Description,
+                            DebitAmount = item.DiscountAmount,
+                            DebitAmountInBaseCurrency = item.DiscountAmount * salesInvoice.ExchangeRate,
+                            TotalAmount = item.DiscountAmount,
+                            CostAllocationCode = "NA",
+                            CostAllocationDescription = "No Cost Allocation",
+                            IsControlAccount = true,
+                            ControlAccountType = ControlAccountType.Discount,
+                            BranchId = salesInvoice.BranchId,
+                            FinancialYearId = salesInvoice.FinancialYearId,
+                            ItemId = item.ItemId
+                        });
+                    }
+
+                    var itemDto = salesInvoiceDto.SalesInvoiceItemDto[itemLineNumber - 1];
+                    int transactionOrgin = (int)salesInvoiceDto.TransactionOriginName;
+                    int transactionType = (int)salesInvoiceDto.TransOriginType;
+                    if (item.Amount > 0)
+                    {
+                        ItemViewModel viewModel = new()
+                        {
+                            ItemCategoryId = itemDto.ItemCategory,
+                            TransOrginId = transactionOrgin,
+                            TransTypeId = transactionType,
+                            ItemTypeId = itemDto.ItemType,
+                            ItemSegmentId = itemDto.ItemSegmentId,
+                            ItemFamilyId = itemDto.ItemFamilyId,
+                            ItemClassId = itemDto.ItemClassId,
+                            ItemCommodityId = itemDto.ItemCommodityId,
+                            GroupId = salesInvoiceDto.PoGroupId
+                        };
+                        var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
+                        if (ledgeraccount == null)
+                            throw new ResourceNotFoundException($"Ledger Account not configured for this item:{salesInvoiceDto.SalesInvoiceItemDto.First().ItemName}-{salesInvoiceDto.SalesInvoiceItemDto.First().ItemCode}");
+
+                        salesInvoice.CustomerTransactionDetails.Add(new()
+                        {
+                            LineNumber = ++transactionDetailNumber,
+                            LedgerAccountId = ledgeraccount.chartofaccountid,
+                            LedgerAccountCode = ledgeraccount.chartofaccountcode,
+                            LedgerAccountName = ledgeraccount.chartofaccountname,
+                            CreditAmount = item.Amount,
+                            CreditAmountInBaseCurrency = item.Amount * salesInvoice.ExchangeRate,
+                            CostAllocationCode = "NA",
+                            CostAllocationDescription = "No Cost Allocation",
+                            BranchId = salesInvoice.BranchId,
+                            FinancialYearId = salesInvoice.FinancialYearId,
+                            Narration = salesInvoice.Narration,
+                            ItemId = item.ItemId
+
+                        });
+                    }
+                }
+            }
+
+            if (salesInvoiceDto.SalesOrderOrigin == 4)
+            {
+                salesInvoice.DocumentNumber = salesInvoiceDto.SalesInvoiceNo;
+            }
+
+        if (IsPosting == true)
+        {
+            string json = JsonConvert.SerializeObject(salesInvoice);
+
+            if (salesInvoiceDto.SalesInvoiceNo != "")
+            {
+                int count = await salesInvoiceService.IsDocumentNoExist(salesInvoiceDto.SalesInvoiceNo);
+                if (count == 0)
+                    throw new ResourceNotFoundException($"DocumentNo Does Not Exist:-{salesInvoiceDto.SalesInvoiceNo}");
+                SalesInvoice invoice = await salesInvoiceService.GetSalesInvoiceIdByDocumentNumber(salesInvoiceDto.SalesInvoiceNo);
+                salesInvoice.Id = invoice.Id;
+                salesInvoice.CustomerTransactionId = invoice.CustomerTransactionId;
+                salesInvoiceId = salesInvoice.Id;
+                salesInvoice.DocumentNumber = salesInvoiceDto.SalesInvoiceNo;
+                salesInvoice.CustomerTransactionDetails.ForEach(x => x.CustomerTransactionId = invoice.CustomerTransactionId);
+                salesInvoice.LineItems.ForEach(x => x.SalesInvoiceId = salesInvoiceId);
+                int deleteCustomerTranDetail = await customerTransactionDetailService.DeleteDetailByCustomerTransactionId(invoice.CustomerTransactionId);
+                int deleteLineItems = await salesInvoiceLineItemService.DeleteLineItemByInvoiceId(salesInvoiceId);
+                int updatedid = await salesInvoiceService.UpdateInvoice(salesInvoice);
+                details.DocumentNumber = salesInvoice.DocumentNumber;
+            }
+            else 
+            {
+                details = await salesInvoiceService.InsertInvoice(salesInvoice);
+                salesInvoiceId = details.Id;
+                
+            }
+            //string json = JsonConvert.SerializeObject(salesInvoiceResponse);
+            if (salesInvoiceDto.IsProcess == true)
+            {
+                CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceId);
+                if (doc != null)
+                {
+                    var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
+                    var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
+
+                    await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
+                    await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
+                    await salesInvoiceRepository.UpdateStatus(salesInvoiceId, ApproveStatus.Approved);
+                }
+            }
+            return new()
+            {
+                DocumentNumber = details.DocumentNumber
+            };
+            
         }
         else
         {
-             journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(Convert.ToInt32(TransactionOrgin.SalesOrder), Convert.ToInt32(TransactionType.SalesOrderInvoice));
-            if (journalBookConfig == null)
-                throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
+            SalesInvoiceResponse salesInvoiceResponse = new SalesInvoiceResponse();
+            List<CustomerTransactionDetail> customerTransactionDetai = salesInvoice.CustomerTransactionDetails.ToList();
+            List<SalesInvoiceViewDto> salesInvoiceViewDto = Mapper.Map<List<SalesInvoiceViewDto>>(customerTransactionDetai);
+            salesInvoiceResponse.salesInvoices = salesInvoiceViewDto;
+            return salesInvoiceResponse;
         }
-
-
-       
-
-        SalesInvoice salesInvoice = Mapper.Map<SalesInvoice>(salesInvoiceDto);
-
-        if (salesInvoiceDto.SalesOrderOrigin == 4)
-        {
-            salesInvoice.Narration = TransactionType.VanSalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
-        }
-        else 
-        {
-            salesInvoice.Narration = TransactionType.SalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
-        }
-       
-        salesInvoice.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
-        salesInvoice.ApproveStatus = ApproveStatus.Draft;
-        salesInvoice.JournalBookCode = journalBookConfig.JournalBookCode;
-        salesInvoice.JournalBookId = journalBookConfig.JournalBookId;
-        salesInvoice.JournalBookName = journalBookConfig.JournalBookName;
-        salesInvoice.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
-        salesInvoice.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
-
-        salesInvoice.OtherDetail = new()
-        {
-            Narration = salesInvoice.Narration,
-            BranchId = salesInvoice.BranchId,
-            FinancialYearId = salesInvoice.FinancialYearId
-        };
-
-        if (salesInvoice.PaymentTerm != null)
-        {
-            salesInvoice.PaymentTerm.BranchId = salesInvoice.BranchId;
-            salesInvoice.PaymentTerm.FinancialYearId = salesInvoice.FinancialYearId;
-        }
-        salesInvoice.CustomerTransactionDetails = new();
-
-        if (salesInvoice.LineItems != null)
-        {
-            int itemLineNumber = 0;
-            int transactionDetailNumber = 0;
-
-            var businessPartnerControlAccount = await businessPartnerGroupService.GetCustomerControlAccountsByBusinessPartnerIdAsync(salesInvoice.BusinessPartnerId);
-            if (businessPartnerControlAccount == null || businessPartnerControlAccount.Count() == 0)
-                throw new ResourceNotFoundException("Business partner control account not found for this business partner");
-
-            var salesTaxAccount = await taxAccountSetupService.GetSalesTaxAccountAsync();
-            if (salesTaxAccount == null)
-                throw new ResourceNotFoundException("Sales tax account not found");
-
-            var chartOfAccount = await glControlAccountService.GetSalesInvoiceDiscountGLControlAccountsAsync();
-            if (chartOfAccount == null)
-                throw new ResourceNotFoundException("Control account not configured for sales invoice discount");
-
-            foreach (var item in salesInvoice.LineItems)
-            {
-                item.LineNumber = ++itemLineNumber;
-                item.BranchId = salesInvoice.BranchId;
-                item.FinancialYearId = salesInvoice.FinancialYearId;
-
-                if (item.TotalAmount > 0)
-                {
-                    salesInvoice.CustomerTransactionDetails.Add(new()
-                    {
-                        LineNumber = ++transactionDetailNumber,
-                        LedgerAccountId = businessPartnerControlAccount.First().AccountId,
-                        LedgerAccountCode = businessPartnerControlAccount.First().AccountCode,
-                        LedgerAccountName = businessPartnerControlAccount.First().AccountDescription,
-                        DebitAmount = item.TotalAmount,
-                        DebitAmountInBaseCurrency = item.TotalAmount * salesInvoice.ExchangeRate,
-                        CostAllocationCode = "NA",
-                        CostAllocationDescription = "No Cost Allocation",
-                        IsControlAccount = true,
-                        ControlAccountType = ControlAccountType.Customer,
-                        BranchId = salesInvoice.BranchId,
-                        FinancialYearId = salesInvoice.FinancialYearId
-                    });
-                }
-
-                if (item.TaxAmount > 0)
-                {
-                    salesInvoice.CustomerTransactionDetails.Add(new()
-                    {
-                        LineNumber = ++transactionDetailNumber,
-                        LedgerAccountId = salesTaxAccount.Id,
-                        LedgerAccountCode = salesTaxAccount.Code,
-                        LedgerAccountName = salesTaxAccount.Description,
-                        CreditAmount = item.TaxAmount,
-                        CreditAmountInBaseCurrency = item.TaxAmount * salesInvoice.ExchangeRate,
-                        TotalAmount = item.TaxAmount,
-                        CostAllocationCode = "NA",
-                        CostAllocationDescription = "No Cost Allocation",
-                        IsControlAccount = true,
-                        ControlAccountType = ControlAccountType.Tax,
-                        BranchId = salesInvoice.BranchId,
-                        FinancialYearId = salesInvoice.FinancialYearId
-                    });
-                }
-
-                if (item.DiscountAmount > 0)
-                {
-                    salesInvoice.CustomerTransactionDetails.Add(new()
-                    {
-                        LineNumber = ++transactionDetailNumber,
-                        LedgerAccountId = chartOfAccount.Id,
-                        LedgerAccountCode = chartOfAccount.Code,
-                        LedgerAccountName = chartOfAccount.Description,
-                        DebitAmount = item.DiscountAmount,
-                        DebitAmountInBaseCurrency = item.DiscountAmount * salesInvoice.ExchangeRate,
-                        TotalAmount = item.DiscountAmount,
-                        CostAllocationCode = "NA",
-                        CostAllocationDescription = "No Cost Allocation",
-                        IsControlAccount = true,
-                        ControlAccountType = ControlAccountType.Discount,
-                        BranchId = salesInvoice.BranchId,
-                        FinancialYearId = salesInvoice.FinancialYearId
-                    });
-                }
-
-                var itemDto = salesInvoiceDto.SalesInvoiceItemDto[itemLineNumber - 1];
-                if (item.Amount > 0)
-                {
-                    ItemViewModel viewModel = new()
-                    {
-                        ItemCategoryId = itemDto.ItemCategory,
-                        ItemTypeId = itemDto.ItemType,
-                        ItemSegmentId = itemDto.ItemSegmentId,
-                        ItemFamilyId = itemDto.ItemFamilyId,
-                        ItemClassId = itemDto.ItemClassId,
-                        ItemCommodityId = itemDto.ItemCommodityId
-                    };
-                    var ledgeraccount = await integrationControlAccountRepository.getLedgerAccountDetails(viewModel, EnumExtensions.GetDisplayName(IntegrationControlAccountType.SalesRevenueAccountType));
-                    if (ledgeraccount == null)
-                        throw new ResourceNotFoundException("Ledger Account not configured for this item");
-
-                    salesInvoice.CustomerTransactionDetails.Add(new()
-                    {
-                        LineNumber = ++transactionDetailNumber,
-                        LedgerAccountId = ledgeraccount.chartofaccountid,
-                        LedgerAccountCode = ledgeraccount.chartofaccountcode,
-                        LedgerAccountName = ledgeraccount.chartofaccountname,
-                        CreditAmount = item.Amount,
-                        CreditAmountInBaseCurrency = item.Amount * salesInvoice.ExchangeRate,
-                        CostAllocationCode = "NA",
-                        CostAllocationDescription = "No Cost Allocation",
-                        BranchId = salesInvoice.BranchId,
-                        FinancialYearId = salesInvoice.FinancialYearId,
-                        Narration = salesInvoice.Narration
-                        
-                    });
-                }
-            }
-        }
-
-        if(salesInvoiceDto.SalesOrderOrigin == 4)
-        {
-            salesInvoice.DocumentNumber = salesInvoiceDto.SalesInvoiceNo;
-        }
-
-        var salesInvoiceResponse = await salesInvoiceService.InsertAsync(salesInvoice);
-
-        CustomerTransaction doc = await customerTransactionRepository.GetByInvoiceIdAsync(salesInvoiceResponse.Id);
-        if (doc != null)
-        {
-            var GLPosting = await generalLedgerPostingRepository.GetGeneralLedgerBeforePostingEntries(doc.DocumentType, doc.Id);
-            var GLPostingGroup = generalLedgerPostingService.GroupGLPostingByLedgerAccountId(GLPosting);
-
-            await postDocumentViewModelRepository.PostGLAsync(GLPostingGroup);
-            await customerTransactionRepository.UpdateStatus(doc.Id, ApproveStatus.Approved);
-            await salesInvoiceRepository.UpdateStatus(salesInvoiceResponse.Id, ApproveStatus.Approved);
-        }
-        if(salesInvoiceDto.SalesOrderOrigin == 4)
-        {
-            return new()
-            {
-                DocumentNumber = salesInvoiceResponse.DocumentNumber
-
-            };
-        }
-        return new()
-        {
-            DocumentNumber = salesInvoiceResponse.DocumentNumber
-        };
     }
+
+
 
     public Task<int> UpdateAsync(SalesInvoiceDto obj)
     {

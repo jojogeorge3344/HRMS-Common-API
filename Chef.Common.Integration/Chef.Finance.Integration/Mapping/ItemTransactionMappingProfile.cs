@@ -38,6 +38,7 @@ public  class ItemTransactionMappingProfile:Profile
             .ForMember(d => d.referencenumber, opt => opt.MapFrom(x => x.First().TrasnOrderNum))
             .ForMember(d => d.transtypeslno, opt => opt.MapFrom(x => x.First().TrasnTypeSlNo))
             .ForMember(d => d.remark, opt => opt.MapFrom(x => x.First().TransRemark))
+            .ForMember(d => d.ExchangeDate, opt => opt.MapFrom(x => x.First().ExchangeDate))
             .ForMember(d => d.totalamount, opt => opt.MapFrom(x => x.Select(j => j.TransAmount).Sum()));
 
 
@@ -61,12 +62,12 @@ public  class ItemTransactionMappingProfile:Profile
                     .ForMember(d => d.LedgerAccountCode, opt => opt.MapFrom(x => x.ledgeraccountcode))
                     .ForMember(d => d.BusinessPartnerCode, opt => opt.MapFrom(x => x.businesspartnercode))
                     .ForMember(d => d.LedgerAccountName, opt => opt.MapFrom(x => x.ledgeraccountname))
-                    .ForMember(d => d.BusinessPartnerCode, opt => opt.MapFrom(x => x.businesspartnercode))
                     .ForMember(d => d.CreditAmount, opt => opt.MapFrom(x => x.creditamount))
                     .ForMember(d => d.DebitAmount, opt => opt.MapFrom(x => x.debitamount))
                     .ForMember(d => d.RefenceDocumentDetailId, opt => opt.MapFrom(x => x.integrationheaderid))
                     .ForMember(d => d.FinancialYearId, opt => opt.MapFrom(x => x.FinancialYearId));
 
-
+        CreateMap<IntegrationDetails, ItemTransactionFinanceDetailsDto>()
+            .ForMember(d => d.financialyearid, opt => opt.MapFrom(x => x.FinancialYearId));
     }
 }

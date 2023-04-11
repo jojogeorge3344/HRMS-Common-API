@@ -28,6 +28,8 @@ public class ItemTransactionFinance : Model
         public int ItemClassId { get; set; }
         public int ItemCommodityId { get; set; }
         public int ItemId { get; set; }
+        public string? ItemCode { get; set; }
+        public string? ItemName { get; set; }
         public int ItemLineNo { get; set; }
         public int ItemTransType { get; set; }
         public int LandingCostId { get; set; }
@@ -48,6 +50,8 @@ public class ItemTransactionFinance : Model
         public string EmployeeCode { get; set; }
         public string ReasonCode { get; set; }
 
-        public string GroupCode { get; set; }
+        public int GroupId { get; set; }
+
+    public DateTime? ExchangeDate { get; set; }
 }
 

@@ -11,8 +11,11 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         this.httpContextAccessor = httpContextAccessor;
     }
 
+   
+
     public async Task<IEnumerable<TradingIntegrationHeader>> GetAll(int transorginId, int transtypeId, DateTime fromDate, DateTime toDate, int status)
     {
+        int headerBrandId = this.headerBranchId;
         string sql = @"SELECT th.id,
                                th.documentnumber,
                                th.businesspartnercode,
@@ -25,11 +28,15 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                         FROM   finance.tradingintegrationheader th
                                RIGHT JOIN finance.integrationdetails it
                                        ON th.id = it.integrationheaderid
-                        WHERE  To_date(Cast(th.createddate AS TEXT), 'YYYY-MM-DD') BETWEEN
-                                      @fromDate AND @toDate";
+                        WHERE  To_date(Cast(th.transactiondate AS TEXT), 'YYYY-MM-DD') BETWEEN
+                                      @fromDate AND @toDate AND th.branchid=@headerBrandId";
         if (status == 1)
         {
             sql += " AND th.approvestatus = 1";
+        }
+        else if(status == 3)
+        {
+            sql += " AND th.approvestatus = 6";
         }
         else
         {
@@ -39,8 +46,8 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         {
             sql += " and   th.transorginid = @transorginId  and   th.transtypeid =  @transtypeId";
         }
-        sql += " GROUP  BY th.id order by  th.createddate";
-        return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId, fromDate, toDate, status });
+        sql += " GROUP  BY th.id order by  th.transactiondate";
+        return await DatabaseSession.QueryAsync<TradingIntegrationHeader>(sql, new { transorginId, transtypeId, fromDate, toDate, status, headerBrandId });
 
     }
 
@@ -63,5 +70,33 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         //    .Select<IntegrationDetails>()
         //    .Where("integrationheaderid", integrationId);
         //return await DatabaseSession.QueryAsync<IntegrationDetails>(query, default);
+    }
+
+    public async Task<int> GetintegrationheaderId(string documentNumber)
+    {
+        string sql = @"SELECT id
+                            FROM   finance.tradingintegrationheader
+                            WHERE  documentnumber = @documentNumber
+                                   AND isarchived = false";
+        return await Connection.QueryFirstOrDefaultAsync<int>(sql, new { documentNumber });
+
+    }
+    public async Task<int> Deleteintegrationheader(int tradingintegrationheaderId)
+    {
+        int approveStatus = Convert.ToInt32(ApproveStatus.Deleted);
+        string sql = @"UPDATE finance.tradingintegrationheader
+                        SET    isarchived = true,
+                               approvestatus = @approveStatus
+                        WHERE  id = @tradingintegrationheaderId;
+
+                        UPDATE finance.integrationdetails
+                        SET    isarchived = true
+                        WHERE  integrationheaderid = @tradingintegrationheaderId;
+
+                        UPDATE finance.integrationdetaildimension
+                        SET    isarchived = true
+                        WHERE  headerid = @tradingintegrationheaderId ";
+        return await Connection.ExecuteAsync(sql,new { tradingintegrationheaderId, approveStatus });
+
     }
 }
