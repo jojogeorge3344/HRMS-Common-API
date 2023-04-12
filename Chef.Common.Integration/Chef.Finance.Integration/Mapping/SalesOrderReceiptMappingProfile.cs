@@ -10,7 +10,7 @@ public class SalesOrderReceiptMappingProfile : Profile
     public SalesOrderReceiptMappingProfile()
     {
         CreateMap<SalesOrderReceiptDto, ReceiptRegister>()
-                .ForMember(d => d.ReceiptCategory, opt => opt.MapFrom(x => ReceiptCategory.CustomerReceiptAgainstInvoices))
+                 .ForMember(d => d.ReceiptCategory, opt => opt.MapFrom(x => x.IsRetail == true ? ReceiptCategory.OneTimeReceipt : ReceiptCategory.CustomerReceiptAgainstInvoices))
                 .ForMember(d => d.PaymentMethodType, opt => opt.MapFrom(x =>PaymentMethodType.Cash))
                 .ForMember(d => d.DocumentDate, opt => opt.MapFrom(x => x.ReceiptDate))
                 .ForMember(d => d.TransactionDate, opt => opt.MapFrom(x => x.ReceiptDate))

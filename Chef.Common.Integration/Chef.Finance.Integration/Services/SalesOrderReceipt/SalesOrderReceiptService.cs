@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Chef.Finance.Models;
 using Chef.Finance.Supplier.Repositories;
 using Chef.Common.Data.Services;
+using Chef.Finance.Models.Receipt;
 
 namespace Chef.Finance.Integration;
 
@@ -36,6 +37,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
     private readonly IPaymentAdviceProcessingRepository paymentAdviceProcessingRepository;
     private readonly IBusinessPartnerPaymentDetailRepository businessPartnerConfigRepository;
     private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
+    private readonly IPurchaseControlAccountService purchaseControlAccountService;
 
     public SalesOrderReceiptService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -48,7 +50,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         IPaymentAdviceProcessingRepository paymentAdviceProcessingRepository,
         IBusinessPartnerPaymentDetailRepository businessPartnerConfigRepository,
          ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
-          IMasterDataService masterDataService
+          IMasterDataService masterDataService,
+          IPurchaseControlAccountService purchaseControlAccountService
 
         )
     {
@@ -63,6 +66,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         this.businessPartnerConfigRepository = businessPartnerConfigRepository;
         this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
         this.masterDataService = masterDataService;
+        this.purchaseControlAccountService = purchaseControlAccountService;
     }
 
 
@@ -139,6 +143,27 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             }
 
             receiptRegister.TransactionDate = salesOrderReceiptDto.ReceiptDate;
+
+            List<ReceiptRegisterOneTimeAccountingEntry> oneTimeReceipt = new List<ReceiptRegisterOneTimeAccountingEntry>();
+            if (salesOrderReceiptDto.IsRetail == true)
+            {
+               PurchaseControlAccount purchaseControlAccount = await purchaseControlAccountService.GetCashSuspenseAccount();
+                if (purchaseControlAccount == null)
+                    throw new ResourceNotFoundException("Cash Suspense control account not Configured");
+
+                ReceiptRegisterOneTimeAccountingEntry receiptRegisterOneTimeAccountingEntry = new ReceiptRegisterOneTimeAccountingEntry();
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountId = purchaseControlAccount.CashSuspenseAccountId;
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountCode = purchaseControlAccount.CashSuspenseAccountCode;
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountName = purchaseControlAccount.CashSuspenseAccountName;
+                receiptRegisterOneTimeAccountingEntry.BranchId = salesOrderReceiptDto.BranchId;
+                receiptRegisterOneTimeAccountingEntry.CreditAmount = salesOrderReceiptDto.TotalAmount;
+                receiptRegisterOneTimeAccountingEntry.CreditAmountInBaseCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
+                oneTimeReceipt.Add(receiptRegisterOneTimeAccountingEntry);
+            }
+            receiptRegister.ReceiptOneTimeAccountingEntries = oneTimeReceipt;
+
+
+
             //PaymentMethodType paymentMethodType = new PaymentMethodType();
             //paymentMethodType = (PaymentMethodType)journalBookConfig.TransactionType;
 

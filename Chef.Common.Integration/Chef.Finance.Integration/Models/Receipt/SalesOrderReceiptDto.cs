@@ -69,6 +69,8 @@ public class SalesOrderReceiptDto
 
     public string narration { get; set; }
 
+    public bool IsRetail { get; set; }
+
 
 }
 
