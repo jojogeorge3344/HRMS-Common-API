@@ -269,7 +269,7 @@ public class MasterDataController : ControllerBase
         return Ok(bankBranches);
     }
 
-    [HttpGet("{companyId:Int}")]
+    [HttpPost]
     public async Task<ActionResult<IEnumerable<Employee>>> GetEmployeeDetailsByCompanyId(int companyId)
     {
         IEnumerable<Employee> details = await masterDataService.GetEmployeeDetailsByCompanyId(companyId);
