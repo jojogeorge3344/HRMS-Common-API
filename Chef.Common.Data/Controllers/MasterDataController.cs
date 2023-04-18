@@ -269,6 +269,17 @@ public class MasterDataController : ControllerBase
         return Ok(bankBranches);
     }
 
+    [HttpPost]
+    public async Task<ActionResult<IEnumerable<Employee>>> GetEmployeeDetailsByCompanyId(int companyId)
+    {
+        IEnumerable<Employee> details = await masterDataService.GetEmployeeDetailsByCompanyId(companyId);
+        if(details == null)
+        {
+            return NotFound("Employee does not Exist");
+        }
+        return Ok(details);
+    }
+
     [HttpGet("{finacialyearid:int}")]
     public async Task<ActionResult<IEnumerable<FinancialYearPeriod>>> GetFinancialYearPeriod(int finacialyearid)
     {
