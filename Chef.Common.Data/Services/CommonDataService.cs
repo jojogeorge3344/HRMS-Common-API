@@ -51,5 +51,13 @@ public class CommonDataService : ICommonDataService
 
         return await commonDataRepository.UpdateCompanyLogo(company);
     }
+
+    public async Task<int> UpdateCompany(Company company)
+    {
+        if (company.LogoEncoded != null)
+            company.Logo = System.Text.Encoding.UTF8.GetBytes(company.LogoEncoded);
+
+        return await commonDataRepository.UpdateCompany(company);
+    }
 }
 

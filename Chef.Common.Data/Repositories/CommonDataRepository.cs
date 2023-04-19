@@ -91,4 +91,12 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                      logo = company.Logo
                  });
     }
+
+    public async Task<int> UpdateCompany(Company company)
+    {
+        return await QueryFactory
+                 .Query<Company>()
+                 .Where("id", company.Id)
+                 .UpdateAsync(company);
+    }
 }

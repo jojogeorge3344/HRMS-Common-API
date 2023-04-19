@@ -10,4 +10,5 @@ public interface ICommonDataService : IBaseService
     Task<Company> GetMyCompany();
     Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint();
     Task<int> UpdateCompanyLogo(Company company);
+    Task<int> UpdateCompany(Company company);
 }
