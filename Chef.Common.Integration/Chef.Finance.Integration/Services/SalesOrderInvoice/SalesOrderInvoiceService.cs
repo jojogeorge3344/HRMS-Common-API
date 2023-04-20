@@ -387,7 +387,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         {
             string json = JsonConvert.SerializeObject(salesInvoice);
 
-            if (salesInvoiceDto.SalesInvoiceNo != "")
+            if (salesInvoiceDto.TransactionOriginName == TransactionOrgin.RetailSalesOrder && salesInvoiceDto.SalesInvoiceNo != "")
             {
                 int count = await salesInvoiceService.IsDocumentNoExist(salesInvoiceDto.SalesInvoiceNo);
                 if (count == 0)

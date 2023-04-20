@@ -359,7 +359,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
         if (IsPosting == true)
         {
-            if (salesReturnCreditDto.CreditNoteNumber != "")
+            if (salesReturnCreditDto.TransactionOriginName == TransactionOrgin.RetailSalesOrder && salesReturnCreditDto.CreditNoteNumber != "")
             {
                 CustomerCreditNoteViewModel viewModel = new CustomerCreditNoteViewModel();
                 viewModel.CustomerCreditNote = customerCreditNote;
