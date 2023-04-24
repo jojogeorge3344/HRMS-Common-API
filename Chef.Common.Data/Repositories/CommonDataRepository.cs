@@ -92,6 +92,18 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                  });
     }
 
+    public async Task<Company> GetCompanyDetailsForVoucherPrint()
+    {
+        string sql = @"SELECT zipcode,
+                               email,
+                               phone,
+                               fax,
+                               Encode(logo :: bytea, 'escape') AS LogoEncoded
+                        FROM   common.company ";
+        return await DatabaseSession.QueryFirstAsync<Company>(sql);
+
+    }
+
     public async Task<int> UpdateCompany(Company company)
     {
         return await QueryFactory

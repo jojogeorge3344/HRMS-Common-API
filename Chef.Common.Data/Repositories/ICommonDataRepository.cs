@@ -10,6 +10,8 @@ public interface ICommonDataRepository : IRepository
     Task<Company> GetMyCompany();
     Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint();
     Task<int> UpdateCompanyLogo(Company company);
+
+    Task<Company> GetCompanyDetailsForVoucherPrint();
     Task<int> UpdateCompany(Company company);
 }
 
