@@ -170,12 +170,13 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 orgin = (int)TransactionOrgin.RetailSalesOrder;
                 type = (int)TransactionType.RetailSalesOrderInvoiceCash;
             }
-            else
+            else if (salesInvoiceDto.TransOriginType == TransactionType.SalesOrderInvoice)
             {
                 orgin = (int)TransactionOrgin.SalesOrder;
                 type = (int)TransactionType.SalesOrderInvoice;
             }
-            journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
+            if(salesInvoiceDto.SalesOrderOrigin != 4)
+                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
 
             if (journalBookConfig == null)
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
