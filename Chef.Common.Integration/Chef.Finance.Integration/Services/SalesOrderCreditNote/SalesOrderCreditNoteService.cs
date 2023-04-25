@@ -160,12 +160,13 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 orgin = (int)TransactionOrgin.RetailSalesOrder;
                 type = (int)TransactionType.RetailSalesOrderReturnCash;
             }
-            else
+            else if(salesReturnCreditDto.TransOriginType == TransactionType.SalesOrderReturn)
             {
                 orgin = (int)TransactionOrgin.SalesOrder;
                 type = (int)TransactionType.SalesOrderReturn;
             }
-            journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
+            if(salesReturnCreditDto.isVanSales != true)
+              journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
 
             if (journalBookConfig == null)
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
