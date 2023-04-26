@@ -98,7 +98,7 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
         string sql = @"SELECT zipcode,
                                email,
                                phone,
-                               name as CompanyName
+                               name as CompanyName,
                                fax,
                                Encode(logo :: bytea, 'escape') AS LogoEncoded
                         FROM   common.company ";
