@@ -11,4 +11,8 @@ public interface ICommonDataService : IBaseService
     Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint();
     Task<int> UpdateCompanyLogo(Company company);
     Task<int> UpdateCompany(Company company);
+
+    Task<Company> GetCompanyDetailsForVoucherPrint();
+
+    string ConvertToWords(string numb, string currency);
 }
