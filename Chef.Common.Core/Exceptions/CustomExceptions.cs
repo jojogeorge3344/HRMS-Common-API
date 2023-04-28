@@ -224,6 +224,14 @@ namespace Chef.Common.Exceptions
     }
 
     [Serializable]
+    public class DocumentTypeNotFoundException : ApplicationException
+    {
+        public DocumentTypeNotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    [Serializable]
     public class EmployeeNotFoundException : ApplicationException
     {
         public EmployeeNotFoundException(string message) : base(message)
@@ -456,4 +464,11 @@ namespace Chef.Common.Exceptions
         }
     }
 
+    [Serializable]
+    public class DocumentTypeCannotBeAddedException : ApplicationException
+    {
+        public DocumentTypeCannotBeAddedException(string message) : base(message)
+        {
+        }
+    }
 }
