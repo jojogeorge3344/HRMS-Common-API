@@ -94,6 +94,13 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+    [Serializable]
+    public class BusinessPartnerDocumentsNotFoundException : ApplicationException
+    {
+        public BusinessPartnerDocumentsNotFoundException(string message) : base(message)
+        {
+        }
+    }
 
     [Serializable]
     public class BankNotFoundException : ApplicationException
