@@ -20,4 +20,17 @@ public class BusinessPartnerDocuments : Model
 
     public bool IsAttachment { get; set; }
 
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
+    public string BusinessPartnerName { get; set; }
+
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
+    public string DocumentType { get; set; }
+    
+
+
+
 }
