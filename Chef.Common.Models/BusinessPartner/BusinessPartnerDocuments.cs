@@ -23,14 +23,6 @@ public class BusinessPartnerDocuments : Model
     [Write(false)]
     [Skip(true)]
     [SqlKata.Ignore]
-    public string BusinessPartnerName { get; set; }
-
-    [Write(false)]
-    [Skip(true)]
-    [SqlKata.Ignore]
     public string DocumentType { get; set; }
-    
-
-
 
 }
