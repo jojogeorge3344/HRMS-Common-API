@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Models;
 
-public class BusinessPartnerDocumentAttachemnt:Model
+public class BusinessPartnerDocumentAttachment:Model
 {
     public int BusinessPartnerDocumentId { get; set; }
     public string FileName { get; set; }
