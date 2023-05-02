@@ -33,5 +33,6 @@ public enum ReportModule
     PaymentAdvice_PettyCashReimbursement = 29,
     PaymentAdvice_BankToBankFundTransfer = 30,
     PaymentAdvice_AdvanceRefundToCustomers = 31,
-    PaymentAdvice_OneTimePayment = 32
+    PaymentAdvice_OneTimePayment = 32,
+    GeneralLedgerReport = 33
 }
