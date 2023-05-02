@@ -25,4 +25,9 @@ public class BusinessPartnerDocuments : Model
     [SqlKata.Ignore]
     public string DocumentType { get; set; }
 
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
+    public List<BusinessPartnerDocumentAttachment> BusinessPartnerDocumentAttachments { get; set; }
+
 }
