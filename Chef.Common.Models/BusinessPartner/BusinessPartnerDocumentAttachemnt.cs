@@ -10,8 +10,6 @@ namespace Chef.Common.Models;
 public class BusinessPartnerDocumentAttachemnt:Model
 {
     public int BusinessPartnerDocumentId { get; set; }
-
     public string FileName { get; set; }
-
-    public int FileId { get; set; }
+    public byte[] AttachmentByte { get; set; }
 }
