@@ -34,5 +34,6 @@ public enum ReportModule
     PaymentAdvice_BankToBankFundTransfer = 30,
     PaymentAdvice_AdvanceRefundToCustomers = 31,
     PaymentAdvice_OneTimePayment = 32,
-    GeneralLedgerReport = 33
+    GeneralLedgerReport = 33,
+    PaymentDocument_Voucher = 34
 }
