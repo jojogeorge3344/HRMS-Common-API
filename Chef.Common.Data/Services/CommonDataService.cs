@@ -326,5 +326,13 @@ public class CommonDataService : ICommonDataService
         catch { }
         return word.Trim();
     }
+
+    public decimal GetChartMaximumAmount(decimal maxAmount)
+    {
+        int startingNumber = Convert.ToInt32(maxAmount.ToString().Substring(0, 1)) + 1;
+        IEnumerable<int> zeros = Enumerable.Repeat(0, Math.Floor(maxAmount).ToString().Length - 1);
+        maxAmount = Convert.ToDecimal($"{startingNumber}{string.Join("", zeros)}");
+        return maxAmount;
+    }
 }
 
