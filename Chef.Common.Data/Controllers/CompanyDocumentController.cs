@@ -16,33 +16,56 @@ namespace Chef.Common.Data.Controllers;
 public class CompanyDocumentController : ControllerBase
 {
     private readonly ICompanyDocumentService companyDocumentService;
-    public CompanyDocumentController(ICompanyDocumentService companyDocumentService)
+    private readonly ICompanyDocumentAttachmentService companyDocumentAttachmentService;
+
+    public CompanyDocumentController(ICompanyDocumentService companyDocumentService, ICompanyDocumentAttachmentService companyDocumentAttachmentService)
     {
         this.companyDocumentService = companyDocumentService;
+        this.companyDocumentAttachmentService = companyDocumentAttachmentService;
     }
     [HttpPost]
-    public async Task<ActionResult<int>> Insert([FromForm] ComapnyDocuments comapnyDocuments)
+    public async Task<ActionResult<int>> Insert([FromForm] CompanyDocuments companyDocuments)
     {
         var files = HttpContext.Request.Form;
-        ComapnyDocuments documents = JsonConvert.DeserializeObject<ComapnyDocuments>(files["comapnyDocuments"][0]);
+        CompanyDocuments documents = JsonConvert.DeserializeObject<CompanyDocuments>(files["companyDocuments"][0]);
         return Ok(await companyDocumentService.Insert(documents));
     }
     [HttpPut]
-    public async Task<ActionResult<int>> Update([FromForm] ComapnyDocuments comapnyDocuments)
+    public async Task<ActionResult<int>> Update([FromForm] CompanyDocuments companyDocuments)
     {
         var files = HttpContext.Request.Form;
-        ComapnyDocuments documents = JsonConvert.DeserializeObject<ComapnyDocuments>(files["comapnyDocuments"][0]);
+        CompanyDocuments documents = JsonConvert.DeserializeObject<CompanyDocuments>(files["companyDocuments"][0]);
         return Ok(await companyDocumentService.Update(documents));
     }
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ComapnyDocuments>>>GetCompanyDocumentDetails(int companyId)
+    public async Task<ActionResult<IEnumerable<CompanyDocuments>>>GetCompanyDocumentDetails(int companyId)
     {
-        IEnumerable<ComapnyDocuments> details = await companyDocumentService.GetCompanyDocumentDetails(companyId);
+        IEnumerable<CompanyDocuments> details = await companyDocumentService.GetCompanyDocumentDetails(companyId);
         if(details == null)
         {
             throw new Exception("Company not found");
         }
         return Ok(details);
+    }
+    [HttpDelete]
+    public async Task<ActionResult<int>>DeleteAttachment(int attachmentId)
+    {
+        int deleteId = await companyDocumentAttachmentService.DeleteAsync(attachmentId);
+        if(deleteId < 1)
+        {
+            throw new Exception("Company not found");
+        }
+        return Ok(deleteId);
+    }
+    [HttpDelete]
+    public async Task<ActionResult<int>>Delete(int id)
+    {
+        int deleteId = await companyDocumentService.Delete(id);
+        if (deleteId < 1)
+        {
+            throw new Exception("Company not found");
+        }
+        return Ok(deleteId);
     }
 
 }
