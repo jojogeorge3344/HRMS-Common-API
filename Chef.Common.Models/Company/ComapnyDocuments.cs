@@ -12,6 +12,8 @@ public class ComapnyDocuments:Model
     public string DocumentName { get; set; }
     public int DocumentTypeId { get; set; }
 
+    public string DocumentTypeName { get; set; }
+
     public int CompanyId { get; set; }
 
     public DateTime? ExpireDate { get; set; }

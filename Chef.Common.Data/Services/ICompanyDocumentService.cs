@@ -9,4 +9,6 @@ namespace Chef.Common.Data.Services;
 public interface ICompanyDocumentService:IAsyncService<ComapnyDocuments>
 {
     Task<int> Insert(ComapnyDocuments comapnyDocuments);
+
+    Task<int> Update(ComapnyDocuments comapnyDocuments);
 }

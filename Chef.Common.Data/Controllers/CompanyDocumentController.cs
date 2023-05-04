@@ -27,5 +27,12 @@ public class CompanyDocumentController : ControllerBase
         ComapnyDocuments documents = JsonConvert.DeserializeObject<ComapnyDocuments>(files["comapnyDocuments"][0]);
         return Ok(await companyDocumentService.Insert(documents));
     }
+    [HttpPut]
+    public async Task<ActionResult<int>> Update([FromForm] ComapnyDocuments comapnyDocuments)
+    {
+        var files = HttpContext.Request.Form;
+        ComapnyDocuments documents = JsonConvert.DeserializeObject<ComapnyDocuments>(files["comapnyDocuments"][0]);
+        return Ok(await companyDocumentService.Update(documents));
+    }
 
 }
