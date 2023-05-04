@@ -9,7 +9,7 @@ namespace Chef.Common.Models;
 
 public class CompanyDocumentAttachment:Model
 {
-    public int CompanyDocumentId { get; set; }
+    public int ComapnyDocumentId { get; set; }
     public string FileName { get; set; }
     public byte[] AttachmentByte { get; set; }
 }

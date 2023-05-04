@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Data.Services;
 
-public class CompanyDocumentService : AsyncService<CompanyDocuments>, ICompanyDocumentService
+public class CompanyDocumentService : AsyncService<ComapnyDocuments>, ICompanyDocumentService
 {
     private readonly ICompanyDocumentRepostory companyDocumentRepostory;
     private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
@@ -23,45 +23,25 @@ public class CompanyDocumentService : AsyncService<CompanyDocuments>, ICompanyDo
         this.companyDocumentAttachmentRepository = companyDocumentAttachmentRepository;
     }
 
-    public async Task<int> Delete(int id)
+    public async Task<IEnumerable<ComapnyDocuments>> GetCompanyDocumentDetails(int companyId)
     {
-        try
-        {
-            tenantSimpleUnitOfWork.BeginTransaction();
-            int deleteId = await companyDocumentRepostory.DeleteAsync(id);
-            if (deleteId > 0)
-            {
-                await companyDocumentAttachmentRepository.deleteAttachment(id);
-            }
-            tenantSimpleUnitOfWork.Commit();
-            return deleteId;
-        }
-        catch (Exception ex)
-        {
-            tenantSimpleUnitOfWork.Rollback();
-            throw ex;
-        }
-    }
-
-    public async Task<IEnumerable<CompanyDocuments>> GetCompanyDocumentDetails(int companyId)
-    {
-        IEnumerable<CompanyDocuments> comapnyDocuments = await companyDocumentRepostory.GetCompanyDocuments(companyId);
+        IEnumerable<ComapnyDocuments> comapnyDocuments = await companyDocumentRepostory.GetCompanyDocuments(companyId);
         IEnumerable<CompanyDocumentAttachment> documentAttachments = (await companyDocumentAttachmentRepository.GetAttachmentDetails(companyId)).ToList();
-        foreach (CompanyDocuments documents in comapnyDocuments)
+        foreach (ComapnyDocuments documents in comapnyDocuments)
         {
-            IEnumerable<CompanyDocumentAttachment> attachments = documentAttachments.Where(x => x.CompanyDocumentId == documents.Id).ToList();
+            IEnumerable<CompanyDocumentAttachment> attachments = documentAttachments.Where(x => x.ComapnyDocumentId == documents.Id).ToList();
             documents.companyDocumentAttachments = attachments.ToList();
         }
         return comapnyDocuments;
     }
 
-    public async Task<int> Insert(CompanyDocuments companyDocuments)
+    public async Task<int> Insert(ComapnyDocuments comapnyDocuments)
     {
         try
         {
             tenantSimpleUnitOfWork.BeginTransaction();
-            companyDocuments.Id = await companyDocumentRepostory.InsertAsync(companyDocuments);
-            if(companyDocuments.IsAttachment == true)
+            comapnyDocuments.Id = await companyDocumentRepostory.InsertAsync(comapnyDocuments);
+            if(comapnyDocuments.IsAttachment == true)
             {
                 int count = httpContext.HttpContext.Request.Form.Files.Count();
                 for (int i = 0; i < count; i++)
@@ -73,7 +53,7 @@ public class CompanyDocumentService : AsyncService<CompanyDocuments>, ICompanyDo
                     CompanyDocumentAttachment companyDocumentAttachment = new()
                     {
                         FileName = file.FileName,
-                        CompanyDocumentId = companyDocuments.Id,
+                        ComapnyDocumentId = comapnyDocuments.Id,
                         AttachmentByte = fileBytes,
                     };
                     await companyDocumentAttachmentRepository.InsertAsync(companyDocumentAttachment);
@@ -90,18 +70,18 @@ public class CompanyDocumentService : AsyncService<CompanyDocuments>, ICompanyDo
         }
     }
 
-    public async Task<int> Update(CompanyDocuments companyDocuments)
+    public async Task<int> Update(ComapnyDocuments comapnyDocuments)
     {
         try
         {
             tenantSimpleUnitOfWork.BeginTransaction();
-            if(companyDocuments.Id > 0)
+            if(comapnyDocuments.Id > 0)
             {
-                await companyDocumentRepostory.UpdateAsync(companyDocuments);
+                await companyDocumentRepostory.UpdateAsync(comapnyDocuments);
             }
             else
             {
-                companyDocuments.Id =  await companyDocumentRepostory.InsertAsync(companyDocuments);
+                comapnyDocuments.Id =  await companyDocumentRepostory.InsertAsync(comapnyDocuments);
             }
             int count = httpContext.HttpContext.Request.Form.Files.Count();
             if(count > 0)
@@ -115,7 +95,7 @@ public class CompanyDocumentService : AsyncService<CompanyDocuments>, ICompanyDo
                     CompanyDocumentAttachment companyDocumentAttachment = new()
                     {
                         FileName = file.FileName,
-                        CompanyDocumentId = companyDocuments.Id,
+                        ComapnyDocumentId = comapnyDocuments.Id,
                         AttachmentByte = fileBytes,
                     };
                     await companyDocumentAttachmentRepository.InsertAsync(companyDocumentAttachment);

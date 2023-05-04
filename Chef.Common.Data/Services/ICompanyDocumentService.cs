@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Data.Services;
 
-public interface ICompanyDocumentService:IAsyncService<CompanyDocuments>
+public interface ICompanyDocumentService:IAsyncService<ComapnyDocuments>
 {
-    Task<int> Insert(CompanyDocuments companyDocuments);
+    Task<int> Insert(ComapnyDocuments comapnyDocuments);
 
-    Task<int> Update(CompanyDocuments companyDocuments);
+    Task<int> Update(ComapnyDocuments comapnyDocuments);
 
-    Task<IEnumerable<CompanyDocuments>> GetCompanyDocumentDetails(int companyId);
-
-    Task<int> Delete(int id);
+    Task<IEnumerable<ComapnyDocuments>> GetCompanyDocumentDetails(int companyId);
 }
