@@ -22,6 +22,19 @@ public class CompanyDocumentService : AsyncService<ComapnyDocuments>, ICompanyDo
         this.httpContext = httpContext;
         this.companyDocumentAttachmentRepository = companyDocumentAttachmentRepository;
     }
+
+    public async Task<IEnumerable<ComapnyDocuments>> GetCompanyDocumentDetails(int companyId)
+    {
+        IEnumerable<ComapnyDocuments> comapnyDocuments = await companyDocumentRepostory.GetCompanyDocuments(companyId);
+        IEnumerable<CompanyDocumentAttachment> documentAttachments = (await companyDocumentAttachmentRepository.GetAttachmentDetails(companyId)).ToList();
+        foreach (ComapnyDocuments documents in comapnyDocuments)
+        {
+            IEnumerable<CompanyDocumentAttachment> attachments = documentAttachments.Where(x => x.ComapnyDocumentId == documents.Id).ToList();
+            documents.companyDocumentAttachments = attachments.ToList();
+        }
+        return comapnyDocuments;
+    }
+
     public async Task<int> Insert(ComapnyDocuments comapnyDocuments)
     {
         try

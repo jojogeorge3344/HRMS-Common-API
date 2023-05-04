@@ -34,5 +34,15 @@ public class CompanyDocumentController : ControllerBase
         ComapnyDocuments documents = JsonConvert.DeserializeObject<ComapnyDocuments>(files["comapnyDocuments"][0]);
         return Ok(await companyDocumentService.Update(documents));
     }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ComapnyDocuments>>>GetCompanyDocumentDetails(int companyId)
+    {
+        IEnumerable<ComapnyDocuments> details = await companyDocumentService.GetCompanyDocumentDetails(companyId);
+        if(details == null)
+        {
+            throw new Exception("Company not found");
+        }
+        return Ok(details);
+    }
 
 }

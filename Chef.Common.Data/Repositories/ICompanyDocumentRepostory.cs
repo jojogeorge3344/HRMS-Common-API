@@ -9,5 +9,5 @@ namespace Chef.Common.Data.Repositories;
 
 public interface ICompanyDocumentRepostory: IGenericRepository<ComapnyDocuments>
 {
-
+    Task<IEnumerable<ComapnyDocuments>> GetCompanyDocuments(int id);
 }

@@ -29,5 +29,9 @@ public class ComapnyDocuments:Model
     public bool Email { get; set; }
 
     public bool Sms { get; set; }
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
+    public List<CompanyDocumentAttachment> companyDocumentAttachments { get; set; }
 
 }

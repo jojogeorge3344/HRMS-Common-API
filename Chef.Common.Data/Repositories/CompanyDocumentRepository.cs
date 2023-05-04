@@ -12,4 +12,14 @@ public class CompanyDocumentRepository:TenantRepository<ComapnyDocuments>, IComp
     {
 
     }
+
+    public async Task<IEnumerable<ComapnyDocuments>> GetCompanyDocuments(int companyId)
+    {
+       return await QueryFactory
+            .Query<ComapnyDocuments>()
+            .Select(" id", "documentname", "documenttypeid", "documenttypename", "companyid", "expiredate", "issuedate", "isattachment", "phoneno", "emailid", "email", "sms")
+            .Where("companyid", companyId)
+            .WhereNotArchived()
+            .GetAsync<ComapnyDocuments>();
+    }
 }

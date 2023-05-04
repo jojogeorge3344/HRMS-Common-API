@@ -11,4 +11,6 @@ public interface ICompanyDocumentService:IAsyncService<ComapnyDocuments>
     Task<int> Insert(ComapnyDocuments comapnyDocuments);
 
     Task<int> Update(ComapnyDocuments comapnyDocuments);
+
+    Task<IEnumerable<ComapnyDocuments>> GetCompanyDocumentDetails(int companyId);
 }
