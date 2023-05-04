@@ -34,7 +34,7 @@ public class CompanyDocumentAttachmentRepository:TenantRepository<CompanyDocumen
                                    ct.attachmentbyte
                         FROM       common.companydocumentattachment ct
                         INNER JOIN common.companydocuments cd
-                        ON         cd.id = ct.comapnydocumentid
+                        ON         cd.id = ct.companydocumentid
                         WHERE      ct.isarchived = false
                         AND        cd.isarchived = false
                         AND        cd.companyid = @companyId";
