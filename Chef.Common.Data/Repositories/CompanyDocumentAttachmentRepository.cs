@@ -33,7 +33,7 @@ public class CompanyDocumentAttachmentRepository:TenantRepository<CompanyDocumen
                                    ct.filename,
                                    ct.attachmentbyte
                         FROM       common.companydocumentattachment ct
-                        INNER JOIN common.comapnydocuments cd
+                        INNER JOIN common.companydocuments cd
                         ON         cd.id = ct.comapnydocumentid
                         WHERE      ct.isarchived = false
                         AND        cd.isarchived = false
