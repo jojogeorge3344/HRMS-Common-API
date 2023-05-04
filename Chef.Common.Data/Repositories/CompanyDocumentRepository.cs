@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Data.Repositories;
 
-public class CompanyDocumentRepository:TenantRepository<ComapnyDocuments>, ICompanyDocumentRepostory
+public class CompanyDocumentRepository:TenantRepository<CompanyDocuments>, ICompanyDocumentRepostory
 {
     public CompanyDocumentRepository(IHttpContextAccessor httpContextAccessor, ITenantConnectionFactory session) : base(httpContextAccessor, session)
     {
 
     }
 
-    public async Task<IEnumerable<ComapnyDocuments>> GetCompanyDocuments(int companyId)
+    public async Task<IEnumerable<CompanyDocuments>> GetCompanyDocuments(int companyId)
     {
        return await QueryFactory
-            .Query<ComapnyDocuments>()
+            .Query<CompanyDocuments>()
             .Select(" id", "documentname", "documenttypeid", "documenttypename", "companyid", "expiredate", "issuedate", "isattachment", "phoneno", "emailid", "email", "sms")
             .Where("companyid", companyId)
             .WhereNotArchived()
-            .GetAsync<ComapnyDocuments>();
+            .GetAsync<CompanyDocuments>();
     }
 }

@@ -14,10 +14,22 @@ public class CompanyDocumentAttachmentRepository:TenantRepository<CompanyDocumen
 
     }
 
+    public async Task<int> deleteAttachment(int id)
+    {
+        return await QueryFactory
+            .Query<CompanyDocumentAttachment>()
+            .Where(" companydocumentid", id)
+            .WhereNotArchived()
+            .UpdateAsync(new
+            {
+                isarchived = true
+            });
+    }
+
     public async Task<IEnumerable<CompanyDocumentAttachment>> GetAttachmentDetails(int companyId)
     {
         string sql = @"SELECT     ct.id,
-                                   ct.comapnydocumentid,
+                                   ct.companydocumentid,
                                    ct.filename,
                                    ct.attachmentbyte
                         FROM       common.companydocumentattachment ct

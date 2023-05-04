@@ -10,4 +10,6 @@ namespace Chef.Common.Data.Repositories;
 public interface ICompanyDocumentAttachmentRepository:IGenericRepository<CompanyDocumentAttachment>
 {
     Task<IEnumerable<CompanyDocumentAttachment>> GetAttachmentDetails(int companyId);
+
+    Task<int> deleteAttachment(int id);
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Models;
 
-public class ComapnyDocuments:Model
+public class CompanyDocuments:Model
 {
     public string DocumentName { get; set; }
     public int DocumentTypeId { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Data.Repositories;
 
-public interface ICompanyDocumentRepostory: IGenericRepository<ComapnyDocuments>
+public interface ICompanyDocumentRepostory: IGenericRepository<CompanyDocuments>
 {
-    Task<IEnumerable<ComapnyDocuments>> GetCompanyDocuments(int id);
+    Task<IEnumerable<CompanyDocuments>> GetCompanyDocuments(int id);
 }
