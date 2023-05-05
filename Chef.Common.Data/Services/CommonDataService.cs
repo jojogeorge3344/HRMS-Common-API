@@ -128,7 +128,9 @@ public class CommonDataService : ICommonDataService
             {
                 engOne = tens(digit);
             }
-            cd += " " + engOne;
+
+            if (!string.IsNullOrEmpty(engOne))
+                cd += " " + engOne;
         }
         return cd;
     }
