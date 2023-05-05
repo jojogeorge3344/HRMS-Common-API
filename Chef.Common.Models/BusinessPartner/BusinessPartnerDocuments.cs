@@ -14,9 +14,9 @@ public class BusinessPartnerDocuments : Model
 
     public int BusinessPartnerId { get; set; }
 
-    public DateTime ExpireDate { get; set; }
+    public DateTime? ExpireDate { get; set; }
 
-    public DateTime IssueDate { get; set; }
+    public DateTime? IssueDate { get; set; }
 
     public bool IsAttachment { get; set; }
 
