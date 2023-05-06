@@ -21,7 +21,21 @@ public class SalesReturnCreditMappingProfile : Profile
                         .ForMember(d => d.BranchId, opt => opt.MapFrom(x => x.BranchId))
                         .ForMember(d => d.DocumentStatus, opt => opt.MapFrom(x => "1"))
                         .ForMember(d => d.ApproveStatus, opt => opt.MapFrom(x => "1"))
-                        .ForMember(d => d.DocumentType, opt => opt.MapFrom(x => DocumentType.CustomerCreditNote));
+                        .ForMember(d => d.DocumentType, opt => opt.MapFrom(x => DocumentType.CustomerCreditNote))
+                        .ForMember(d => d.LineItems,opt => opt.MapFrom(x => x.salesReturnCreditItemDtos));
+
+        CreateMap<SalesReturnCreditItemDto, CustomerCreditNoteLineItem>()
+            .ForMember(d => d.Description,opt => opt.MapFrom(x => x.ItemName))
+            .ForMember(d => d.Qty, opt => opt.MapFrom(x => x.ReturnQuantity))
+            .ForMember(d => d.UOMId, opt => opt.MapFrom(x => x.TransUomId))
+            .ForMember(d => d.Rate, opt => opt.MapFrom(x => x.ReturnUnitRate))
+            .ForMember(d => d.Amount, opt => opt.MapFrom(x => x.TotalItemAmount))
+            .ForMember(d => d.NetAmount, opt => opt.MapFrom(x => x.GrossAmt))
+            .ForMember(d => d.TaxPercentage, opt => opt.MapFrom(x => x.TotalTaxAmt))
+            .ForMember(d => d.TaxAmount, opt => opt.MapFrom(x => x.TotalTaxAmt))
+            .ForMember(d => d.TotalAmount, opt => opt.MapFrom(x => x.NetAmount));
+
+
 
         CreateMap<SalesReturnCreditDto, CustomerCreditNoteDetail>()
                         .ForMember(d => d.NetAmount, opt => opt.MapFrom(x => x.GrossTotal))
