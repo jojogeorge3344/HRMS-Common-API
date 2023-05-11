@@ -10,7 +10,7 @@ public class PayRollComponentViewModel
 {
     public int ComponentId { get; set; }
     public string ComponentName { get; set; }
-    public string ShortCode { get; set; }
-    public int TypeId { get; set; }
-    public string TypeName { get; set; }
+    public string ComponentCode { get; set; }
+    public int ComponentTypeId { get; set; }
+    public string ComponentTypeName { get; set; }
 }

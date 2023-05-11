@@ -36,7 +36,7 @@ public class HRMSMasterRepository : TenantRepository<Model>, IHRMSMasterReposito
     {
         return await QueryFactory
             .Query<PayrollComponent>()
-            .Select("payrollcomponent.id as ComponentId", "payrollcomponent.name as ComponentName", "payrollcomponent.shortcode", "benefittypes.id as TypeId", "benefittypes.name as TypeName")
+            .Select("payrollcomponent.id as ComponentId", "payrollcomponent.name as ComponentName", "payrollcomponent.shortcode as ComponentCode", "benefittypes.id as ComponentTypeId", "benefittypes.name as ComponentTypeName")
             .Join<BenefitTypes>("payrollcomponent.payrollcomponenttype", "benefittypes.id", "=")
             .WhereNot("payrollcomponent.isarchived", true)
             .WhereNot("benefittypes.isarchived", true)
