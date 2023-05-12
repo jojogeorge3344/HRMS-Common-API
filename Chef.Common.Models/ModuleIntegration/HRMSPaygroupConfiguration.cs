@@ -20,7 +20,7 @@ public class HRMSPaygroupConfiguration:Model
     [Write(false)]
     [Skip(true)]
     [SqlKata.Ignore]
-    public List<PayRollComponentViewModel> dropDownDetails { get; set; }
+    public List<PayRollComponentViewModel> hRMSPayGroupPayRollComoponentDetail { get; set; }
 
     [Write(false)]
     [Skip(true)]

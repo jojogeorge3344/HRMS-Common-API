@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Chef.HRMS.Integration;
 
@@ -27,7 +28,11 @@ public class HRMSMasterRepository : TenantRepository<Model>, IHRMSMasterReposito
     {
         return await QueryFactory
              .Query<PayGroup>()
-             .Select("id", "code", "name")
+             .Select("id", "name", "code")
+             .WhereNotIn("id", new Query("common.HRMSPaygroupConfiguration")
+                         .Join("hrms.paygroup", "hrms.paygroup.id", "common.HRMSPaygroupConfiguration.paygroupid")
+                         .Where("common.HRMSPaygroupConfiguration.isarchived", false)
+                         .Select("common.HRMSPaygroupConfiguration.paygroupid"))
              .WhereNotArchived()
              .GetAsync<PayGroup>();
     }
