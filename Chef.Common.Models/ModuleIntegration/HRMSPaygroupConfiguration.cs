@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core;
+using Chef.HRMS.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,12 @@ public class HRMSPaygroupConfiguration:Model
     [Write(false)]
     [Skip(true)]
     [SqlKata.Ignore]
+    public List<PayRollComponentViewModel> dropDownDetails { get; set; }
+
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
     public List<HRMSPayGroupPayRollComoponentDetails> hRMSPayGroupPayRollComoponentDetails { get; set; }
+
+
 }
