@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
-    <ProjectReference Include="..\Chef.Common.Models\Chef.Common.Models.csproj" />
   </ItemGroup>
 
 </Project>
