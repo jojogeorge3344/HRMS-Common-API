@@ -70,8 +70,8 @@ namespace Chef.Common.Models
         [Required]
         public string TaxRegistrationNumber { get; set; }
 
-        [Unique(true)]
-        public string Host { get; set; }
+        //[Unique(true)]
+        //public string Host { get; set; }
 
         public byte[] Logo { get; set; }
         [Write(false)]

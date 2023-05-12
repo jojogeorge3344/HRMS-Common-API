@@ -1,4 +1,4 @@
-﻿using Chef.Common.Authentication;
+﻿    using Chef.Common.Authentication;
 using Chef.Common.Data.Services;
 using Chef.Common.Models;
 using Chef.Common.Repositories;
@@ -267,6 +267,17 @@ public class MasterDataController : ControllerBase
             return NotFound("The bank branch does not exist.");
         }
         return Ok(bankBranches);
+    }
+
+    [HttpGet("{companyId:int}")]
+    public async Task<ActionResult<IEnumerable<Employee>>> GetEmployeeDetailsByCompanyId(int companyId)
+    {
+        IEnumerable<Employee> details = await masterDataService.GetEmployeeDetailsByCompanyId(companyId);
+        if(details == null)
+        {
+            return NotFound("Employee does not Exist");
+        }
+        return Ok(details);
     }
 
     [HttpGet("{finacialyearid:int}")]

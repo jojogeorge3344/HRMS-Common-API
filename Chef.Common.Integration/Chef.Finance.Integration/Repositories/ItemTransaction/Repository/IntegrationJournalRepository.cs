@@ -21,6 +21,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                                th.businesspartnercode,
                                th.businesspartnername,
                                th.currency,
+                               th.referencenumber,
                                th.totalamount,
                                th.transactiondate,
                                th.createddate,

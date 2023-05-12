@@ -70,8 +70,6 @@ namespace Chef.Common.Models
         [StringLength(320, ErrorMessage = "Email should be maximum length of 320 characters")]
         public string Email { get; set; }
 
-        [RegularExpression("/^(http[s]?:\\/\\/){0,1}(www\\.){0,1}[a-zA-Z0-9\\.\\-]+\\.[a-zA-Z]{2,5}[\\.]{0,1}/", ErrorMessage = "Invalid website")]
-        [StringLength(50, ErrorMessage = "Website should be maximum length of 50 characters")]
         public string Website { get; set; }
 
         public int SerialNumber { get; set; }
