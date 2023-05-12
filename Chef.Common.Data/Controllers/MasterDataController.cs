@@ -332,5 +332,10 @@ public class MasterDataController : ControllerBase
         var result = await masterDataService.GetAllItem(search);
         return Ok(result);
     }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TypesOfDocument>>> GetDocumentTypes()
+    {
+        return Ok(await masterDataService.GetDocumentTypes());
+    }
 }
 
