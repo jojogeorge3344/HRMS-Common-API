@@ -1,4 +1,5 @@
-﻿using Chef.HRMS.Integration.Models;
+﻿using Chef.Common.Models;
+using Chef.HRMS.Integration.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,16 +21,16 @@ public class HRMSMasterController : ControllerBase
     {
         this.hRMSMasterService = hRMSMasterService;
     }
-    [HttpGet("GetPaygroup")]
-    public async Task<ActionResult<IEnumerable<PayGroup>>>GetPaygroup()
+    [HttpGet("GetPaygroup/{Id}")]
+    public async Task<ActionResult<IEnumerable<PayGroup>>>GetPaygroup(int Id)
     {
-        IEnumerable<PayGroup> payGroup = await hRMSMasterService.GetPaygroup();
+        IEnumerable<PayGroup> payGroup = await hRMSMasterService.GetPaygroup(Id);
         return Ok(payGroup);
     }
     [HttpGet("GetPayRollComponent")]
-    public async Task<ActionResult<IEnumerable<PayRollComponentViewModel>>> GetPayRollComponent()
+    public async Task<ActionResult<IEnumerable<HRMSPayGroupPayRollComoponentDetails>>> GetPayRollComponent()
     {
-        IEnumerable<PayRollComponentViewModel> payRollComponents = await hRMSMasterService.GetPayRollComponent();
+        IEnumerable<HRMSPayGroupPayRollComoponentDetails> payRollComponents = await hRMSMasterService.GetPayRollComponent();
         return Ok(payRollComponents);
     }
 

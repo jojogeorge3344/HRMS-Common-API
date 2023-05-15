@@ -1,5 +1,4 @@
 ﻿using Chef.Common.Core;
-using Chef.HRMS.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +16,10 @@ public class HRMSPaygroupConfiguration:Model
     public string JournalBookCode { get; set; }
     public string JournalBookName { get; set; }
 
-    [Write(false)]
-    [Skip(true)]
-    [SqlKata.Ignore]
-    public List<PayRollComponentViewModel> hRMSPayGroupPayRollComoponentDetail { get; set; }
+    //[Write(false)]
+    //[Skip(true)]
+    //[SqlKata.Ignore]
+    //public List<PayRollComponentViewModel> hRMSPayGroupPayRollComoponentDetail { get; set; }
 
     [Write(false)]
     [Skip(true)]

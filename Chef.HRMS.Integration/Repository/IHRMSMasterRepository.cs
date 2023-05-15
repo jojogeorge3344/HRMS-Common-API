@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core.Repositories;
+using Chef.Common.Models;
 using Chef.HRMS.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Chef.HRMS.Integration;
 
 public interface IHRMSMasterRepository:IRepository
 {
-    Task<IEnumerable<PayGroup>> GetPaygroup();
+    Task<IEnumerable<PayGroup>> GetPaygroup(int Id);
 
-    Task<IEnumerable<PayRollComponentViewModel>> GetPayRollComponent();
+    Task<IEnumerable<HRMSPayGroupPayRollComoponentDetails>> GetPayRollComponent();
 }

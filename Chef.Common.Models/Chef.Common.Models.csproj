@@ -23,7 +23,6 @@
     <!--<ProjectReference Include="..\..\chef.finance\Chef.Finance.Types\Chef.Finance.Types.csproj" />-->
     <ProjectReference Include="..\Chef.Common.Core\Chef.Common.Core.csproj" />
     <ProjectReference Include="..\Chef.Common.Types\Chef.Common.Types.csproj" />
-    <ProjectReference Include="..\Chef.HRMS.Integration\Chef.HRMS.Integration.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />

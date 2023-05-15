@@ -1,6 +1,7 @@
 ﻿using Chef.Common.Core;
 using Chef.Common.Core.Extensions;
 using Chef.Common.Core.Repositories;
+using Chef.Common.Models;
 using Chef.Common.Repositories;
 using Chef.HRMS.Integration.Models;
 using Dapper;
@@ -24,20 +25,21 @@ public class HRMSMasterRepository : TenantRepository<Model>, IHRMSMasterReposito
        : base(httpContextAccessor, tenantConnectionFactory)
     {
     }
-    public async Task<IEnumerable<PayGroup>> GetPaygroup()
+    public async Task<IEnumerable<PayGroup>> GetPaygroup(int Id)
     {
         return await QueryFactory
              .Query<PayGroup>()
              .Select("id", "name", "code")
              .WhereNotIn("id", new Query("common.HRMSPaygroupConfiguration")
                          .Join("hrms.paygroup", "hrms.paygroup.id", "common.HRMSPaygroupConfiguration.paygroupid")
+                         .Where("hrms.paygroup.id","!=", Id)
                          .Where("common.HRMSPaygroupConfiguration.isarchived", false)
                          .Select("common.HRMSPaygroupConfiguration.paygroupid"))
              .WhereNotArchived()
              .GetAsync<PayGroup>();
     }
 
-    public async Task<IEnumerable<PayRollComponentViewModel>> GetPayRollComponent()
+    public async Task<IEnumerable<HRMSPayGroupPayRollComoponentDetails>> GetPayRollComponent()
     {
         return await QueryFactory
             .Query<PayrollComponent>()
@@ -45,6 +47,6 @@ public class HRMSMasterRepository : TenantRepository<Model>, IHRMSMasterReposito
             .Join<BenefitTypes>("payrollcomponent.payrollcomponenttype", "benefittypes.id", "=")
             .WhereNot("payrollcomponent.isarchived", true)
             .WhereNot("benefittypes.isarchived", true)
-            .GetAsync<PayRollComponentViewModel>();
+            .GetAsync<HRMSPayGroupPayRollComoponentDetails>();
     }
 }

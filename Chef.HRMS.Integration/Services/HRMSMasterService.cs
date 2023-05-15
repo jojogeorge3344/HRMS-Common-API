@@ -1,4 +1,5 @@
-﻿using Chef.HRMS.Integration.Models;
+﻿using Chef.Common.Models;
+using Chef.HRMS.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,12 @@ public class HRMSMasterService : IHRMSMasterService
     {
         this.hRMSMasterRepository = hRMSMasterRepository;
     }
-    public async Task<IEnumerable<PayGroup>> GetPaygroup()
+    public async Task<IEnumerable<PayGroup>> GetPaygroup(int Id)
     {
-        return await hRMSMasterRepository.GetPaygroup();
+        return await hRMSMasterRepository.GetPaygroup(Id);
     }
 
-    public async Task<IEnumerable<PayRollComponentViewModel>> GetPayRollComponent()
+    public async Task<IEnumerable<HRMSPayGroupPayRollComoponentDetails>> GetPayRollComponent()
     {
         return await hRMSMasterRepository.GetPayRollComponent();
     }

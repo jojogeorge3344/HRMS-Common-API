@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Core.Services;
+using Chef.Common.Models;
 using Chef.HRMS.Integration.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +12,6 @@ namespace Chef.HRMS.Integration;
 
 public interface IHRMSMasterService:IBaseService
 {
-    Task<IEnumerable<PayGroup>> GetPaygroup();
-    Task<IEnumerable<PayRollComponentViewModel>> GetPayRollComponent();
+    Task<IEnumerable<PayGroup>> GetPaygroup(int Id);
+    Task<IEnumerable<HRMSPayGroupPayRollComoponentDetails>> GetPayRollComponent();
 }
