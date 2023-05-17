@@ -244,5 +244,10 @@ public class MasterDataService : IMasterDataService
     {
         return await masterDataRespository.GetEmployeeDetailsByCompanyId(companyId);
     }
+
+    public async Task<IEnumerable<TypesOfDocument>> GetDocumentTypes()
+    {
+        return await masterDataRespository.GetDocumentTypes();
+    }
 }
 

@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace Chef.Common.Models;
 
-public class BusinessPartnerDocuments : Model
+public class CompanyDocuments:Model
 {
     public string DocumentName { get; set; }
     public int DocumentTypeId { get; set; }
 
-    public int BusinessPartnerId { get; set; }
+    public string DocumentTypeName { get; set; }
+
+    public int CompanyId { get; set; }
 
     public DateTime? ExpireDate { get; set; }
 
@@ -20,14 +22,16 @@ public class BusinessPartnerDocuments : Model
 
     public bool IsAttachment { get; set; }
 
-    [Write(false)]
-    [Skip(true)]
-    [SqlKata.Ignore]
-    public string DocumentType { get; set; }
+    public string PhoneNo { get; set; }
 
+    public string EmailId { get; set; }
+
+    public bool Email { get; set; }
+
+    public bool Sms { get; set; }
     [Write(false)]
     [Skip(true)]
     [SqlKata.Ignore]
-    public List<BusinessPartnerDocumentAttachment> BusinessPartnerDocumentAttachments { get; set; }
+    public List<CompanyDocumentAttachment> companyDocumentAttachments { get; set; }
 
 }
