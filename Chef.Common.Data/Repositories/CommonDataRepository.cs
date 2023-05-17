@@ -100,7 +100,8 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                                phone,
                                name as CompanyName,
                                fax,
-                               Encode(logo :: bytea, 'escape') AS LogoEncoded
+                               Encode(logo :: bytea, 'escape') AS LogoEncoded,
+                               taxregistrationnumber
                         FROM   common.company ";
         return await DatabaseSession.QueryFirstAsync<Company>(sql);
 
