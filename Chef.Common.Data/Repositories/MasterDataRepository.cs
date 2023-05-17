@@ -435,5 +435,13 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
            .WhereNotArchived()
            .GetAsync<Employee>();
     }
+
+    public async Task<IEnumerable<TypesOfDocument>> GetDocumentTypes()
+    {
+        return await QueryFactory
+            .Query<TypesOfDocument>()
+            .WhereNotArchived()
+            .GetAsync<TypesOfDocument>();
+    }
 }
 

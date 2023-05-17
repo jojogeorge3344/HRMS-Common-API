@@ -67,4 +67,6 @@ public interface IMasterDataService : IBaseService
 
     Task<IEnumerable<Employee>> GetEmployeeDetailsByCompanyId(int companyId);
 
+    Task<IEnumerable<TypesOfDocument>> GetDocumentTypes();
+
 }
