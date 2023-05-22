@@ -76,6 +76,7 @@
         OnAccountRepaymentToCustomers = 702,
         CashSaleInvoice = 800,
         CashSaleReturn = 801,
-        HRMSIntegration = 802
+        HRMSIntegration = 802,
+        PettyCashAdvance = 803
     }
 }
