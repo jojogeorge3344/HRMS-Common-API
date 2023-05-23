@@ -15,5 +15,5 @@ public interface ICommonDataService : IBaseService
     Task<Company> GetCompanyDetailsForVoucherPrint();
 
     string ConvertToWords(string numb, string currency);
-    decimal GetChartMaximumAmount(decimal maxAmount);
+    decimal GetChartLimitAmount(decimal maxAmount);
 }
