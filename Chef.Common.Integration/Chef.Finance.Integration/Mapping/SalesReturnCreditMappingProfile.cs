@@ -9,7 +9,7 @@ public class SalesReturnCreditMappingProfile : Profile
     public SalesReturnCreditMappingProfile()
     {
         CreateMap<SalesReturnCreditDto, CustomerCreditNote>()
-                        .ForMember(d => d.TransactionDate, opt => opt.MapFrom(x => x.SalesCreditDate))
+                        .ForMember(d => d.TransactionDate, opt => opt.MapFrom(x => x.SalesCreditDate.Date))
                         .ForMember(d => d.BusinessPartnerId, opt => opt.MapFrom(x => x.CustomerId))
                         .ForMember(d => d.BusinessPartnerCode, opt => opt.MapFrom(x => x.CustomerCode))
                         .ForMember(d => d.BusinessPartnerName, opt => opt.MapFrom(x => x.CustomerName))
