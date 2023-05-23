@@ -329,12 +329,11 @@ public class CommonDataService : ICommonDataService
         return word.Trim();
     }
 
-    public decimal GetChartMaximumAmount(decimal maxAmount)
+    public decimal GetChartLimitAmount(decimal maxAmount)
     {
-        int startingNumber = Convert.ToInt32(maxAmount.ToString().Substring(0, 1)) + 1;
-        IEnumerable<int> zeros = Enumerable.Repeat(0, Math.Floor(maxAmount).ToString().Length - 1);
-        maxAmount = Convert.ToDecimal($"{startingNumber}{string.Join("", zeros)}");
-        return maxAmount;
+        int startingNumber = maxAmount > 0 ? Convert.ToInt32(maxAmount.ToString().Substring(0, 1)) + 1 : (Convert.ToInt32(maxAmount.ToString().Substring(1, 1)) + 1) * -1;
+        IEnumerable<int> zeros = Enumerable.Repeat(0, Math.Abs(Math.Floor(maxAmount)).ToString().Length - 1);
+        return Convert.ToDecimal($"{startingNumber}{string.Join("", zeros)}");
     }
 }
 
