@@ -28,6 +28,7 @@ public class SalesReturnCreditMappingProfile : Profile
             .ForMember(d => d.Description,opt => opt.MapFrom(x => x.ItemName))
             .ForMember(d => d.Qty, opt => opt.MapFrom(x => x.ReturnQuantity))
             .ForMember(d => d.UOMId, opt => opt.MapFrom(x => x.TransUomId))
+            .ForMember(d => d.UOMName, opt => opt.MapFrom(x => x.TransUomName))
             .ForMember(d => d.Rate, opt => opt.MapFrom(x => x.ReturnUnitRate))
             .ForMember(d => d.Amount, opt => opt.MapFrom(x => x.TotalItemAmount))
             .ForMember(d => d.NetAmount, opt => opt.MapFrom(x => x.GrossAmt))

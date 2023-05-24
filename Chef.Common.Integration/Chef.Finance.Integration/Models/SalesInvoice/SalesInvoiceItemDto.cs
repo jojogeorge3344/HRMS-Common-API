@@ -16,6 +16,10 @@ public class SalesInvoiceItemDto
     public int ItemCommodityId { get; set; }
     public int TransUomId { get; set; }
     public int BaseUomId { get; set; }
+    public string? BaseUomCode { get; set; }
+    public string? BaseUomName { get; set; }
+    public string? TransUomCode { get; set; }
+    public string? TransUomName { get; set; }
     public decimal InvQuantity { get; set; }
     public decimal InvUnitRate { get; set; }
     public decimal TotalAmount { get; set; }
