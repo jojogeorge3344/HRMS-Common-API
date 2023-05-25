@@ -13,7 +13,11 @@ public class SalesOrderInvoiceMappingProfile : Profile
             .ForMember(d => d.Installments, opt => opt.MapFrom(x => x.salesInvoicePaymentTermLineDtos));
 
         CreateMap<SalesInvoiceItemDto, SalesInvoiceLineItem>()
-            .ForMember(d => d.Description, opt => opt.MapFrom(x => x.ItemSpec))
+            .ForMember(d => d.Description, opt => opt.MapFrom(x => x.ItemName))
+            .ForMember(d => d.UOMId, opt => opt.MapFrom(x => x.TransUomId))
+            .ForMember(d => d.UOMName, opt => opt.MapFrom(x => x.TransUomName))
+            .ForMember(d => d.Qty, opt => opt.MapFrom(x => x.InvQuantity))
+            .ForMember(d => d.Rate, opt => opt.MapFrom(x => x.InvUnitRate))
             .ForMember(d => d.Amount, opt => opt.MapFrom(x => x.TotalAmount))
             .ForMember(d => d.DiscountPercentage, opt => opt.MapFrom(x => x.DiscountPer))
             .ForMember(d => d.DiscountAmount, opt => opt.MapFrom(x => x.DiscountAmt))
