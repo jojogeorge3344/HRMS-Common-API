@@ -22,8 +22,11 @@
         CustomerReceiptAgainstInvoices = 210,
         CustomerAdvanceAllocation = 211,
 		CustomerOnAccountReceipt = 212,
+        CustomerAdvanceRefundAllocation = 213,
+        CustomerDepositRefundAllocation =214,
 
-		IntercompanyTransactionJournal = 300,
+
+        IntercompanyTransactionJournal = 300,
         BankReconciliation = 301,
         ARAPBalanceWriteOff = 302,
         ARAPKnockOff = 303,
@@ -72,6 +75,7 @@
         CashCollectionAccount = 700,
         OnAccountRepaymentToCustomers = 702,
         CashSaleInvoice = 800,
-        CashSaleReturn = 801
+        CashSaleReturn = 801,
+        HRMSIntegration = 802
     }
 }

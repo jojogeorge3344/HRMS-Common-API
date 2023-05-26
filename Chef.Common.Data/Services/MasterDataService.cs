@@ -239,5 +239,15 @@ public class MasterDataService : IMasterDataService
     {
         return await masterDataRespository.GetAllItem(sqlSearch);
     }
+
+    public async Task<IEnumerable<Employee>> GetEmployeeDetailsByCompanyId(int companyId)
+    {
+        return await masterDataRespository.GetEmployeeDetailsByCompanyId(companyId);
+    }
+
+    public async Task<IEnumerable<TypesOfDocument>> GetDocumentTypes()
+    {
+        return await masterDataRespository.GetDocumentTypes();
+    }
 }
 

@@ -2,6 +2,8 @@
 using Chef.Common.Authentication.Models;
 using Chef.Common.Exceptions;
 using Chef.Common.Models;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Chef.Common.Data.Controller;
 
@@ -73,5 +75,10 @@ public class CommonDataController : ControllerBase
         return Ok(await commonDataService.UpdateCompanyLogo(company));
     }
 
+    [HttpPut]
+    public async Task<ActionResult<int>> UpdateCompany(Company company)
+    {
+        return Ok(await commonDataService.UpdateCompany(company));
+    }
 }
 
