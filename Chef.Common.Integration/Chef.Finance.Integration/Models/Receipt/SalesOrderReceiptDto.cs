@@ -71,6 +71,8 @@ public class SalesOrderReceiptDto
 
     public bool IsRetail { get; set; }
 
+    public string Receiver { get; set; }
+
 
 }
 

@@ -93,7 +93,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
     {
         try
         {
-            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails();
+            int paymentTypeId = salesOrderReceiptDto.IsRetail == true ? (int)CashSettingType.Retail : (int)CashSettingType.Vansale;
+            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails(paymentTypeId);
             if (bankaccountType == null)
                 throw new ResourceNotFoundException("Cash Account Not available");
 
@@ -115,7 +116,6 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             receiptRegister.ApproveStatus = ApproveStatus.Draft;
             receiptRegister.JournalBookCode = bankaccountType.JBCode;
             receiptRegister.JournalBookId = bankaccountType.JBId;
-            receiptRegister.JournalBookCode = bankaccountType.JBCode;
             receiptRegister.JournalBookName = bankaccountType.Name;
             receiptRegister.JournalBookTypeId = bankaccountType.JournalBookTypeId;
             receiptRegister.JournalBookTypeCode = bankaccountType.JournalBookTypeCode;
@@ -159,8 +159,9 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
                 receiptRegisterOneTimeAccountingEntry.CreditAmount = salesOrderReceiptDto.TotalAmount;
                 receiptRegisterOneTimeAccountingEntry.CreditAmountInBaseCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
                 oneTimeReceipt.Add(receiptRegisterOneTimeAccountingEntry);
+                receiptRegister.ReceiptOneTimeAccountingEntries = oneTimeReceipt;
             }
-            receiptRegister.ReceiptOneTimeAccountingEntries = oneTimeReceipt;
+           
 
 
 
@@ -217,7 +218,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         {
           
 
-            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails();
+            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails((int)CashSettingType.Vansale);
             if (bankaccountType == null)
                 throw new ResourceNotFoundException("Cash Account Not available");
 
