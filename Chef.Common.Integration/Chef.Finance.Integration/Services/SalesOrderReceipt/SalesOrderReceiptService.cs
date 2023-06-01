@@ -188,7 +188,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             //tenantSimpleUnitOfWork.BeginTransaction();
             CustomerCashReceipt customerCashReceipt = Mapper.Map<CustomerCashReceipt>(salesOrderReceiptDto);
             customerCashReceipt.CashAccountNumber = bankaccountType.AccountNumber;
-            customerCashReceipt.TransactionReference = "NetBill";
+            customerCashReceipt.BankAccountId = bankaccountType.AccountId;
+            customerCashReceipt.TransactionReference = salesOrderReceiptDto.IsRetail == false ? "NetBill" : "RetailNetBill";
             customerCashReceipt.IsCashCollected = true;
             receiptRegister.CustomerCashReceipt = customerCashReceipt;
             receiptRegister = await receiptRegisterService.InsertAsync(receiptRegister);
