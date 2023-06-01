@@ -239,5 +239,10 @@ public class MasterDataService : IMasterDataService
     {
         return await masterDataRespository.GetAllItem(sqlSearch);
     }
+
+    public async Task<Country> GetCountryById(int countryId)
+    {
+        return await masterDataRespository.GetCountryById(countryId);
+    }
 }
 

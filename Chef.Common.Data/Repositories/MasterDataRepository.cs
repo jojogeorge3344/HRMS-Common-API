@@ -424,5 +424,15 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
          .WhereNotArchived()
          .GetAsync<Item>();
     }
+    public async Task<Country> GetCountryById(int countryId)
+    {
+        return await QueryFactory
+            .Query<Country>()
+            .Select("id", "name")
+            .Where("id", countryId)
+            .WhereNotArchived()
+            .OrderBy("name")
+            .FirstOrDefaultAsync<Country>();
+    }
 }
 

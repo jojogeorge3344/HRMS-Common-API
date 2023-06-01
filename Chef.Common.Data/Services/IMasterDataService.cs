@@ -65,4 +65,5 @@ public interface IMasterDataService : IBaseService
 
     Task<IEnumerable<Item>> GetAllItem(SqlSearch sqlSearch = null);
 
+    Task<Country> GetCountryById(int countryId);
 }
