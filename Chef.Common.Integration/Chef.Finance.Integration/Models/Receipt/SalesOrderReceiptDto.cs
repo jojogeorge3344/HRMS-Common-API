@@ -26,17 +26,17 @@ public class SalesOrderReceiptDto
     //[ForeignKey("Common.Branch")]
     public int BranchId { get; set; }
 
-
+    [Required]
     public int CustomerId { get; set; }
 
-
-    public string? CustomerCode { get; set; }
+    [Required]
+    public string CustomerCode { get; set; }
 
     public string? CustomerName { get; set; }
 
     public int ReceivedById { get; set; }
 
-    public string? ReceivedByName { get; set; }
+    public string ReceivedByName { get; set; }
 
     public string TransactionCurrencyCode { get; set; }
     public string baseCurrencyCode { get; set; }
@@ -67,11 +67,11 @@ public class SalesOrderReceiptDto
     [SqlKata.Ignore]
     public string? CashAccountNumber { get; set; }
 
-    public string? narration { get; set; }
+    public string narration { get; set; }
 
     public bool IsRetail { get; set; }
 
-    public string? Receiver { get; set; }
+    public string Receiver { get; set; }
 
 
 }

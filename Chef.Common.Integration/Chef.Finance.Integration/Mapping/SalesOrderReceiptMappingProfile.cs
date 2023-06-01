@@ -26,7 +26,7 @@ public class SalesOrderReceiptMappingProfile : Profile
                 .ForMember(d => d.BalanceAmountInBaseCurrency, opt => opt.MapFrom(x => x.TotalAmountInBaseCurrency));
 
         CreateMap<SalesOrderReceiptDto, CustomerCashReceipt>()
-               .ForMember(d => d.Name, opt => opt.MapFrom(x => x.BusinessPartnerName == null || x.BusinessPartnerName == "" ? x.CustomerName : x.BusinessPartnerName));
+               .ForMember(d => d.Name, opt => opt.MapFrom(x => x.BusinessPartnerName));
 
                
 
