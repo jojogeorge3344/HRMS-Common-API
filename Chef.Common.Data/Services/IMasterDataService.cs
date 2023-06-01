@@ -66,4 +66,8 @@ public interface IMasterDataService : IBaseService
     Task<IEnumerable<Item>> GetAllItem(SqlSearch sqlSearch = null);
 
     Task<Country> GetCountryById(int countryId);
+    Task<IEnumerable<Employee>> GetEmployeeDetailsByCompanyId(int companyId);
+
+    Task<IEnumerable<TypesOfDocument>> GetDocumentTypes();
+
 }

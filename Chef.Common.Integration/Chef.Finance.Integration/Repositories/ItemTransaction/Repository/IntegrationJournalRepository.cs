@@ -21,6 +21,7 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
                                th.businesspartnercode,
                                th.businesspartnername,
                                th.currency,
+                               th.referencenumber,
                                th.totalamount,
                                th.transactiondate,
                                th.createddate,
@@ -33,6 +34,10 @@ public class IntegrationJournalRepository : TenantRepository<TradingIntegrationH
         if (status == 1)
         {
             sql += " AND th.approvestatus = 1";
+        }
+        else if(status == 3)
+        {
+            sql += " AND th.approvestatus = 6";
         }
         else
         {

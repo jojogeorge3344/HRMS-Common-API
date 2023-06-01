@@ -8,7 +8,10 @@ public interface ICommonDataRepository : IRepository
     Task<IEnumerable<UserBranchDto>> GetBranches(string userName);
     Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode();
     Task<Company> GetMyCompany();
-    Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id);
+    Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint();
     Task<int> UpdateCompanyLogo(Company company);
+
+    Task<Company> GetCompanyDetailsForVoucherPrint();
+    Task<int> UpdateCompany(Company company);
 }
 

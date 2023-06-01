@@ -24,6 +24,10 @@ public class SalesReturnCreditItemDto
     public int ItemCommodityId { get; set; }
     public int TransUomId { get; set; }
     public int BaseUomId { get; set; }
+    public string? BaseUomCode { get; set; }
+    public string? BaseUomName { get; set; }
+    public string? TransUomCode { get; set; }
+    public string? TransUomName { get; set; }
     public decimal ReturnQuantity { get; set; }
     public decimal ReturnUnitRate { get; set; }
     public decimal TotalItemAmount { get; set; }

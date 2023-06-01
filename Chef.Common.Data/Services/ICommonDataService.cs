@@ -8,6 +8,12 @@ public interface ICommonDataService : IBaseService
     Task<IEnumerable<UserBranchDto>> GetMyBranches();
     Task<IEnumerable<ReasonCodeMaster>> GetAllReasonCode();
     Task<Company> GetMyCompany();
-    Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id);
+    Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint();
     Task<int> UpdateCompanyLogo(Company company);
+    Task<int> UpdateCompany(Company company);
+
+    Task<Company> GetCompanyDetailsForVoucherPrint();
+
+    string ConvertToWords(string numb, string currency);
+    decimal GetChartLimitAmount(decimal maxAmount);
 }

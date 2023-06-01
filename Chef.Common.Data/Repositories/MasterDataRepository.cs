@@ -1,6 +1,8 @@
-﻿using Chef.Common.Models;
+﻿using Chef.Common.Core.Extensions;
+using Chef.Common.Models;
 using Chef.Common.Repositories;
 using SqlKata;
+using System.ComponentModel.Design;
 
 namespace Chef.Common.Data.Repositories;
 
@@ -433,6 +435,23 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .OrderBy("name")
             .FirstOrDefaultAsync<Country>();
+    }
+
+    public async Task<IEnumerable<Employee>> GetEmployeeDetailsByCompanyId(int companyId)
+    {
+        return await QueryFactory
+           .Query<Employee>()
+           .Where("companyid", companyId)
+           .WhereNotArchived()
+           .GetAsync<Employee>();
+    }
+
+    public async Task<IEnumerable<TypesOfDocument>> GetDocumentTypes()
+    {
+        return await QueryFactory
+            .Query<TypesOfDocument>()
+            .WhereNotArchived()
+            .GetAsync<TypesOfDocument>();
     }
 }
 

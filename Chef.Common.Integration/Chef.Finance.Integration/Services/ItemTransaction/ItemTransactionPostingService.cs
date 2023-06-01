@@ -134,10 +134,10 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
                 case (TransactionOrgin.Purchase, TransactionType.PurchaseReturn):
                     await GetPurchaseReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                     break;
-                case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderReturn):
+                case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderReturn) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderReturn) or (TransactionOrgin.RetailSalesOrder, TransactionType.RetailSalesOrderReturnCash) or (TransactionOrgin.RetailSalesOrder, TransactionType.RetailSalesOrderReturnCredit):
                     await GetSalesOrderReturnTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                     break;
-                case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderDelivery):
+                case (TransactionOrgin.SalesOrder, TransactionType.SalesOrderDelivery) or (TransactionOrgin.VanSalesOrder, TransactionType.VanSalesOrderDelivery) or (TransactionOrgin.RetailSalesOrder, TransactionType.RetailSalesOrderDeliveryCash) or (TransactionOrgin.RetailSalesOrder, TransactionType.RetailSalesOrderDeliveryCredit):
                     await GetSalesOrderDeliveryTransactionIntegrationDetails(details, intHeader.Id, intHeader.FinancialYearId, intHeader.documentnumber);
                     break;
                 case (TransactionOrgin.Warehouse, TransactionType.WarehouseTransferorder):

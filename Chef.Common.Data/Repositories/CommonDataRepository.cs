@@ -62,7 +62,7 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
             .WhereNotArchived()
             .GetAsync<ReasonCodeMaster>();
     }
-    public async Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint(int id)
+    public async Task<CompanyDetails> GetCompanyDetailsForSalesInvoicePrint()
     {
         string sql = @"SELECT 'P.O. Box:'
                                    || COALESCE(zipcode, '')
@@ -78,7 +78,7 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                                     encode(logo::bytea, 'escape') as logo
                             FROM   common.company";
 
-        return await DatabaseSession.QueryFirstAsync<CompanyDetails>(sql, new { id });
+        return await DatabaseSession.QueryFirstAsync<CompanyDetails>(sql);
     }
 
     public async Task<int> UpdateCompanyLogo(Company company)
@@ -90,5 +90,29 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                  {
                      logo = company.Logo
                  });
+    }
+
+
+    public async Task<Company> GetCompanyDetailsForVoucherPrint()
+    {
+        string sql = @"SELECT zipcode,
+                               email,
+                               phone,
+                               name as CompanyName,
+                               fax,
+                               Encode(logo :: bytea, 'escape') AS LogoEncoded,
+                               taxregistrationnumber
+                        FROM   common.company ";
+        return await DatabaseSession.QueryFirstAsync<Company>(sql);
+
+    }
+
+
+    public async Task<int> UpdateCompany(Company company)
+    {
+        return await QueryFactory
+                 .Query<Company>()
+                 .Where("id", company.Id)
+                 .UpdateAsync(company);
     }
 }
