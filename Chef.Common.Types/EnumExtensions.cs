@@ -18,5 +18,10 @@ namespace Chef.Common.Types
                     ?.Description
                 ?? value.ToString();
         }
+
+        public static object GetDisplayName(object genderType)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
