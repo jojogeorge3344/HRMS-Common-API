@@ -332,5 +332,17 @@ public class MasterDataController : ControllerBase
         var result = await masterDataService.GetAllItem(search);
         return Ok(result);
     }
+
+    [HttpGet]
+    [Route("{countryId:int}")]
+    public async Task<ActionResult<IEnumerable<Country>>> GetCountryById(int countryId)
+    {
+        return Ok(await masterDataService.GetCountryById(countryId));
+    }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TypesOfDocument>>> GetDocumentTypes()
+    {
+        return Ok(await masterDataService.GetDocumentTypes());
+    }
 }
 
