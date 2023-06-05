@@ -253,5 +253,10 @@ public class MasterDataService : IMasterDataService
     {
         return await masterDataRespository.GetDocumentTypes();
     }
+
+    public async Task<State> GetStateByStateId(int stateId)
+    {
+        return await masterDataRespository.GetStateByStateId(stateId);
+    }
 }
 
