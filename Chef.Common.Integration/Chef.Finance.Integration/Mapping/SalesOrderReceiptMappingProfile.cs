@@ -41,7 +41,6 @@ public class SalesOrderReceiptMappingProfile : Profile
             .ForMember(d => d.DocumentStatus, opt => opt.MapFrom(x => DocumentStatus.Pending))
             .ForMember(d => d.DocumentStatusName, opt => opt.MapFrom(x => DocumentStatus.Pending.ToString()))
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(x => DocumentType.SupplierOtherPayments))
-            .ForMember(d => d.IsMaximumBudgetApplicable, opt => opt.MapFrom(x => false))
-            .ForMember(d => d.TransactionDate, opt => opt.MapFrom(x => DateTime.UtcNow));
+            .ForMember(d => d.IsMaximumBudgetApplicable, opt => opt.MapFrom(x => false));
     }
 }
