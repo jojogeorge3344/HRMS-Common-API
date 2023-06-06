@@ -68,4 +68,6 @@ public interface IMasterDataRepository : IRepository
 
     Task<IEnumerable<TypesOfDocument>> GetDocumentTypes();
 
+    Task<State> GetStateByStateId(int stateId);
+
 }
