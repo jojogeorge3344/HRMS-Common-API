@@ -11,18 +11,20 @@ namespace Chef.Finance.Integration;
 public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegrationHeader>, IIntegrationJournalService
     {
         private readonly IIntegrationJournalRepository integrationJournalRepository;
+    private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
          private readonly IIntegrationDetailDimensionRepository integrationDetailDimensionRepository;
     private readonly ITradingIntegrationRepository tradingIntegrationRepository;
     private readonly ICompanyFinancialYearPeriodRepository financialYearPeriodRepository;
     private readonly IGeneralLedgerRepository generalLedgerRepository;
-    public IntegrationJournalService(IIntegrationJournalRepository integrationJournalRepository, IIntegrationDetailDimensionRepository integrationDetailDimensionRepository, ITradingIntegrationRepository tradingIntegrationRepository, IGeneralLedgerRepository generalLedgerRepository, ICompanyFinancialYearPeriodRepository financialYearPeriodRepository)
+    public IntegrationJournalService(IIntegrationJournalRepository integrationJournalRepository, IIntegrationDetailDimensionRepository integrationDetailDimensionRepository, ITradingIntegrationRepository tradingIntegrationRepository, IGeneralLedgerRepository generalLedgerRepository, ICompanyFinancialYearPeriodRepository financialYearPeriodRepository, ITenantSimpleUnitOfWork tenantSimpleUnitOfWork)
         {
-           this.integrationJournalRepository = integrationJournalRepository;
-        this.integrationJournalRepository=integrationJournalRepository;
-        this.integrationDetailDimensionRepository = integrationDetailDimensionRepository;
-        this.tradingIntegrationRepository=tradingIntegrationRepository;
-        this.generalLedgerRepository=generalLedgerRepository;
-        this.financialYearPeriodRepository = financialYearPeriodRepository;
+            this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
+            this.integrationJournalRepository = integrationJournalRepository;
+            this.integrationJournalRepository=integrationJournalRepository;
+            this.integrationDetailDimensionRepository = integrationDetailDimensionRepository;
+            this.tradingIntegrationRepository=tradingIntegrationRepository;
+            this.generalLedgerRepository=generalLedgerRepository;
+            this.financialYearPeriodRepository = financialYearPeriodRepository;
         }
 
     private List<GeneralLedger> generalLedgerlList = new List<GeneralLedger>();
@@ -86,32 +88,40 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
     {
         try
         {
+            int result = 0;
+            tenantSimpleUnitOfWork.BeginTransaction();
             foreach (int headerId in headerIds)
             {
                 await PostingLedger(headerId);
             }
-
             int generalLedgerId = await generalLedgerRepository.BulkInsertAsync(generalLedgerlList);
             if (generalLedgerId > 0)
-                return 1;
-            else
-                return 0;
+            { 
+                result = 1;
+            }
+            tenantSimpleUnitOfWork.Commit();
+            return result;
+
         }
         catch (Exception ex)
         {
+            tenantSimpleUnitOfWork.Rollback();
             throw;
+           
         }
 
     }
     private async Task PostingLedger(int integerationHeaderId)
     {
+        List<GeneralLedger> ledgerList = new List<GeneralLedger>();
+
         int HeaderId = await tradingIntegrationRepository.UpdateStatus(integerationHeaderId);
 
         IEnumerable<TradingIntegrationHeaderDetailsViewModel> tradingIntegrationHeadersDetails = await tradingIntegrationRepository.GetIntegrationHeaderDetails(integerationHeaderId);
 
         int PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegrationHeadersDetails.First().FinancialYearId, tradingIntegrationHeadersDetails.First().TransactionDate);
 
-        generalLedgerlList =  tradingIntegrationHeadersDetails.GroupBy(g => g.ledgeraccountid).Select(x => new GeneralLedger()
+        ledgerList =  tradingIntegrationHeadersDetails.GroupBy(g => g.ledgeraccountid).Select(x => new GeneralLedger()
         {
             BusinessPartnerId = x.First().businesspartnerid,
             DocumentType = x.First().documentType,
@@ -138,15 +148,7 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
             PostedDate = DateTime.UtcNow,
             PeriodId = PeriodId,
         }).ToList();
-        //foreach (TradingIntegrationHeaderDetailsViewModel tradingIntegration in tradingIntegrationHeadersDetails)
-        //{
-        //    GeneralLedger generalLedger = Mapper.Map<GeneralLedger>(tradingIntegration);
-        //    generalLedger.ExchangeDate = DateTime.Now;
-        //    generalLedger.PostedDate = DateTime.Now;
-        //    generalLedger.PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegration.FinancialYearId, tradingIntegration.TransactionDate);
-        //    generalLedger.ApproveStatus = Convert.ToInt32(ApproveStatus.Approved);
-        //    generalLedgerlList.Add(generalLedger);
-        //}
-    }
+        generalLedgerlList.AddRange(ledgerList);
+     }
 
 }

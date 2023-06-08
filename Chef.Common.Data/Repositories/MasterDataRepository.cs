@@ -453,5 +453,15 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
             .WhereNotArchived()
             .GetAsync<TypesOfDocument>();
     }
+
+    public async Task<State> GetStateByStateId(int stateId)
+    {
+        return await QueryFactory
+            .Query<State>()
+            .Select("id", "name")
+            .Where("id", stateId)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<State>();
+    }
 }
 

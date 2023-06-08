@@ -131,12 +131,13 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         int orgin = 0;
         int type = 0;
 
+        int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate.Date);
 
-            if (salesReturnCreditDto.isVanSales == true)
+        if (salesReturnCreditDto.isVanSales == true)
             {
                     string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
 
-                    int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
+                    //int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
 
                     int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesReturnCreditDto.BranchId, code);
 
@@ -190,7 +191,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 customerCreditNote.Narration = TransactionType.SalesOrderReturn + "-" + salesReturnCreditDto.CreditNoteNumber;
             }
 
-            customerCreditNote.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
+            customerCreditNote.FinancialYearId = financialYearId;
             customerCreditNote.ApproveStatus = ApproveStatus.Draft;
             customerCreditNote.JournalBookCode = journalBookConfig.JournalBookCode;
             customerCreditNote.JournalBookId = journalBookConfig.JournalBookId;
