@@ -137,12 +137,13 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         int orgin = 0;
         int type = 0;
 
+        int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
 
-            if (salesInvoiceDto.SalesOrderOrigin == 4)
+        if (salesInvoiceDto.SalesOrderOrigin == 4)
             {
                 string code = salesInvoiceDto.SalesInvoiceNo.Substring(0, 5);
 
-                int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
+                //int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
 
                 int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesInvoiceDto.BranchId, code);
 
@@ -200,7 +201,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
               salesInvoice.Narration = TransactionType.SalesOrderInvoice + "-" + salesInvoiceDto.SalesInvoiceNo;
             }
 
-            salesInvoice.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
+            salesInvoice.FinancialYearId = financialYearId;
             salesInvoice.ApproveStatus = ApproveStatus.Draft;
             salesInvoice.JournalBookCode = journalBookConfig.JournalBookCode;
             salesInvoice.JournalBookId = journalBookConfig.JournalBookId;

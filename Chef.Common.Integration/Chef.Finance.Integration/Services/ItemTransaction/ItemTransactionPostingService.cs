@@ -106,7 +106,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
         intHeader = Mapper.Map<TradingIntegrationHeader>(itemTransactionFinanceDTO);
         //if(intHeader.totalamount == 0)
         //    throw new ResourceNotFoundException("Amount is Zero Please check");
-        intHeader.FinancialYearId = (await companyFinancialYearRepository.GetCurrentFinancialYearAsync()).FinancialYearId;
+        intHeader.FinancialYearId = (await companyFinancialYearRepository.GetFinancialYearIdByDate(intHeader.TransactionDate.Date));
         intHeader.journalbookid = items.JournalBookId;
         intHeader.journalbookcode = items.JournalBookCode;
         intHeader.ApproveStatus = ApproveStatus.Draft;

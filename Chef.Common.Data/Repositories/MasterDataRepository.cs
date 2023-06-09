@@ -426,6 +426,16 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
          .WhereNotArchived()
          .GetAsync<Item>();
     }
+    public async Task<Country> GetCountryById(int countryId)
+    {
+        return await QueryFactory
+            .Query<Country>()
+            .Select("id", "name")
+            .Where("id", countryId)
+            .WhereNotArchived()
+            .OrderBy("name")
+            .FirstOrDefaultAsync<Country>();
+    }
 
     public async Task<IEnumerable<Employee>> GetEmployeeDetailsByCompanyId(int companyId)
     {
@@ -434,6 +444,24 @@ public class MasterDataRepository : ConsoleRepository<Model>, IMasterDataReposit
            .Where("companyid", companyId)
            .WhereNotArchived()
            .GetAsync<Employee>();
+    }
+
+    public async Task<IEnumerable<TypesOfDocument>> GetDocumentTypes()
+    {
+        return await QueryFactory
+            .Query<TypesOfDocument>()
+            .WhereNotArchived()
+            .GetAsync<TypesOfDocument>();
+    }
+
+    public async Task<State> GetStateByStateId(int stateId)
+    {
+        return await QueryFactory
+            .Query<State>()
+            .Select("id", "name")
+            .Where("id", stateId)
+            .WhereNotArchived()
+            .FirstOrDefaultAsync<State>();
     }
 }
 
