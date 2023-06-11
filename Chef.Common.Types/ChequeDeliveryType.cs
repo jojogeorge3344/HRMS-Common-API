@@ -3,6 +3,6 @@
 public enum ChequeDeliveryType
 {
     Courier = 1,
-    Person,
-    Delivery
+    Person=2,
+    Delivery=3
 }
