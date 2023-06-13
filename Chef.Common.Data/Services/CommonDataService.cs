@@ -65,9 +65,12 @@ public class CommonDataService : ICommonDataService
         return commonDataRepository.GetCompanyDetailsForVoucherPrint();
     }
 
+    public async Task<IEnumerable<Uom>> GetAllUom()
+    {
+        return await commonDataRepository.GetAllUom();
+    }
 
-    
-  public string ConvertToWords(string numb, string currency)
+    public string ConvertToWords(string numb, string currency)
     {
         string val = "";
         String wholeNo = numb, points = "", andStr = "", pointStr = "";

@@ -115,4 +115,12 @@ public class CommonDataRepository : TenantRepository<Model>, ICommonDataReposito
                  .Where("id", company.Id)
                  .UpdateAsync(company);
     }
+
+    public async Task<IEnumerable<Uom>> GetAllUom()
+    {
+        return await QueryFactory
+                 .Query<Uom>()
+                 .WhereNotArchived()
+                 .GetAsync<Uom>();
+    }
 }
