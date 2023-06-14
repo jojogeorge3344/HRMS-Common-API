@@ -115,9 +115,14 @@ public class IntegrationJournalService: BaseService, IAsyncService<TradingIntegr
     {
         List<GeneralLedger> ledgerList = new List<GeneralLedger>();
 
-        int HeaderId = await tradingIntegrationRepository.UpdateStatus(integerationHeaderId);
-
         IEnumerable<TradingIntegrationHeaderDetailsViewModel> tradingIntegrationHeadersDetails = await tradingIntegrationRepository.GetIntegrationHeaderDetails(integerationHeaderId);
+
+        if(tradingIntegrationHeadersDetails.Any(x => x.ApproveStatus == ApproveStatus.Approved || x.ApproveStatus == ApproveStatus.Deleted))
+        {
+            throw new AlreadyProcessedException(tradingIntegrationHeadersDetails.First().documentnumber, tradingIntegrationHeadersDetails.First().ApproveStatus.ToString());
+        }
+
+        int HeaderId = await tradingIntegrationRepository.UpdateStatus(integerationHeaderId);
 
         int PeriodId = await financialYearPeriodRepository.GetCompanyFinancialYearPeriodId(tradingIntegrationHeadersDetails.First().FinancialYearId, tradingIntegrationHeadersDetails.First().TransactionDate);
 
