@@ -13,5 +13,6 @@ public interface ICommonDataRepository : IRepository
 
     Task<Company> GetCompanyDetailsForVoucherPrint();
     Task<int> UpdateCompany(Company company);
+    Task<IEnumerable<Uom>> GetAllUom();
 }
 

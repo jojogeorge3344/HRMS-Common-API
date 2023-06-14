@@ -16,4 +16,5 @@ public interface ICommonDataService : IBaseService
 
     string ConvertToWords(string numb, string currency);
     decimal GetChartLimitAmount(decimal maxAmount);
+    Task<IEnumerable<Uom>> GetAllUom();
 }
