@@ -53,6 +53,18 @@ public class SalesReturnCreditDto
     public bool IsCustomer { get; set; }
     public int ProspectId { get; set; }
     public int BaseQuantity { get; set; }
+
+    //As per Discussion with Deepa and Sherin added the new fields for Dimension
+    //Changes Start
+    public int ProjectId { get; set; }
+    public string ProjectCode { get; set; } = string.Empty;
+    public string CostCenterCode { get; set; } = string.Empty;
+    public int EmployeeId { get; set; }
+    public string EmployeeCode { get; set; } = string.Empty;
+    public int GroupId { get; set; }
+    public string GroupCode { get; set; } = string.Empty;
+
+    //Changes End
     public List<SalesReturnCreditItemDto>? salesReturnCreditItemDtos { get; set; }
 
 }
