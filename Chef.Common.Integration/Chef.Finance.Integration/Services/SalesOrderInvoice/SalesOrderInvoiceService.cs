@@ -144,7 +144,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 string code = salesInvoiceDto.SalesInvoiceNo.Substring(0, 5);
 
                 //int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesInvoiceDto.SalesInvoiceDate.Date);
-
+                //As per discussion For Vansales no need Po Group journal book checking
                 int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesInvoiceDto.BranchId, code);
 
                 if (journalBookNumberingScheme == 0)
@@ -177,7 +177,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 type = (int)TransactionType.SalesOrderInvoice;
             }
             if(salesInvoiceDto.SalesOrderOrigin != 4)
-                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
+                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type, salesInvoiceDto.PoGroupId);
 
             if (journalBookConfig == null)
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
