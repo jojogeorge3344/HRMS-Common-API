@@ -137,9 +137,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             {
                     string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
 
-                    //int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
-
-                    int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesReturnCreditDto.BranchId, code);
+            //int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
+            //As per discussion For Vansales no need Po Group journal book checking
+            int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesReturnCreditDto.BranchId, code);
 
                     if (journalBookNumberingScheme == 0)
                         throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
@@ -167,7 +167,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 type = (int)TransactionType.SalesOrderReturn;
             }
             if(salesReturnCreditDto.isVanSales != true)
-              journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
+              journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type, salesReturnCreditDto.PoGroupId);
 
             if (journalBookConfig == null)
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
