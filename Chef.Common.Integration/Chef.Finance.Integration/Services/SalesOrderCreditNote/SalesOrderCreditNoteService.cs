@@ -133,7 +133,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
 
         int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate.Date);
 
-        if (salesReturnCreditDto.isVanSales == true)
+        if (salesReturnCreditDto.isVanSales == true && salesReturnCreditDto.CreditNoteNumber != null)
             {
                     string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
 
@@ -148,8 +148,10 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                     if (journalBookConfig == null)
                         throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
 
-
+                if (!salesReturnCreditDto.CreditNoteNumber.Contains(".") && !salesReturnCreditDto.CreditNoteNumber.Contains("_"))
+                {
                     int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesReturnCreditDto.BranchId, financialYearId, salesReturnCreditDto.CreditNoteNumber);
+                }
             }
             if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
             {
@@ -166,7 +168,13 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 orgin = (int)TransactionOrgin.SalesOrder;
                 type = (int)TransactionType.SalesOrderReturn;
             }
-            if(salesReturnCreditDto.isVanSales != true)
+            else if (salesReturnCreditDto.TransOriginType == TransactionType.VanSalesOrderReturn && salesReturnCreditDto.CreditNoteNumber == null)
+            {
+                orgin = (int)TransactionOrgin.VanSalesOrder;
+                type = (int)TransactionType.VanSalesOrderReturn;
+                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type, salesReturnCreditDto.PoGroupId);
+            }
+           if (salesReturnCreditDto.isVanSales != true)
               journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type, salesReturnCreditDto.PoGroupId);
 
             if (journalBookConfig == null)
