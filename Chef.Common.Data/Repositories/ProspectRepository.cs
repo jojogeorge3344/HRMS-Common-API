@@ -131,7 +131,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
     {
        // taxNo = taxNo.ToUpper();
         string sql = @"select itc.id from common.prospect itc  
-                            where itc.isarchived=false and UPPER(itc.taxno)=@taxNo;";
+                            where itc.isarchived=false and itc.taxno=@taxNo;";
         var data = await Connection.QueryFirstOrDefaultAsync<Prospect>(sql, new { taxNo });
         if (data != null)
         {
