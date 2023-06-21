@@ -1,4 +1,5 @@
 ﻿using Chef.Common.Repositories;
+using Chef.Finance.Models;
 using Chef.Trading.Models;
 using Dapper;
 using Microsoft.AspNetCore.Http;
@@ -108,5 +109,37 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
         string query = string.Format("select count(*) from trading.prospect itc  where itc.isarchived=false and itc.id != {2} and (lower(TRIM(itc.prospectcode)) = '{0}' OR  lower(TRIM(itc.prospectname)) = '{1}')", prospectcode.ToLower().Trim(), prospectname.ToLower().Trim(), id);
         var result = await DatabaseSession.QueryFirstOrDefaultAsync<int>(query);
         return result;
+    }
+
+    public async Task<int> CheckExistingProspectCode(string code)
+    {
+        code = code.ToUpper();
+        string sql = @"select itc.id from common.prospect itc  
+                            where itc.isarchived=false and UPPER(itc.prospectcode)=@code;";
+        var data = await Connection.QueryFirstOrDefaultAsync<Prospect>(sql, new { code });
+        if (data != null)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public async Task<int> CheckExistingTaxNo(int taxNo)
+    {
+       // taxNo = taxNo.ToUpper();
+        string sql = @"select itc.id from common.prospect itc  
+                            where itc.isarchived=false and UPPER(itc.taxno)=@taxNo;";
+        var data = await Connection.QueryFirstOrDefaultAsync<Prospect>(sql, new { taxNo });
+        if (data != null)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
 }
