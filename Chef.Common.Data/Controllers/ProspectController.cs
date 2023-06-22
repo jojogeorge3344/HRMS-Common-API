@@ -117,6 +117,18 @@ namespace Chef.Trading.Web.Controllers
 
             return Ok(prospects);
         }
+
+        [HttpGet("checkExistingProspectCode/{code}")]
+        public async Task<ActionResult<int>> CheckExistingProspectCode( string code )
+        {
+            return Ok(await prospectService.CheckExistingProspectCode(code));
+        }
+
+        [HttpGet("checkExistingTaxNo/{taxNo}")]
+        public async Task<ActionResult<int>> CheckExistingTaxNo(int taxNo)
+        {
+            return Ok(await prospectService.CheckExistingTaxNo(taxNo));
+        }
     }
 }
 
