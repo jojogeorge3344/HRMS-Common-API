@@ -1,4 +1,5 @@
-﻿using Chef.Common.Services;
+﻿using Chef.Common.Models;
+using Chef.Common.Services;
 using Chef.Common.Types;
 using Chef.Finance.Configuration.Repositories;
 using Chef.Finance.Configuration.Services;
@@ -35,6 +36,11 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     private readonly ICustomerTransactionDetailService customerTransactionDetailService;
     private readonly ISalesInvoiceLineItemService salesInvoiceLineItemService;
     private readonly IPurchaseControlAccountService purchaseControlAccountService;
+    private readonly IDimensionRepository dimensionRepository;
+    private readonly IDimensionMasterRepository dimensionMasterRepository;
+    private readonly IBranchService branchService;
+
+
 
     public SalesOrderInvoiceService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -54,7 +60,10 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
         ICustomerTransactionDetailService customerTransactionDetailService,
         ISalesInvoiceLineItemService salesInvoiceLineItemService,
-        IPurchaseControlAccountService purchaseControlAccountService
+        IPurchaseControlAccountService purchaseControlAccountService,
+        IDimensionRepository dimensionRepository,
+        IDimensionMasterRepository dimensionMasterRepository,
+        IBranchService branchService
 
         )
     {
@@ -76,6 +85,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         this.customerTransactionDetailService = customerTransactionDetailService;
         this.salesInvoiceLineItemService = salesInvoiceLineItemService;
         this.purchaseControlAccountService = purchaseControlAccountService;
+        this.dimensionRepository = dimensionRepository;
+        this.dimensionMasterRepository = dimensionMasterRepository;
+        this.branchService = branchService;
     }
 
     public Task<int> DeleteAsync(int id)
@@ -94,8 +106,6 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     }
 
     private IntegrationJournalBookConfiguration journalBookConfig = new IntegrationJournalBookConfiguration();
-
-
     public async Task<SalesInvoiceResponse> Insert(SalesInvoiceDto salesInvoiceDto)
     {
         try
@@ -132,7 +142,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
     {
         SalesInvoice details = new SalesInvoice();
         IEnumerable<BusinessPartnerControlAccountViewModel> businessPartnerControlAccount = new List<BusinessPartnerControlAccountViewModel>();
-        PurchaseControlAccount purchaseControlAccount = new PurchaseControlAccount();
+        LedgerAccountViewModel purchaseControlAccount = new LedgerAccountViewModel();
         int salesInvoiceId = 0;
         int orgin = 0;
         int type = 0;
@@ -222,7 +232,6 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 salesInvoice.PaymentTerm.FinancialYearId = salesInvoice.FinancialYearId;
             }
             salesInvoice.CustomerTransactionDetails = new();
-
             if (salesInvoice.LineItems != null)
             {
                 int itemLineNumber = 0;
@@ -241,11 +250,11 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                         throw new ResourceNotFoundException("Cash Suspense control account not Configured");
                 }
 
-                var salesTaxAccount = await taxAccountSetupService.GetSalesTaxAccountAsync();
+                var salesTaxAccount = await taxAccountSetupService.GetTaxAccountDimension();
                 if (salesTaxAccount == null)
                     throw new ResourceNotFoundException("Sales tax account not found");
 
-                var chartOfAccount = await glControlAccountService.GetSalesInvoiceDiscountGLControlAccountsAsync();
+                var chartOfAccount = await glControlAccountService.GetSalesDiscountAccountDimension();
                 if (chartOfAccount == null)
                     throw new ResourceNotFoundException("Control account not configured for sales invoice discount");
 
@@ -255,10 +264,27 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                     item.BranchId = salesInvoice.BranchId;
                     item.FinancialYearId = salesInvoice.FinancialYearId;
 
+                   //List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+
                     if (item.TotalAmount > 0)
                     {
                         if (salesInvoiceDto.IsCashSales != true)
                         {
+
+                            List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                            BusinessPartnerControlAccountViewModel firstBusinessPartner = businessPartnerControlAccount.First();
+                            if (firstBusinessPartner.isdimension1 || firstBusinessPartner.isdimension2 || firstBusinessPartner.isdimension3 || firstBusinessPartner.isdimension4 || firstBusinessPartner.isdimension5 || firstBusinessPartner.isdimension6) 
+                            {
+                                for (int i = 1; i <= 6; i++)
+                                {
+                                    bool isDimension = (bool)businessPartnerControlAccount.GetType().GetProperty($"isdimension{i}").GetValue(businessPartnerControlAccount);
+                                    if (isDimension)
+                                    {
+                                        string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TotalAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                    }
+                                }
+                            }
                             salesInvoice.CustomerTransactionDetails.Add(new()
                             {
                                 LineNumber = ++transactionDetailNumber,
@@ -273,17 +299,32 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                                 ControlAccountType = ControlAccountType.Customer,
                                 BranchId = salesInvoice.BranchId,
                                 FinancialYearId = salesInvoice.FinancialYearId,
-                                ItemId = item.ItemId
+                                ItemId = item.ItemId,
+                                DimensionAllocations = dimensions,
+                                IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                             });
                         }
                         else 
                         {
+                            List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                            if (purchaseControlAccount.isdimension1 || purchaseControlAccount.isdimension2 || purchaseControlAccount.isdimension3 || purchaseControlAccount.isdimension4 || purchaseControlAccount.isdimension5 || purchaseControlAccount.isdimension6)
+                            {
+                                for (int i = 1; i <= 6; i++)
+                                {
+                                    bool isDimension = (bool)purchaseControlAccount.GetType().GetProperty($"isdimension{i}").GetValue(purchaseControlAccount);
+                                    if (isDimension)
+                                    {
+                                        string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TotalAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                    }
+                                }
+                            }
                             salesInvoice.CustomerTransactionDetails.Add(new()
                             {
                                 LineNumber = ++transactionDetailNumber,
-                                LedgerAccountId = purchaseControlAccount.CashSuspenseAccountId,
-                                LedgerAccountCode = purchaseControlAccount.CashSuspenseAccountCode,
-                                LedgerAccountName = purchaseControlAccount.CashSuspenseAccountName,
+                                LedgerAccountId = purchaseControlAccount.chartofaccountid,
+                                LedgerAccountCode = purchaseControlAccount.chartofaccountcode,
+                                LedgerAccountName = purchaseControlAccount.chartofaccountname,
                                 DebitAmount = item.TotalAmount,
                                 DebitAmountInBaseCurrency = item.TotalAmount * salesInvoice.ExchangeRate,
                                 CostAllocationCode = "NA",
@@ -292,19 +333,34 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                                 ControlAccountType = ControlAccountType.Integration,
                                 BranchId = salesInvoice.BranchId,
                                 FinancialYearId = salesInvoice.FinancialYearId,
-                                ItemId = item.ItemId
+                                ItemId = item.ItemId,
+                                DimensionAllocations = dimensions,
+                                IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                             });
                         }
                     }
 
                     if (item.TaxAmount > 0)
                     {
+                        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                        if (salesTaxAccount.isdimension1 || salesTaxAccount.isdimension2 || salesTaxAccount.isdimension3 || salesTaxAccount.isdimension4 || salesTaxAccount.isdimension5 || salesTaxAccount.isdimension6)
+                        {
+                            for (int i = 1; i <= 6; i++)
+                            {
+                                bool isDimension = (bool)salesTaxAccount.GetType().GetProperty($"isdimension{i}").GetValue(salesTaxAccount);
+                                if (isDimension)
+                                {
+                                    string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TaxAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                }
+                            }
+                        }
                         salesInvoice.CustomerTransactionDetails.Add(new()
                         {
                             LineNumber = ++transactionDetailNumber,
-                            LedgerAccountId = salesTaxAccount.Id,
-                            LedgerAccountCode = salesTaxAccount.Code,
-                            LedgerAccountName = salesTaxAccount.Description,
+                            LedgerAccountId = salesTaxAccount.chartofaccountid,
+                            LedgerAccountCode = salesTaxAccount.chartofaccountcode,
+                            LedgerAccountName = salesTaxAccount.chartofaccountname,
                             CreditAmount = item.TaxAmount,
                             CreditAmountInBaseCurrency = item.TaxAmount * salesInvoice.ExchangeRate,
                             TotalAmount = item.TaxAmount,
@@ -314,18 +370,33 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             ControlAccountType = ControlAccountType.Tax,
                             BranchId = salesInvoice.BranchId,
                             FinancialYearId = salesInvoice.FinancialYearId,
-                            ItemId = item.ItemId
+                            ItemId = item.ItemId,
+                            DimensionAllocations = dimensions,
+                            IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                         });
                     }
 
                     if (item.DiscountAmount > 0)
                     {
+                        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                        if (chartOfAccount.isdimension1 || chartOfAccount.isdimension2 || chartOfAccount.isdimension3 || chartOfAccount.isdimension4 || chartOfAccount.isdimension5 || chartOfAccount.isdimension6)
+                        {
+                            for (int i = 1; i <= 6; i++)
+                            {
+                                bool isDimension = (bool)chartOfAccount.GetType().GetProperty($"isdimension{i}").GetValue(chartOfAccount);
+                                if (isDimension)
+                                {
+                                    string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.DiscountAmount, salesInvoice.ExchangeRate, salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                }
+                            }
+                        }
                         salesInvoice.CustomerTransactionDetails.Add(new()
                         {
                             LineNumber = ++transactionDetailNumber,
-                            LedgerAccountId = chartOfAccount.Id,
-                            LedgerAccountCode = chartOfAccount.Code,
-                            LedgerAccountName = chartOfAccount.Description,
+                            LedgerAccountId = chartOfAccount.chartofaccountid,
+                            LedgerAccountCode = chartOfAccount.chartofaccountcode,
+                            LedgerAccountName = chartOfAccount.chartofaccountname,
                             DebitAmount = item.DiscountAmount,
                             DebitAmountInBaseCurrency = item.DiscountAmount * salesInvoice.ExchangeRate,
                             TotalAmount = item.DiscountAmount,
@@ -335,7 +406,9 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             ControlAccountType = ControlAccountType.Discount,
                             BranchId = salesInvoice.BranchId,
                             FinancialYearId = salesInvoice.FinancialYearId,
-                            ItemId = item.ItemId
+                            ItemId = item.ItemId,
+                            DimensionAllocations = dimensions,
+                            IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                         });
                     }
 
@@ -344,6 +417,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                     int transactionType = (int)salesInvoiceDto.TransOriginType;
                     if (item.Amount > 0)
                     {
+                        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
                         ItemViewModel viewModel = new()
                         {
                             ItemCategoryId = itemDto.ItemCategory,
@@ -360,6 +434,20 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                         if (ledgeraccount == null)
                             throw new ResourceNotFoundException($"Ledger Account not configured for this item:{salesInvoiceDto.SalesInvoiceItemDto.First().ItemName}-{salesInvoiceDto.SalesInvoiceItemDto.First().ItemCode}");
 
+                        if (ledgeraccount.isdimension1 || ledgeraccount.isdimension2 || ledgeraccount.isdimension3 || ledgeraccount.isdimension4 || ledgeraccount.isdimension5 || ledgeraccount.isdimension6)
+                        {
+                            for (int i = 1; i <= 6; i++)
+                            {
+                                bool isDimension = (bool)ledgeraccount.GetType().GetProperty($"isdimension{i}").GetValue(ledgeraccount);
+                                if (isDimension)
+                                {
+                                    string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.Amount, salesInvoice.ExchangeRate,salesInvoice.BranchId,salesInvoice.FinancialYearId));
+                                }
+                            }
+                        }
+
+
                         salesInvoice.CustomerTransactionDetails.Add(new()
                         {
                             LineNumber = ++transactionDetailNumber,
@@ -373,9 +461,12 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             BranchId = salesInvoice.BranchId,
                             FinancialYearId = salesInvoice.FinancialYearId,
                             Narration = salesInvoice.Narration,
-                            ItemId = item.ItemId
+                            ControlAccountType = ControlAccountType.Integration,
+                            ItemId = item.ItemId,
+                            DimensionAllocations = dimensions,
+                            IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
 
-                        });
+                        }); 
                     }
                 }
             }
@@ -440,8 +531,54 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             salesInvoiceResponse.salesInvoices = salesInvoiceViewDto;
             return salesInvoiceResponse;
         }
+        
     }
 
+        private async Task<IEnumerable<CustomerTransactionDetailDimension>>LedgerDimensionInsert(string dimension, SalesInvoiceDto salesInvoiceDto,decimal amount,decimal exchangeRate,int branchId,int financialYearId)
+        {
+            List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+            Dimension details = await dimensionRepository.GetByDimensionTypeName(dimension);
+            if(details.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && salesInvoiceDto.ProjectCode != "")
+            {
+              dimensions = (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.ProjectCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate)).ToList();
+            }
+            else if (details.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && salesInvoiceDto.CostCenterCode != "")
+            {
+              dimensions= (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.CostCenterCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate)).ToList();
+            }
+            else if (details.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && salesInvoiceDto.EmployeeCode != "")
+            {
+               dimensions= (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.EmployeeCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate)).ToList();
+            }
+            else
+            {
+                throw new ResourceNotFoundException($"{details.DimensionTypeLabel} Dimension is Mandatory for this account");
+            }
+           return dimensions;
+        }
+        private async Task<IEnumerable<CustomerTransactionDetailDimension>> DimensionDetails(string dimensionTypeLabel, string code,decimal amount, decimal exchangeRate, int branchId, int financialYearId,DateTime transactionDate)
+        {
+
+            List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+            DimensionMaster dimensionMaster = await dimensionMasterRepository.GetDimensionMasterDetails(dimensionTypeLabel, code);
+            string branchname = await branchService.GetBranchNameById(branchId);
+            dimensions.Add(new()
+            {
+                DimensionTypeId = dimensionMaster.DimensionTypeId,
+                DimensionTypeName = dimensionMaster.DimensionTypeName,
+                DimensionDetailId = dimensionMaster.DimensionId,
+                DimensionCode = dimensionMaster.Code,
+                DimensionDetailName = dimensionMaster.Name,
+                AllocatedAmount = amount,
+                AmountInBaseCurrency = exchangeRate * amount,
+                IsDebit = true,
+                BranchName = branchname,
+                BranchId = branchId,
+                FinancialYearId = financialYearId,
+                TransactionDate = transactionDate.Date
+            });
+           return dimensions;
+        }
 
 
     public Task<int> UpdateAsync(SalesInvoiceDto obj)
