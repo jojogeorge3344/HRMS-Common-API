@@ -277,11 +277,11 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                             {
                                 for (int i = 1; i <= 6; i++)
                                 {
-                                    bool isDimension = (bool)businessPartnerControlAccount.GetType().GetProperty($"isdimension{i}").GetValue(businessPartnerControlAccount);
+                                    bool isDimension = (bool)firstBusinessPartner.GetType().GetProperty($"isdimension{i}").GetValue(firstBusinessPartner);
                                     if (isDimension)
                                     {
                                         string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
-                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TotalAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TotalAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId,true));
                                     }
                                 }
                             }
@@ -315,7 +315,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                                     if (isDimension)
                                     {
                                         string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
-                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TotalAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TotalAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId,true));
                                     }
                                 }
                             }
@@ -351,7 +351,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                                 if (isDimension)
                                 {
                                     string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
-                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TaxAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.TaxAmount, salesInvoice.ExchangeRate,salesInvoice.BranchId, salesInvoice.FinancialYearId,false));
                                 }
                             }
                         }
@@ -387,7 +387,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                                 if (isDimension)
                                 {
                                     string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
-                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.DiscountAmount, salesInvoice.ExchangeRate, salesInvoice.BranchId, salesInvoice.FinancialYearId));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.DiscountAmount, salesInvoice.ExchangeRate, salesInvoice.BranchId, salesInvoice.FinancialYearId,true));
                                 }
                             }
                         }
@@ -442,7 +442,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                                 if (isDimension)
                                 {
                                     string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
-                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.Amount, salesInvoice.ExchangeRate,salesInvoice.BranchId,salesInvoice.FinancialYearId));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesInvoiceDto, item.Amount, salesInvoice.ExchangeRate,salesInvoice.BranchId,salesInvoice.FinancialYearId,false));
                                 }
                             }
                         }
@@ -534,21 +534,21 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
         
     }
 
-        private async Task<IEnumerable<CustomerTransactionDetailDimension>>LedgerDimensionInsert(string dimension, SalesInvoiceDto salesInvoiceDto,decimal amount,decimal exchangeRate,int branchId,int financialYearId)
+        private async Task<IEnumerable<CustomerTransactionDetailDimension>>LedgerDimensionInsert(string dimension, SalesInvoiceDto salesInvoiceDto,decimal amount,decimal exchangeRate,int branchId,int financialYearId,bool isDebit)
         {
             List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
             Dimension details = await dimensionRepository.GetByDimensionTypeName(dimension);
             if(details.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && salesInvoiceDto.ProjectCode != "")
             {
-              dimensions = (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.ProjectCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate)).ToList();
+              dimensions = (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.ProjectCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate, isDebit)).ToList();
             }
             else if (details.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && salesInvoiceDto.CostCenterCode != "")
             {
-              dimensions= (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.CostCenterCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate)).ToList();
+              dimensions= (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.CostCenterCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate, isDebit)).ToList();
             }
             else if (details.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && salesInvoiceDto.EmployeeCode != "")
             {
-               dimensions= (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.EmployeeCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate)).ToList();
+               dimensions= (await DimensionDetails(details.DimensionTypeLabel, salesInvoiceDto.EmployeeCode,amount, exchangeRate, branchId, financialYearId, salesInvoiceDto.SalesInvoiceDate, isDebit)).ToList();
             }
             else
             {
@@ -556,7 +556,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
             }
            return dimensions;
         }
-        private async Task<IEnumerable<CustomerTransactionDetailDimension>> DimensionDetails(string dimensionTypeLabel, string code,decimal amount, decimal exchangeRate, int branchId, int financialYearId,DateTime transactionDate)
+        private async Task<IEnumerable<CustomerTransactionDetailDimension>> DimensionDetails(string dimensionTypeLabel, string code,decimal amount, decimal exchangeRate, int branchId, int financialYearId,DateTime transactionDate, bool isDebit)
         {
 
             List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
@@ -571,7 +571,7 @@ public class SalesOrderInvoiceService : BaseService, ISalesOrderInvoiceService
                 DimensionDetailName = dimensionMaster.Name,
                 AllocatedAmount = amount,
                 AmountInBaseCurrency = exchangeRate * amount,
-                IsDebit = true,
+                IsDebit = isDebit,
                 BranchName = branchname,
                 BranchId = branchId,
                 FinancialYearId = financialYearId,
