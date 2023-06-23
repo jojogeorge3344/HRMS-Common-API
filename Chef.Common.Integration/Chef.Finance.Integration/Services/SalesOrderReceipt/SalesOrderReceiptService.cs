@@ -147,14 +147,14 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             List<ReceiptRegisterOneTimeAccountingEntry> oneTimeReceipt = new List<ReceiptRegisterOneTimeAccountingEntry>();
             if (salesOrderReceiptDto.IsRetail == true)
             {
-               PurchaseControlAccount purchaseControlAccount = await purchaseControlAccountService.GetCashSuspenseAccount();
+               LedgerAccountViewModel purchaseControlAccount = await purchaseControlAccountService.GetCashSuspenseAccount();
                 if (purchaseControlAccount == null)
                     throw new ResourceNotFoundException("Cash Suspense control account not Configured");
 
                 ReceiptRegisterOneTimeAccountingEntry receiptRegisterOneTimeAccountingEntry = new ReceiptRegisterOneTimeAccountingEntry();
-                receiptRegisterOneTimeAccountingEntry.LedgerAccountId = purchaseControlAccount.CashSuspenseAccountId;
-                receiptRegisterOneTimeAccountingEntry.LedgerAccountCode = purchaseControlAccount.CashSuspenseAccountCode;
-                receiptRegisterOneTimeAccountingEntry.LedgerAccountName = purchaseControlAccount.CashSuspenseAccountName;
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountId = purchaseControlAccount.chartofaccountid;
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountCode = purchaseControlAccount.chartofaccountcode;
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountName = purchaseControlAccount.chartofaccountname;
                 receiptRegisterOneTimeAccountingEntry.BranchId = salesOrderReceiptDto.BranchId;
                 receiptRegisterOneTimeAccountingEntry.CreditAmount = salesOrderReceiptDto.TotalAmount;
                 receiptRegisterOneTimeAccountingEntry.CreditAmountInBaseCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
