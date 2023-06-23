@@ -119,13 +119,13 @@ namespace Chef.Trading.Web.Controllers
         }
 
         [HttpGet("checkExistingProspectCode/{code}")]
-        public async Task<ActionResult<int>> CheckExistingProspectCode( string code )
+        public async Task<ActionResult<bool>> CheckExistingProspectCode( string code )
         {
             return Ok(await prospectService.CheckExistingProspectCode(code));
         }
 
         [HttpGet("checkExistingTaxNo/{taxNo}")]
-        public async Task<ActionResult<int>> CheckExistingTaxNo(int taxNo)
+        public async Task<ActionResult<bool>> CheckExistingTaxNo(int taxNo)
         {
             return Ok(await prospectService.CheckExistingTaxNo(taxNo));
         }
