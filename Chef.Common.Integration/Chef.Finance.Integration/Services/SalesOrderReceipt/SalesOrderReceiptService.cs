@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Chef.Finance.Models;
 using Chef.Finance.Supplier.Repositories;
 using Chef.Common.Data.Services;
+using Chef.Finance.Models.Receipt;
 
 namespace Chef.Finance.Integration;
 
@@ -36,6 +37,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
     private readonly IPaymentAdviceProcessingRepository paymentAdviceProcessingRepository;
     private readonly IBusinessPartnerPaymentDetailRepository businessPartnerConfigRepository;
     private readonly ITenantSimpleUnitOfWork tenantSimpleUnitOfWork;
+    private readonly IPurchaseControlAccountService purchaseControlAccountService;
 
     public SalesOrderReceiptService(
         IIntegrationJournalBookConfigurationRepository integrationJournalBookConfigurationRepository,
@@ -48,7 +50,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         IPaymentAdviceProcessingRepository paymentAdviceProcessingRepository,
         IBusinessPartnerPaymentDetailRepository businessPartnerConfigRepository,
          ITenantSimpleUnitOfWork tenantSimpleUnitOfWork,
-          IMasterDataService masterDataService
+          IMasterDataService masterDataService,
+          IPurchaseControlAccountService purchaseControlAccountService
 
         )
     {
@@ -63,6 +66,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         this.businessPartnerConfigRepository = businessPartnerConfigRepository;
         this.tenantSimpleUnitOfWork = tenantSimpleUnitOfWork;
         this.masterDataService = masterDataService;
+        this.purchaseControlAccountService = purchaseControlAccountService;
     }
 
 
@@ -89,7 +93,8 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
     {
         try
         {
-            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails();
+            int paymentTypeId = salesOrderReceiptDto.IsRetail == true ? (int)CashSettingType.Retail : (int)CashSettingType.Vansale;
+            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails(paymentTypeId);
             if (bankaccountType == null)
                 throw new ResourceNotFoundException("Cash Account Not available");
 
@@ -111,7 +116,6 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             receiptRegister.ApproveStatus = ApproveStatus.Draft;
             receiptRegister.JournalBookCode = bankaccountType.JBCode;
             receiptRegister.JournalBookId = bankaccountType.JBId;
-            receiptRegister.JournalBookCode = bankaccountType.JBCode;
             receiptRegister.JournalBookName = bankaccountType.Name;
             receiptRegister.JournalBookTypeId = bankaccountType.JournalBookTypeId;
             receiptRegister.JournalBookTypeCode = bankaccountType.JournalBookTypeCode;
@@ -139,6 +143,28 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             }
 
             receiptRegister.TransactionDate = salesOrderReceiptDto.ReceiptDate;
+
+            List<ReceiptRegisterOneTimeAccountingEntry> oneTimeReceipt = new List<ReceiptRegisterOneTimeAccountingEntry>();
+            if (salesOrderReceiptDto.IsRetail == true)
+            {
+               LedgerAccountViewModel purchaseControlAccount = await purchaseControlAccountService.GetCashSuspenseAccount();
+                if (purchaseControlAccount == null)
+                    throw new ResourceNotFoundException("Cash Suspense control account not Configured");
+
+                ReceiptRegisterOneTimeAccountingEntry receiptRegisterOneTimeAccountingEntry = new ReceiptRegisterOneTimeAccountingEntry();
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountId = purchaseControlAccount.chartofaccountid;
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountCode = purchaseControlAccount.chartofaccountcode;
+                receiptRegisterOneTimeAccountingEntry.LedgerAccountName = purchaseControlAccount.chartofaccountname;
+                receiptRegisterOneTimeAccountingEntry.BranchId = salesOrderReceiptDto.BranchId;
+                receiptRegisterOneTimeAccountingEntry.CreditAmount = salesOrderReceiptDto.TotalAmount;
+                receiptRegisterOneTimeAccountingEntry.CreditAmountInBaseCurrency = salesOrderReceiptDto.TotalAmountInBaseCurrency;
+                oneTimeReceipt.Add(receiptRegisterOneTimeAccountingEntry);
+                receiptRegister.ReceiptOneTimeAccountingEntries = oneTimeReceipt;
+            }
+           
+
+
+
             //PaymentMethodType paymentMethodType = new PaymentMethodType();
             //paymentMethodType = (PaymentMethodType)journalBookConfig.TransactionType;
 
@@ -192,7 +218,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
         {
           
 
-            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails();
+            NetBillIntegrationConfig bankaccountType = await bankAccountRepository.GetCashAccountDetails((int)CashSettingType.Vansale);
             if (bankaccountType == null)
                 throw new ResourceNotFoundException("Cash Account Not available");
 

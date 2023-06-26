@@ -66,6 +66,7 @@ namespace Chef.Common.Repositories
         public int? Limit { get; set; } = null;
         public int? Offset { get; set; } = null;
         public SqlPage Page { get; set; } = null;
+        public SqlSort Sort { get; set; } = null;
         public SqlConditionOperator Condition { get; set; } = SqlConditionOperator.AND;
         public List<SqlSearchRule> Rules { get; set; } = new List<SqlSearchRule>();
         public List<SqlSearchGroup> Groups { get; set; } = new List<SqlSearchGroup>();
@@ -313,7 +314,11 @@ namespace Chef.Common.Repositories
         [Required]
         public int PageLimit { get; set; } = 15;
     }
-
+    public class SqlSort
+    { 
+        public string sortColumn{ get; set; } = null; 
+        public string sortDirection{ get; set; } = null;
+    }
     public enum SqlSearchOperator
     {
         Contains = 1,

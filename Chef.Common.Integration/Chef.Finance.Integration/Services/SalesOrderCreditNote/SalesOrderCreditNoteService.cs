@@ -37,6 +37,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
     private readonly ICustomerTransactionDetailService customerTransactionDetailService;
     private readonly ICustomerAllocationTransactionRepository customerAllocationTransactionRepository;
     private readonly IPurchaseControlAccountService purchaseControlAccountService;
+    private readonly IDimensionMasterRepository dimensionMasterRepository;
+    private readonly IDimensionRepository dimensionRepository;
+    private readonly IBranchService branchService;
 
     public SalesOrderCreditNoteService(
         ICustomerCreditNoteRepository customerCreditNoteRepository,
@@ -59,7 +62,10 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         ICustomerTransactionService customerTransactionService,
         ICustomerTransactionDetailService customerTransactionDetailService,
         ICustomerAllocationTransactionRepository customerAllocationTransactionRepository,
-        IPurchaseControlAccountService purchaseControlAccountService
+        IPurchaseControlAccountService purchaseControlAccountService,
+        IDimensionMasterRepository dimensionMasterRepository,
+        IDimensionRepository dimensionRepository,
+        IBranchService branchService
         )
     {
         this.customerCreditNoteRepository = customerCreditNoteRepository;
@@ -83,6 +89,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
         this.customerTransactionDetailService = customerTransactionDetailService;
         this.customerAllocationTransactionRepository = customerAllocationTransactionRepository;
         this.purchaseControlAccountService = purchaseControlAccountService;
+        this.dimensionMasterRepository = dimensionMasterRepository;
+        this.dimensionRepository = dimensionRepository;
+        this.branchService = branchService;
 
 
     }
@@ -127,19 +136,19 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
     {
         CustomerCreditNote customerCreditNoteResult = new CustomerCreditNote();
         IEnumerable<BusinessPartnerControlAccountViewModel> businessPartnerControlAccount = new List<BusinessPartnerControlAccountViewModel>();
-        PurchaseControlAccount purchaseControlAccount = new PurchaseControlAccount();
+        LedgerAccountViewModel purchaseControlAccount = new LedgerAccountViewModel();
         int orgin = 0;
         int type = 0;
 
         int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate.Date);
 
-        if (salesReturnCreditDto.isVanSales == true)
+        if (salesReturnCreditDto.isVanSales == true && salesReturnCreditDto.CreditNoteNumber != null)
             {
                     string code = salesReturnCreditDto.CreditNoteNumber.Substring(0, 5);
 
-                    //int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
-
-                    int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesReturnCreditDto.BranchId, code);
+            //int financialYearId = await companyFinancialYearRepository.GetFinancialYearIdByDate(salesReturnCreditDto.SalesCreditDate);
+            //As per discussion For Vansales no need Po Group journal book checking
+            int journalBookNumberingScheme = await journalBookNumberingSchemeRepository.GetJournalNumberingSchemeCount(financialYearId, salesReturnCreditDto.BranchId, code);
 
                     if (journalBookNumberingScheme == 0)
                         throw new ResourceNotFoundException($"DocumentSeries not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
@@ -148,8 +157,10 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                     if (journalBookConfig == null)
                         throw new ResourceNotFoundException($"Journalbook not configured for this VanSalesCode:{salesReturnCreditDto.CreditNoteNumber}");
 
-
+                if (!salesReturnCreditDto.CreditNoteNumber.Contains(".") && !salesReturnCreditDto.CreditNoteNumber.Contains("_"))
+                {
                     int updateJournalBookNumberingScheme = await journalBookNumberingSchemeRepository.UpdateJournalBookNumberingScheme(code, salesReturnCreditDto.BranchId, financialYearId, salesReturnCreditDto.CreditNoteNumber);
+                }
             }
             if (salesReturnCreditDto.TransOriginType == TransactionType.RetailSalesOrderReturnCredit)
             {
@@ -166,8 +177,14 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 orgin = (int)TransactionOrgin.SalesOrder;
                 type = (int)TransactionType.SalesOrderReturn;
             }
-            if(salesReturnCreditDto.isVanSales != true)
-              journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type);
+            else if (salesReturnCreditDto.TransOriginType == TransactionType.VanSalesOrderReturn && salesReturnCreditDto.CreditNoteNumber == null)
+            {
+                orgin = (int)TransactionOrgin.VanSalesOrder;
+                type = (int)TransactionType.VanSalesOrderReturn;
+                journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type, salesReturnCreditDto.PoGroupId);
+            }
+           if (salesReturnCreditDto.isVanSales != true)
+              journalBookConfig = await integrationJournalBookConfigurationRepository.getJournalBookdetails(orgin, type, salesReturnCreditDto.PoGroupId);
 
             if (journalBookConfig == null)
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
@@ -221,11 +238,11 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                        throw new ResourceNotFoundException("Cash Suspense control account not Configured");
                 }
 
-                var salesTaxAccount = await taxAccountSetupService.GetSalesTaxAccountAsync();
+                var salesTaxAccount = await taxAccountSetupService.GetTaxAccountDimension();
                 if (salesTaxAccount == null)
                     throw new ResourceNotFoundException("Sales tax account not found");
 
-                var chartOfAccount = await glControlAccountService.GetSalesInvoiceDiscountGLControlAccountsAsync();
+                var chartOfAccount = await glControlAccountService.GetSalesDiscountAccountDimension();
                 if (chartOfAccount == null)
                     throw new ResourceNotFoundException("Control account not configured for sales invoice discount");
 
@@ -235,6 +252,20 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                     {
                         if (salesReturnCreditDto.IsCashSales != true)
                         {
+                            List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                            BusinessPartnerControlAccountViewModel firstBusinessPartner = businessPartnerControlAccount.First();
+                            if (firstBusinessPartner.isdimension1 || firstBusinessPartner.isdimension2 || firstBusinessPartner.isdimension3 || firstBusinessPartner.isdimension4 || firstBusinessPartner.isdimension5 || firstBusinessPartner.isdimension6)
+                            {
+                                for (int i = 1; i <= 6; i++)
+                                {
+                                    bool isDimension = (bool)firstBusinessPartner.GetType().GetProperty($"isdimension{i}").GetValue(firstBusinessPartner);
+                                    if (isDimension)
+                                    {
+                                        string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesReturnCreditDto, item.NetAmount, customerCreditNote.ExchangeRate, customerCreditNote.BranchId, customerCreditNote.FinancialYearId,false));
+                                    }
+                                }
+                            }
                             customerCreditNote.CustomerTransactionDetails.Add(new()
                             {
                                 LineNumber = ++transactionDetailNumber,
@@ -249,17 +280,32 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                                 ControlAccountType = ControlAccountType.Customer,
                                 BranchId = customerCreditNote.BranchId,
                                 FinancialYearId = customerCreditNote.FinancialYearId,
-                                ItemId = item.ItemId
+                                ItemId = item.ItemId,
+                                DimensionAllocations = dimensions,
+                                IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                             });
                         }
                         else
                         {
+                            List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                            if (purchaseControlAccount.isdimension1 || purchaseControlAccount.isdimension2 || purchaseControlAccount.isdimension3 || purchaseControlAccount.isdimension4 || purchaseControlAccount.isdimension5 || purchaseControlAccount.isdimension6)
+                            {
+                                for (int i = 1; i <= 6; i++)
+                                {
+                                    bool isDimension = (bool)purchaseControlAccount.GetType().GetProperty($"isdimension{i}").GetValue(purchaseControlAccount);
+                                    if (isDimension)
+                                    {
+                                        string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                        dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesReturnCreditDto, item.NetAmount, customerCreditNote.ExchangeRate, customerCreditNote.BranchId, customerCreditNote.FinancialYearId,false));
+                                    }
+                                }
+                            }
                             customerCreditNote.CustomerTransactionDetails.Add(new()
                             {
                                 LineNumber = ++transactionDetailNumber,
-                                LedgerAccountId = purchaseControlAccount.CashSuspenseAccountId,
-                                LedgerAccountCode = purchaseControlAccount.CashSuspenseAccountCode,
-                                LedgerAccountName = purchaseControlAccount.CashSuspenseAccountName,
+                                LedgerAccountId = purchaseControlAccount.chartofaccountid,
+                                LedgerAccountCode = purchaseControlAccount.chartofaccountcode,
+                                LedgerAccountName = purchaseControlAccount.chartofaccountname,
                                 CreditAmount = item.NetAmount,
                                 CreditAmountInBaseCurrency = item.NetAmount * customerCreditNote.ExchangeRate,
                                 CostAllocationCode = "NA",
@@ -268,19 +314,34 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                                 ControlAccountType = ControlAccountType.Integration,
                                 BranchId = customerCreditNote.BranchId,
                                 FinancialYearId = customerCreditNote.FinancialYearId,
-                                ItemId = item.ItemId
+                                ItemId = item.ItemId,
+                                DimensionAllocations = dimensions,
+                                IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                             });
                         }
                     }
 
                     if (item.TotalTaxAmt > 0)
                     {
+                        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                        if (salesTaxAccount.isdimension1 || salesTaxAccount.isdimension2 || salesTaxAccount.isdimension3 || salesTaxAccount.isdimension4 || salesTaxAccount.isdimension5 || salesTaxAccount.isdimension6)
+                        {
+                            for (int i = 1; i <= 6; i++)
+                            {
+                                bool isDimension = (bool)salesTaxAccount.GetType().GetProperty($"isdimension{i}").GetValue(salesTaxAccount);
+                                if (isDimension)
+                                {
+                                    string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesReturnCreditDto, item.TotalTaxAmt, customerCreditNote.ExchangeRate, customerCreditNote.BranchId, customerCreditNote.FinancialYearId,true));
+                                }
+                            }
+                        }
                         customerCreditNote.CustomerTransactionDetails.Add(new()
                         {
                             LineNumber = ++transactionDetailNumber,
-                            LedgerAccountId = salesTaxAccount.Id,
-                            LedgerAccountCode = salesTaxAccount.Code,
-                            LedgerAccountName = salesTaxAccount.Description,
+                            LedgerAccountId = salesTaxAccount.chartofaccountid,
+                            LedgerAccountCode = salesTaxAccount.chartofaccountcode,
+                            LedgerAccountName = salesTaxAccount.chartofaccountname,
                             DebitAmount = item.TotalTaxAmt,
                             DebitAmountInBaseCurrency = item.TotalTaxAmt * customerCreditNote.ExchangeRate,
                             TotalAmount = item.TotalTaxAmt,
@@ -290,18 +351,33 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                             ControlAccountType = ControlAccountType.Tax,
                             BranchId = customerCreditNote.BranchId,
                             FinancialYearId = customerCreditNote.FinancialYearId,
-                            ItemId = item.ItemId
+                            ItemId = item.ItemId,
+                            DimensionAllocations = dimensions,
+                            IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                         });
                     }
 
                     if (item.DiscountAmt > 0)
                     {
-                        customerCreditNote.CustomerTransactionDetails.Add(new()
+                        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+                        if (chartOfAccount.isdimension1 || chartOfAccount.isdimension2 || chartOfAccount.isdimension3 || chartOfAccount.isdimension4 || chartOfAccount.isdimension5 || chartOfAccount.isdimension6)
                         {
+                            for (int i = 1; i <= 6; i++)
+                            {
+                                bool isDimension = (bool)chartOfAccount.GetType().GetProperty($"isdimension{i}").GetValue(chartOfAccount);
+                                if (isDimension)
+                                {
+                                    string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesReturnCreditDto, item.DiscountAmt, customerCreditNote.ExchangeRate, customerCreditNote.BranchId, customerCreditNote.FinancialYearId,false));
+                                }
+                            }
+                        }
+                        customerCreditNote.CustomerTransactionDetails.Add(new()
+                            {
                             LineNumber = ++transactionDetailNumber,
-                            LedgerAccountId = chartOfAccount.Id,
-                            LedgerAccountCode = chartOfAccount.Code,
-                            LedgerAccountName = chartOfAccount.Description,
+                            LedgerAccountId = chartOfAccount.chartofaccountid,
+                            LedgerAccountCode = chartOfAccount.chartofaccountcode,
+                            LedgerAccountName = chartOfAccount.chartofaccountname,
                             CreditAmount = item.DiscountAmt,
                             CreditAmountInBaseCurrency = item.DiscountAmt * customerCreditNote.ExchangeRate,
                             TotalAmount = item.DiscountAmt,
@@ -311,7 +387,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                             ControlAccountType = ControlAccountType.Discount,
                             BranchId = customerCreditNote.BranchId,
                             FinancialYearId = customerCreditNote.FinancialYearId,
-                            ItemId = item.ItemId
+                            ItemId = item.ItemId,
+                            DimensionAllocations = dimensions,
+                            IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                         });
                     }
 
@@ -319,6 +397,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                     int transactionType = (int)salesReturnCreditDto.TransOriginType;
                     if (item.TotalItemAmount > 0)
                     {
+                        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
                         ItemViewModel viewModel = new()
                         {
                             ItemCategoryId = item.ItemCategory,
@@ -335,6 +414,19 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                         if (ledgeraccount == null)
                             throw new ResourceNotFoundException($"Ledger Account not configured for this item:{salesReturnCreditDto.salesReturnCreditItemDtos.First().ItemName}-{salesReturnCreditDto.salesReturnCreditItemDtos.First().ItemCode}");
 
+                        if (ledgeraccount.isdimension1 || ledgeraccount.isdimension2 || ledgeraccount.isdimension3 || ledgeraccount.isdimension4 || ledgeraccount.isdimension5 || ledgeraccount.isdimension6)
+                        {
+                            for (int i = 1; i <= 6; i++)
+                            {
+                                bool isDimension = (bool)ledgeraccount.GetType().GetProperty($"isdimension{i}").GetValue(ledgeraccount);
+                                if (isDimension)
+                                {
+                                    string dimensionName = EnumExtensions.GetDisplayName((DimensionType)Enum.Parse(typeof(DimensionType), $"Dimension{i}"));
+                                    dimensions.AddRange(await LedgerDimensionInsert(dimensionName, salesReturnCreditDto, item.TotalItemAmount, customerCreditNote.ExchangeRate, customerCreditNote.BranchId, customerCreditNote.FinancialYearId,true));
+                                }
+                            }
+                        }
+
                         customerCreditNote.CustomerTransactionDetails.Add(new()
                         {
                             LineNumber = ++transactionDetailNumber,
@@ -348,7 +440,9 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                             BranchId = customerCreditNote.BranchId,
                             FinancialYearId = customerCreditNote.FinancialYearId,
                             Narration = customerCreditNote.Narration,
-                            ItemId = item.ItemId
+                            ItemId = item.ItemId,
+                            DimensionAllocations = dimensions,
+                            IsDimensionAllocation = dimensions.Count() > 0 ? true : false,
                         });
                     }
                 }
@@ -505,5 +599,52 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             return salesReturnCreditResponse;
 
         }
+    }
+    private async Task<IEnumerable<CustomerTransactionDetailDimension>> LedgerDimensionInsert(string dimension, SalesReturnCreditDto salesReturnCreditDto, decimal amount, decimal exchangeRate,int branchId,int financialYearId,bool isDebit)
+    {
+        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+        Dimension details = await dimensionRepository.GetByDimensionTypeName(dimension);
+        if (details.DimensionTypeLabel == TradingDimensionTypeType.Project.ToString() && salesReturnCreditDto.ProjectCode != "")
+        {
+            dimensions = (await DimensionDetails(details.DimensionTypeLabel, salesReturnCreditDto.ProjectCode, amount, exchangeRate,branchId,financialYearId,salesReturnCreditDto.SalesCreditDate, isDebit)).ToList();
+        }
+        else if (details.DimensionTypeLabel == TradingDimensionTypeType.costcenter.ToString() && salesReturnCreditDto.CostCenterCode != "")
+        {
+            dimensions = (await DimensionDetails(details.DimensionTypeLabel, salesReturnCreditDto.CostCenterCode, amount, exchangeRate, branchId, financialYearId, salesReturnCreditDto.SalesCreditDate, isDebit)).ToList();
+        }
+        else if (details.DimensionTypeLabel == TradingDimensionTypeType.Employee.ToString() && salesReturnCreditDto.EmployeeCode != "")
+        {
+            dimensions = (await DimensionDetails(details.DimensionTypeLabel, salesReturnCreditDto.EmployeeCode, amount, exchangeRate, branchId, financialYearId, salesReturnCreditDto.SalesCreditDate, isDebit)).ToList();
+        }
+        else
+        {
+            throw new ResourceNotFoundException($"{details.DimensionTypeLabel} Dimension is Mandatory for this account");
+        }
+        return dimensions;
+    }
+
+    private async Task<IEnumerable<CustomerTransactionDetailDimension>> DimensionDetails(string dimensionTypeLabel, string code, decimal amount, decimal exchangeRate, int branchId, int financialYearId,DateTime transactionDate, bool isDebit)
+    {
+
+        List<CustomerTransactionDetailDimension> dimensions = new List<CustomerTransactionDetailDimension>();
+        DimensionMaster dimensionMaster = await dimensionMasterRepository.GetDimensionMasterDetails(dimensionTypeLabel, code);
+        string branchname = await branchService.GetBranchNameById(branchId);
+
+        dimensions.Add(new()
+        {
+            DimensionTypeId = dimensionMaster.DimensionTypeId,
+            DimensionTypeName = dimensionMaster.DimensionTypeName,
+            DimensionDetailId = dimensionMaster.DimensionId,
+            DimensionCode = dimensionMaster.Code,
+            DimensionDetailName = dimensionMaster.Name,
+            AllocatedAmount = amount,
+            AmountInBaseCurrency = exchangeRate * amount,
+            IsDebit = isDebit,
+            BranchName = branchname,
+            BranchId = branchId,
+            FinancialYearId = financialYearId,
+            TransactionDate = transactionDate.Date
+        });
+        return dimensions;
     }
 }

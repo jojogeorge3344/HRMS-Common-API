@@ -485,9 +485,8 @@ namespace Chef.Common.Exceptions
         {
         }
 
-        public static AlreadyProcessedException AlreadyProcessedExceptionMessage(string documnetNumber,string status)
+        public AlreadyProcessedException(string documnetNumber, string status) : base($"{documnetNumber} already is in {status} status.")
         {
-           return new AlreadyProcessedException( $"{documnetNumber} already is in {status} status.");
         }
     }
 }
