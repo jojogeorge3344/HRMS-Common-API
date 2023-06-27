@@ -111,7 +111,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
         return result;
     }
 
-    public async Task<int> CheckExistingProspectCode(string code)
+    public async Task<int> CheckExistingCode(string code)
     {
         code = code.ToUpper();
         string sql = @"select itc.id from common.prospect itc  

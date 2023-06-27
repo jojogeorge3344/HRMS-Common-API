@@ -20,7 +20,7 @@ public interface IProspectRepository : IGenericRepository<Prospect>
 
     Task<int> GetExistingProspectAsync(Prospect obj);
     Task<int> GetEditExistingProspectAsync(Prospect prospect);
-    Task<int> CheckExistingProspectCode(string code);
+    Task<int> CheckExistingCode(string code);
     Task<int> CheckExistingTaxNo(int taxNo);
 
 }
