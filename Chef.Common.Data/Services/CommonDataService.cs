@@ -65,9 +65,12 @@ public class CommonDataService : ICommonDataService
         return commonDataRepository.GetCompanyDetailsForVoucherPrint();
     }
 
+    public async Task<IEnumerable<Uom>> GetAllUom()
+    {
+        return await commonDataRepository.GetAllUom();
+    }
 
-    
-  public string ConvertToWords(string numb, string currency)
+    public string ConvertToWords(string numb, string currency)
     {
         string val = "";
         String wholeNo = numb, points = "", andStr = "", pointStr = "";
@@ -91,8 +94,9 @@ public class CommonDataService : ICommonDataService
                         pointStr = ConvertDecimals(points);
                     }
                 }
+                val = String.Format("{0} {1}{2} {3}", ConvertWholeNumber(wholeNo).Trim(), andStr, pointStr, endStr);
             }
-            else
+            else if(currency == "AED")
             {
                 andStr = "Dirham";
                 if (decimalPlace > 0)
@@ -107,8 +111,8 @@ public class CommonDataService : ICommonDataService
                         pointStr = ConvertDecimals(points);
                     }
                 }
+                val = String.Format("{0} {1}{2} {3}", ConvertWholeNumber(wholeNo).Trim(), andStr, pointStr, endStr);
             }
-            val = String.Format("{0} {1}{2} {3}", ConvertWholeNumber(wholeNo).Trim(), andStr, pointStr, endStr);
         }
         catch { }
         return val;

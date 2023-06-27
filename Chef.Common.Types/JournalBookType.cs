@@ -77,6 +77,7 @@
         CashSaleInvoice = 800,
         CashSaleReturn = 801,
         HRMSIntegration = 802,
-        PettyCashAdvancePayment = 803
+        PettyCashAdvancePayment = 803,
+        OnAccountReceiptAllocation = 804
     }
 }

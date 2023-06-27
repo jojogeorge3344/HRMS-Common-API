@@ -80,5 +80,16 @@ public class CommonDataController : ControllerBase
     {
         return Ok(await commonDataService.UpdateCompany(company));
     }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Uom>>> GetAllUom()
+    {
+        var Uom = await commonDataService.GetAllUom();
+
+        if (Uom == null)
+            throw new BranchNotFoundException("The Uom does not exist.");
+
+        return Ok(Uom);
+    }
 }
 

@@ -25,12 +25,9 @@ public class SalesOrderReceiptDto
     [Required]
     //[ForeignKey("Common.Branch")]
     public int BranchId { get; set; }
-
-    [Required]
     public int CustomerId { get; set; }
 
-    [Required]
-    public string CustomerCode { get; set; }
+    public string? CustomerCode { get; set; }
 
     public string? CustomerName { get; set; }
 
@@ -68,6 +65,10 @@ public class SalesOrderReceiptDto
     public string? CashAccountNumber { get; set; }
 
     public string narration { get; set; }
+
+    public bool IsRetail { get; set; }
+
+    public string Receiver { get; set; }
 
 
 }

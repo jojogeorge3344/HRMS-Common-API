@@ -18,6 +18,8 @@ namespace Chef.Common.Types
         Rejected = 4,
 
         [Description("Reversal")]
-        Reversal = 5
+        Reversal = 5,
+        [Description("Deleted")]
+        Deleted = 6
     }
 }

@@ -97,7 +97,7 @@ public class ItemTransactionPostingService : AsyncService<TradingIntegrationHead
     private async Task<IEnumerable<ItemTransactionFinanceDetailsDto>> Post(List<ItemTransactionFinanceDTO> itemTransactionFinanceDTO,Boolean Isposting=true)
     {
         posting = Isposting;
-        IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId);
+        IntegrationJournalBookConfiguration items = await integrationJournalBookConfigurationRepository.getJournalBookdetails(itemTransactionFinanceDTO.First().TransOrginId, itemTransactionFinanceDTO.First().TransTypeId,itemTransactionFinanceDTO.First().GroupId);
         if (items == null)
             //TODO:will change the exception type once latest changes got from SK
             throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and  type");

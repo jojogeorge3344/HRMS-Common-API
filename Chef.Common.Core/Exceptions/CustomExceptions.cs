@@ -478,4 +478,15 @@ namespace Chef.Common.Exceptions
         {
         }
     }
+    [Serializable]
+    public class AlreadyProcessedException : ApplicationException
+    {
+        public AlreadyProcessedException(string message) : base(message)
+        {
+        }
+
+        public AlreadyProcessedException(string documnetNumber, string status) : base($"{documnetNumber} already is in {status} status.")
+        {
+        }
+    }
 }

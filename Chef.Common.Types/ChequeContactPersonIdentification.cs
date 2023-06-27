@@ -6,8 +6,8 @@ public enum ChequeContactPersonIdentification
 {
     [Description("Emirates ID")]
     EmiratesID = 1,
-    Passport,
+    Passport=2,
 
     [Description("AW Bill")]
-    AWBill
+    AWBill=3
 }
