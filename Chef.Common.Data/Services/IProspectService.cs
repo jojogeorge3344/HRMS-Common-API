@@ -23,7 +23,7 @@ public interface IProspectService : IAsyncService<Prospect>
 
     Task<int> GetEditExistingProspectAsync(Prospect prospect);
 
-    Task<int> CheckExistingCode(string code);
-    Task<int> CheckExistingTaxNo(int taxNo);
+    Task<int> IsCodeExist(string code);
+    Task<int> IsTaxNoExist(int taxNo);
 
 }

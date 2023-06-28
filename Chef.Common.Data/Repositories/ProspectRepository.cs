@@ -111,7 +111,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
         return result;
     }
 
-    public async Task<int> CheckExistingCode(string code)
+    public async Task<int> IsCodeExist(string code)
     {
         code = code.ToUpper();
         string sql = @"select itc.id from common.prospect itc  
@@ -127,7 +127,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
         }
     }
 
-    public async Task<int> CheckExistingTaxNo(int taxNo)
+    public async Task<int> IsTaxNoExist(int taxNo)
     {
        // taxNo = taxNo.ToUpper();
         string sql = @"select itc.id from common.prospect itc  

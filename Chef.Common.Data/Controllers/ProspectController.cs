@@ -118,16 +118,16 @@ namespace Chef.Trading.Web.Controllers
             return Ok(prospects);
         }
 
-        [HttpGet("checkExistingProspectCode/{code}")]
-        public async Task<ActionResult<bool>> CheckExistingCode( string code )
+        [HttpGet("IsCodeExist/{code}")]
+        public async Task<ActionResult<bool>> IsCodeExist( string code )
         {
-            return Ok(await prospectService.CheckExistingCode(code));
+            return Ok(await prospectService.IsCodeExist(code));
         }
 
-        [HttpGet("checkExistingTaxNo/{taxNo}")]
-        public async Task<ActionResult<bool>> CheckExistingTaxNo(int taxNo)
+        [HttpGet("IsTaxNoExist/{taxNo}")]
+        public async Task<ActionResult<bool>> IsTaxNoExist(int taxNo)
         {
-            return Ok(await prospectService.CheckExistingTaxNo(taxNo));
+            return Ok(await prospectService.IsTaxNoExist(taxNo));
         }
     }
 }
