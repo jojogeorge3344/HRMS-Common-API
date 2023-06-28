@@ -1,4 +1,5 @@
-﻿using Chef.Common.Repositories;
+﻿using Chef.Common.Models;
+using Chef.Common.Repositories;
 using Chef.Finance.Models;
 using Chef.Trading.Models;
 using Dapper;
@@ -111,35 +112,23 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
         return result;
     }
 
-    public async Task<int> IsCodeExist(string code)
+    public async Task<bool> IsCodeExist(string code)
     {
         code = code.ToUpper();
-        string sql = @"select itc.id from common.prospect itc  
-                            where itc.isarchived=false and UPPER(itc.prospectcode)=@code;";
-        var data = await Connection.QueryFirstOrDefaultAsync<Prospect>(sql, new { code });
-        if (data != null)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+
+        return await QueryFactory
+       .Query<Prospect>()
+       .Where("code", code)
+       .WhereNotArchived()
+       .CountAsync<int>() > 0;
     }
 
-    public async Task<int> IsTaxNoExist(int taxNo)
+    public async Task<bool> IsTaxNoExist(int taxNo)
     {
-       // taxNo = taxNo.ToUpper();
-        string sql = @"select itc.id from common.prospect itc  
-                            where itc.isarchived=false and itc.taxno=@taxNo;";
-        var data = await Connection.QueryFirstOrDefaultAsync<Prospect>(sql, new { taxNo });
-        if (data != null)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+        return await QueryFactory
+        .Query<Prospect>()
+        .Where("code", taxNo)
+        .WhereNotArchived()
+        .CountAsync<int>() > 0;
     }
 }

@@ -66,11 +66,11 @@ public class ProspectService : AsyncService<Prospect>, IProspectService
     public async Task<int> GetEditExistingProspectAsync(Prospect prospect)
          => await prospectRepository.GetEditExistingProspectAsync(prospect);
 
-    public async Task<int> IsCodeExist( string code)
+    public async Task<bool> IsCodeExist( string code)
     {
         return await prospectRepository.IsCodeExist(code);
     }
-    public async Task<int> IsTaxNoExist(int taxNo)
+    public async Task<bool> IsTaxNoExist(int taxNo)
     {
         return await prospectRepository.IsTaxNoExist(taxNo);
     }
