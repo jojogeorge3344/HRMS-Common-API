@@ -20,6 +20,12 @@ namespace Chef.Common.Types
         Reversal = 5,
 
         [Description("Deleted")]
-        Deleted = 6
+        Deleted = 6,
+
+        [Description("InvCancelled")]
+        InvCancelled = 7,
+
+        [Description("CNCancelled")]
+        CNCancelled = 8
     }
 }
