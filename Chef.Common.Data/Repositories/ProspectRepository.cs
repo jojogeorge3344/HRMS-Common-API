@@ -127,7 +127,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
     {
         return await QueryFactory
         .Query<Prospect>()
-        .Where("code", taxNo)
+        .Where("taxno", taxNo)
         .WhereNotArchived()
         .CountAsync<int>() > 0;
     }
