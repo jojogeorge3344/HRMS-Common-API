@@ -10,5 +10,5 @@ namespace Chef.Finance.Integration;
 
 public interface  IDocumentUpdateService: IAsyncService<ARCancelDto>
 {
-    Task<IntegrationResponseDto> CancelDocument(ARCancelDto aRCancelDto);
+    Task<IntegrationResponseDto> CancelDocumentDetails(ARCancelDto aRCancelDto);
 }
