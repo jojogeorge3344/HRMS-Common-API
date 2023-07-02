@@ -19,9 +19,9 @@ public  class DocumentUpdateController:ControllerBase
         this.documentUpdateService = documentUpdateService;
     }
     [HttpPost("CancelDocumentDetails")]
-    public async Task<ActionResult> CancelDocument(ARCancelDto aRCancelDto)
+    public async Task<ActionResult> CancelDocumentDetails(ARCancelDto aRCancelDto)
     {
-        IntegrationResponseDto status = await documentUpdateService.CancelDocument(aRCancelDto);
+        IntegrationResponseDto status = await documentUpdateService.CancelDocumentDetails(aRCancelDto);
         return Ok(status);
     }
 }
