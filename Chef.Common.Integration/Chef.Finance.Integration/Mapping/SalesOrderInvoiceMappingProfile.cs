@@ -43,7 +43,8 @@ public class SalesOrderInvoiceMappingProfile : Profile
             .ForMember(d => d.PaymentTerm, opt => opt.MapFrom(x => x.SalesInvoicePaymentTermsDto.FirstOrDefault()))
             .ForMember(d => d.LineItems, opt => opt.MapFrom(x => x.SalesInvoiceItemDto))
             .ForMember(d => d.TransactionDate, opt => opt.MapFrom(x => x.SalesInvoiceDate.Date))
-            .ForMember(d => d.DocumentDate, opt => opt.MapFrom(x => x.SalesInvoiceDate.Date));
+            .ForMember(d => d.DocumentDate, opt => opt.MapFrom(x => x.SalesInvoiceDate.Date))
+            .ForMember(d => d.TransactionType, opt => opt.MapFrom(x => x.TransOriginType));
 
         CreateMap<CustomerTransactionDetail, SalesInvoiceViewDto>();
 
