@@ -18,13 +18,13 @@ namespace Chef.Finance.Integration;
              this.customerCreditNoteService = customerCreditNoteService;
          }
 
-    public async Task<IntegrationResponseDto> CancelDocument(ARCancelDto aRCancelDto)
+    public async Task<IntegrationResponseDto> CancelDocumentDetails(ARCancelDto aRCancelDto)
     {
         try
         {
             IntegrationResponseDto integrationResponseDto = new IntegrationResponseDto();
             integrationResponseDto.Response = 0;
-            string type = aRCancelDto.TransOrigin + aRCancelDto.TransOrigin;
+            string type = aRCancelDto.TransOrigin + aRCancelDto.TransType;
             if (type == TransactionType.SalesOrderInvoice.ToString() || type == TransactionType.VanSalesOrderInvoice.ToString())
             {
                 int result = await salesInvoiceService.InvoiceCancel(aRCancelDto.DocumentNo, aRCancelDto.Status);

@@ -24,7 +24,8 @@ public class SalesReturnCreditMappingProfile : Profile
                         .ForMember(d => d.DocumentStatus, opt => opt.MapFrom(x => "1"))
                         .ForMember(d => d.ApproveStatus, opt => opt.MapFrom(x => "1"))
                         .ForMember(d => d.DocumentType, opt => opt.MapFrom(x => DocumentType.CustomerCreditNote))
-                        .ForMember(d => d.LineItems,opt => opt.MapFrom(x => x.salesReturnCreditItemDtos));
+                        .ForMember(d => d.LineItems, opt => opt.MapFrom(x => x.salesReturnCreditItemDtos))
+                        .ForMember(d => d.TransactionType, opt => opt.MapFrom(x => x.TransOriginType));
 
         CreateMap<SalesReturnCreditItemDto, CustomerCreditNoteLineItem>()
             .ForMember(d => d.Description,opt => opt.MapFrom(x => x.ItemName))
