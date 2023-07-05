@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper.Configuration.Annotations;
 using Chef.Common.Core;
 using Chef.Common.Types;
 
@@ -32,5 +33,10 @@ namespace Chef.Common.Models
         public float ExchangeVariationDown { get; set; }
 
         public bool IsActive { get; set; }
+
+        [Write(false)]
+        [Skip(true)]
+        [Ignore]
+        public string UserName { get; set; }
     }
 }
