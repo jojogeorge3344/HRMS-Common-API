@@ -70,7 +70,7 @@ public class ProspectService : AsyncService<Prospect>, IProspectService
     {
         return await prospectRepository.IsCodeExist(code);
     }
-    public async Task<bool> IsTaxNoExist(int taxNo)
+    public async Task<bool> IsTaxNoExist(long taxNo)
     {
         return await prospectRepository.IsTaxNoExist(taxNo);
     }
