@@ -11,17 +11,17 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dapper" Version="2.0.143" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Npgsql" Version="7.0.0" />
-    <PackageReference Include="refit" Version="6.3.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Npgsql" Version="7.0.4" />
+    <PackageReference Include="refit" Version="7.0.0" />
     <PackageReference Include="SqlKata" Version="3.0.0-beta" />
-    <PackageReference Include="MailKit" Version="3.4.2" />
-    <PackageReference Include="MimeKit" Version="3.4.2" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.70" />
-    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="MailKit" Version="4.1.0" />
+    <PackageReference Include="MimeKit" Version="4.1.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="SqlKata.Execution" Version="3.0.0-beta" />
     <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
   </ItemGroup>
