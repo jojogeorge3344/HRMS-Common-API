@@ -9,6 +9,16 @@ public class ProspectService : AsyncService<Prospect>, IProspectService
         this.prospectRepository = prospectRepository;
     }
 
+    public async new Task<IEnumerable<ProspectDto>> GetAllAsync()
+    {
+        return await prospectRepository.GetAllAsync();
+    }
+
+    public async new Task<ProspectDto> GetAsync(int id)
+    {
+        return await prospectRepository.GetAsync(id);
+    }
+
     public async Task<int> UpdateStatus(int prospectId, bool isAssigned)
     {
         return await prospectRepository.UpdateStatus(prospectId, isAssigned);

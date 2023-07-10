@@ -21,29 +21,28 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
                         isassigned = isAssigned
                     });
     }
-    public async new Task<IEnumerable<ProspectDto>> GetAsync(int id)
+    public async new Task<ProspectDto> GetAsync(int id)
     {
-        var sqlQuery = @"SELECT pt.id, pt.prospectcode, pt.prospectname, pt.addressline1, pt.contactperson, pt.contactnumber, pt.email, pt.isassigned, 
-                                    pt.businesspartnerid,pt.isarchived, pt.isactive, pt.taxjurisdictionid, pt.currency, pt.bptype, pt.addressline2, 
-                                    pt.cityid, pt.cityname, pt.stateid, pt.statename, pt.countryid, pt.countryname, pt.zipcode, pt.faxno,
-                                    tj.taxjurisdictioncode,tj.taxname,bp.name
-                                    FROM common.prospect pt left join common.taxjurisdiction tj on pt.taxjurisdictionid=tj.id
-                                    left join finance.businesspartnerconfiguration bp on  pt.businesspartnerid=bp.id where pt.id=@id";
-        var result = await DatabaseSession.QueryAsync<ProspectDto>(sqlQuery, new { id });
-        return result;
+        return await QueryFactory
+                    .Query("common.prospect AS pt")
+                    .Select("pt.*", "tj.{taxjurisdictioncode, taxname}", "bp.name")
+                    .LeftJoin("common.taxjurisdiction AS tj", "pt.taxjurisdictionid", "tj.id")
+                    .LeftJoin("finance.businesspartnerconfiguration AS bp", "pt.businesspartnerid", "bp.id")
+                    .WhereFalse("pt.isarchived")
+                    .Where("pt.id", id)
+                    .FirstOrDefaultAsync<ProspectDto>();
     }
 
-    public async Task<IEnumerable<ProspectDto>> GetAll()
+    public async new Task<IEnumerable<ProspectDto>> GetAllAsync()
     {
-        var sqlQuery = @"SELECT pt.id, pt.prospectcode, pt.prospectname, pt.addressline1, pt.contactperson, pt.contactnumber, pt.email, pt.isassigned, 
-                                    pt.businesspartnerid,pt.isarchived, pt.isactive, pt.taxjurisdictionid, pt.currency, pt.bptype, pt.addressline2, 
-                                    pt.cityid, pt.cityname, pt.stateid, pt.statename, pt.countryid, pt.countryname, pt.zipcode, pt.faxno,
-                                    tj.taxjurisdictioncode,tj.taxname,bp.name,pt.createddate
-                                    FROM common.prospect pt left join common.taxjurisdiction tj on pt.taxjurisdictionid=tj.id
-                                    left join finance.businesspartnerconfiguration bp on  pt.businesspartnerid=bp.id where pt.isarchived=false
-                                    ORDER BY pt.createddate DESC";
-        var result = await DatabaseSession.QueryAsync<ProspectDto>(sqlQuery);
-        return result;
+        return await QueryFactory
+                    .Query("common.prospect AS pt")
+                    .Select("pt.*", "tj.{taxjurisdictioncode, taxname}", "bp.name")
+                    .LeftJoin("common.taxjurisdiction AS tj", "pt.taxjurisdictionid", "tj.id")
+                    .LeftJoin("finance.businesspartnerconfiguration AS bp", "pt.businesspartnerid", "bp.id")
+                    .WhereFalse("pt.isarchived")
+                    .OrderByDesc("pt.createddate")
+                    .GetAsync<ProspectDto>();
     }
 
     public async Task<bool> IsExistingProspectAsync(Prospect prospect)
