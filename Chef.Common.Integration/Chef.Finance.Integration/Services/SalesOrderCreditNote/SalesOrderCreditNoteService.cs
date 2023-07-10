@@ -190,6 +190,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
                 throw new ResourceNotFoundException("Journalbook not configured for this transaction origin and type");
 
             CustomerCreditNote customerCreditNote = Mapper.Map<CustomerCreditNote>(salesReturnCreditDto);
+            customerCreditNote.TransactionTypeId = type;
 
             if (salesReturnCreditDto.isVanSales == true)
             {
@@ -213,6 +214,7 @@ public class SalesOrderCreditNoteService : AsyncService<SalesReturnCreditDto>, I
             customerCreditNote.JournalBookCode = journalBookConfig.JournalBookCode;
             customerCreditNote.JournalBookId = journalBookConfig.JournalBookId;
             customerCreditNote.JournalBookName = journalBookConfig.JournalBookName;
+            customerCreditNote.TransactionTypeId = type;
             //customerCreditNote.JournalBookTypeId = journalBookConfig.JournalBookTypeId;
             //customerCreditNote.JournalBookTypeCode = journalBookConfig.JournalBookTypeCode;
 

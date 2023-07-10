@@ -123,7 +123,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
        .CountAsync<int>() > 0;
     }
 
-    public async Task<bool> IsTaxNoExist(int taxNo)
+    public async Task<bool> IsTaxNoExist(long taxNo)
     {
         return await QueryFactory
         .Query<Prospect>()
