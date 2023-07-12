@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.Data.Services;
+﻿using Chef.Common.Exceptions;
+
+namespace Chef.Common.Data.Services;
 
 public class ProspectService : AsyncService<Prospect>, IProspectService
 {
@@ -27,14 +29,22 @@ public class ProspectService : AsyncService<Prospect>, IProspectService
     public async Task<bool> IsExistingProspectAsync(Prospect prospect)
          => await prospectRepository.IsExistingProspectAsync(prospect);
 
-    public async Task<bool> IsCodeExist( string code)
+    public async Task<bool> IsCodeExist(string code)
     {
         return await prospectRepository.IsCodeExist(code);
     }
 
-    public async Task<bool> IsTaxNoExist(long taxNo)
+    public async Task<bool> IsTaxNoExist(long taxNo, int prospectId)
     {
-        return await prospectRepository.IsTaxNoExist(taxNo);
+        return await prospectRepository.IsTaxNoExist(taxNo, prospectId);
+    }
+
+    public async new Task<int> DeleteAsync(int id)
+    {
+        if (await prospectRepository.IsProspectUsed(id))
+            throw new ResourceHasDependentException("Prospect already used.");
+
+        return await prospectRepository.DeleteAsync(id);
     }
 }
 

@@ -35,6 +35,9 @@ namespace Chef.Trading.Web.Controllers
             if (await prospectService.IsExistingProspectAsync(prospect))
                 throw new ResourceAlreadyExistsException($"Prospect with same properties already exists.");
 
+            if (await prospectService.IsTaxNoExist(prospect.TaxNo, prospect.Id))
+                throw new ResourceAlreadyExistsException($"Tax number already exists.");
+
             return CreatedAtAction(nameof(Insert), await prospectService.InsertAsync(prospect));
         }
 
@@ -46,6 +49,9 @@ namespace Chef.Trading.Web.Controllers
 
             if (await prospectService.IsExistingProspectAsync(prospect))
                 throw new ResourceAlreadyExistsException($"Prospect with same properties already exists.");
+
+            if (await prospectService.IsTaxNoExist(prospect.TaxNo, prospect.Id))
+                throw new ResourceAlreadyExistsException($"Tax number already exists.");
 
             return Ok(await prospectService.UpdateAsync(prospect));
         }
@@ -72,10 +78,10 @@ namespace Chef.Trading.Web.Controllers
             return Ok(await prospectService.IsCodeExist(code));
         }
 
-        [HttpGet("IsTaxNoExist/{taxNo}")]
-        public async Task<ActionResult<bool>> IsTaxNoExist(long taxNo)
+        [HttpGet("IsTaxNoExist/{taxNo}/{prospectId}")]
+        public async Task<ActionResult<bool>> IsTaxNoExist(long taxNo, int prospectId)
         {
-            return Ok(await prospectService.IsTaxNoExist(taxNo));
+            return Ok(await prospectService.IsTaxNoExist(taxNo, prospectId));
         }
     }
 }

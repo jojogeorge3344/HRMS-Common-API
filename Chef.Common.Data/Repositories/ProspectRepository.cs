@@ -60,21 +60,37 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
 
     public async Task<bool> IsCodeExist(string code)
     {
-        code = code.ToUpper();
-
         return await QueryFactory
-       .Query<Prospect>()
-       .Where("prospectcode", code)
-       .WhereNotArchived()
-       .CountAsync<int>() > 0;
+                    .Query<Prospect>()
+                    .Where("prospectcode", code.ToUpper())
+                    .WhereNotArchived()
+                    .CountAsync<int>() > 0;
     }
 
-    public async Task<bool> IsTaxNoExist(long taxNo)
+    public async Task<bool> IsTaxNoExist(long taxNo, int prospectId)
     {
         return await QueryFactory
-        .Query<Prospect>()
-        .Where("taxno", taxNo)
-        .WhereNotArchived()
-        .CountAsync<int>() > 0;
+                    .Query<Prospect>()
+                    .Where("taxno", taxNo)
+                    .Where("id", "!=", prospectId)
+                    .WhereNotArchived()
+                    .CountAsync<int>() > 0;
+    }
+
+    public async Task<bool> IsProspectUsed(int prospectId)
+    {
+        Query pettyCashExpenseDetail = QueryFactory
+                                      .Query("finance.pettycashexpensesdetail")
+                                      .Select("id")
+                                      .WhereNotArchived()
+                                      .WhereTrue("isprospect")
+                                      .Where("supplierid", prospectId);
+
+        Query onetimepaymentdetail = QueryFactory
+                                    .Query("finance.onetimepaymentdetail")
+                                    .Select("id")
+                                    .WhereNotArchived()
+                                    .Where("prospectid", prospectId);
+        return await pettyCashExpenseDetail.Union(onetimepaymentdetail).CountAsync<bool>();
     }
 }
