@@ -1,11 +1,10 @@
-﻿namespace Chef.Common.Models
+﻿namespace Chef.Common.Models;
+
+public class NodePermissionViewModel
 {
-    public class NodePermissionViewModel
-    {
-        public int Id { get; set; }
-        public int NodeId { get; set; }
-        public int PermissionId { get; set; }
-        public string PermissionCode { get; set; }
-        public string PermissionName { get; set; }
-    }
+    public int Id { get; set; }
+    public int NodeId { get; set; }
+    public int PermissionId { get; set; }
+    public string PermissionCode { get; set; }
+    public string PermissionName { get; set; }
 }

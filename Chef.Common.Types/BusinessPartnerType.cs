@@ -1,19 +1,18 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Types
+namespace Chef.Common.Types;
+
+public enum BusinessPartnerGroupType
 {
-    public enum BusinessPartnerGroupType
-    {
-        [Description("Trade")]
-        EBP = 1,
+    [Description("Trade")]
+    EBP = 1,
 
-        [Description("Affiliate")]
-        ABP,
+    [Description("Affiliate")]
+    ABP,
 
-        [Description("Employees")]
-        HBP,
+    [Description("Employees")]
+    HBP,
 
-        [Description("Others")]
-        OBP
-    }
+    [Description("Others")]
+    OBP
 }

@@ -1,37 +1,36 @@
-﻿namespace Chef.Common.Types
+﻿namespace Chef.Common.Types;
+
+public enum ServiceExceptionCode
 {
-    public enum ServiceExceptionCode
-    {
-        // Database Exception
-        DbConnectionException,
-        DbTimeoutException,
-        DbUniqueKeyViolation,
-        DbForeignKeyViolation,
-        DbTranasctionRollback,
-        DbDataException,
-        DbInvalidTranasction,
-        DbInvalidSqlStatement,
-        DbInsufficientResources,
-        DbIntegrityViolation,
-        DbException,
+    // Database Exception
+    DbConnectionException,
+    DbTimeoutException,
+    DbUniqueKeyViolation,
+    DbForeignKeyViolation,
+    DbTranasctionRollback,
+    DbDataException,
+    DbInvalidTranasction,
+    DbInvalidSqlStatement,
+    DbInsufficientResources,
+    DbIntegrityViolation,
+    DbException,
 
-        // Socket Exception
-        SocketException,
-        SocketTimeout,
-        SocketConnectionRefused,
+    // Socket Exception
+    SocketException,
+    SocketTimeout,
+    SocketConnectionRefused,
 
-        //Api Exception
-        ApiClientResourceNotFound,
-        ApiClientInternalServerError,
-        ApiClientUnauthorized,
-        ApiClientRequestTimeout,
+    //Api Exception
+    ApiClientResourceNotFound,
+    ApiClientInternalServerError,
+    ApiClientUnauthorized,
+    ApiClientRequestTimeout,
 
-        //
-        ResourceNotFound,
-        BadRequest,
-        TenantNotFound,
+    //
+    ResourceNotFound,
+    BadRequest,
+    TenantNotFound,
 
-        //Application exception code should be constant.
-        ApplicationException = 1001
-    }
+    //Application exception code should be constant.
+    ApplicationException = 1001
 }

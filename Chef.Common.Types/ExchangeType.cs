@@ -1,11 +1,10 @@
-﻿namespace Chef.Trading.Types
+﻿namespace Chef.Trading.Types;
+
+public enum ExchangeType
 {
-    public enum ExchangeType
-    {
-        None = 0,
+    None = 0,
 
-        Fixed = 1,
+    Fixed = 1,
 
-        Dynamic = 2,
-    }
+    Dynamic = 2,
 }

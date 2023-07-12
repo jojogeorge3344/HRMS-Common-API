@@ -1,6 +1,5 @@
-﻿namespace Chef.Common.Core
+﻿namespace Chef.Common.Core;
+
+public abstract class ViewModel
 {
-    public abstract class ViewModel
-    {
-    }
 }

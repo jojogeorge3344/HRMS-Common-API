@@ -1,22 +1,21 @@
 ﻿using Chef.Common.Core;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Chef.Common.Models
+namespace Chef.Common.Models;
+
+public class UserSignature : Model
 {
-    public class UserSignature : Model
-    {
-        [ForeignKey("Common.User")]
-        public int UserId { get; set; }
+    [ForeignKey("Common.User")]
+    public int UserId { get; set; }
 
-        public string UserEmail { get; set; }
+    public string UserEmail { get; set; }
 
-        public string FileName { get; set; }
+    public string FileName { get; set; }
 
-        public byte[] Signature { get; set; }
+    public byte[] Signature { get; set; }
 
-        [Skip(true)]
-        [Write(false)]
-        [SqlKata.Ignore]
-        public string Sign { get; set; }
-    }
+    [Skip(true)]
+    [Write(false)]
+    [SqlKata.Ignore]
+    public string Sign { get; set; }
 }
