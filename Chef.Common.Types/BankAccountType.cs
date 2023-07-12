@@ -1,11 +1,10 @@
-﻿namespace Chef.Common.Types
+﻿namespace Chef.Common.Types;
+
+public enum BankAccountType
 {
-    public enum BankAccountType
-    {
-        Paylink = 1,
-        Savings = 2,
-        Current = 3,
-        Collection = 4,
-        Cash = 5
-    }
+    Paylink = 1,
+    Savings = 2,
+    Current = 3,
+    Collection = 4,
+    Cash = 5
 }

@@ -1,7 +1,7 @@
 ﻿using Chef.Common.Core;
 
-namespace Chef.Common.Models
-{
+namespace Chef.Common.Models;
+
 	public class CompanyViewModel : Model
 	{
 		public int CompanyId { get; set; }
@@ -11,4 +11,3 @@ namespace Chef.Common.Models
 		public string CompanyCode { get; set; }
 	}
 	
-}

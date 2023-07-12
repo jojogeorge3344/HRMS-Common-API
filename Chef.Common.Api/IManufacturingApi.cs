@@ -1,10 +1,9 @@
 ﻿using Refit;
 
-namespace Chef.Common.Api
+namespace Chef.Common.Api;
+
+public interface IManufacturingApi
 {
-    public interface IManufacturingApi
-    {
-        [Put("/BasicMaterialIssue/UpdateStatus/{materialIssueId}/{status}/{remark}")]
-        Task<int> UpdateMaterialIssueStatus(int materialIssueId, int status, string remark);
-    }
+    [Put("/BasicMaterialIssue/UpdateStatus/{materialIssueId}/{status}/{remark}")]
+    Task<int> UpdateMaterialIssueStatus(int materialIssueId, int status, string remark);
 }

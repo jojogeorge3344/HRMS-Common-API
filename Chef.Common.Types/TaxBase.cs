@@ -1,9 +1,8 @@
-﻿namespace Chef.Common.Types
+﻿namespace Chef.Common.Types;
+
+public enum TaxBase
 {
-    public enum TaxBase
-    {
-        MainTax = 0,
-        Purchase = 1,
-        Sales = 2
-    }
+    MainTax = 0,
+    Purchase = 1,
+    Sales = 2
 }

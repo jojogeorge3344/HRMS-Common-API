@@ -5,87 +5,86 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Chef.Common.Core.Repositories
+namespace Chef.Common.Core.Repositories;
+
+public class RedisConnectionFactory : IRedisConnectionFactory
 {
-    public class RedisConnectionFactory : IRedisConnectionFactory
+    private readonly ConfigurationOptions configuration = null;
+    private readonly Lazy<IConnectionMultiplexer> _connection = null;
+
+    public RedisConnectionFactory(bool allowAdmin = false)
     {
-        private readonly ConfigurationOptions configuration = null;
-        private readonly Lazy<IConnectionMultiplexer> _connection = null;
-
-        public RedisConnectionFactory(bool allowAdmin = false)
+        configuration = new ConfigurationOptions()
         {
-            configuration = new ConfigurationOptions()
-            {
-                //for the redis pool so you can extent later if needed
-                EndPoints = { { AppConfigurationManager.AppSetting["Redis:Host"], Convert.ToInt32(AppConfigurationManager.AppSetting["Redis:Port"]) }, },
-                AllowAdmin = allowAdmin,
-                //Password = "", //to the security for the production
-                ReconnectRetryPolicy = new LinearRetry(5000),
-                AbortOnConnectFail = false
-            };
+            //for the redis pool so you can extent later if needed
+            EndPoints = { { AppConfigurationManager.AppSetting["Redis:Host"], Convert.ToInt32(AppConfigurationManager.AppSetting["Redis:Port"]) }, },
+            AllowAdmin = allowAdmin,
+            //Password = "", //to the security for the production
+            ReconnectRetryPolicy = new LinearRetry(5000),
+            AbortOnConnectFail = false
+        };
 
-            _connection = new Lazy<IConnectionMultiplexer>(() =>
-            {
-                ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(configuration);
-
-                return redis;
-            });
-        }
-
-        //for the 'GetSubscriber()' and another Databases
-        public IConnectionMultiplexer Connection { get { return _connection.Value; } }
-
-        //for the default database
-        public IDatabase Database => Connection.GetDatabase();
-
-        //Get Data From Redis
-        public List<T> GetData<T>(RedisKey key, CommandFlags flags = CommandFlags.None)
+        _connection = new Lazy<IConnectionMultiplexer>(() =>
         {
-            RedisValue redisValue = Database.StringGet(key, flags);
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(configuration);
 
-            if (!redisValue.HasValue)
-            {
-                return default;
-            }
-
-            List<T> deserializedValue = JsonConvert.DeserializeObject<List<T>>(redisValue);
-
-            return deserializedValue;
-        }
-
-        //Set Data To Redis
-        public bool SetData(RedisKey key, object value, TimeSpan? expiry = null, When when = When.Always, CommandFlags flags = CommandFlags.None)
-        {
-            if (value == null)
-            {
-                return false;
-            }
-
-            return Database.StringSet(key, JsonConvert.SerializeObject(value), expiry, when, flags);
-        }
-
-        public void ConnectionErrorMessage(object sender, RedisErrorEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        //Invalidate Data In Redis
-        public bool DeleteKey(RedisKey key)
-        {
-            return Database.KeyDelete(key);
-        }
+            return redis;
+        });
     }
 
-    public static class AppConfigurationManager
-    {
-        public static IConfiguration AppSetting { get; }
+    //for the 'GetSubscriber()' and another Databases
+    public IConnectionMultiplexer Connection { get { return _connection.Value; } }
 
-        static AppConfigurationManager()
+    //for the default database
+    public IDatabase Database => Connection.GetDatabase();
+
+    //Get Data From Redis
+    public List<T> GetData<T>(RedisKey key, CommandFlags flags = CommandFlags.None)
+    {
+        RedisValue redisValue = Database.StringGet(key, flags);
+
+        if (!redisValue.HasValue)
         {
-            AppSetting = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json")
-                    .Build();
+            return default;
         }
+
+        List<T> deserializedValue = JsonConvert.DeserializeObject<List<T>>(redisValue);
+
+        return deserializedValue;
+    }
+
+    //Set Data To Redis
+    public bool SetData(RedisKey key, object value, TimeSpan? expiry = null, When when = When.Always, CommandFlags flags = CommandFlags.None)
+    {
+        if (value == null)
+        {
+            return false;
+        }
+
+        return Database.StringSet(key, JsonConvert.SerializeObject(value), expiry, when, flags);
+    }
+
+    public void ConnectionErrorMessage(object sender, RedisErrorEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    //Invalidate Data In Redis
+    public bool DeleteKey(RedisKey key)
+    {
+        return Database.KeyDelete(key);
+    }
+}
+
+public static class AppConfigurationManager
+{
+    public static IConfiguration AppSetting { get; }
+
+    static AppConfigurationManager()
+    {
+        AppSetting = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
     }
 }

@@ -1,15 +1,14 @@
-﻿namespace Chef.Common.Core
+﻿namespace Chef.Common.Core;
+
+public class ErrorExceptionMessage
 {
-    public class ErrorExceptionMessage
+    public ErrorExceptionMessage(int code, string msg)
     {
-        public ErrorExceptionMessage(int code, string msg)
-        {
-            Message = msg;
-            Code = code;
-        }
-
-        public string Message { get; set; }
-
-        public int Code { get; set; }
+        Message = msg;
+        Code = code;
     }
+
+    public string Message { get; set; }
+
+    public int Code { get; set; }
 }

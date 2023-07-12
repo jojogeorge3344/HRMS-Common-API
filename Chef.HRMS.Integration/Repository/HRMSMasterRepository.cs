@@ -8,12 +8,6 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using SqlKata;
 using SqlKata.Execution;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Chef.HRMS.Integration;
 

@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Types
-{
-    public enum AccountType
-    {
-        [Description("Balance Sheet")]
-        BalanceSheet = 1,
+namespace Chef.Common.Types;
 
-        [Description("Profit and Loss")]
-        ProfitAndLoss
-    }
+public enum AccountType
+{
+    [Description("Balance Sheet")]
+    BalanceSheet = 1,
+
+    [Description("Profit and Loss")]
+    ProfitAndLoss
 }

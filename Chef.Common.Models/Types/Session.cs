@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Models.Types
-{
-    public enum Session
-    {
-        [Description("AM")]
-        AM = 1,
+namespace Chef.Common.Models.Types;
 
-        [Description("PM")]
-        PM
-    }
+public enum Session
+{
+    [Description("AM")]
+    AM = 1,
+
+    [Description("PM")]
+    PM
 }

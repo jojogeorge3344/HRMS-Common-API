@@ -1,6 +1,5 @@
-﻿namespace Chef.Common.Repositories
+﻿namespace Chef.Common.Repositories;
+
+public class RetryOptions
 {
-    public class RetryOptions
-    {
-    }
 }

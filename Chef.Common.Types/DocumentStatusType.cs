@@ -1,19 +1,18 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Types
+namespace Chef.Common.Types;
+
+public enum DocumentStatusType
 {
-    public enum DocumentStatusType
-    {
-        [Description("Open")]
-        Open = 1,
+    [Description("Open")]
+    Open = 1,
 
-        [Description("Closed")]
-        Closed = 2,
+    [Description("Closed")]
+    Closed = 2,
 
-        [Description("Rejected")]
-        Rejected = 3,
+    [Description("Rejected")]
+    Rejected = 3,
 
-        [Description("Hold")]
-        Hold = 4,
-    }
+    [Description("Hold")]
+    Hold = 4,
 }

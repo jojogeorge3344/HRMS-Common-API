@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core;
+
+public interface IExceptionHandler
 {
-    public interface IExceptionHandler
-    {
-        bool Retry(Exception ex);
-    }
+    bool Retry(Exception ex);
 }

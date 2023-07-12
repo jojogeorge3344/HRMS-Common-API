@@ -1,9 +1,8 @@
-﻿namespace Chef.Trading.Types
+﻿namespace Chef.Trading.Types;
+
+public enum PurchaseOrderType
 {
-    public enum PurchaseOrderType
-    {
-        None = 0,
-        Planned = 1,
-        Manual = 2
-    }
+    None = 0,
+    Planned = 1,
+    Manual = 2
 }

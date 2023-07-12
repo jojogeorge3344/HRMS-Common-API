@@ -3,32 +3,31 @@ using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Chef.Common.Repositories
+namespace Chef.Common.Repositories;
+
+public class IgnoreContractResolver : DefaultContractResolver
 {
-    public class IgnoreContractResolver : DefaultContractResolver
+    private readonly HashSet<string> ignoreProps;
+
+    public IgnoreContractResolver(IEnumerable<string> propNamesToIgnore)
     {
-        private readonly HashSet<string> ignoreProps;
+        ignoreProps = new HashSet<string>(propNamesToIgnore);
+    }
 
-        public IgnoreContractResolver(IEnumerable<string> propNamesToIgnore)
+    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+    {
+        JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+        if (ignoreProps.Contains(property.PropertyName))
         {
-            ignoreProps = new HashSet<string>(propNamesToIgnore);
+            property.ShouldSerialize = _ => false;
         }
 
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-        {
-            JsonProperty property = base.CreateProperty(member, memberSerialization);
+        return property;
+    }
 
-            if (ignoreProps.Contains(property.PropertyName))
-            {
-                property.ShouldSerialize = _ => false;
-            }
-
-            return property;
-        }
-
-        protected override string ResolvePropertyName(string key)
-        {
-            return key.ToLower();
-        }
+    protected override string ResolvePropertyName(string key)
+    {
+        return key.ToLower();
     }
 }

@@ -1,22 +1,21 @@
 ﻿using System.Collections;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core;
+
+public class HasElementsAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
 {
-    public class HasElementsAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute
+    public override bool IsValid(object value)
     {
-        public override bool IsValid(object value)
+        if (value is ICollection collection)
         {
-            if (value is ICollection collection)
-            {
-                return collection.Count > 0;
-            }
-
-            if (value is IEnumerable enumerable)
-            {
-                return enumerable.GetEnumerator().MoveNext();
-            }
-
-            return false;
+            return collection.Count > 0;
         }
+
+        if (value is IEnumerable enumerable)
+        {
+            return enumerable.GetEnumerator().MoveNext();
+        }
+
+        return false;
     }
 }

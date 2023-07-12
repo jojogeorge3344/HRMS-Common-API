@@ -1,6 +1,5 @@
-﻿namespace Chef.Common.Services
+﻿namespace Chef.Common.Services;
+
+public class EmailSendFactoryService : IEmailSendFactoryService
 {
-    public class EmailSendFactoryService : IEmailSendFactoryService
-    {
-    }
 }
