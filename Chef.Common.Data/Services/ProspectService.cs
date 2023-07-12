@@ -5,15 +5,28 @@ namespace Chef.Common.Data.Services;
 public class ProspectService : AsyncService<Prospect>, IProspectService
 {
     private readonly IProspectRepository prospectRepository;
+    private readonly IMasterDataRepository masterDataRepository;
 
-    public ProspectService(IProspectRepository prospectRepository)
+    public ProspectService(IProspectRepository prospectRepository, IMasterDataRepository masterDataRepository)
     {
         this.prospectRepository = prospectRepository;
+        this.masterDataRepository = masterDataRepository;
     }
 
     public async new Task<IEnumerable<ProspectDto>> GetAllAsync()
     {
-        return await prospectRepository.GetAllAsync();
+        IEnumerable<TaxJurisdiction> taxJurisdictions = await masterDataRepository.GetAllTaxJurisdiction();
+        IEnumerable<ProspectDto> prospects = await prospectRepository.GetAllAsync();
+
+        var data = from prospect in prospects
+                   join taxJurisdiction in taxJurisdictions
+                   on prospect.TaxJurisdictionId equals taxJurisdiction.Id into newdata
+                   from newd in newdata.DefaultIfEmpty()
+                   select new { prospect, newd };
+
+        data.ToList().ForEach(x => x.prospect.taxJurisdictionCode = x.newd?.Code);
+
+        return data.Select(x => x.prospect).ToList();
     }
 
     public async new Task<ProspectDto> GetAsync(int id)

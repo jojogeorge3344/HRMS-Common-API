@@ -25,8 +25,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
     {
         return await QueryFactory
                     .Query("common.prospect AS pt")
-                    .Select("pt.*", "tj.{taxjurisdictioncode, taxname}", "bp.name")
-                    .LeftJoin("common.taxjurisdiction AS tj", "pt.taxjurisdictionid", "tj.id")
+                    .Select("pt.*", "bp.name")
                     .LeftJoin("finance.businesspartnerconfiguration AS bp", "pt.businesspartnerid", "bp.id")
                     .WhereFalse("pt.isarchived")
                     .Where("pt.id", id)
@@ -37,8 +36,7 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
     {
         return await QueryFactory
                     .Query("common.prospect AS pt")
-                    .Select("pt.*", "tj.{taxjurisdictioncode, taxname}", "bp.name")
-                    .LeftJoin("common.taxjurisdiction AS tj", "pt.taxjurisdictionid", "tj.id")
+                    .Select("pt.*", "bp.name")
                     .LeftJoin("finance.businesspartnerconfiguration AS bp", "pt.businesspartnerid", "bp.id")
                     .WhereFalse("pt.isarchived")
                     .OrderByDesc("pt.createddate")
@@ -82,15 +80,19 @@ public class ProspectRepository : TenantRepository<Prospect>, IProspectRepositor
         Query pettyCashExpenseDetail = QueryFactory
                                       .Query("finance.pettycashexpensesdetail")
                                       .Select("id")
-                                      .WhereNotArchived()
                                       .WhereTrue("isprospect")
                                       .Where("supplierid", prospectId);
 
         Query onetimepaymentdetail = QueryFactory
                                     .Query("finance.onetimepaymentdetail")
                                     .Select("id")
-                                    .WhereNotArchived()
                                     .Where("prospectid", prospectId);
-        return await pettyCashExpenseDetail.Union(onetimepaymentdetail).CountAsync<bool>();
+
+        Query receiptRegister = QueryFactory
+                                    .Query("finance.receiptregister")
+                                    .Select("id")
+                                    .Where("customerid", prospectId);
+
+        return await pettyCashExpenseDetail.Union(onetimepaymentdetail).Union(receiptRegister).CountAsync<bool>();
     }
 }
