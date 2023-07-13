@@ -56,7 +56,7 @@ public class Prospect : Model
     [Required]
     public int TaxJurisdictionId { get; set; }
     [Required]
-    public int TaxNo { get; set; }
+    public long TaxNo { get; set; }
     public string TRNNo { get; set; }
 }
 

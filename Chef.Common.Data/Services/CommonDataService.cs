@@ -120,6 +120,16 @@ public class CommonDataService : ICommonDataService
 
     private string ConvertDecimals(String number)
     {
+
+        if (Convert.ToInt32(number.Substring(0, 2)) >= 11 && Convert.ToInt32(number.Substring(0, 2)) <= 19)
+        {
+            string no = "", One = "",words = "";
+            no = number.Substring(0, 2);
+            One = tens(no);
+            words = " " + One;
+            return words;
+            
+        }
         String cd = "", digit = "", engOne = "";
         for (int i = 0; i < number.Length; i++)
         {
@@ -130,6 +140,7 @@ public class CommonDataService : ICommonDataService
             }
             else
             {
+               
                 engOne = tens(digit);
             }
 

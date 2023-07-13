@@ -21,7 +21,7 @@ public interface IProspectRepository : IGenericRepository<Prospect>
     Task<int> GetExistingProspectAsync(Prospect obj);
     Task<int> GetEditExistingProspectAsync(Prospect prospect);
     Task<bool> IsCodeExist(string code);
-    Task<bool> IsTaxNoExist(int taxNo);
+    Task<bool> IsTaxNoExist(long taxNo);
 
 }
 

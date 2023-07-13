@@ -9,6 +9,7 @@
         FixedAssets = 5,
         ACPJournalBooks = 6,
         CashCollection = 7,
-        Integration = 8
+        Integration = 8,
+        ACPJournalBooksWithPO = 9
     }
 }

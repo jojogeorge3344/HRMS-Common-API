@@ -125,7 +125,7 @@ namespace Chef.Trading.Web.Controllers
         }
 
         [HttpGet("IsTaxNoExist/{taxNo}")]
-        public async Task<ActionResult<bool>> IsTaxNoExist(int taxNo)
+        public async Task<ActionResult<bool>> IsTaxNoExist(long taxNo)
         {
             return Ok(await prospectService.IsTaxNoExist(taxNo));
         }
