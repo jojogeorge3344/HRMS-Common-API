@@ -1,78 +1,63 @@
-﻿namespace Chef.Common.Data.Services;
+﻿using Chef.Common.Exceptions;
+
+namespace Chef.Common.Data.Services;
 
 public class ProspectService : AsyncService<Prospect>, IProspectService
 {
     private readonly IProspectRepository prospectRepository;
+    private readonly IMasterDataRepository masterDataRepository;
 
-    public ProspectService(IProspectRepository prospectRepository)
+    public ProspectService(IProspectRepository prospectRepository, IMasterDataRepository masterDataRepository)
     {
         this.prospectRepository = prospectRepository;
+        this.masterDataRepository = masterDataRepository;
     }
 
-    //public async Task<int> DeleteAsync(int id)
-    //{
-    //    return await prospectRepository.DeleteProspect(id);
-    //}
+    public async new Task<IEnumerable<ProspectDto>> GetAllAsync()
+    {
+        IEnumerable<TaxJurisdiction> taxJurisdictions = await masterDataRepository.GetAllTaxJurisdiction();
+        IEnumerable<ProspectDto> prospects = await prospectRepository.GetAllAsync();
 
-    //public async Task<IEnumerable<ProspectDto>> GetAllAsync()
-    //{
-    //    return await prospectRepository.GetAll();
-    //}
+        var data = from prospect in prospects
+                   join taxJurisdiction in taxJurisdictions
+                   on prospect.TaxJurisdictionId equals taxJurisdiction.Id into newdata
+                   from newd in newdata.DefaultIfEmpty()
+                   select new { prospect, newd };
 
-    public async new Task<IEnumerable<ProspectDto>> GetAsync(int id)
+        data.ToList().ForEach(x => x.prospect.taxJurisdictionCode = x.newd?.Code);
+
+        return data.Select(x => x.prospect).ToList();
+    }
+
+    public async new Task<ProspectDto> GetAsync(int id)
     {
         return await prospectRepository.GetAsync(id);
     }
 
-
-
-    public async new Task<int> InsertAsync(Prospect prospect)
+    public async Task<int> UpdateStatus(int prospectId, bool isAssigned)
     {
-        return await prospectRepository.InsertAsync(prospect);
-
+        return await prospectRepository.UpdateStatus(prospectId, isAssigned);
     }
 
-    public async new Task<int> UpdateAsync(Prospect prospect)
-    {
-        return await prospectRepository.UpdateAsync(prospect);
-    }
+    public async Task<bool> IsExistingProspectAsync(Prospect prospect)
+         => await prospectRepository.IsExistingProspectAsync(prospect);
 
-    //public async Task<int> UpdateProspectStatus(int prospectId, bool isAssigned)
-    //{
-    //    return await prospectRepository.UpdateProspectStatus(prospectId, isAssigned);
-    //}
-
-    //public async Task<IEnumerable<CustomerDto>> GetAllCustomer()
-    //{
-    //    var result = await this.prospectRepository.GetAllCustomer();
-    //    return result;
-    //}
-
-
-    //public async Task<IEnumerable<TaxJurisdictionDto>> GetAllTaxJurisdiction()
-    //{
-    //        var result = await this.prospectRepository.GetAllTaxJurisdiction();
-    //        return result;
-    //}
-
-    public async Task<IEnumerable<ProspectDto>> GetAll()
-    {
-        return await prospectRepository.GetAll();
-    }
-
-    public async Task<int> GetExistingProspectAsync(Prospect obj)
-         => await prospectRepository.GetExistingProspectAsync(obj);
-
-    public async Task<int> GetEditExistingProspectAsync(Prospect prospect)
-         => await prospectRepository.GetEditExistingProspectAsync(prospect);
-
-    public async Task<bool> IsCodeExist( string code)
+    public async Task<bool> IsCodeExist(string code)
     {
         return await prospectRepository.IsCodeExist(code);
     }
-    public async Task<bool> IsTaxNoExist(long taxNo)
+
+    public async Task<bool> IsTaxNoExist(long taxNo, int prospectId)
     {
-        return await prospectRepository.IsTaxNoExist(taxNo);
+        return await prospectRepository.IsTaxNoExist(taxNo, prospectId);
+    }
+
+    public async new Task<int> DeleteAsync(int id)
+    {
+        if (await prospectRepository.IsProspectUsed(id))
+            throw new ResourceHasDependentException("Prospect already used.");
+
+        return await prospectRepository.DeleteAsync(id);
     }
 }
 
