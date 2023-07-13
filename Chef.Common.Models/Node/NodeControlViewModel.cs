@@ -1,8 +1,7 @@
-﻿namespace Chef.Common.Models
+﻿namespace Chef.Common.Models;
+
+public class NodeControlViewModel
 {
-    public class NodeControlViewModel
-    {
-        public string ColumnName { get; set; }
-        public string ColumnLabel { get; set; }
-    }
+    public string ColumnName { get; set; }
+    public string ColumnLabel { get; set; }
 }

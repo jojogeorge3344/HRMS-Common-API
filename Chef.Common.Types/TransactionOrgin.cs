@@ -1,11 +1,10 @@
-﻿namespace Chef.Common.Types
+﻿namespace Chef.Common.Types;
+
+public enum TransactionOrgin
 {
-    public enum TransactionOrgin
-    {
-        Purchase = 1,
-        SalesOrder = 2,
-        Warehouse = 3,
-        VanSalesOrder=4,
-        RetailSalesOrder=5
-    }
+    Purchase = 1,
+    SalesOrder = 2,
+    Warehouse = 3,
+    VanSalesOrder=4,
+    RetailSalesOrder=5
 }

@@ -1,30 +1,29 @@
 ﻿using Chef.Common.Core;
 using System.ComponentModel.DataAnnotations;
 
-namespace Chef.Trading.Models
+namespace Chef.Trading.Models;
+
+public class Buyer : Model
 {
-    public class Buyer : Model
-    {
-        [Required]
-        [Unique(true)]
-        [StringLength(6)]
-        [Code]
-        public string BuyerCode { get; set; }
+    [Required]
+    [Unique(true)]
+    [StringLength(6)]
+    [Code]
+    public string BuyerCode { get; set; }
 
-        [Required]
-        public string BuyerName { get; set; }
+    [Required]
+    public string BuyerName { get; set; }
 
-        [Required]
-        public string ContactNumber { get; set; }
+    [Required]
+    public string ContactNumber { get; set; }
 
-        [Required]
-        public string Email { get; set; }
+    [Required]
+    public string Email { get; set; }
 
-        public decimal BuyerLimit { get; set; }
+    public decimal BuyerLimit { get; set; }
 
-        [ForeignKeyId(typeof(PurchaseOffice))]
-        public int? PurchaseOfficeId { get; set; } = null;
+    [ForeignKeyId(typeof(PurchaseOffice))]
+    public int? PurchaseOfficeId { get; set; } = null;
 
-        public string PurchaseOfficeCode { get; set; }
-    }
+    public string PurchaseOfficeCode { get; set; }
 }

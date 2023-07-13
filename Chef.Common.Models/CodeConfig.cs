@@ -2,16 +2,15 @@
 using Chef.Common.Types;
 using System.ComponentModel.DataAnnotations;
 
-namespace Chef.Common.Models
+namespace Chef.Common.Models;
+
+public class CodeConfig : Model
 {
-    public class CodeConfig : Model
-    {
-        [Required]
-        public CodeType CodeType { get; set; }
+    [Required]
+    public CodeType CodeType { get; set; }
 
-        [Required]
-        public string CodeFormat { get; set; }
+    [Required]
+    public string CodeFormat { get; set; }
 
-        public int? MaxCounter { get; set; }
-    }
+    public int? MaxCounter { get; set; }
 }

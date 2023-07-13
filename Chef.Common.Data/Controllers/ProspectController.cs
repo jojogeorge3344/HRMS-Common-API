@@ -5,130 +5,129 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Chef.Trading.Web.Controllers
+namespace Chef.Trading.Web.Controllers;
+
+[Route("api/common/[controller]")]
+[ApiController]
+[AllowAnonymous]
+public class ProspectController : ControllerBase
 {
-    [Route("api/common/[controller]")]
-    [ApiController]
-    [AllowAnonymous]
-    public class ProspectController : ControllerBase
+    private readonly IProspectService prospectService;
+
+    public ProspectController(IProspectService prospectService)
     {
-        private readonly IProspectService prospectService;
+        this.prospectService = prospectService;
+    }
 
-        public ProspectController(IProspectService prospectService)
+    [HttpGet("Get/{id}")]
+    public async Task<ActionResult<ProspectDto>> Get(int id)
+    {
+        var prospect = await prospectService.GetAsync(id);
+
+        if (prospect == null)
         {
-            this.prospectService = prospectService;
+            return NotFound();
         }
 
-        [HttpGet("Get/{id}")]
-        public async Task<ActionResult<ProspectDto>> Get(int id)
+        return Ok(prospect);
+    }
+
+    //[HttpGet("GetAll")]
+    //public async Task<ActionResult<IEnumerable<ProspectDto>>> GetAll()
+    //{
+    //    var prospects = await prospectService.GetAllAsync();
+
+    //    return Ok(prospects);
+    //}
+
+    [HttpPost("Insert")]
+    public async Task<IActionResult> Insert(Prospect obj)
+    {
+        if (!ModelState.IsValid)
         {
-            var prospect = await prospectService.GetAsync(id);
-
-            if (prospect == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(prospect);
+            return BadRequest(ModelState);
         }
-
-        //[HttpGet("GetAll")]
-        //public async Task<ActionResult<IEnumerable<ProspectDto>>> GetAll()
-        //{
-        //    var prospects = await prospectService.GetAllAsync();
-
-        //    return Ok(prospects);
-        //}
-
-        [HttpPost("Insert")]
-        public async Task<IActionResult> Insert(Prospect obj)
+        var resultCount = await this.prospectService.GetExistingProspectAsync(obj);
+        if (resultCount != 0)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var resultCount = await this.prospectService.GetExistingProspectAsync(obj);
-            if (resultCount != 0)
-            {
-                throw new Exception($"Prospect with same properties already exists.");
-            }
-            else
-            {
-                var prospect = await prospectService.InsertAsync(obj);
-                return CreatedAtAction(nameof(Insert), prospect);
-            }
+            throw new Exception($"Prospect with same properties already exists.");
         }
-
-        [HttpPut("Update")]
-        public async Task<ActionResult> Update(Prospect prospect)
+        else
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var resultCount = await this.prospectService.GetEditExistingProspectAsync(prospect);
-            if (resultCount != 0)
-            {
-                throw new Exception($"Prospect with same properties already exists.");
-            }
-            else
-            {
-                var result = await prospectService.UpdateAsync(prospect);
-                return Ok(result);
-            }
+            var prospect = await prospectService.InsertAsync(obj);
+            return CreatedAtAction(nameof(Insert), prospect);
         }
+    }
 
-        //[HttpDelete("Delete/{id}")]
-        //public async Task<ActionResult> Delete(int id)
-        //{
-        //    var prospect = await prospectService.GetAsync(id);
-
-        //    if (prospect == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var result = await prospectService.DeleteAsync(id);
-
-        //    return Ok(result);
-        //}
-
-        //[HttpGet("GetAllCustomer")]
-        //public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAllCustomer()
-        //{
-        //    var prospects = await prospectService.GetAllCustomer();
-
-        //    return Ok(prospects);
-        //}
-
-        ////[HttpGet("GetAllTaxJurisdiction")]
-        ////public async Task<ActionResult<IEnumerable<TaxJurisdictionDto>>> GetAllTaxJurisdiction()
-        ////{
-        ////    var prospects = await prospectService.GetAllTaxJurisdiction();
-
-        ////    return Ok(prospects);
-        ////}
-
-
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<ProspectDto>>> GetAll()
+    [HttpPut("Update")]
+    public async Task<ActionResult> Update(Prospect prospect)
+    {
+        if (!ModelState.IsValid)
         {
-            var prospects = await prospectService.GetAll();
-
-            return Ok(prospects);
+            return BadRequest(ModelState);
         }
-
-        [HttpGet("IsCodeExist/{code}")]
-        public async Task<ActionResult<bool>> IsCodeExist( string code )
+        var resultCount = await this.prospectService.GetEditExistingProspectAsync(prospect);
+        if (resultCount != 0)
         {
-            return Ok(await prospectService.IsCodeExist(code));
+            throw new Exception($"Prospect with same properties already exists.");
         }
-
-        [HttpGet("IsTaxNoExist/{taxNo}")]
-        public async Task<ActionResult<bool>> IsTaxNoExist(long taxNo)
+        else
         {
-            return Ok(await prospectService.IsTaxNoExist(taxNo));
+            var result = await prospectService.UpdateAsync(prospect);
+            return Ok(result);
         }
+    }
+
+    //[HttpDelete("Delete/{id}")]
+    //public async Task<ActionResult> Delete(int id)
+    //{
+    //    var prospect = await prospectService.GetAsync(id);
+
+    //    if (prospect == null)
+    //    {
+    //        return NotFound();
+    //    }
+
+    //    var result = await prospectService.DeleteAsync(id);
+
+    //    return Ok(result);
+    //}
+
+    //[HttpGet("GetAllCustomer")]
+    //public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAllCustomer()
+    //{
+    //    var prospects = await prospectService.GetAllCustomer();
+
+    //    return Ok(prospects);
+    //}
+
+    ////[HttpGet("GetAllTaxJurisdiction")]
+    ////public async Task<ActionResult<IEnumerable<TaxJurisdictionDto>>> GetAllTaxJurisdiction()
+    ////{
+    ////    var prospects = await prospectService.GetAllTaxJurisdiction();
+
+    ////    return Ok(prospects);
+    ////}
+
+
+    [HttpGet("GetAll")]
+    public async Task<ActionResult<IEnumerable<ProspectDto>>> GetAll()
+    {
+        var prospects = await prospectService.GetAll();
+
+        return Ok(prospects);
+    }
+
+    [HttpGet("IsCodeExist/{code}")]
+    public async Task<ActionResult<bool>> IsCodeExist( string code )
+    {
+        return Ok(await prospectService.IsCodeExist(code));
+    }
+
+    [HttpGet("IsTaxNoExist/{taxNo}")]
+    public async Task<ActionResult<bool>> IsTaxNoExist(long taxNo)
+    {
+        return Ok(await prospectService.IsTaxNoExist(taxNo));
     }
 }
 

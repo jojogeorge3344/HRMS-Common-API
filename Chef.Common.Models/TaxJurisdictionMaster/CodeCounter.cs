@@ -2,15 +2,14 @@
 using Chef.Common.Types;
 using System.ComponentModel.DataAnnotations;
 
-namespace Chef.Common.Models
+namespace Chef.Common.Models;
+
+public class CodeCounter : Model
 {
-    public class CodeCounter : Model
-    {
-        [Required]
+    [Required]
 
-        public CodeType CodeType { get; set; }
-        public int Counter { get; set; }
+    public CodeType CodeType { get; set; }
+    public int Counter { get; set; }
 
-        public int DeleteCounter { get; set; }
-    }
+    public int DeleteCounter { get; set; }
 }

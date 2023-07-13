@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core;
+
+public class CodeAttribute : Attribute
 {
-    public class CodeAttribute : Attribute
+    public CodeAttribute()
     {
-        public CodeAttribute()
-        {
-        }
     }
 }

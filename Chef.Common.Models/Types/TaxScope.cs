@@ -5,17 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chef.Common.Models.Types
+namespace Chef.Common.Models.Types;
+
+public enum TaxScope
 {
-    public enum TaxScope
-    {
-        [Description("Sales")]
-        Sales = 1,
+    [Description("Sales")]
+    Sales = 1,
 
-        [Description("Purchase")]
-        Purchase = 2,
+    [Description("Purchase")]
+    Purchase = 2,
 
-        [Description("None")]
-        None = 3
-    }
+    [Description("None")]
+    None = 3
 }

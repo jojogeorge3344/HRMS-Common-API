@@ -1,7 +1,6 @@
-﻿namespace Chef.Common.Core
+﻿namespace Chef.Common.Core;
+
+public interface IBranchModel : IModel
 {
-    public interface IBranchModel : IModel
-    {
-        public string BranchCode { get; set; }
-    }
+    public string BranchCode { get; set; }
 }

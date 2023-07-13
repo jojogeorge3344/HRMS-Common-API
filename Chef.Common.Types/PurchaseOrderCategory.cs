@@ -1,8 +1,7 @@
-﻿namespace Chef.Trading.Types
+﻿namespace Chef.Trading.Types;
+
+public enum PurchaseOrderCategory
 {
-    public enum PurchaseOrderCategory
-    {
-        Local = 1,
-        Import = 2
-    }
+    Local = 1,
+    Import = 2
 }
