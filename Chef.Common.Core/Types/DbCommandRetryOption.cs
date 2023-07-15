@@ -1,8 +1,7 @@
-﻿namespace Chef.Common.Core.Types
+﻿namespace Chef.Common.Core.Types;
+
+public enum DbCommandRetryOption
 {
-    public enum DbCommandRetryOption
-    {
-        None,
-        Timeout,
-    }
+    None,
+    Timeout,
 }

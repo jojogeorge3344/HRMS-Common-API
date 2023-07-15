@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Models.Types
-{
-    public enum TaxType
-    {
-        [Description("Purchase")]
-        Purchase = 1,
+namespace Chef.Common.Models.Types;
 
-        [Description("Sales")]
-        Sales = 2
-    }
+public enum TaxType
+{
+    [Description("Purchase")]
+    Purchase = 1,
+
+    [Description("Sales")]
+    Sales = 2
 }

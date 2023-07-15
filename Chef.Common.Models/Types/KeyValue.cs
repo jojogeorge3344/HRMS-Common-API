@@ -1,8 +1,7 @@
-﻿namespace Chef.Common.Models
+﻿namespace Chef.Common.Models;
+
+public class KeyValue
 {
-    public class KeyValue
-    {
-        public int Key { get; set; }
-        public string Value { get; set; }
-    }
+    public int Key { get; set; }
+    public string Value { get; set; }
 }

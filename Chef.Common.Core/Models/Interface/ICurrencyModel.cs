@@ -1,10 +1,9 @@
 ﻿using Chef.Common.Core;
 
-namespace Chef.Trading.Models
+namespace Chef.Trading.Models;
+
+public interface ICurrencyModel : IModel
 {
-    public interface ICurrencyModel : IModel
-    {
-        public string TxnCurrencyCode { get; set; }
-        public string TxnCurrencySymbol { get; set; }
-    }
+    public string TxnCurrencyCode { get; set; }
+    public string TxnCurrencySymbol { get; set; }
 }

@@ -1,11 +1,10 @@
-﻿namespace Chef.Common.Types
+﻿namespace Chef.Common.Types;
+
+/// <summary>
+/// Holds type of the payout pattern
+/// </summary>
+public enum PayoutPattern
 {
-    /// <summary>
-    /// Holds type of the payout pattern
-    /// </summary>
-    public enum PayoutPattern
-    {
-        EntireAmount = 1,
-        CustomAmount
-    }
+    EntireAmount = 1,
+    CustomAmount
 }

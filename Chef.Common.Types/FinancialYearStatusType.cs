@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Types
+namespace Chef.Common.Types;
+
+public enum FinancialYearStatusType
 {
-    public enum FinancialYearStatusType
-    {
-        [Description("Open")]
-        Open = 1,
+    [Description("Open")]
+    Open = 1,
 
-        [Description("Closed")]
-        Closed = 2,
+    [Description("Closed")]
+    Closed = 2,
 
-        [Description("Final Closed")]
-        FinalClosed = 3,
-    }
+    [Description("Final Closed")]
+    FinalClosed = 3,
 }

@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Chef.Common.Core
-{
-    public class SkipAttribute : Attribute
-    {
-        public bool Skip { get; set; }
+namespace Chef.Common.Core;
 
-        public SkipAttribute(bool skip)
-        {
-            Skip = skip;
-        }
+public class SkipAttribute : Attribute
+{
+    public bool Skip { get; set; }
+
+    public SkipAttribute(bool skip)
+    {
+        Skip = skip;
     }
 }

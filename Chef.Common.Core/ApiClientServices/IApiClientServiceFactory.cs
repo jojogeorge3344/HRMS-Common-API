@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace Chef.Common.ClientServices
+namespace Chef.Common.ClientServices;
+
+public interface IApiClientServiceFactory : IHttpClientFactory, IDisposable
 {
-    public interface IApiClientServiceFactory : IHttpClientFactory, IDisposable
-    {
-    }
 }

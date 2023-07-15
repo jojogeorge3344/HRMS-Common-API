@@ -2,24 +2,23 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Chef.Common.Core
+namespace Chef.Common.Core;
+
+public class ForeignKeyCodeAttribute : Attribute
 {
-    public class ForeignKeyCodeAttribute : Attribute
+    public Type ModelType { get; set; }
+
+    public string KeyField { get; }
+
+    public ForeignKeyCodeAttribute(Type modelType)
     {
-        public Type ModelType { get; set; }
+        ModelType = modelType;
 
-        public string KeyField { get; }
+        KeyField = modelType.GetProperties().Where(x => x.GetCustomAttribute(typeof(CodeAttribute)) != null).Select(x => x.Name.ToLower()).FirstOrDefault();
 
-        public ForeignKeyCodeAttribute(Type modelType)
+        if (string.IsNullOrEmpty(KeyField))
         {
-            ModelType = modelType;
-
-            KeyField = modelType.GetProperties().Where(x => x.GetCustomAttribute(typeof(CodeAttribute)) != null).Select(x => x.Name.ToLower()).FirstOrDefault();
-
-            if (string.IsNullOrEmpty(KeyField))
-            {
-                throw new Exception($"Foreignkey code reference not found. Add code attribute to the corresponding property in the primary table - {modelType.Name}");
-            }
+            throw new Exception($"Foreignkey code reference not found. Add code attribute to the corresponding property in the primary table - {modelType.Name}");
         }
     }
 }

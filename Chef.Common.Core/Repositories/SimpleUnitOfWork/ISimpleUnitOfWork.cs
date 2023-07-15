@@ -1,19 +1,18 @@
 ﻿using System;
 
-namespace Chef.Common.Repositories
+namespace Chef.Common.Repositories;
+
+public interface ISimpleUnitOfWork
 {
-    public interface ISimpleUnitOfWork
-    {
-        void BeginTransaction();
-        void Commit();
-        void Rollback();
-    }
+    void BeginTransaction();
+    void Commit();
+    void Rollback();
+}
 
-    public interface IConsoleSimpleUnitOfWork : ISimpleUnitOfWork
-    {
-    }
+public interface IConsoleSimpleUnitOfWork : ISimpleUnitOfWork
+{
+}
 
-    public interface ITenantSimpleUnitOfWork : ISimpleUnitOfWork
-    {
-    }
+public interface ITenantSimpleUnitOfWork : ISimpleUnitOfWork
+{
 }

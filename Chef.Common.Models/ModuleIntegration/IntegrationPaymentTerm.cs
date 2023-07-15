@@ -1,23 +1,22 @@
 ﻿using Chef.Common.Core;
 using System.Collections.Generic;
 
-namespace Chef.Common.Models
+namespace Chef.Common.Models;
+
+public class IntegrationPaymentTerm : Model
 {
-    public class IntegrationPaymentTerm : Model
-    {
-        public decimal Amount { get; set; }
+    public decimal Amount { get; set; }
 
-        public decimal AmountBaseCurrency { get; set; }
+    public decimal AmountBaseCurrency { get; set; }
 
-        public decimal AdvanceAmount { get; set; } = 0;
+    public decimal AdvanceAmount { get; set; } = 0;
 
-        public decimal AdvanceAmountInBaseCurrecy { get; set; } = 0;
+    public decimal AdvanceAmountInBaseCurrecy { get; set; } = 0;
 
-        public int NumberOfInstalments { get; set; }
+    public int NumberOfInstalments { get; set; }
 
-        [Write(false)]
-        [Skip(true)]
-        [SqlKata.Ignore]
-        public List<IntegrationPaymentTermInstallment> Instalments { get; set; }
-    }
+    [Write(false)]
+    [Skip(true)]
+    [SqlKata.Ignore]
+    public List<IntegrationPaymentTermInstallment> Instalments { get; set; }
 }

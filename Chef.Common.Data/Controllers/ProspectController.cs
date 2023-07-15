@@ -1,9 +1,5 @@
 ﻿using Chef.Common.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Chef.Common.Exceptions;
 
 namespace Chef.Trading.Web.Controllers
 {
@@ -25,109 +21,67 @@ namespace Chef.Trading.Web.Controllers
             var prospect = await prospectService.GetAsync(id);
 
             if (prospect == null)
-            {
                 return NotFound();
-            }
 
             return Ok(prospect);
         }
 
-        //[HttpGet("GetAll")]
-        //public async Task<ActionResult<IEnumerable<ProspectDto>>> GetAll()
-        //{
-        //    var prospects = await prospectService.GetAllAsync();
-
-        //    return Ok(prospects);
-        //}
-
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert(Prospect obj)
+        public async Task<IActionResult> Insert(Prospect prospect)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-            var resultCount = await this.prospectService.GetExistingProspectAsync(obj);
-            if (resultCount != 0)
-            {
-                throw new Exception($"Prospect with same properties already exists.");
-            }
-            else
-            {
-                var prospect = await prospectService.InsertAsync(obj);
-                return CreatedAtAction(nameof(Insert), prospect);
-            }
+
+            if (await prospectService.IsExistingProspectAsync(prospect))
+                throw new ResourceAlreadyExistsException($"Prospect with same properties already exists.");
+
+            if (await prospectService.IsTaxNoExist(prospect.TaxNo, prospect.Id))
+                throw new ResourceAlreadyExistsException($"Tax number already exists.");
+
+            return CreatedAtAction(nameof(Insert), await prospectService.InsertAsync(prospect));
         }
 
         [HttpPut("Update")]
         public async Task<ActionResult> Update(Prospect prospect)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-            var resultCount = await this.prospectService.GetEditExistingProspectAsync(prospect);
-            if (resultCount != 0)
-            {
-                throw new Exception($"Prospect with same properties already exists.");
-            }
-            else
-            {
-                var result = await prospectService.UpdateAsync(prospect);
-                return Ok(result);
-            }
+
+            if (await prospectService.IsExistingProspectAsync(prospect))
+                throw new ResourceAlreadyExistsException($"Prospect with same properties already exists.");
+
+            if (await prospectService.IsTaxNoExist(prospect.TaxNo, prospect.Id))
+                throw new ResourceAlreadyExistsException($"Tax number already exists.");
+
+            return Ok(await prospectService.UpdateAsync(prospect));
         }
 
-        //[HttpDelete("Delete/{id}")]
-        //public async Task<ActionResult> Delete(int id)
-        //{
-        //    var prospect = await prospectService.GetAsync(id);
+        [HttpDelete("Delete/{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var rowsAffected = await prospectService.DeleteAsync(id);
+            if (rowsAffected < 1)
+                return NotFound("The Prospect does not exist.");
 
-        //    if (prospect == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var result = await prospectService.DeleteAsync(id);
-
-        //    return Ok(result);
-        //}
-
-        //[HttpGet("GetAllCustomer")]
-        //public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAllCustomer()
-        //{
-        //    var prospects = await prospectService.GetAllCustomer();
-
-        //    return Ok(prospects);
-        //}
-
-        ////[HttpGet("GetAllTaxJurisdiction")]
-        ////public async Task<ActionResult<IEnumerable<TaxJurisdictionDto>>> GetAllTaxJurisdiction()
-        ////{
-        ////    var prospects = await prospectService.GetAllTaxJurisdiction();
-
-        ////    return Ok(prospects);
-        ////}
-
+            return Ok(rowsAffected);
+        }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<ProspectDto>>> GetAll()
         {
-            var prospects = await prospectService.GetAll();
-
-            return Ok(prospects);
+            return Ok(await prospectService.GetAllAsync());
         }
 
         [HttpGet("IsCodeExist/{code}")]
-        public async Task<ActionResult<bool>> IsCodeExist( string code )
+        public async Task<ActionResult<bool>> IsCodeExist(string code)
         {
             return Ok(await prospectService.IsCodeExist(code));
         }
 
-        [HttpGet("IsTaxNoExist/{taxNo}")]
-        public async Task<ActionResult<bool>> IsTaxNoExist(long taxNo)
+        [HttpGet("IsTaxNoExist/{taxNo}/{prospectId}")]
+        public async Task<ActionResult<bool>> IsTaxNoExist(long taxNo, int prospectId)
         {
-            return Ok(await prospectService.IsTaxNoExist(taxNo));
+            return Ok(await prospectService.IsTaxNoExist(taxNo, prospectId));
         }
     }
 }

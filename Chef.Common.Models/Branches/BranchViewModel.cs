@@ -1,7 +1,7 @@
 ﻿using Chef.Common.Core;
 
-namespace Chef.Common.Models
-{
+namespace Chef.Common.Models;
+
 	public class BranchViewModel : Model
 	{
 
@@ -10,7 +10,6 @@ namespace Chef.Common.Models
 		public string BranchName { get; set; }
 
 		public string BranchCode { get; set; }
-        public string CompanyCode { get; set; }
-        
-    }
+    public string CompanyCode { get; set; }
+    
 }

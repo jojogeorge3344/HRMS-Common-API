@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Types
-{
-    public enum AccountEntryType
-    {
-        [Description("Debit")]
-        Debit = 1,
+namespace Chef.Common.Types;
 
-        [Description("Credit")]
-        Credit
-    }
+public enum AccountEntryType
+{
+    [Description("Debit")]
+    Debit = 1,
+
+    [Description("Credit")]
+    Credit
 }
