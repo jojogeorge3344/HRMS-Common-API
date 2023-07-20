@@ -2,24 +2,23 @@
 using System;
 using System.Linq;
 
-namespace Chef.Common.Core.Repositories.UnitOfWork
+namespace Chef.Common.Core.Repositories.UnitOfWork;
+
+public class ExceptionHandler : IExceptionHandler
 {
-    public class ExceptionHandler : IExceptionHandler
+    private static readonly int[] RetryErrorCodes =
     {
-        private static readonly int[] RetryErrorCodes =
-        {
-            20,    // The instance of SQL Server you attempted to connect to does not support encryption. 
-        };
+        20,    // The instance of SQL Server you attempted to connect to does not support encryption. 
+    };
 
-        public bool Retry(Exception ex)
+    public bool Retry(Exception ex)
+    {
+        if (ex is not NpgsqlException sqlException)
         {
-            if (ex is not NpgsqlException sqlException)
-            {
-                //return ex is TimeoutException;
-                return false;
-            }
-
-            return RetryErrorCodes.Contains(sqlException.ErrorCode);
+            //return ex is TimeoutException;
+            return false;
         }
+
+        return RetryErrorCodes.Contains(sqlException.ErrorCode);
     }
 }

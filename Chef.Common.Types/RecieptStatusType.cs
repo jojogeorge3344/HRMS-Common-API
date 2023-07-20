@@ -1,22 +1,21 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Types
+namespace Chef.Common.Types;
+
+public enum ReceiptStatusType
 {
-    public enum ReceiptStatusType
-    {
-        [Description("Unprocessed")]
-        Unprocessed = 1,
+    [Description("Unprocessed")]
+    Unprocessed = 1,
 
-        [Description("Processed")]
-        Processed = 2,
+    [Description("Processed")]
+    Processed = 2,
 
-        [Description("Rejected")]
-        Rejected = 3,
+    [Description("Rejected")]
+    Rejected = 3,
 
-        [Description("Hold")]
-        Hold = 4,
+    [Description("Hold")]
+    Hold = 4,
 
-        [Description("Reversal")]
-        Reversal = 5,
-    }
+    [Description("Reversal")]
+    Reversal = 5,
 }

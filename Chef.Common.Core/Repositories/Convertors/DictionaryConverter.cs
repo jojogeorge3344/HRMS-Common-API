@@ -2,65 +2,64 @@
 using System;
 using System.Collections.Generic;
 
-namespace Chef.Common.Repositories
+namespace Chef.Common.Repositories;
+
+public class DictionaryConverter : JsonConverter
 {
-    public class DictionaryConverter : JsonConverter
+    public override bool CanWrite { get { return false; } }
+
+    public override bool CanConvert(Type objectType)
     {
-        public override bool CanWrite { get { return false; } }
+        return objectType == typeof(Dictionary<string, object>);
+    }
 
-        public override bool CanConvert(Type objectType)
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.StartArray)
         {
-            return objectType == typeof(Dictionary<string, object>);
-        }
+            _ = reader.Read();
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.StartArray)
+            if (reader.TokenType == JsonToken.EndArray)
             {
-                _ = reader.Read();
-
-                if (reader.TokenType == JsonToken.EndArray)
-                {
-                    return new Dictionary<string, string>();
-                }
-                else
-                {
-                    throw new JsonSerializationException("Non-empty JSON array does not make a valid Dictionary!");
-                }
-            }
-            else if (reader.TokenType == JsonToken.Null)
-            {
-                return null;
-            }
-            else if (reader.TokenType == JsonToken.StartObject)
-            {
-                Dictionary<string, object> ret = new();
-                reader.Read();
-
-                while (reader.TokenType != JsonToken.EndObject)
-                {
-                    if (reader.TokenType != JsonToken.PropertyName)
-                    {
-                        throw new JsonSerializationException("Unexpected token!");
-                    }
-
-                    string key = (string)reader.Value;
-                    reader.Read();
-                    //string value = (string)reader.Value;
-                    ret.Add(key, reader.Value);
-                    reader.Read();
-                }
-                return ret;
+                return new Dictionary<string, string>();
             }
             else
             {
-                throw new JsonSerializationException("Unexpected token!");
+                throw new JsonSerializationException("Non-empty JSON array does not make a valid Dictionary!");
             }
         }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        else if (reader.TokenType == JsonToken.Null)
         {
-            throw new NotImplementedException();
+            return null;
         }
+        else if (reader.TokenType == JsonToken.StartObject)
+        {
+            Dictionary<string, object> ret = new();
+            reader.Read();
+
+            while (reader.TokenType != JsonToken.EndObject)
+            {
+                if (reader.TokenType != JsonToken.PropertyName)
+                {
+                    throw new JsonSerializationException("Unexpected token!");
+                }
+
+                string key = (string)reader.Value;
+                reader.Read();
+                //string value = (string)reader.Value;
+                ret.Add(key, reader.Value);
+                reader.Read();
+            }
+            return ret;
+        }
+        else
+        {
+            throw new JsonSerializationException("Unexpected token!");
+        }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        throw new NotImplementedException();
     }
 }

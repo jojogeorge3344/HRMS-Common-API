@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Chef.Common.Core
-{
-    public class WriteAttribute : Attribute
-    {
-        public bool Write { get; set; }
+namespace Chef.Common.Core;
 
-        public WriteAttribute(bool write)
-        {
-            Write = write;
-        }
+public class WriteAttribute : Attribute
+{
+    public bool Write { get; set; }
+
+    public WriteAttribute(bool write)
+    {
+        Write = write;
     }
 }

@@ -2,23 +2,22 @@
 using Chef.Common.Types;
 using System.ComponentModel.DataAnnotations;
 
-namespace Chef.Common.Models
+namespace Chef.Common.Models;
+
+public class SubTax : Model
 {
-    public class SubTax : Model
-    {
-        [ForeignKeyId(typeof(TaxOld))]
-        [Required]
-        [Unique(true), Composite(Index = 1, GroupNumber = 2)]
-        public int? TaxId { get; set; } = 0;
+    [ForeignKeyId(typeof(TaxOld))]
+    [Required]
+    [Unique(true), Composite(Index = 1, GroupNumber = 2)]
+    public int? TaxId { get; set; } = 0;
 
-        [Required]
-        [Unique(true), Composite(Index = 2, GroupNumber = 2)]
-        public string SubTaxName { get; set; }
+    [Required]
+    [Unique(true), Composite(Index = 2, GroupNumber = 2)]
+    public string SubTaxName { get; set; }
 
-        [Required]
-        public float SubTaxPercent { get; set; }
+    [Required]
+    public float SubTaxPercent { get; set; }
 
-        [Required]
-        public TaxBase TaxBase { get; set; }
-    }
+    [Required]
+    public TaxBase TaxBase { get; set; }
 }

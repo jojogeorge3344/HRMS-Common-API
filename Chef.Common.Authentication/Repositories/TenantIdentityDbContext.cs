@@ -1,4 +1,6 @@
-﻿namespace Chef.Common.Authentication.Repositories;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+namespace Chef.Common.Authentication.Repositories;
 
 public class TenantIdentityDbContext : IdentityDbContext<ApplicationUser>
 {

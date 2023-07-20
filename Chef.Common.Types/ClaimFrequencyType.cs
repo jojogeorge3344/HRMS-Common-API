@@ -1,12 +1,11 @@
-﻿namespace Chef.Common.Types
+﻿namespace Chef.Common.Types;
+
+/// <summary>
+/// Holds type of the claim frequency types
+/// </summary>
+public enum ClaimFrequencyType
 {
-    /// <summary>
-    /// Holds type of the claim frequency types
-    /// </summary>
-    public enum ClaimFrequencyType
-    {
-        Monthly = 1,
-        Weekly,
-        Yearly
-    }
+    Monthly = 1,
+    Weekly,
+    Yearly
 }

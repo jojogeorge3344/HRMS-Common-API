@@ -272,11 +272,11 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             if (bankBalance <= 0)
                 throw new ResourceNotFoundException($"{bankaccountType.AccountName} - {bankaccountType.AccountNumber} is with insufficient balance");
 
-            IEnumerable<BusinessPartnerPaymentDetail> businessPartners = await businessPartnerConfigRepository.GetPaymentDetailByBusinessPartnerIdAsync(salesOrderReceiptDto.BusinessPartnerId);
-            if (businessPartners.Count() < 0)
-                throw new ResourceNotFoundException($"Bank Account Does not exist for this {salesOrderReceiptDto.BusinessPartnerName} BusinessPartner");
+            //IEnumerable<BusinessPartnerPaymentDetail> businessPartners = await businessPartnerConfigRepository.GetPaymentDetailByBusinessPartnerIdAsync(salesOrderReceiptDto.BusinessPartnerId);
+            //if (businessPartners.Count() <= 0)
+            //    throw new ResourceNotFoundException($"Bank Account Does not exist for this {salesOrderReceiptDto.BusinessPartnerName} BusinessPartner");
 
-            BusinessPartnerPaymentDetail bankDetails = businessPartners.Where(x => x.IsSupplier == false).FirstOrDefault();
+            //BusinessPartnerPaymentDetail bankDetails = businessPartners.Where(x => x.IsSupplier == false).FirstOrDefault();
             ////if (bankDetails == null)
             //    throw new ResourceNotFoundException($"Supplier Bank Account Does not exist for this {salesOrderReceiptDto.BusinessPartnerName} BusinessPartner");
 
@@ -298,7 +298,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
             supplierPaymentAdvice.BankAccountBalance = bankBalance;
             supplierPaymentAdvice.BankAccountId = bankaccountType.AccountId;
             supplierPaymentAdvice.BankAccountName = bankaccountType.AccountName;
-            supplierPaymentAdvice.BankAccountNumber = bankDetails.AccountNumber;
+            supplierPaymentAdvice.BankAccountNumber = "0";
             //supplierPaymentAdvice.BankCurrencyExchangeRate =
             supplierPaymentAdvice.BankId = bankaccountType.BankId;
             supplierPaymentAdvice.BankLedgerAccountCode = bankaccountType.BankControlAccountCode;
@@ -312,7 +312,7 @@ public class SalesOrderReceiptService : AsyncService<SalesOrderReceiptDto>, ISal
 
             PaymentAdviceCashPaymentDetail cashDetails = new PaymentAdviceCashPaymentDetail();
 
-            cashDetails.AccountNumber = bankDetails.AccountNumber;
+            cashDetails.AccountNumber = "0";
             cashDetails.Amount = salesOrderReceiptDto.TotalAmount.ToString();
             cashDetails.BranchId = salesOrderReceiptDto.BranchId;
             cashDetails.Currency = salesOrderReceiptDto.TransactionCurrencyCode;

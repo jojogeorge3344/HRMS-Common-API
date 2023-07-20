@@ -1,10 +1,9 @@
 ﻿using Chef.Common.Core;
 
-namespace Chef.Trading.Models
+namespace Chef.Trading.Models;
+
+public interface IWarehouseModel : IModel
 {
-    public interface IWarehouseModel : IModel
-    {
-        public int WarehouseId { get; set; }
-        public string WarehouseCode { get; set; }
-    }
+    public int WarehouseId { get; set; }
+    public string WarehouseCode { get; set; }
 }

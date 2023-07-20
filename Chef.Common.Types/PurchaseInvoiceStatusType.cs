@@ -1,19 +1,18 @@
 ﻿using System.ComponentModel;
 
-namespace Chef.Common.Types
+namespace Chef.Common.Types;
+
+public enum PurchaseInvoiceStatusType
 {
-    public enum PurchaseInvoiceStatusType
-    {
-        [Description("Open")]
-        Open = 1,
+    [Description("Open")]
+    Open = 1,
 
-        [Description("Match and Approved")]
-        MatchAndApproved = 2,
+    [Description("Match and Approved")]
+    MatchAndApproved = 2,
 
-        [Description("On Hold")]
-        Hold = 3,
+    [Description("On Hold")]
+    Hold = 3,
 
-        [Description("Approved")]
-        Approved = 4,
-    }
+    [Description("Approved")]
+    Approved = 4,
 }
